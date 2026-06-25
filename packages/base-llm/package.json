@@ -1,0 +1,32 @@
+{
+  "name": "@ai-swiss/base-llm",
+  "version": "1.0.0",
+  "description": "Owned, provider-agnostic chat/tool-calling port for BASE, with a faux test double and an OpenAI-compatible (+ Ollama) adapter. Zero dependencies.",
+  "license": "Apache-2.0",
+  "author": "AI Swiss (https://a-i.swiss)",
+  "type": "module",
+  "exports": {
+    ".": "./index.mjs",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.mjs",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "peerDependencies": {
+    "@ai-swiss/base": "1.x"
+  },
+  "peerDependenciesMeta": {
+    "@ai-swiss/base": {
+      "optional": true
+    }
+  }
+}

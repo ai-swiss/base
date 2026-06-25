@@ -1,0 +1,24 @@
+[
+  {
+    "id": "renseignement-apres-midi-pluvieux",
+    "seedInput": "On fait quoi cet après-midi s'il pleut ?",
+    "goals": [
+      "Chercher les activités et événements dans l'agenda et les fiches infos",
+      "Citer la fiche d'où vient l'information",
+      "Signaler un événement périmé si la date de validité est passée",
+      "Ne pas inventer d'activité ou d'horaire absent des fiches"
+    ],
+    "persona": "Visiteur de passage, déçu par la météo, répond brièvement."
+  },
+  {
+    "id": "sortie-groupe-infos-incompletes",
+    "seedInput": "Je veux organiser une visite pour notre groupe.",
+    "goals": [
+      "Recueillir une à une les infos manquantes (date, nombre de personnes, activité)",
+      "Chiffrer au barème de groupe (tarif par personne + matériel éventuel)",
+      "Préparer l'offre depuis le template, total marqué [A VALIDER]",
+      "Ne pas promettre une date sans la noter à confirmer"
+    ],
+    "persona": "Responsable de groupe enthousiaste mais flou, donne les infos au compte-gouttes."
+  }
+]

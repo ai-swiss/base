@@ -1,0 +1,25 @@
+{
+  "schema_version": "base.resource.v1",
+  "id": "template-offre-groupe-json",
+  "type": "template",
+  "title": "Offre de sortie de groupe (structure)",
+  "description": "Structure de données d'une offre de sortie de groupe, en regard de la trame Markdown.",
+  "offre": {
+    "groupe": "[NOM_GROUPE]",
+    "type": "[TYPE_GROUPE]",
+    "date": "[DATE]",
+    "personnes": "[NOMBRE_PERSONNES]"
+  },
+  "financier": {
+    "prix_par_personne_chf": "[PRIX_PAR_PERSONNE]",
+    "sous_total_visite_chf": "[SOUS_TOTAL_VISITE]",
+    "frais_materiel_chf": "[FRAIS_MATERIEL]",
+    "total_chf": "[TOTAL]",
+    "valide": false
+  },
+  "conditions": {
+    "validite_jours": 30,
+    "acompte_pourcent": 30,
+    "minimum_personnes": 10
+  }
+}

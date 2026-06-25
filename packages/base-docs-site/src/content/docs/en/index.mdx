@@ -1,0 +1,121 @@
+---
+title: Documentation
+description: "BASE is not one more AI platform; it is the structure that makes AI useful for your line of work: your rules, your processes and your context in text files you own. You decide what the AI sees and where it stops for your validation."
+template: splash
+hero:
+  title: BASE
+  tagline: "BASE is not one more AI platform. It is the structure that makes AI useful for your line of work: your rules, your processes and your context, written in text files you own. You decide what the AI sees, what it must check, and where it stops for your validation, so the work rests on your structure, not on its guesses. Readable anywhere, portable to any tool, and yours."
+  actions:
+    - text: See BASE in action
+      link: /en/resources/docs-start-demo-60-secondes/
+      icon: rocket
+    - text: Why BASE
+      link: /en/resources/docs-learn-co-penser-avec-lia/
+      icon: open-book
+      variant: secondary
+    - text: View the repository
+      link: https://github.com/ai-swiss/base
+      icon: github
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+> The method corpus is written in French; the engineering specifications are in English. See [the languages of BASE](/en/resources/docs-reference-langues/).
+
+## What BASE takes seriously
+
+BASE starts from a few sober observations about working with AI: no hype, no doom, only what holds up to scrutiny.
+
+<CardGrid>
+  <Card title="Generating is not verifying.">
+  A model's core produces probable completions; nothing within it tests them against reality. Verification is therefore external: a fact, a calculation, a tool can check; but what engages your intentions, your context, your values, you alone can judge.
+  </Card>
+  <Card title="What you don't say, AI invents.">
+  Natural language is under-specified: it leaves gaps. The model fills them with the most probable regularities of its training, not with your rules. What is left implicit is not merely mishandled: handed to agents, it gets executed.
+  </Card>
+  <Card title="An instruction is not a guarantee.">
+  An instruction given to the model stays probabilistic: it may follow it, or not. A guarantee, strictly speaking, comes from elsewhere: a deterministic check, external to the model, code that enforces it. BASE never dresses one as the other.
+  </Card>
+  <Card title="Autonomy without dialogue is an illusion.">
+  A system with no external feedback optimizes its internal coherence, not its correctness: it has no way to know when it is wrong. Without a check, human or mechanism, autonomy fails where judgment is needed, whatever the power of the model.
+  </Card>
+  <Card title="What you don't understand, you won't maintain.">
+  An assistant you don't understand becomes impossible to fix the day the context shifts, and it always does. What cannot be reread cannot be maintained.
+  </Card>
+  <Card title="Sovereignty is not just about your servers.">
+  Where your data lives matters, of course. But an AI can run on your own servers and still be foreign in how it works. The sovereignty most often forgotten is elsewhere: mastering how your knowledge is written and steered. Keep it in files you can read, correct and take with you.
+  </Card>
+  <Card title="What advances fastest is efficiency, not size.">
+  The dominant story measures AI by the size of its models and its data centers. Yet what advances fastest is efficiency: for a given capability, the compute required falls year after year, faster than hardware improves. For most everyday knowledge work (conversing, drafting, reformulating, following a framed process), a good local machine and a free model already suffice, and that frontier keeps receding; the giant infrastructures serve mainly a different kind of AI. The real leverage is not the power you rent, but how you structure the work with these models.
+  </Card>
+  <Card title="A model is a computation, not a civilization.">
+  The world's richness comes not from one intelligence, but from the diversity of billions of minds: each explores a corner no one else would have reached, and that is often where, by chance, a discovery is born. A model, however powerful, is a single way of seeing; a thousand copies are a thousand times the same. One more reason to keep the human, and that diversity, at the heart of the work.
+  </Card>
+</CardGrid>
+
+**Reliability is not bought. It is built.**
+
+## Where to start
+
+<CardGrid>
+  <LinkCard
+    title="Understand BASE"
+    description="Why plain text files, a router that finds the right process, and explicit validations. The groundwork, before getting your hands in."
+    href="/en/resources/docs-learn-comprendre/"
+  />
+  <LinkCard
+    title="Shape your first assistant"
+    description="The shortest path from an empty folder to a first assistant that draws on your files."
+    href="/en/resources/docs-start-quickstart/"
+  />
+  <LinkCard
+    title="Learn by doing"
+    description="An assistant from scratch in your AI tool, in thirty minutes, with nothing new to install. Every step verifies itself."
+    href="/en/resources/docs-tutoriel-index/"
+  />
+  <LinkCard
+    title="Install your tool"
+    description="Graft BASE onto the AI tool you already use, or via an MCP server. Once you have understood and tried, not before."
+    href="/en/resources/docs-start-installer/"
+  />
+</CardGrid>
+
+## For your profile
+
+<CardGrid>
+  <Card title="SMEs and freelancers" icon="seti:todo">
+    A complete [quote assistant](/en/resources/exemples-assistant-devis-readme/) to copy, then the [Swiss SME starter kit](/en/resources/docs-audiences-kit-demarrage-pme-suisse/) to share it with a team.
+  </Card>
+  <Card title="Education" icon="pencil">
+    The [teacher assistant example](/en/resources/exemples-assistant-enseignant-readme/): prepare teaching sequences without delegating pedagogical judgment.
+  </Card>
+  <Card title="Public sector" icon="seti:lock">
+    The [administration kit](/en/resources/docs-audiences-kit-administration-secteur-public/), a [90-minute pilot](/en/resources/docs-audiences-pilote-institution-90-min/) with no personal data, and [data sovereignty](/en/resources/docs-trust-souverainete-et-confiance/).
+  </Card>
+  <Card title="Development" icon="seti:json">
+    The [public framework](/en/resources/docs-reference-framework-public/), the [routing doctrine](/en/resources/docs-reference-routage-process-et-ressources/) and the [routing lab](/en/routes/). For the tested contract: the [specifications](/en/resources/specs-current-readme/).
+  </Card>
+</CardGrid>
+
+## The site is a projection of the repository
+
+This site is a **projection** of the repository: guides, specifications, examples, agents, processes and route fixtures are indexed into a documentation model, then rendered as a navigable portal. The repository remains the source of truth.
+
+<CardGrid>
+  <LinkCard
+    title="Explorer"
+    description="The 140+ resources of the corpus, filterable by role, family and path. Where the menu stops."
+    href="/en/explorer/"
+  />
+  <LinkCard
+    title="Evidence"
+    description="Every claim points to its mechanisms, its tests and its limits."
+    href="/en/evidence/"
+  />
+  <LinkCard
+    title="Quality"
+    description="Model warnings and exclusions, published to keep the site honest."
+    href="/en/quality/"
+  />
+</CardGrid>

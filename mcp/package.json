@@ -1,0 +1,55 @@
+{
+  "name": "@ai-swiss/base-mcp",
+  "version": "1.0.0",
+  "description": "MCP server for BASE - expose your business AI agents to any platform",
+  "license": "Apache-2.0",
+  "author": "AI Swiss (https://a-i.swiss)",
+  "homepage": "https://a-i.swiss",
+  "keywords": [
+    "mcp",
+    "ai-agents",
+    "base",
+    "local-first",
+    "human-ai-collaboration"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=18.14.1"
+  },
+  "bin": {
+    "base-mcp": "dist/index.js"
+  },
+  "files": [
+    "dist/*.js",
+    "dist/*.d.ts",
+    "dist/base-core.mjs",
+    "dist/core/*.mjs",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc && node scripts/bundle-core.mjs",
+    "prepack": "npm run build",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest",
+    "smoke:pack": "node tests/smoke-pack.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.27.0",
+    "express": "^5.1.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.0.0",
+    "@vitest/coverage-v8": "^3.2.6",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^3.0.0"
+  },
+  "overrides": {
+    "hono": "^4.12.25"
+  }
+}

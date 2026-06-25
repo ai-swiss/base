@@ -1,0 +1,34 @@
+[
+  {
+    "request": "Préparer un cours sur les fractions",
+    "expect": { "status": "routed", "agent": "assistant-enseignant", "process": "preparer-sequence" }
+  },
+  {
+    "request": "Je dois construire une séquence sur la Révolution française",
+    "expect": { "status": "routed", "agent": "assistant-enseignant", "process": "preparer-sequence" }
+  },
+  {
+    "request": "Planifier mes leçons de la semaine",
+    "expect": { "status": "routed", "agent": "assistant-enseignant", "process": "preparer-sequence" }
+  },
+  {
+    "request": "Créer une évaluation avec un barème et un corrigé",
+    "expect": { "status": "routed", "agent": "assistant-enseignant", "process": "preparer-evaluation" }
+  },
+  {
+    "request": "Préparer une évaluation pour mes élèves",
+    "expect": { "status": "routed", "agent": "assistant-enseignant", "process": "preparer-evaluation" }
+  },
+  {
+    "request": "Configurer mon profil d'enseignant",
+    "expect": { "status": "routed", "agent": "assistant-enseignant", "process": "configuration" }
+  },
+  {
+    "request": "Bonjour",
+    "expect": { "status": "out_of_scope", "reason_code": "below_floor", "fallback": { "agent": "concierge-base", "process": "accueil" } }
+  },
+  {
+    "request": "Calcule ma déclaration d'impôts",
+    "expect": { "status": "out_of_scope", "reason_code": "below_floor", "fallback": { "agent": "concierge-base", "process": "accueil" } }
+  }
+]

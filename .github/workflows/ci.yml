@@ -1,0 +1,272 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+jobs:
+  core:
+    name: Core (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The zero-dependency core + packages must run on every supported Node (engines: >=18).
+        # This matrix is what catches version-specific breakage (e.g. an unref'd timer that only the
+        # Node 20 test runner flags). Coverage/freshness/pack gates run once, on the newest Node.
+        node: ['18', '20', '22', '24']
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - name: Syntax check (zero-dep, every source file parses)
+        run: |
+          find tools packages tests -name '*.mjs' -not -path '*/node_modules/*' -print0 \
+            | xargs -0 -n1 node --check
+      # The runtime stays zero-dependency; the test suite uses devDependencies (fast-check for the
+      # frontmatter property tests). `.npmrc` (legacy-peer-deps) handles the optional self-peer.
+      - name: Install dev toolchain (tests only)
+        run: npm ci
+      - name: Run core, CLI and package tests
+        run: node --test tests/*.test.mjs packages/base-ranker-semantic/tests/*.test.mjs packages/base-index-local/tests/*.test.mjs packages/base-llm/tests/*.test.mjs packages/base-eval/tests/*.test.mjs
+      - name: Validate the BASE project
+        run: node tools/base.mjs validate --root .
+      - name: Corpus health (doctor — fail on any error-severity finding)
+        run: node tools/base.mjs doctor --root .
+      - name: Routing fixtures stay stable
+        run: node tools/base.mjs route-test --root .
+      - name: Routing example fixtures stay stable
+        run: |
+          node tools/base.mjs route-test --root exemples/routage-pme
+          node tools/base.mjs route-test --root exemples/assistant-devis
+          node tools/base.mjs route-test --root exemples/assistant-devis-demo
+          node tools/base.mjs route-test --root exemples/assistant-communication
+          node tools/base.mjs route-test --root exemples/assistant-rh
+          node tools/base.mjs route-test --root exemples/assistant-projet
+          node tools/base.mjs route-test --root exemples/assistant-courrier
+          node tools/base.mjs route-test --root exemples/assistant-reunion
+          node tools/base.mjs route-test --root exemples/assistant-reflexion
+          node tools/base.mjs route-test --root exemples/assistant-enseignant
+          node tools/base.mjs route-test --root exemples/veytaux-tourisme
+          node tools/base.mjs route-test --root exemples/starter-perso
+          node tools/base.mjs route-test --root exemples/agence-multi-clients/clients/dupont-conseil
+          node tools/base.mjs route-test --root exemples/agence-multi-clients/clients/martin-digital
+      - name: Index benchmark smoke (no fragile thresholds)
+        run: npm run bench:index -- --sizes 100,1000
+      - name: Validate each example in isolation
+        run: |
+          for ex in exemples/*/; do
+            echo "validate $ex"
+            node tools/base.mjs validate --root "$ex" || exit 1
+          done
+      # --- gates that run once, on the newest Node ---
+      # Coverage uses the node:test coverage-threshold flags, which exist only on Node 22+.
+      - name: Coverage gate
+        if: matrix.node == '24'
+        run: npm run test:coverage
+      - name: Manifest is a derived artifact (regenerate + diff)
+        if: matrix.node == '24'
+        run: |
+          node tools/base.mjs index --root .
+          git diff --exit-code base.manifest.json \
+            || (echo "::error::base.manifest.json is stale. Run 'npm run index' and commit." && exit 1)
+      - name: Projected artifacts are derived (regenerate + diff)
+        if: matrix.node == '24'
+        run: |
+          node tools/base.mjs build --write --root .
+          git diff --exit-code AGENTS.md .ai/tools.md CLAUDE.md BASE_BOOTSTRAP.md .cursor/rules/assistant.mdc \
+            || (echo "::error::Generated artifacts are stale. Run 'base build --write' and commit." && exit 1)
+      - name: Routing index is a derived artifact (regenerate + diff)
+        if: matrix.node == '24'
+        # Distinct from `build --write` above: routing-index is an opt-in target it does not generate.
+        run: |
+          node tools/base.mjs build routing-index --write --root .
+          git diff --exit-code .ai/routing/index.md '.ai/agents/*/index.md' \
+            || (echo "::error::Routing index is stale. Run 'base build routing-index --write' and commit." && exit 1)
+      - name: Package install smoke test
+        if: matrix.node == '24'
+        run: npm run smoke:pack
+
+  typecheck:
+    name: Static type-check (JS)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      # Installs the type-checking toolchain only (typescript + @types/node devDeps); the core stays
+      # zero-dependency at runtime. `.npmrc` (legacy-peer-deps) handles the optional self-peer.
+      - name: Install toolchain
+        run: npm ci
+      - name: tsc --checkJs over tools/ + packages/ (zero errors)
+        run: npm run typecheck
+
+  studio-ui:
+    name: Studio UI (test + build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/studio/ui
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: tools/studio/ui/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Component + hook tests (Vitest, jsdom) with coverage gate
+        run: npm run test:coverage
+      - name: Build (tsc strict + vite)
+        run: npm run build
+
+  studio-e2e:
+    name: Studio UI (E2E + a11y)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tools/studio/ui
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: tools/studio/ui/package-lock.json
+      # The Playwright webServer boots the real Studio API server, which reaches the eval
+      # orchestration; that imports @ai-swiss/base-llm through the root workspace links, so the
+      # root install is required in addition to the UI install.
+      - name: Install root workspaces (API server dependencies)
+        run: npm ci
+        working-directory: .
+      - name: Install
+        run: npm ci
+      # Uses the "chrome" channel. GitHub ubuntu runners ship Google Chrome preinstalled, and
+      # `playwright install chrome` refuses to overwrite a system Chrome, so only install when absent.
+      - name: Ensure Google Chrome for the e2e run
+        run: |
+          if command -v google-chrome >/dev/null 2>&1; then
+            echo "Using preinstalled Google Chrome: $(google-chrome --version)"
+          else
+            npx playwright install --with-deps chrome
+          fi
+      # serve.mjs boots the real UI + API + broker against a throwaway copy of the example, on
+      # isolated ports. Ollama is absent in CI, so the "invalid launch" journey still fails preflight
+      # deterministically (cannot reach Ollama -> problems).
+      - name: End-to-end journeys + axe accessibility (Playwright)
+        run: npm run e2e
+
+  mcp:
+    name: MCP server (Node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The MCP server ships on the same engines surface as the core (>=18); matrix it so a
+        # version-specific break is caught here too, not only in the core job.
+        node: ['18', '20', '22', '24']
+    defaults:
+      run:
+        working-directory: mcp
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+          cache-dependency-path: mcp/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Dependency audit
+        run: npm audit --omit=dev --audit-level=high
+      - name: Build (tsc typecheck + bundle)
+        run: npm run build
+      - name: Test (with coverage gate)
+        run: npm run test:coverage
+      - name: Package install smoke test
+        if: matrix.node == '24'
+        run: npm run smoke:pack
+
+  spec:
+    name: Spec & docs discipline
+    runs-on: ubuntu-latest
+    # Run only after the test suites are green, so a fresh proof matrix can never sit on top of a red
+    # suite ("a test cites it" and "the suite passes" hold together).
+    needs: [core, mcp]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # Full history so the ID-immutability, ratchet and spec-sync gates can diff against the base.
+          fetch-depth: 0
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      # Every gate below is a zero-dependency Node script: no install step needed.
+      - name: Requirements matrix is fresh + no phantom citations
+        run: node tools/spec/requirements-matrix.mjs --check
+      - name: Proof quality may not regress (weak/gap ratchet)
+        run: node tools/spec/requirements-matrix.mjs --ratchet --base origin/main
+      - name: Requirement IDs are immutable (never renumbered, reused, or deleted)
+        run: node tools/spec/check-ids.mjs --base origin/main
+      - name: Spec leaves are bounded, statusless and routed
+        run: node tools/spec/check-leaf.mjs
+      - name: Marker vocabulary is one closed set
+        run: node tools/spec/check-markers.mjs
+      - name: Reference docs state the present (no roadmap leak)
+        run: node tools/docs/check-statusless.mjs
+      - name: No em-dash in authoritative French content
+        run: node tools/docs/check-emdash.mjs
+      - name: French is authoritative; translations link their source
+        run: node tools/docs/check-translations.mjs
+      - name: Documentation model has no broken links
+        run: node tools/base.mjs docs validate --root .
+      - name: spec-sync — a code change touches specs/ or declares [SPEC-NEUTRAL]
+        if: github.event_name == 'pull_request'
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          # Honour a [SPEC-NEUTRAL: …] declared in the PR description, not only in commit messages.
+          printf '%s' "$PR_BODY" > "$RUNNER_TEMP/pr-body.txt"
+          node tools/spec/spec-sync-check.mjs --range "origin/${{ github.base_ref }}..HEAD" --pr-body-file "$RUNNER_TEMP/pr-body.txt"
+      - name: changelog-sync — a visible change adds a CHANGELOG line or declares [CHANGELOG-SKIP]
+        if: github.event_name == 'pull_request'
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          printf '%s' "$PR_BODY" > "$RUNNER_TEMP/pr-body.txt"
+          node tools/spec/changelog-sync-check.mjs --range "origin/${{ github.base_ref }}..HEAD" --pr-body-file "$RUNNER_TEMP/pr-body.txt"
+      - name: Spec-neutral watch (informational, published to the run summary)
+        if: github.event_name == 'pull_request'
+        run: node tools/spec/spec-neutral-report.mjs --range "origin/${{ github.base_ref }}..HEAD"
+
+  dco:
+    name: DCO (Signed-off-by on every commit)
+    runs-on: ubuntu-latest
+    # The Developer Certificate of Origin is documented in CONTRIBUTING.md; this turns it from a
+    # request into a mechanism. Provenance held by goodwill is not provenance.
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # Full history so the PR commit range can be walked against the base branch.
+          fetch-depth: 0
+      - name: Every PR commit carries a Signed-off-by trailer
+        run: |
+          range="origin/${{ github.base_ref }}..HEAD"
+          missing=$(git rev-list --no-merges "$range" | while read -r sha; do
+            git show -s --format=%B "$sha" | grep -qiE '^Signed-off-by: .+ <[^>]+@[^>]+>' \
+              || git show -s --format='  %h %s' "$sha"
+          done)
+          if [ -n "$missing" ]; then
+            echo "::error::DCO: these commits lack a Signed-off-by trailer. Sign with 'git commit -s' (or repair the branch with 'git rebase --signoff'):"
+            echo "$missing"
+            exit 1
+          fi
+          echo "DCO ok: every non-merge commit in the range is signed off."

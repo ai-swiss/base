@@ -1,0 +1,44 @@
+{
+  "catalogue_services": [
+    {
+      "id": "SRV-001",
+      "nom": "Conseil en stratégie de marque",
+      "description": "Atelier de cadrage et recommandations stratégiques, par journée.",
+      "categorie": "conseil",
+      "unite": "jour",
+      "prix_unitaire_chf": 1600
+    },
+    {
+      "id": "SRV-002",
+      "nom": "Identité visuelle",
+      "description": "Logo, palette, typographie et mini charte (forfait).",
+      "categorie": "design",
+      "unite": "forfait",
+      "prix_unitaire_chf": 4800
+    },
+    {
+      "id": "SRV-003",
+      "nom": "Site web vitrine",
+      "description": "Site responsive jusqu'à 6 pages, intégration et mise en ligne.",
+      "categorie": "developpement",
+      "unite": "forfait",
+      "prix_unitaire_chf": 7800
+    },
+    {
+      "id": "SRV-004",
+      "nom": "Formation outils IA",
+      "description": "Demi-journée de formation pratique pour l'équipe du client.",
+      "categorie": "formation",
+      "unite": "demi-jour",
+      "prix_unitaire_chf": 850
+    },
+    {
+      "id": "SRV-005",
+      "nom": "Maintenance et hébergement",
+      "description": "Forfait mensuel : hébergement, mises à jour, petites évolutions.",
+      "categorie": "maintenance",
+      "unite": "mois",
+      "prix_unitaire_chf": 180
+    }
+  ]
+}

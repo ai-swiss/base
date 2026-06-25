@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a-i.swiss/base/schemas/base.workspace.v1.json",
+  "title": "BASE Workspace",
+  "description": "A `base.workspace.json` declaring several named BASE roots so one CLI/MCP server can route across them and operate inside a selected root (FR-CLI-005). Authored by an operator; loaded by `readWorkspace` (tools/core/roots.mjs). Routing may span the declared roots, but every read/write/execute stays confined to a single selected root.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "roots"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "base.workspace.v1",
+      "description": "Contract version. Defaults to \"base.workspace.v1\" when omitted."
+    },
+    "id": {
+      "type": "string",
+      "description": "Stable workspace id. Defaults to the workspace directory name when omitted."
+    },
+    "label": {
+      "type": "string",
+      "description": "Human-readable workspace name. Falls back to `name`, then `id`, then the directory name."
+    },
+    "name": {
+      "type": "string",
+      "description": "Alias for `label` (accepted for convenience)."
+    },
+    "roots": {
+      "type": "array",
+      "minItems": 1,
+      "description": "The declared BASE roots. Ids must be unique. The selected root is: an explicit --root-id / root_id, else the single root marked `default: true`, else the first declared root.",
+      "items": {
+        "type": "object",
+        "additionalProperties": true,
+        "required": [
+          "id",
+          "path"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Stable, unique root id used by --root-id / the MCP root_id parameter and in qualified agent names (\"<root-id>/<agent>\")."
+          },
+          "path": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Path to the BASE root, resolved relative to the workspace file's directory. May point outside that directory; every file operation is still confined inside the resolved root."
+          },
+          "label": {
+            "type": "string",
+            "description": "Human-readable root name. Defaults to `id`."
+          },
+          "type": {
+            "type": "string",
+            "description": "Free-form classification (e.g. \"project\"). Defaults to \"project\"."
+          },
+          "default": {
+            "type": "boolean",
+            "description": "Marks the implicit default root. At most one root may set this to true."
+          },
+          "egress": {
+            "description": "Egress policy of this root (D22): local-only resources never leave toward a remote model provider. Default: any.",
+            "type": "string",
+            "enum": [
+              "local-only",
+              "any"
+            ]
+          }
+        }
+      }
+    }
+  }
+}

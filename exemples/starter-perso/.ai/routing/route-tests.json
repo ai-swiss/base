@@ -1,0 +1,10 @@
+[
+  {
+    "request": "Quelles sont mes options ?",
+    "expect": { "status": "routed", "agent": "concierge-base", "process": "accueil" }
+  },
+  {
+    "request": "Combien coûte un vol pour Tokyo ?",
+    "expect": { "status": "out_of_scope" }
+  }
+]

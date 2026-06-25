@@ -1,0 +1,9 @@
+# Test + E2E artifacts (derived, never committed)
+coverage/
+e2e/.run/
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+e2e/.run-ws/
+e2e/.run-loose/

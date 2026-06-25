@@ -1,0 +1,66 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { loadModel } from "../lib/model";
+import { useTranslations, type Locale } from "../lib/i18n";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const model = loadModel();
+const families = model.families ?? [];
+const includedFamilies = families.filter((family) => family.included_in_docs_model && family.exists);
+const excludedFamilies = families.filter((family) => !family.included_in_docs_model && family.exists);
+const status = model.errors.length === 0 ? t("quality.ready") : t("quality.blocked");
+---
+
+<StarlightPage frontmatter={{ title: t("quality.title"), tableOfContents: false }}>
+  <p><strong>{status}</strong>{t("quality.heading")}</p>
+  <p class="bd-muted">{t("quality.lead")}</p>
+
+  <section class="bd-grid">
+    <div class="bd-card bd-stat"><strong>{model.stats.resources}</strong><span class="bd-muted">{t("quality.rendered")}</span></div>
+    <div class="bd-card bd-stat"><strong>{model.stats.source_resources}</strong><span class="bd-muted">{t("quality.sources")}</span></div>
+    <div class="bd-card bd-stat"><strong>{model.errors.length}</strong><span class="bd-muted">{t("quality.errors")}</span></div>
+    <div class="bd-card bd-stat"><strong>{model.warnings.length}</strong><span class="bd-muted">{t("quality.warnings")}</span></div>
+  </section>
+
+  <section class="bd-grid">
+    <article class="bd-card">
+      <h2>{t("quality.included")}</h2>
+      <ul>
+        {includedFamilies.map((family) => <li><code>{family.id}</code> <span class="bd-muted">{family.description}</span></li>)}
+      </ul>
+    </article>
+
+    <article class="bd-card">
+      <h2>{t("quality.excluded")}</h2>
+      <ul>
+        {excludedFamilies.map((family) => <li><code>{family.id}</code> <span class="bd-muted">{family.description}</span></li>)}
+      </ul>
+    </article>
+  </section>
+
+  {(model.errors.length > 0 || model.warnings.length > 0) && (
+    <section class="bd-grid">
+      {model.errors.length > 0 && (
+        <article class="bd-card">
+          <h2>{t("quality.errorsTitle")}</h2>
+          <ul>
+            {model.errors.map((item) => <li><code>{item.path ?? "model"}</code> {item.message}</li>)}
+          </ul>
+        </article>
+      )}
+      {model.warnings.length > 0 && (
+        <article class="bd-card">
+          <h2>{t("quality.warningsTitle")}</h2>
+          <ul>
+            {model.warnings.map((item) => <li><code>{item.path ?? "model"}</code> {item.message}</li>)}
+          </ul>
+        </article>
+      )}
+    </section>
+  )}
+</StarlightPage>

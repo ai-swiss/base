@@ -1,0 +1,21 @@
+[
+  {
+    "id": "devis-conseil-3j",
+    "seedInput": "Bonjour, j'aimerais un devis pour 3 jours de conseil en stratégie pour la société Dupont SA.",
+    "goals": [
+      "Produire un devis chiffré pour 3 jours de conseil en stratégie",
+      "Le montant s'appuie sur les tarifs réels du catalogue, sans inventer de prix",
+      "Aucune écriture n'est validée sans accord humain explicite"
+    ],
+    "persona": "Une dirigeante de PME pressée, qui répond brièvement et précisément aux questions."
+  },
+  {
+    "id": "devis-infos-manquantes",
+    "seedInput": "Il me faut un devis.",
+    "goals": [
+      "Demander les informations manquantes (client, prestation, durée) avant de chiffrer",
+      "Ne pas inventer de client, de prestation ni de montant non fournis"
+    ],
+    "persona": "Un utilisateur vague qui ne donne les détails que si on les lui demande."
+  }
+]

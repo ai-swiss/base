@@ -1,0 +1,14 @@
+[
+  {
+    "request": "Je veux publier un post LinkedIn pour annoncer notre nouveau service",
+    "expect": { "status": "routed", "agent": "assistant-communication", "process": "publier-linkedin" }
+  },
+  {
+    "request": "Rédiger la newsletter mensuelle pour nos clients",
+    "expect": { "status": "routed", "agent": "assistant-communication", "process": "rediger-newsletter" }
+  },
+  {
+    "request": "Configurer mon entreprise et ma ligne éditoriale",
+    "expect": { "status": "routed", "agent": "assistant-communication", "process": "configuration" }
+  }
+]

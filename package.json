@@ -1,0 +1,142 @@
+{
+  "name": "@ai-swiss/base",
+  "version": "1.0.0",
+  "description": "BASE public framework: local-first assistants, resources, validation and discovery",
+  "license": "Apache-2.0 AND CC-BY-4.0",
+  "author": "AI Swiss (https://a-i.swiss)",
+  "contributors": [
+    "Charles-Edouard Bardyn (AI Swiss)"
+  ],
+  "homepage": "https://a-i.swiss",
+  "keywords": [
+    "ai",
+    "agents",
+    "skills",
+    "human-ai-collaboration",
+    "local-first",
+    "knowledge-management"
+  ],
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "bin": {
+    "base": "./tools/base.mjs"
+  },
+  "exports": {
+    ".": "./tools/base-core.mjs",
+    "./rankers": "./tools/core/rankers.mjs",
+    "./routing": "./tools/core/routing.mjs",
+    "./validators": "./tools/core/validators.mjs",
+    "./policy": "./tools/core/policy.mjs",
+    "./config": "./tools/core/config.mjs",
+    "./codes": "./tools/core/codes.mjs",
+    "./ordering": "./tools/core/ordering.mjs",
+    "./roots": "./tools/core/roots.mjs",
+    "./frontmatter": "./tools/core/frontmatter.mjs",
+    "./schema": "./base.schema.json",
+    "./routing-schema": "./specs/current/30_schemas/base.routing.v1.json",
+    "./workspace-schema": "./specs/current/30_schemas/base.workspace.v1.json",
+    "./config-schema": "./specs/current/30_schemas/base.config.v1.json",
+    "./package.json": "./package.json"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ai-swiss/base"
+  },
+  "files": [
+    "tools",
+    "docs",
+    "exemples",
+    "specs",
+    "mcp/README.md",
+    "AGENTS.md",
+    "CLAUDE.md",
+    ".ai/agents",
+    ".ai/tools.md",
+    ".ai/routing/route-tests.json",
+    "base.config.json",
+    "base.schema.json",
+    "README.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "LICENSES",
+    "MANIFESTO.md",
+    "SECURITY.md",
+    "BASE_BOOTSTRAP.md",
+    "!docs/.temp",
+    "!**/.cursor",
+    "!**/.ai/trace",
+    "!**/.ai/changes",
+    "!**/.ai/experiments/runs",
+    "!**/.ai/experiments/reports",
+    "!**/.ai/studio.settings.json",
+    "!**/node_modules",
+    "!**/.run*",
+    "!tools/studio/ui/dist",
+    "!tools/studio/ui/e2e",
+    "!tools/studio/ui/test-results",
+    "!tools/studio/ui/playwright-report",
+    "!**/*.test.*",
+    "!**/*.spec.*"
+  ],
+  "scripts": {
+    "validate": "node tools/base.mjs validate",
+    "index": "node tools/base.mjs index",
+    "entretien": "node tools/base.mjs entretien",
+    "docs:model": "node tools/base.mjs docs model",
+    "docs:serve": "node tools/base.mjs docs serve",
+    "docs:build": "node tools/base.mjs docs build",
+    "docs:build:public": "node tools/base.mjs docs build --public",
+    "docs:validate": "node tools/base.mjs docs validate",
+    "eval": "node tools/eval/run.mjs",
+    "route-eval": "node tools/base.mjs route-eval",
+    "route-eval:ollama": "node tools/base.mjs route-eval --ollama",
+    "spec:matrix": "node tools/spec/requirements-matrix.mjs",
+    "spec:ratchet": "node tools/spec/requirements-matrix.mjs --ratchet",
+    "spec:ids": "node tools/spec/check-ids.mjs",
+    "spec:new": "node tools/spec/new-id.mjs",
+    "spec:leaf": "node tools/spec/check-leaf.mjs",
+    "spec:markers": "node tools/spec/check-markers.mjs",
+    "spec:statusless": "node tools/docs/check-statusless.mjs",
+    "spec:emdash": "node tools/docs/check-emdash.mjs",
+    "spec:punctuation": "node tools/docs/check-punctuation.mjs",
+    "spec:lexique": "node tools/docs/check-lexique.mjs",
+    "spec:translations": "node tools/docs/check-translations.mjs",
+    "spec:sync": "node tools/spec/spec-sync-check.mjs",
+    "spec:changelog": "node tools/spec/changelog-sync-check.mjs",
+    "spec:neutral": "node tools/spec/spec-neutral-report.mjs",
+    "spec:check": "node tools/spec/requirements-matrix.mjs --check && node tools/spec/check-ids.mjs && node tools/spec/check-id-namespaces.mjs && node tools/spec/check-leaf.mjs && node tools/spec/check-markers.mjs && node tools/docs/check-statusless.mjs && node tools/docs/check-emdash.mjs && node tools/docs/check-punctuation.mjs && node tools/docs/check-lexique.mjs && node tools/docs/check-translations.mjs && node tools/docs/check-tree.mjs",
+    "spec:tree": "node tools/docs/check-tree.mjs",
+    "check": "npm run spec:check && npm run typecheck && node tools/base.mjs validate --root . && node tools/base.mjs index --check --root . && node tools/base.mjs route-test --root . && node tools/base.mjs docs validate --root . && npm test && npm run docs:test && node tools/base.mjs doctor --root .",
+    "check:release": "npm run check && npm run smoke:pack && npm --prefix mcp ci && npm --prefix mcp run build && npm --prefix mcp test",
+    "studio": "node tools/studio/ui/dev.mjs",
+    "browser-pack": "node tools/browser-pack.mjs",
+    "typecheck": "tsc -p tsconfig.typecheck.json",
+    "test": "node --test tests/*.test.mjs packages/base-ranker-semantic/tests/*.test.mjs packages/base-index-local/tests/*.test.mjs packages/base-llm/tests/*.test.mjs packages/base-eval/tests/*.test.mjs",
+    "test:coverage": "node --test --experimental-test-coverage --test-coverage-lines=90 --test-coverage-branches=80 --test-coverage-functions=90 --test-coverage-exclude=mcp --test-coverage-exclude=exemples --test-coverage-exclude=tests --test-coverage-exclude=tools/studio/ui --test-coverage-exclude=packages/*/bin --test-coverage-exclude=packages/*/src/bench.mjs --test-coverage-exclude=packages/*/src/synthetic.mjs tests/*.test.mjs packages/base-ranker-semantic/tests/*.test.mjs packages/base-index-local/tests/*.test.mjs packages/base-llm/tests/*.test.mjs packages/base-eval/tests/*.test.mjs",
+    "bench:index": "node packages/base-index-local/bin/base-index-local.mjs bench",
+    "smoke:pack": "node tests/smoke-pack.mjs",
+    "prepublishOnly": "npm run smoke:pack",
+    "docs:test": "npm run docs:build && node --test tests/docs-site-render.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^22.19.20",
+    "fast-check": "^4.8.0",
+    "typescript": "^5.7.2"
+  },
+  "peerDependencies": {
+    "@ai-swiss/base-ranker-semantic": "1.x",
+    "@ai-swiss/base-llm": "1.x",
+    "@ai-swiss/base-eval": "1.x"
+  },
+  "peerDependenciesMeta": {
+    "@ai-swiss/base-ranker-semantic": { "optional": true },
+    "@ai-swiss/base-llm": { "optional": true },
+    "@ai-swiss/base-eval": { "optional": true }
+  }
+}

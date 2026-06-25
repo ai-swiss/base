@@ -1,0 +1,19 @@
+{
+  "schema_version": "base.workspace.v1",
+  "id": "exemples",
+  "label": "Exemples BASE",
+  "roots": [
+    { "id": "assistant-devis-demo", "label": "Démo devis (pré-remplie)", "path": "assistant-devis-demo", "default": true },
+    { "id": "assistant-devis", "label": "Assistant devis", "path": "assistant-devis" },
+    { "id": "assistant-reflexion", "label": "Assistant réflexion", "path": "assistant-reflexion" },
+    { "id": "assistant-communication", "label": "Assistant communication", "path": "assistant-communication" },
+    { "id": "assistant-courrier", "label": "Assistant courrier", "path": "assistant-courrier" },
+    { "id": "assistant-rh", "label": "Assistant RH", "path": "assistant-rh" },
+    { "id": "assistant-projet", "label": "Assistant projet", "path": "assistant-projet" },
+    { "id": "assistant-reunion", "label": "Assistant réunion", "path": "assistant-reunion" },
+    { "id": "assistant-enseignant", "label": "Assistant enseignant", "path": "assistant-enseignant" },
+    { "id": "starter-perso", "label": "Starter personnel", "path": "starter-perso" },
+    { "id": "veytaux-tourisme", "label": "Office du tourisme (Veytaux)", "path": "veytaux-tourisme" },
+    { "id": "routage-pme", "label": "Routage PME", "path": "routage-pme" }
+  ]
+}

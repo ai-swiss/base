@@ -1,0 +1,129 @@
+---
+title: Documentation
+description: "BASE n'est pas une plateforme d'IA de plus, c'est la structure qui rend l'IA utile pour votre métier: vos règles, vos process et votre contexte en fichiers texte que vous possédez. Vous décidez ce que l'IA voit et où elle s'arrête pour votre validation."
+template: splash
+hero:
+  title: BASE
+  tagline: "BASE n'est pas une plateforme d'IA de plus. C'est la structure qui rend l'IA utile pour votre métier: vos règles, vos process et votre contexte, écrits en fichiers texte que vous possédez. Vous décidez ce que l'IA voit, ce qu'elle doit vérifier, et où elle s'arrête pour votre validation, pour que le travail repose sur votre structure, pas sur ses suppositions. Lisible partout, portable vers n'importe quel outil, et à vous."
+  actions:
+    - text: Voir BASE en action
+      link: /resources/docs-start-demo-60-secondes/
+      icon: rocket
+    - text: Pourquoi BASE
+      link: /resources/docs-learn-co-penser-avec-lia/
+      icon: open-book
+      variant: secondary
+    - text: Voir le dépôt
+      link: https://github.com/ai-swiss/base
+      icon: github
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from "@astrojs/starlight/components";
+
+## Ce que BASE prend au sérieux
+
+BASE part de quelques constats sobres sur le travail avec l'IA: ni promesses, ni catastrophisme, seulement ce qui tient à l'examen.
+
+<CardGrid>
+  <Card title="Générer n'est pas vérifier.">
+  Le cœur d'un modèle produit des complétions probables; rien, en lui, ne les éprouve contre le réel. La vérification est donc extérieure: un fait, un calcul, un outil peut les contrôler; mais ce qui engage vos intentions, votre contexte, vos valeurs, vous seul pouvez en juger.
+  </Card>
+  <Card title="Ce que vous ne dites pas, l'IA l'invente.">
+  Le langage naturel est sous-spécifié: il laisse des trous. Le modèle les comble par les régularités les plus probables de son entraînement, pas par vos règles. Ce qui n'est pas explicité n'est pas seulement mal traité: confié à des agents, cela s'exécute.
+  </Card>
+  <Card title="Une consigne n'est pas une garantie.">
+  Une instruction donnée au modèle reste probabiliste: il peut la suivre, ou non. Une garantie, au sens strict, vient d'ailleurs: un contrôle déterministe, extérieur au modèle, du code qui l'applique. BASE ne maquille jamais l'une en l'autre.
+  </Card>
+  <Card title="L'autonomie sans dialogue est une illusion.">
+  Un système sans retour extérieur optimise sa cohérence interne, pas sa justesse: il n'a aucun moyen de savoir quand il se trompe. Sans contrôle, humain ou dispositif, l'autonomie échoue là où il faut du jugement, quelle que soit la puissance du modèle.
+  </Card>
+  <Card title="Ce que vous ne comprenez pas, vous ne le maintiendrez pas.">
+  Un assistant qu'on ne comprend pas devient impossible à corriger le jour où le contexte change, et il change toujours. Ce qui ne se relit pas ne se maintient pas.
+  </Card>
+  <Card title="La souveraineté ne se résume pas à vos serveurs.">
+  Savoir où vivent vos données compte, bien sûr. Mais une IA peut tourner sur vos propres serveurs et rester étrangère par ses usages. La souveraineté qu'on oublie le plus souvent est ailleurs: la maîtrise de la façon dont votre savoir est écrit et dirigé. Gardez-le dans des fichiers que vous pouvez lire, corriger et emporter.
+  </Card>
+  <Card title="Ce qui progresse le plus vite, c'est l'efficacité, pas la taille.">
+  Le discours dominant mesure l'IA à la taille des modèles et des centres de données. Or ce qui progresse le plus vite, c'est l'efficacité: à capacité égale, le calcul requis diminue chaque année, plus vite que le matériel ne s'améliore (Epoch AI, 2024). Pour l'essentiel du travail de connaissance au quotidien (dialoguer, rédiger, reformuler, suivre un process cadré), une bonne machine locale et un modèle libre suffisent déjà, et cette frontière recule; les infrastructures géantes servent surtout un autre type d'IA. Le vrai levier n'est pas la puissance que vous louez, mais la façon dont vous structurez le travail avec ces modèles.
+  </Card>
+  <Card title="Un modèle reste une computation, pas une civilisation.">
+  La richesse du monde ne tient pas à une intelligence unique, mais à la diversité de milliards d'esprits: chacun explore un recoin où nul autre ne serait allé, et c'est souvent là, par hasard, que naît une découverte. Un modèle, si puissant soit-il, ne porte qu'un seul regard sur le monde; mille copies, c'est mille fois le même. Une raison de plus de garder l'humain, et sa diversité, au cœur du travail.
+  </Card>
+</CardGrid>
+
+**La fiabilité ne s'achète pas. Elle se construit.**
+
+<Card title="Pas envie de tout lire? Posez vos questions à BASE.">
+Le plus efficace n'est pas de lire cette documentation, mais d'ouvrir BASE dans votre IA et de la laisser vous guider. BASE tient dans des fichiers texte que vous possédez, et il embarque un **guide d'accueil** dont c'est le seul rôle: répondre à vos questions sur BASE. Il lit la doc à votre place, explique au bon niveau, vous oriente pas à pas, et passe la main quand vous voulez agir, sans que vous ayez à tout parcourir.
+
+1. **Récupérez le dossier** ([téléchargez-le en ZIP](https://github.com/ai-swiss/base/archive/refs/heads/main.zip), puis décompressez-le).
+2. **Ouvrez-le dans un outil IA capable de lire vos fichiers** (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code, ou un Projet Claude / ChatGPT où vous joignez les fichiers).
+3. **Dites, en français:** «Je veux comprendre BASE, réponds à mes questions.» Puis posez-les, des plus naïves aux plus exigeantes.
+
+Le guide lit les fichiers canoniques et répond à partir de ce qu'il a lu, jamais de mémoire; il s'adapte à votre profil et ne devine pas quand il ne sait pas. Vous restez aux commandes: rien ne s'écrit sans vous le montrer d'abord. [Le détail, et comment garder le contrôle →](/resources/docs-start-installer-par-votre-ia/)
+</Card>
+
+## Par où commencer?
+
+<CardGrid>
+  <LinkCard
+    title="Comprendre BASE"
+    description="Pourquoi des fichiers texte, un routeur qui trouve le bon process, et des validations explicites. Le socle, avant de mettre les mains dedans."
+    href="/resources/docs-learn-comprendre/"
+  />
+  <LinkCard
+    title="Façonnez votre premier assistant"
+    description="Le chemin le plus court d'un dossier vide à un premier assistant qui s'appuie sur vos fichiers."
+    href="/resources/docs-start-quickstart/"
+  />
+  <LinkCard
+    title="Apprendre en faisant"
+    description="Un assistant de A à Z dans votre outil IA, en trente minutes, sans rien installer de nouveau. Chaque étape se vérifie toute seule."
+    href="/resources/docs-tutoriel-index/"
+  />
+  <LinkCard
+    title="Installer votre outil"
+    description="Greffer BASE sur l'outil IA que vous utilisez déjà, ou via un serveur MCP. À faire une fois que vous avez compris et essayé, pas avant."
+    href="/resources/docs-start-installer/"
+  />
+</CardGrid>
+
+## Selon votre profil
+
+<CardGrid>
+  <Card title="PME et indépendants" icon="seti:todo">
+    Un [assistant devis complet](/resources/exemples-assistant-devis-readme/) à copier, puis le [kit de démarrage PME suisse](/resources/docs-audiences-kit-demarrage-pme-suisse/) pour le partager en équipe.
+  </Card>
+  <Card title="Enseignement" icon="pencil">
+    L'[exemple assistant enseignant](/resources/exemples-assistant-enseignant-readme/): préparer des séquences sans déléguer le jugement pédagogique.
+  </Card>
+  <Card title="Secteur public" icon="seti:lock">
+    Le [kit administration](/resources/docs-audiences-kit-administration-secteur-public/), un [pilote de 90 minutes](/resources/docs-audiences-pilote-institution-90-min/) sans donnée personnelle, et la [souveraineté des données](/resources/docs-trust-souverainete-et-confiance/).
+  </Card>
+  <Card title="Développement" icon="seti:json">
+    Le [cadre public](/resources/docs-reference-framework-public/), la [doctrine de routage](/resources/docs-reference-routage-process-et-ressources/) et le [laboratoire de routage](/routes/). Pour le contrat testé: les [spécifications](/resources/specs-current-readme/).
+  </Card>
+</CardGrid>
+
+## Le site est une projection du dépôt
+
+Ce site est une **projection** du dépôt: guides, spécifications, exemples, agents, process et fixtures de routage sont indexés dans un modèle documentaire, puis rendus en portail navigable. Le dépôt reste la source de vérité.
+
+<CardGrid>
+  <LinkCard
+    title="Explorateur"
+    description="Les 140+ ressources du corpus, filtrables par rôle, famille et chemin. Là où le menu s'arrête."
+    href="/explorer/"
+  />
+  <LinkCard
+    title="Preuves"
+    description="Chaque affirmation pointe vers ses mécanismes, ses tests et ses limites."
+    href="/evidence/"
+  />
+  <LinkCard
+    title="Qualité"
+    description="Les avertissements et exclusions du modèle, publiés pour garder le site honnête."
+    href="/quality/"
+  />
+</CardGrid>

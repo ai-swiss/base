@@ -1,0 +1,10 @@
+[
+  {
+    "request": "Démarrer un nouveau projet client avec jalons",
+    "expect": { "status": "routed", "agent": "assistant-projet", "process": "nouveau-projet" }
+  },
+  {
+    "request": "Configurer mon organisation",
+    "expect": { "status": "routed", "agent": "assistant-projet", "process": "configuration" }
+  }
+]

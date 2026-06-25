@@ -1,0 +1,223 @@
+/* ===================================================================
+   Identité visuelle AI Swiss (tokens partagés site + Studio).
+   Rouge de marque #fe3434, décliné #d62828/#c1271f pour le contraste;
+   ardoise #2c3345; papier chaud #fafaf8; Inter (titres) + Lato (corps).
+   On surcharge les variables de thème Starlight: le reste en hérite.
+   =================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800&family=Lato:wght@400;700&display=swap");
+
+:root {
+  /* Thème sombre (défaut Starlight). */
+  --sl-color-accent-low: #2c0a08;
+  --sl-color-accent: #e0312c;
+  --sl-color-accent-high: #f4b8b5;
+  --sl-font: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --bd-font-head: "Inter", var(--sl-font);
+}
+
+:root[data-theme="light"] {
+  --sl-color-accent-low: #fbe9e8;
+  --sl-color-accent: #c1271f;       /* lisible sur blanc (AA) */
+  --sl-color-accent-high: #4e120f;
+  --sl-color-bg: #fafaf8;           /* papier chaud */
+  --sl-color-bg-nav: #f4f2ee;
+  --sl-color-bg-sidebar: #f7f5f1;
+}
+
+/* Titres en Inter, corps en Lato. */
+h1, h2, h3, h4, h5, h6,
+.sl-markdown-content h1, .sl-markdown-content h2, .sl-markdown-content h3,
+.site-title {
+  font-family: var(--bd-font-head);
+  letter-spacing: -0.01em;
+}
+
+.site-title { font-weight: 800; }
+
+/* Header brand lockup, matching BASE Studio's `.brand`: AI Swiss mark · divider · «BASE» (red) +
+   «Documentation» (slate). Logo height matches Studio (1.3rem). */
+.bd-brand { display: inline-flex; align-items: baseline; gap: 0.6rem; font-family: var(--bd-font-head); font-size: 1.2rem; letter-spacing: -0.022em; text-decoration: none; }
+.bd-brand-logo { height: 1.3rem; width: auto; align-self: center; }
+.bd-brand-divider { width: 1px; height: 1.2rem; background: var(--sl-color-gray-4); align-self: center; }
+.bd-brand-name { font-weight: 800; color: #fe3434; }
+.bd-brand-desc { font-weight: 600; color: var(--sl-color-gray-2); }
+/* In dark mode, use the white-text AI Swiss mark so the wordmark stays legible. */
+.bd-brand-logo-dark { display: none; }
+:root[data-theme="dark"] .bd-brand-logo-light { display: none; }
+:root[data-theme="dark"] .bd-brand-logo-dark { display: inline; }
+
+/* Key metadata as pills under the title (niveau, type de page, public), like the BASE Studio cards,
+   so the reader sees them instead of digging into the À-propos panel. */
+.bd-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: -0.4rem 0 1.4rem; }
+.bd-pill {
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.5;
+  border-radius: 999px;
+  padding: 0.1rem 0.6rem;
+  border: 1px solid var(--sl-color-gray-5);
+  color: var(--sl-color-gray-2);
+}
+.bd-pill-level { border-color: var(--sl-color-accent); color: var(--sl-color-accent); }
+.bd-pill-role { background: var(--sl-color-gray-6); border-color: var(--sl-color-gray-6); color: var(--sl-color-gray-1); }
+
+/* Code blocks wrap inside the content column instead of overflowing or being cut off. */
+.sl-markdown-content pre,
+article pre,
+.bd-about pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Shared building blocks for the generated (model-driven) pages. */
+.bd-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.bd-card {
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  background: var(--sl-color-bg-nav);
+}
+
+.bd-card > :first-child {
+  margin-top: 0;
+}
+
+.bd-card h2,
+.bd-card h3 {
+  font-size: var(--sl-text-lg);
+}
+
+.bd-stat strong {
+  display: block;
+  font-size: 2rem;
+  line-height: 1.2;
+}
+
+.bd-muted {
+  color: var(--sl-color-gray-3);
+}
+
+.bd-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.bd-chip {
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 999px;
+  padding: 0.25rem 0.65rem;
+  color: var(--sl-color-gray-3);
+  font-size: var(--sl-text-sm);
+}
+
+.bd-filter {
+  width: 100%;
+  box-sizing: border-box;
+  margin: 1.5rem 0 0.5rem;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: var(--sl-color-bg-nav);
+  color: var(--sl-color-white);
+  font: inherit;
+}
+
+.bd-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  color: var(--sl-color-gray-3);
+  font-size: var(--sl-text-sm);
+}
+
+.bd-resource-link {
+  display: block;
+  padding: 1rem 1.25rem;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.75rem;
+  background: var(--sl-color-bg-nav);
+  text-decoration: none;
+  color: inherit;
+}
+
+.bd-resource-link:hover {
+  border-color: var(--sl-color-accent);
+}
+
+.bd-resource-link h3 {
+  margin: 0 0 0.35rem;
+  font-size: var(--sl-text-base);
+  color: var(--sl-color-white);
+}
+
+.bd-resource-link p {
+  margin: 0 0 0.5rem;
+  color: var(--sl-color-gray-3);
+  font-size: var(--sl-text-sm);
+}
+
+.bd-about {
+  margin-top: 2.5rem;
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: var(--sl-color-bg-nav);
+}
+
+.bd-about summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.bd-about-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.bd-label {
+  color: var(--sl-color-gray-3);
+  font-size: var(--sl-text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.bd-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0.75rem 0;
+}
+
+.bd-button {
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  text-decoration: none;
+  font-size: var(--sl-text-sm);
+}
+
+details.bd-fixture {
+  border: 1px solid var(--sl-color-gray-5);
+  border-radius: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  margin-top: 0.75rem;
+  background: var(--sl-color-bg-nav);
+}
+
+details.bd-fixture summary {
+  cursor: pointer;
+  font-weight: 600;
+}
+
+details.bd-fixture[open] summary {
+  margin-bottom: 0.75rem;
+}

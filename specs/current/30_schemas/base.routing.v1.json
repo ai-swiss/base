@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a-i.swiss/base/schemas/base.routing.v1.json",
+  "title": "BASE Routing Registry (generated projection)",
+  "description": "Deterministic projection produced by `base build routing-registry` (buildRoutingRegistry). Holds DERIVED routing signals only — agents, their processes, and the route_text derived from the files. It is never a source of truth and is regenerable; runtime semantic scores are NOT part of it. See ../10_core/routing.md.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "agents", "diagnostics"],
+  "properties": {
+    "schema_version": { "const": "base.routing.v1" },
+    "agents": {
+      "type": "array",
+      "description": "Agents and their processes, sorted by agent directory then process id (deterministic).",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["agent_dir", "agent", "processes"],
+        "properties": {
+          "agent_dir": { "type": "string", "description": "The `.ai/agents/<agent>` directory, or \"(orphan)\"." },
+          "agent": { "anyOf": [{ "$ref": "#/$defs/card" }, { "type": "null" }] },
+          "processes": { "type": "array", "items": { "$ref": "#/$defs/card" } }
+        }
+      }
+    },
+    "diagnostics": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "weak_signals": {
+          "type": "array",
+          "description": "Routable resources whose route_text fell back to a weak source (title or path).",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "card": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "path", "route_text", "signal"],
+      "properties": {
+        "id": { "type": "string" },
+        "path": { "type": "string" },
+        "route_text": { "type": "string" },
+        "signal": {
+          "type": "string",
+          "description": "Which source carried route_text.",
+          "enum": ["use_when", "description", "title", "keywords", "section", "path"]
+        }
+      }
+    }
+  }
+}

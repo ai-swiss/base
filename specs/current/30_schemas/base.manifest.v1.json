@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a-i.swiss/base/schemas/base.manifest.v1.json",
+  "title": "BASE Manifest",
+  "description": "Derived, regenerable index produced by `base index` (writeManifest). NOT a source of truth (NFR-CORE-009).",
+  "type": "object",
+  "required": ["schema_version", "root_name", "resources"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "base.manifest.v1" },
+    "root_name": { "type": "string" },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "path"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "path": { "type": "string" },
+          "scope": { "type": "string" },
+          "status": { "type": "string" },
+          "sensitivity": { "type": "string" },
+          "keywords": { "type": "array", "items": { "type": "string" } },
+          "requires": { "type": "array", "items": { "type": "object" } },
+          "may_use": { "type": "array", "items": { "type": "string" } },
+          "source": { "type": ["object", "null"] },
+          "execution": { "type": ["object", "null"] },
+          "license": { "type": ["string", "null"] },
+          "compatibility": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

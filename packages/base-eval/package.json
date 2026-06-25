@@ -1,0 +1,27 @@
+{
+  "name": "@ai-swiss/base-eval",
+  "version": "1.0.0",
+  "description": "Run BASE processes against a simulated user and score them with an independent LLM judge. Dependency-injected, headless, deterministic with faux models.",
+  "license": "Apache-2.0",
+  "author": "AI Swiss (https://a-i.swiss)",
+  "type": "module",
+  "exports": {
+    ".": "./index.mjs",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.mjs",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "peerDependencies": {
+    "@ai-swiss/base-llm": "1.x"
+  }
+}

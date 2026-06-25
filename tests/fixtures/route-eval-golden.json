@@ -1,0 +1,263 @@
+{
+  "schema": "base.route-eval.golden.v1",
+  "corpus": "exemples/routage-pme",
+  "about": "A LABELED routing eval set, richer than the curated route-tests.json fixtures: for each real route of the routage-pme corpus (2 agents, 5 processes) it carries MANY phrasings — clear hits, paraphrases, avoid_when near-misses, out-of-scope queries (must abstain), ambiguous queries (must ask) and multilingual EN→FR queries (the one place embeddings beat lexical). Each query is labeled with its EXPECTED outcome, strategy-independent: the runner scores how well a strategy matches the labels. `outcome` is one of: `route` (must route to agent+process — a true positive when matched), `abstain_ambiguous` (must NOT confidently route; must ask/clarify — status ambiguous|needs_clarification), `abstain_out_of_scope` (must abstain entirely — out_of_scope, or needs_clarification with no route). `agent`/`process` are required for `route`; `agent` is optional on an abstention (a hint, not scored hard).",
+  "cases": [
+    {
+      "query": "prépare une proposition commerciale pour Dupont",
+      "category": "clear_hit",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "nouveau-devis"
+    },
+    {
+      "query": "j'ai besoin d'un devis pour un nouveau client",
+      "category": "clear_hit",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "nouveau-devis"
+    },
+    {
+      "query": "peux-tu chiffrer cette prestation ?",
+      "category": "paraphrase",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "nouveau-devis"
+    },
+    {
+      "query": "établir une offre tarifaire pour un prospect",
+      "category": "paraphrase",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "nouveau-devis"
+    },
+    {
+      "query": "monter un dossier de prix pour une vente",
+      "category": "paraphrase",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "nouveau-devis"
+    },
+    {
+      "query": "le client conteste le montant de sa facture",
+      "category": "clear_hit",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "contestation-facture"
+    },
+    {
+      "query": "un client refuse de payer une facture qu'il juge erronée",
+      "category": "paraphrase",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "contestation-facture"
+    },
+    {
+      "query": "réclamation : on aurait facturé une prestation jamais rendue",
+      "category": "paraphrase",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "contestation-facture"
+    },
+    {
+      "query": "litige sur une facture déjà envoyée",
+      "category": "paraphrase",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "contestation-facture"
+    },
+    {
+      "query": "relancer la facture impayée de Martin",
+      "category": "clear_hit",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "relance-client"
+    },
+    {
+      "query": "envoyer un rappel de paiement à un client en retard",
+      "category": "paraphrase",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "relance-client"
+    },
+    {
+      "query": "mon devis est resté sans réponse, que faire pour le relancer",
+      "category": "paraphrase",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "relance-client"
+    },
+    {
+      "query": "l'application est en panne depuis ce matin",
+      "category": "clear_hit",
+      "outcome": "route",
+      "agent": "support",
+      "process": "ticket-incident"
+    },
+    {
+      "query": "une erreur s'affiche quand j'essaie de me connecter",
+      "category": "paraphrase",
+      "outcome": "route",
+      "agent": "support",
+      "process": "ticket-incident"
+    },
+    {
+      "query": "plus rien ne marche depuis la dernière mise à jour",
+      "category": "paraphrase",
+      "outcome": "route",
+      "agent": "support",
+      "process": "ticket-incident"
+    },
+    {
+      "query": "le logiciel plante au démarrage",
+      "category": "paraphrase",
+      "outcome": "route",
+      "agent": "support",
+      "process": "ticket-incident"
+    },
+    {
+      "query": "ce serait bien d'ajouter un export PDF",
+      "category": "clear_hit",
+      "outcome": "route",
+      "agent": "support",
+      "process": "demande-evolution"
+    },
+    {
+      "query": "pourriez-vous ajouter une option de filtre dans l'interface",
+      "category": "paraphrase",
+      "outcome": "route",
+      "agent": "support",
+      "process": "demande-evolution"
+    },
+    {
+      "query": "j'aimerais une amélioration : un mode sombre",
+      "category": "paraphrase",
+      "outcome": "route",
+      "agent": "support",
+      "process": "demande-evolution"
+    },
+    {
+      "query": "le client conteste sa facture, il ne veut surtout pas un nouveau devis",
+      "category": "avoid_near_miss",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "contestation-facture"
+    },
+    {
+      "query": "relancer un paiement en retard, ce n'est pas une contestation",
+      "category": "avoid_near_miss",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "relance-client"
+    },
+    {
+      "query": "le produit marche, je veux juste une nouvelle fonctionnalité, pas un bug",
+      "category": "avoid_near_miss",
+      "outcome": "route",
+      "agent": "support",
+      "process": "demande-evolution"
+    },
+    {
+      "query": "ce n'est pas une demande d'évolution : une panne bloque tout",
+      "category": "avoid_near_miss",
+      "outcome": "route",
+      "agent": "support",
+      "process": "ticket-incident"
+    },
+    {
+      "query": "vente",
+      "category": "ambiguous",
+      "outcome": "abstain_ambiguous",
+      "agent": "commercial"
+    },
+    {
+      "query": "bug fonctionnalité",
+      "category": "ambiguous",
+      "outcome": "abstain_ambiguous",
+      "agent": "support"
+    },
+    {
+      "query": "j'ai un souci avec un client",
+      "category": "ambiguous",
+      "outcome": "abstain_ambiguous"
+    },
+    {
+      "query": "il faut faire quelque chose pour ce client",
+      "category": "ambiguous",
+      "outcome": "abstain_ambiguous"
+    },
+    {
+      "query": "créer un nouveau devis pour une facture contestée",
+      "category": "ambiguous",
+      "outcome": "abstain_ambiguous",
+      "agent": "commercial"
+    },
+    {
+      "query": "quelle est la capitale de la France ?",
+      "category": "out_of_scope",
+      "outcome": "abstain_out_of_scope"
+    },
+    {
+      "query": "donne-moi une recette de tarte aux pommes",
+      "category": "out_of_scope",
+      "outcome": "abstain_out_of_scope"
+    },
+    {
+      "query": "zzqq wibble flumph plover",
+      "category": "out_of_scope",
+      "outcome": "abstain_out_of_scope"
+    },
+    {
+      "query": "réserve-moi un vol pour Tokyo la semaine prochaine",
+      "category": "out_of_scope",
+      "outcome": "abstain_out_of_scope"
+    },
+    {
+      "query": "raconte-moi une blague",
+      "category": "out_of_scope",
+      "outcome": "abstain_out_of_scope"
+    },
+    {
+      "query": "prepare a quote for a new customer",
+      "category": "multilingual",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "nouveau-devis"
+    },
+    {
+      "query": "the customer is disputing the amount on his invoice",
+      "category": "multilingual",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "contestation-facture"
+    },
+    {
+      "query": "send a payment reminder for an overdue invoice",
+      "category": "multilingual",
+      "outcome": "route",
+      "agent": "commercial",
+      "process": "relance-client"
+    },
+    {
+      "query": "the app has been down since this morning",
+      "category": "multilingual",
+      "outcome": "route",
+      "agent": "support",
+      "process": "ticket-incident"
+    },
+    {
+      "query": "it would be great to add a CSV export feature",
+      "category": "multilingual",
+      "outcome": "route",
+      "agent": "support",
+      "process": "demande-evolution"
+    },
+    {
+      "query": "login throws an error after the update",
+      "category": "multilingual",
+      "outcome": "route",
+      "agent": "support",
+      "process": "ticket-incident"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { byTitleThenPath, loadModel, resourceHref, type DocsResource } from "../lib/model";
+import { useTranslations, type Locale } from "../lib/i18n";
+import { LEARN_PATHS } from "../lib/content";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const model = loadModel();
+const resources = [...model.resources].sort(byTitleThenPath);
+const examples = resources.filter((resource) => resource.path.startsWith("exemples/") && resource.path.endsWith("README.md"));
+const specs = resources.filter((resource) => resource.family === "specs").slice(0, 12);
+
+function pick(ids: string[]): DocsResource[] {
+  return ids
+    .map((id) => resources.find((resource) => resource.id === id || resource.source_id === id || resource.path === id))
+    .filter((resource): resource is DocsResource => Boolean(resource));
+}
+---
+
+<StarlightPage frontmatter={{ title: t("learn.title"), tableOfContents: false }}>
+  <p class="bd-muted">{t("learn.lead")}</p>
+
+  <section class="bd-grid">
+    {LEARN_PATHS.map((path) => (
+      <article class="bd-card">
+        <h2>{path.title[lang]}</h2>
+        <p class="bd-muted">{path.text[lang]}</p>
+        <ol>
+          {pick(path.ids).map((resource) => (
+            <li><a href={resourceHref(resource, lang)}>{resource.title}</a></li>
+          ))}
+        </ol>
+        <p><strong>{t("learn.action")} :</strong> {path.action[lang]}</p>
+      </article>
+    ))}
+  </section>
+
+  <h2>{t("learn.examples")}</h2>
+  <section class="bd-grid">
+    {examples.slice(0, 9).map((resource) => (
+      <article class="bd-card">
+        <h3><a href={resourceHref(resource, lang)}>{resource.title}</a></h3>
+        {resource.description && <p class="bd-muted">{resource.description}</p>}
+      </article>
+    ))}
+  </section>
+
+  <h2>{t("learn.reference")}</h2>
+  <section class="bd-grid">
+    {specs.map((resource) => (
+      <article class="bd-card">
+        <h3><a href={resourceHref(resource, lang)}>{resource.title}</a></h3>
+        {resource.description && <p class="bd-muted">{resource.description}</p>}
+      </article>
+    ))}
+  </section>
+</StarlightPage>

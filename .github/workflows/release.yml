@@ -1,0 +1,58 @@
+# Release with verifiable provenance + SBOM. PREPARED, NOT WIRED TO FIRE AUTOMATICALLY:
+# it runs ONLY on manual dispatch (a human clicks "Run workflow") AND needs the NPM_TOKEN secret
+# AND passes the full gate (prepublishOnly runs smoke:pack). See RELEASING.md for the governance
+# sign-off this assumes. Until governance + secret are in place, dispatching it is a no-op-ish:
+# the publish step fails closed without NODE_AUTH_TOKEN.
+name: Release (manual)
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type PUBLISH to confirm an actual npm publish (anything else = dry run).'
+        required: true
+        default: 'dry-run'
+
+permissions:
+  contents: read
+  id-token: write # required for npm provenance (Sigstore attestation)
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
+      # Deterministic install from the committed lockfile, so the published artifact and the SBOM are
+      # reproducible (npm install could silently resolve different versions than the lockfile pins).
+      - run: npm ci --no-audit --no-fund
+
+      # Gates: the same checks that block CI must pass before any release.
+      - name: Validate, test, audit, pack-smoke
+        run: |
+          node tools/base.mjs validate --root .
+          node tools/base.mjs docs validate
+          npm test
+          npm audit --omit=dev --audit-level=high
+          npm run smoke:pack
+
+      # Software Bill of Materials (CycloneDX), attached as a build artifact for audit.
+      - name: Generate SBOM (CycloneDX)
+        run: npx --yes @cyclonedx/cyclonedx-npm@latest --omit dev --output-file sbom.cdx.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.cdx.json
+
+      - name: Publish with provenance
+        if: ${{ github.event.inputs.confirm == 'PUBLISH' }}
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Dry run notice
+        if: ${{ github.event.inputs.confirm != 'PUBLISH' }}
+        run: echo "Dry run only. Re-dispatch with confirm=PUBLISH (and NPM_TOKEN set) to publish."

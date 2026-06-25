@@ -1,0 +1,22 @@
+name: Proposer une amélioration
+description: Suggérer une amélioration compatible avec les principes local-first et d'enforcement honnête de BASE.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problème
+      description: Que ne pouvez-vous pas faire aujourd'hui ?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Solution proposée
+    validations:
+      required: true
+  - type: textarea
+    id: fit
+    attributes:
+      label: Cohérence avec BASE
+      description: "Optionnel. En une ou deux phrases : en quoi votre idée respecte-t-elle les principes de BASE (cœur zéro dépendance, tout-en-texte, pas d'enforcement que le code ne garantit pas) ? Inutile d'être exhaustif : c'est une aide à la revue, pas un examen d'entrée. Voir CONTRIBUTING.md."

@@ -1,0 +1,18 @@
+[
+  {
+    "request": "Quelles activités à faire cet après-midi ?",
+    "expect": { "status": "routed", "agent": "office-tourisme", "process": "renseigner-un-visiteur" }
+  },
+  {
+    "request": "Organiser une sortie pour notre groupe de 30 personnes",
+    "expect": { "status": "routed", "agent": "office-tourisme", "process": "reserver-une-sortie-groupe" }
+  },
+  {
+    "request": "Vous avez une plage où se baigner ?",
+    "expect": { "status": "out_of_scope" }
+  },
+  {
+    "request": "Quelles sont mes options ?",
+    "expect": { "status": "routed", "agent": "concierge-base", "process": "accueil" }
+  }
+]

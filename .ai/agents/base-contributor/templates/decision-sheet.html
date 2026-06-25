@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<!--
+  Decision sheet template for the `decide` skill.
+  Fill SHEET_TITLE, SHEET_INTRO, STORAGE_KEY, EXPORT_FILE and the POINTS array, then save the
+  copy under .temp/YYYY-MM-DD_subject/. Each point: { id, title, what, reco, recoSummary, scaleLabel }.
+  The reader rates each point 1-5, comments, then exports Markdown to hand back. AI Swiss styling.
+-->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SHEET_TITLE</title>
+<!-- No web fonts: the sheet opens offline and under a strict CSP. The system stack below is the face. -->
+<style>
+  :root{--red:#fe3434;--red-strong:#c1271f;--slate:#2c3345;--soft:#5b6378;--paper:#fafaf8;--line:#e7e5df;--green:#1f7a4d}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--slate);font-family:Lato,system-ui,sans-serif;line-height:1.6}
+  h1,.ui{font-family:Inter,system-ui,sans-serif}
+  .wrap{max-width:860px;margin:0 auto;padding:32px 20px 110px}
+  header{border-bottom:3px solid var(--red);padding-bottom:16px;margin-bottom:8px}
+  header h1{font-size:27px;font-weight:800;margin:0 0 6px;letter-spacing:-.02em}
+  .intro{background:#fff;border:1px solid var(--line);border-left:4px solid var(--red);border-radius:8px;padding:14px 16px;margin:18px 0;font-size:14.5px}
+  .card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px;margin:14px 0}
+  .card.answered{border-color:#cfe6da}
+  .card .id{font-family:Inter;font-weight:800;font-size:13px;color:var(--red);background:#fdecec;border-radius:6px;padding:2px 8px;margin-right:8px}
+  .card .ttl{font-family:Inter;font-weight:700;font-size:17px}
+  .lbl{font-family:Inter;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--soft);margin:12px 0 2px}
+  .reco{background:#fbf6f6;border:1px solid #f0dada;border-left:3px solid var(--red);border-radius:8px;padding:10px 13px;margin:6px 0;font-size:14.5px}
+  .reco .tag{font-family:Inter;font-weight:800;font-size:11px;text-transform:uppercase;color:var(--red-strong);display:block;margin-bottom:3px}
+  .scale{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+  .scale button{font-family:Inter;font-size:13px;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--slate);border-radius:8px;padding:7px 11px;cursor:pointer}
+  .scale button.sel{background:var(--red);border-color:var(--red);color:#fff}
+  textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-family:Lato,sans-serif;font-size:14px;min-height:54px;margin-top:6px}
+  .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:12px 20px;display:flex;gap:14px;align-items:center;justify-content:flex-end}
+  .bar .txt{font-family:Inter;font-size:12px;color:var(--soft);margin-right:auto}
+  .btn{font-family:Inter;font-weight:700;font-size:14px;border-radius:9px;padding:10px 16px;cursor:pointer;border:1px solid var(--red);background:var(--red);color:#fff}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>SHEET_TITLE</h1></header>
+  <div class="intro">SHEET_INTRO</div>
+  <div id="content"></div>
+</div>
+<div class="bar"><span class="txt" id="txt">0 répondu</span><button class="btn" id="export">Exporter pour Claude</button></div>
+<script>
+const SCALE = ["Non répondu","Non","Plutôt non","Partagé","Plutôt oui","Tout à fait"];
+const STORAGE_KEY = "decision-sheet-CHANGE-ME";
+const EXPORT_FILE = "decision-sheet_CHANGE-ME.md";
+const POINTS = [
+  // { id:"P1", title:"...", what:"...", reco:"...", recoSummary:"...", scaleLabel:"D'accord ?" },
+];
+let state={}; try{state=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}")}catch(e){}
+const get=id=>state[id]||{score:0,comment:""};
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(state));prog()}
+function prog(){const a=POINTS.filter(p=>get(p.id).score>0).length;document.getElementById("txt").textContent=a+"/"+POINTS.length+" répondu"}
+function render(){
+  const root=document.getElementById("content");root.innerHTML="";
+  for(const p of POINTS){const c=get(p.id);const card=document.createElement("div");
+    card.className="card"+(c.score>0?" answered":"");card.id="c-"+p.id;
+    let h="<div><span class='id'>"+p.id+"</span><span class='ttl'>"+p.title+"</span></div>";
+    h+="<div class='lbl'>Contexte</div><p>"+p.what+"</p>";
+    h+="<div class='reco'><span class='tag'>Ma recommandation</span>"+p.reco+"</div>";
+    h+="<div class='lbl'>"+(p.scaleLabel||"D'accord ?")+"</div><div class='scale' data-id='"+p.id+"'>";
+    for(let i=1;i<=5;i++)h+="<button data-v='"+i+"' class='"+(c.score===i?"sel":"")+"'>"+i+" · "+SCALE[i]+"</button>";
+    h+="</div><div class='lbl'>Commentaire</div><textarea data-id='"+p.id+"'>"+(c.comment||"")+"</textarea>";
+    card.innerHTML=h;root.appendChild(card);}
+  root.querySelectorAll(".scale").forEach(sc=>sc.querySelectorAll("button").forEach(b=>b.onclick=()=>{
+    const id=sc.dataset.id,v=+b.dataset.v,st=get(id);st.score=v;state[id]=st;
+    sc.querySelectorAll("button").forEach(x=>x.classList.remove("sel"));b.classList.add("sel");
+    document.getElementById("c-"+id).classList.add("answered");save();}));
+  root.querySelectorAll("textarea[data-id]").forEach(t=>t.oninput=()=>{const st=get(t.dataset.id);st.comment=t.value;state[t.dataset.id]=st;save()});
+  prog();
+}
+function md(){
+  let m="# "+document.title+" : mes réponses\n\n> Pour Claude : mes choix et commentaires. Applique là où je suis d'accord, suis mes commentaires sinon, garde ta reco là où je n'ai pas répondu.\n\n";
+  for(const p of POINTS){const c=get(p.id);const l=c.score>0?c.score+"/5 ("+SCALE[c.score]+")":"— non répondu";
+    m+="### "+p.id+" — "+p.title+"\n- Ma reco : "+p.recoSummary+"\n- Ton choix : "+l+"\n- Commentaire : "+((c.comment||"").trim()||"—")+"\n\n";}
+  return m;
+}
+document.getElementById("export").onclick=()=>{const b=new Blob([md()],{type:"text/markdown"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=EXPORT_FILE;a.click();};
+render();
+</script>
+</body>
+</html>

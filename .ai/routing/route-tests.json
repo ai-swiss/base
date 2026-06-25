@@ -1,0 +1,296 @@
+[
+  {
+    "request": "Je veux créer un assistant pour mon métier",
+    "expect": {
+      "status": "routed",
+      "agent": "createur-agent",
+      "process": "creer-agent"
+    }
+  },
+  {
+    "request": "Comment intégrer BASE à mon outil ?",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "integrer-un-outil"
+    }
+  },
+  {
+    "request": "Faire tourner un agent planifié à partir d'un process BASE",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "integrer-un-outil"
+    }
+  },
+  {
+    "request": "Aide-moi à savoir par où commencer avec l'IA",
+    "expect": {
+      "status": "routed",
+      "agent": "createur-agent",
+      "process": "diagnostic"
+    }
+  },
+  {
+    "request": "Je veux activer le routage BASE avec route_request",
+    "expect": {
+      "status": "routed",
+      "agent": "createur-agent",
+      "process": "activer-routage"
+    }
+  },
+  {
+    "request": "Activer la Voie 2 avec des embeddings Ollama et un raffineur",
+    "expect": {
+      "status": "routed",
+      "agent": "createur-agent",
+      "process": "activer-voie2"
+    }
+  },
+  {
+    "request": "Brancher des embeddings Ollama pour affiner le choix sur un grand catalogue de process",
+    "expect": {
+      "status": "routed",
+      "agent": "createur-agent",
+      "process": "activer-voie2"
+    }
+  },
+  {
+    "request": "Audit complet du framework BASE courant",
+    "expect": {
+      "status": "routed",
+      "agent": "createur-agent",
+      "process": "entretien-base"
+    }
+  },
+  {
+    "request": "Vérifie si ce BASE est prêt à publier",
+    "expect": {
+      "status": "routed",
+      "agent": "createur-agent",
+      "process": "entretien-base"
+    }
+  },
+  {
+    "request": "Fais une revue architecture et sécurité du dépôt",
+    "expect": {
+      "status": "routed",
+      "agent": "createur-agent",
+      "process": "entretien-base"
+    }
+  },
+  {
+    "request": "Vérifie tout encore en détail, ligne par ligne",
+    "expect": {
+      "status": "routed",
+      "agent": "createur-agent",
+      "process": "entretien-base"
+    }
+  },
+  {
+    "request": "Review and adapt all issues after implementation, audit and harden BASE",
+    "expect": {
+      "status": "routed",
+      "agent": "createur-agent",
+      "process": "entretien-base"
+    }
+  },
+  {
+    "request": "Bonjour",
+    "expect": {
+      "status": "out_of_scope",
+      "fallback": {
+        "agent": "concierge-base",
+        "process": "accueil"
+      }
+    }
+  },
+  {
+    "request": "Bonjour comment ça va ?",
+    "expect": {
+      "status": "out_of_scope",
+      "fallback": {
+        "agent": "concierge-base",
+        "process": "accueil"
+      }
+    }
+  },
+  {
+    "request": "Salut, ça va ?",
+    "expect": {
+      "status": "out_of_scope",
+      "fallback": {
+        "agent": "concierge-base",
+        "process": "accueil"
+      }
+    }
+  },
+  {
+    "request": "Quelles sont mes options dans BASE ?",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "accueil"
+    }
+  },
+  {
+    "request": "Que fait le MCP ?",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "faq-base"
+    }
+  },
+  {
+    "request": "C'est quoi un workspace ?",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "faq-base"
+    }
+  },
+  {
+    "request": "Comment fonctionne le routage ?",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "comprendre-base"
+    }
+  },
+  {
+    "request": "Explique l'architecture de BASE",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "comprendre-base"
+    }
+  },
+  {
+    "request": "Le MCP ne trouve pas mes agents",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "depannage-base"
+    }
+  },
+  {
+    "request": "Je suis une PME, par où commencer avec BASE ?",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "par-ou-commencer"
+    }
+  },
+  {
+    "request": "Je suis développeur, comment commencer avec BASE ?",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "par-ou-commencer"
+    }
+  },
+  {
+    "request": "Je suis un particulier, par où commencer avec BASE ?",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "par-ou-commencer"
+    }
+  },
+  {
+    "request": "Je travaille dans une administration, par où commencer ?",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "par-ou-commencer"
+    }
+  },
+  {
+    "request": "signaler un problème avec l'assistant",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "signaler-une-friction"
+    }
+  },
+  {
+    "request": "importer mes procédures existantes",
+    "expect": {
+      "status": "routed",
+      "agent": "createur-agent",
+      "process": "importer-l-existant"
+    }
+  },
+  {
+    "request": "What is the state of the BASE spec and what is proven by tests?",
+    "expect": {
+      "status": "routed",
+      "agent": "base-contributor",
+      "process": "understand-state"
+    }
+  },
+  {
+    "request": "Work out the approach and the slices for this BASE change",
+    "expect": {
+      "status": "routed",
+      "agent": "base-contributor",
+      "process": "plan"
+    }
+  },
+  {
+    "request": "Record a decision durably for the framework",
+    "expect": {
+      "status": "routed",
+      "agent": "base-contributor",
+      "process": "open-change"
+    }
+  },
+  {
+    "request": "Implement this spec in the BASE core",
+    "expect": {
+      "status": "routed",
+      "agent": "base-contributor",
+      "process": "implement"
+    }
+  },
+  {
+    "request": "Run the BASE gates before I push",
+    "expect": {
+      "status": "routed",
+      "agent": "base-contributor",
+      "process": "verify"
+    }
+  },
+  {
+    "request": "Make a decision sheet listing my choices and approvals",
+    "expect": {
+      "status": "routed",
+      "agent": "base-contributor",
+      "process": "decide"
+    }
+  },
+  {
+    "request": "Crée-moi une fiche de décision pour trancher ces points",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "fiche-de-decision"
+    }
+  },
+  {
+    "request": "Fix a bug in the BASE CLI",
+    "expect": {
+      "status": "routed",
+      "agent": "base-contributor",
+      "process": "implement"
+    }
+  },
+  {
+    "request": "Contribute a fix to BASE",
+    "expect": {
+      "status": "routed",
+      "agent": "base-contributor",
+      "process": "implement"
+    }
+  }
+]

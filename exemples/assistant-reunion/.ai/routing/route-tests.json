@@ -1,0 +1,14 @@
+[
+  {
+    "request": "Rédiger le compte rendu de la réunion d'équipe de ce matin",
+    "expect": { "status": "routed", "agent": "assistant-reunion", "process": "compte-rendu" }
+  },
+  {
+    "request": "Lister et suivre les actions à faire après la réunion",
+    "expect": { "status": "routed", "agent": "assistant-reunion", "process": "suivi-actions" }
+  },
+  {
+    "request": "Configurer mon profil de réunion et mes participants",
+    "expect": { "status": "routed", "agent": "assistant-reunion", "process": "configuration" }
+  }
+]

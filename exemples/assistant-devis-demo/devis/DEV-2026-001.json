@@ -1,0 +1,38 @@
+{
+  "devis": {
+    "numero": "DEV-2026-001",
+    "date_emission": "2026-02-03",
+    "date_validite": "2026-03-05",
+    "objet": "Refonte de marque et identité visuelle"
+  },
+  "entreprise": {
+    "nom": "Atelier Léman Sàrl",
+    "adresse": "Rue de Bourg 12, 1003 Lausanne",
+    "numero_ide": "CHE-412.318.207"
+  },
+  "client": {
+    "nom": "Dupont SA",
+    "adresse": "Avenue de la Gare 8, 1800 Vevey",
+    "personne_contact": "Marie Dupont",
+    "ref": "dupont-sa"
+  },
+  "prestations": [
+    { "numero": 1, "reference": "SRV-001", "description": "Conseil en stratégie de marque", "quantite": 3, "unite": "jour", "prix_unitaire_chf": 1600, "total_chf": 4800 },
+    { "numero": 2, "reference": "SRV-002", "description": "Identité visuelle (logo, charte)", "quantite": 1, "unite": "forfait", "prix_unitaire_chf": 4800, "total_chf": 4800 }
+  ],
+  "financier": {
+    "sous_total_ht_chf": 9600,
+    "remise": { "type": "aucune", "montant_chf": 0 },
+    "sous_total_apres_remise_chf": 9600,
+    "tva": { "taux_pourcent": 8.1, "montant_chf": 777.6 },
+    "total_ttc_chf": 10377.6,
+    "acompte_chf": 3113.28,
+    "solde_chf": 7264.32
+  },
+  "conditions": {
+    "acompte": "30 % à la commande, soit 3'113.28 CHF; solde de 7'264.32 CHF à la livraison",
+    "delai_paiement": "30 jours net",
+    "garantie": ""
+  },
+  "etat": "a_valider"
+}

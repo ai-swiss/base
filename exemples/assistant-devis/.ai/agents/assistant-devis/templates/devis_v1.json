@@ -1,0 +1,52 @@
+{
+  "devis": {
+    "numero": "DEV-AAAA-NNN",
+    "date_emission": "JJ.MM.AAAA",
+    "date_validite": "JJ.MM.AAAA",
+    "objet": ""
+  },
+  "entreprise": {
+    "nom": "",
+    "adresse": "",
+    "numero_ide": "",
+    "email": "",
+    "telephone": "",
+    "site_web": ""
+  },
+  "client": {
+    "nom": "",
+    "adresse": "",
+    "personne_contact": "",
+    "email": ""
+  },
+  "prestations": [
+    {
+      "numero": 1,
+      "description": "",
+      "quantite": 0,
+      "unite": "jour",
+      "prix_unitaire_chf": 0,
+      "total_chf": 0
+    }
+  ],
+  "financier": {
+    "sous_total_ht_chf": 0,
+    "remise": {
+      "type": "",
+      "montant_chf": 0
+    },
+    "sous_total_apres_remise_chf": 0,
+    "tva": {
+      "taux_pourcent": 8.1,
+      "montant_chf": 0
+    },
+    "total_ttc_chf": 0
+  },
+  "conditions": {
+    "acompte": "",
+    "delai_paiement": "",
+    "garantie": ""
+  },
+  "hypotheses": [],
+  "exclusions": []
+}

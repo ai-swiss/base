@@ -1,0 +1,14 @@
+[
+  {
+    "request": "Rédige un courrier de relance pour Dupont SA",
+    "expect": { "status": "routed", "agent": "assistant-courrier", "process": "rediger-courrier" }
+  },
+  {
+    "request": "Un client m'a écrit une réclamation, aide-moi à répondre",
+    "expect": { "status": "routed", "agent": "assistant-courrier", "process": "repondre-courrier" }
+  },
+  {
+    "request": "Configurer mon en-tête et mes coordonnées d'entreprise",
+    "expect": { "status": "routed", "agent": "assistant-courrier", "process": "configuration" }
+  }
+]

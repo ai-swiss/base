@@ -1,0 +1,54 @@
+# Environnement
+.env
+.env.local
+
+# Trajectoire personnelle : scratch local et transitoire, jamais source de vérité.
+# .plans/ = approches et plans de travail · .reviews/ = revues et audits datés ·
+# .temp/ = brouillon jetable · .base-docs/ = documentation générée localement.
+# Ce qui doit durer est promu dans decisions/ (tracké) ou dans specs/. Voir DEVELOPING.md.
+.plans/
+.reviews/
+.temp/
+.base-docs/
+*.tmp
+
+# Traces et changements en attente (locaux, transitoires) — à toute profondeur (ex. dans exemples/)
+**/.ai/trace/
+**/.ai/changes/
+**/.ai/feedback/
+**/.ai/routing/registry.json
+**/.ai/routing/embeddings.json
+**/.ai/index/
+**/.ai/experiments/runs/
+**/.ai/experiments/reports/
+
+# Tarballs produits par les tests de packaging (npm pack)
+*.tgz
+
+# Système
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+venv/
+.venv/
+*.egg-info/
+
+# Node.js
+node_modules/
+tools/studio/ui/dist/
+dist/
+
+# Éditeurs
+*.swp
+*.swo
+*~
+
+# Astro build cache (docs site adapter)
+**/.astro/
+
+# Studio runtime settings: machine state, never knowledge (per-user, per-root)
+**/.ai/studio.settings.json

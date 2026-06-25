@@ -1,0 +1,69 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { loadModel } from "../lib/model";
+import { useTranslations, type Locale } from "../lib/i18n";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const model = loadModel();
+const nodes = model.graph?.nodes ?? [];
+const edges = model.graph?.edges ?? [];
+const nodesByFamily = groupBy(model.resources, (resource) => resource.family);
+const edgesByType = groupBy(edges, (edge) => edge.type);
+
+function groupBy<T>(items: T[], pick: (item: T) => string): Array<[string, T[]]> {
+  const groups = new Map<string, T[]>();
+  for (const item of items) {
+    const key = pick(item);
+    const group = groups.get(key) ?? [];
+    group.push(item);
+    groups.set(key, group);
+  }
+  return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b));
+}
+---
+
+<StarlightPage frontmatter={{ title: t("map.title"), tableOfContents: false }}>
+  <p class="bd-muted">{t("map.lead")}</p>
+
+  <section class="bd-grid">
+    <div class="bd-card bd-stat"><strong>{nodes.length}</strong><span class="bd-muted">{t("map.nodes")}</span></div>
+    <div class="bd-card bd-stat"><strong>{edges.length}</strong><span class="bd-muted">{t("map.edges")}</span></div>
+    <div class="bd-card bd-stat"><strong>{nodesByFamily.length}</strong><span class="bd-muted">{t("map.families")}</span></div>
+    <div class="bd-card bd-stat"><strong>{edgesByType.length}</strong><span class="bd-muted">{t("map.relTypes")}</span></div>
+  </section>
+
+  <section class="bd-grid">
+    <article class="bd-card">
+      <h2>{t("map.familiesTitle")}</h2>
+      <ul>
+        {nodesByFamily.map(([family, items]) => (
+          <li><code>{family}</code> <span class="bd-muted">{items.length} {t("map.resources")}</span></li>
+        ))}
+      </ul>
+    </article>
+
+    <article class="bd-card">
+      <h2>{t("map.relationships")}</h2>
+      <ul>
+        {edgesByType.map(([type, items]) => <li><code>{type}</code> <span class="bd-muted">{items.length}</span></li>)}
+      </ul>
+    </article>
+  </section>
+
+  <section class="bd-grid">
+    {nodesByFamily.map(([family, items]) => (
+      <article class="bd-card">
+        <h2>{family}</h2>
+        <ul>
+          {items.slice(0, 12).map((item) => <li>{item.title} <span class="bd-muted"><code>{item.path}</code></span></li>)}
+          {items.length > 12 && <li class="bd-muted">... {items.length - 12} {t("map.more")}</li>}
+        </ul>
+      </article>
+    ))}
+  </section>
+</StarlightPage>

@@ -1,0 +1,33 @@
+{
+  "name": "@ai-swiss/base-ranker-semantic",
+  "version": "1.0.0",
+  "description": "Official semantic embedding ranker adapter for BASE",
+  "license": "Apache-2.0",
+  "author": "AI Swiss (https://a-i.swiss)",
+  "type": "module",
+  "exports": {
+    ".": "./index.mjs",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.mjs",
+    "src",
+    "README.md",
+    "SECURITY.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs"
+  },
+  "peerDependencies": {
+    "@ai-swiss/base": "1.x"
+  },
+  "peerDependenciesMeta": {
+    "@ai-swiss/base": {
+      "optional": true
+    }
+  }
+}

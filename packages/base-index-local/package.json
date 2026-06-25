@@ -1,0 +1,32 @@
+{
+  "name": "@ai-swiss/base-index-local",
+  "version": "1.0.0",
+  "description": "Official optional local index for BASE: a derived, deletable projection that scales routing and discovery to large corpora",
+  "license": "Apache-2.0",
+  "author": "AI Swiss (https://a-i.swiss)",
+  "type": "module",
+  "exports": {
+    ".": "./index.mjs",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "base-index-local": "./bin/base-index-local.mjs"
+  },
+  "files": [
+    "index.mjs",
+    "src",
+    "bin",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "bench": "node bin/base-index-local.mjs bench"
+  },
+  "peerDependencies": {
+    "@ai-swiss/base": "1.x"
+  }
+}

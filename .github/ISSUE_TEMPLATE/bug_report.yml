@@ -1,0 +1,36 @@
+name: Signaler un bug
+description: Problème reproductible dans le cœur, la CLI, le MCP, le Studio, les packages ou un exemple.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Pour une question d'usage («comment faire ?»), utilisez les liens d'aide de l'écran précédent : le concierge BASE répond déjà à la plupart de ces questions. Ce formulaire sert aux défauts reproductibles.
+  - type: textarea
+    id: what
+    attributes:
+      label: Que s'est-il passé ?
+      description: Ce que vous avez fait, et ce qui n'a pas fonctionné.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Étapes de reproduction
+      description: Commandes exactes. Ajoutez la sortie de `node tools/base.mjs validate --root .` si elle est pertinente.
+      render: shell
+    validations:
+      required: true
+  - type: input
+    id: expected
+    attributes:
+      label: Comportement attendu
+    validations:
+      required: true
+  - type: textarea
+    id: env
+    attributes:
+      label: Environnement
+      description: Version de Node (`node -v`), système d'exploitation, et surface concernée (CLI / MCP / Studio / Cursor / Claude Code).
+    validations:
+      required: true

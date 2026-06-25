@@ -1,0 +1,5 @@
+# Code ownership — GitHub auto-requests this reviewer on a matching pull request,
+# so every change is seen by the maintainer (see GOVERNANCE.md). Add more owners or
+# per-path lines as the maintainer team grows.
+
+* @cbardyn

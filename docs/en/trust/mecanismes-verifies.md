@@ -1,0 +1,22 @@
+<!-- fr-synced: c392261726d8ff5c072bc936d15f0477b7b544d8 -->
+# Verified mechanisms: guarantee, function, test
+
+A guarantee is worth nothing unless the code enforces it and a test protects it. This view gathers the guarantees BASE holds in exactly that way: each row links a guarantee to the function that enforces it and to the test that would **fail** if it broke; nothing here is invented. It is the short read for an evaluation file; the exhaustive requirements-to-tests mapping lives in `specs/current/10_core/requirements-matrix.md`, regenerated and verified in continuous integration.
+
+Vocabulary reminder: a **mechanism** is enforced by the broker (code checks it, a test protects it); a *consigne* is an instruction followed by the model, and therefore fallible. This page lists only mechanisms. The distinction is detailed in [`mecanismes-vs-consignes.md`](mecanismes-vs-consignes.md), and the link between each public claim and its proof in [`evidence.md`](evidence.md).
+
+| Guarantee | Mechanism (code) | Test that would fail | Scope limit |
+| --- | --- | --- | --- |
+| A confidential resource does not leave for a remote model, checked **before** the call | `tools/core/egress.mjs` → `checkEgress` | `tests/base-egress.test.mjs` (a secret IBAN does not reach the model) | Paths mediated by the broker (MCP server, Studio chat, evaluation); triggered by the `confidential` flag or a `local-only` root, not by the `sensitivity` taxonomy; **a root's default is permissive (`any`)**, so only a marked resource (or a `local-only` root) is held back (see [The boundary](frontiere-local-vs-sortant.md)); in direct CLI use, the human remains the authority. |
+| The MCP server treats a connected client as **remote by default**: confidential and `local-only` roots are held back regardless of transport (`stdio` as well as HTTP) | `mcp/src/base-core-adapter.ts` (egress `modelLocality: remote` by default) | `mcp/tests/index.test.ts` (a confidential resource is held back unless `BASE_MCP_ALLOW_CONFIDENTIAL=1`, FR-EGRESS-004) | An operator who knows the client is local and trusted can allow it with `BASE_MCP_ALLOW_CONFIDENTIAL=1`. |
+| A sensitive write is never applied without confirmation | `tools/core/policy.mjs` (refusal of an unconfirmed `sensitive`/`restricted` write) | `tests/base-core.test.mjs` (the opt-out never applies at these levels) | Writes going through the broker. |
+| The model proposes, the human validates: a two-step write, mediated and atomic | `tools/core/writes.mjs` → `createBrokerWrites` | `tests/base-core.test.mjs` (a `commitChange` without confirmation is refused) | Nothing is written without the validation step. |
+| Paths are confined, outbound symlinks refused, nested roots isolated | `tools/core/confine.mjs` | `tests/base-core.test.mjs` | Protects file access under the broker. |
+| Routing picks an agent and a process, or **abstains**, deterministically | `tools/core/routing.mjs` → `decideRoute` | `base route-test`, replayed root by root in CI (`.github/workflows/ci.yml`) | Lexical routing by default (zero network); semantic ranking is optional and can run locally. |
+| The core has no runtime dependency (it runs on bare `node`) | `package.json` (zero dependencies) and the `tools/**` engine | `tests/architecture.test.mjs` (fails on any declared dependency or non-relative import) | Studio (the web application), the MCP server, and the doc site generation have their own dependencies. |
+| The documentation has no broken links and no orphan pages | `tools/docs/model.mjs`, `tools/doctor/diagnose.mjs` | `tests/base-docs.test.mjs`, `tests/base-doctor.test.mjs` | Covers the documentation corpus. |
+| Studio listens only locally (loopback) | `tools/studio/server.mjs` (refusal of any non-loopback host) | `tests/studio-server.test.mjs` | Studio does not expose itself to the network. |
+
+Each "Mechanism" and "Test" cell names a real file in the repository: you can open it, read the function, and run the test. That is what "verifiable by a third party" means: the guarantee is not a promise, it is a behavior the code enforces and a test protects.
+
+For what BASE does **not** guarantee on its own (the accuracy of a model's outputs, IAM, DLP, legal archiving, and the rest), see [`securite-et-limites.md`](securite-et-limites.md). For the host's jurisdiction and extraterritorial exposure, see [`souverainete-et-confiance.md`](souverainete-et-confiance.md).

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a-i.swiss/base/schemas/base.trace_event.v1.json",
+  "title": "BASE Trace Event",
+  "description": "One JSONL line appended by recordEvent to .ai/trace/YYYY-MM-DD.jsonl. Minimal, no business content by default (NFR-CORE-008): args are hashed, never stored. See ../10_core/trace.md.",
+  "type": "object",
+  "required": ["ts", "trace_id", "op", "decision", "status"],
+  "additionalProperties": false,
+  "properties": {
+    "ts": { "type": "string", "description": "ISO 8601 timestamp." },
+    "trace_id": { "type": "string", "description": "UUID; caller-supplied or crypto.randomUUID()." },
+    "op": {
+      "type": "string",
+      "enum": ["validate", "index", "discover", "inventory", "open", "access", "invoke", "entretien"],
+      "description": "High-level operation. Extensible: adapters may add ops."
+    },
+    "resource_id": { "type": ["string", "null"] },
+    "path": { "type": ["string", "null"] },
+    "action": {
+      "type": ["string", "null"],
+      "description": "e.g. read | write | execute | validate | search | maintain"
+    },
+    "decision": {
+      "type": "string",
+      "enum": ["allow", "deny", "needs_approval", "not_applicable"]
+    },
+    "status": { "type": "string", "enum": ["ok", "error"] },
+    "duration_ms": { "type": ["number", "null"] },
+    "args_hash": {
+      "type": ["string", "null"],
+      "description": "\"sha256:<hex>\" of JSON.stringify(args). The args themselves are never stored."
+    },
+    "error": { "type": ["string", "null"] },
+    "metadata": {
+      "type": "object",
+      "description": "Small, non-sensitive counters only (e.g. {\"resources\": 135}).",
+      "additionalProperties": true
+    }
+  }
+}

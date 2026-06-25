@@ -1,0 +1,48 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { loadModel, resourceHref } from "../lib/model";
+import { useTranslations, type Locale } from "../lib/i18n";
+import { EVIDENCE_CLAIMS } from "../lib/content";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const model = loadModel();
+const byId = new Map(model.resources.map((resource) => [resource.source_id ?? resource.id, resource]));
+const byPath = new Map(model.resources.map((resource) => [resource.path, resource]));
+
+function resolveSource(item: string) {
+  return byId.get(item) ?? byPath.get(item) ?? null;
+}
+---
+
+<StarlightPage frontmatter={{ title: t("evidence.title"), tableOfContents: false }}>
+  <p class="bd-muted">{t("evidence.lead")}</p>
+
+  <section class="bd-grid">
+    {EVIDENCE_CLAIMS.map((claim) => (
+      <article class="bd-card">
+        <h2>{claim.title[lang]}</h2>
+        <p class="bd-muted">{claim.text[lang]}</p>
+        <h3>{t("evidence.sources")}</h3>
+        <ul>
+          {claim.sources.map((source) => {
+            const resource = resolveSource(source);
+            return resource ? (
+              <li><a href={resourceHref(resource, lang)}>{resource.title}</a> <code>{resource.path}</code></li>
+            ) : (
+              <li><code>{source}</code></li>
+            );
+          })}
+        </ul>
+        <h3>{t("evidence.tests")}</h3>
+        <ul>{claim.tests.map((test) => <li><code>{test}</code></li>)}</ul>
+        <h3>{t("evidence.limit")}</h3>
+        <p class="bd-muted">{claim.limit[lang]}</p>
+      </article>
+    ))}
+  </section>
+</StarlightPage>

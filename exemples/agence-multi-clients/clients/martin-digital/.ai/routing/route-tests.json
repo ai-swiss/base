@@ -1,0 +1,6 @@
+[
+  {
+    "request": "Ouvrir un ticket pour un incident serveur",
+    "expect": { "status": "routed", "agent": "assistant-support", "process": "ticket-incident" }
+  }
+]

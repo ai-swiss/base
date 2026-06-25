@@ -1,0 +1,18 @@
+{
+  "$schema": "../../specs/current/30_schemas/base.config.v1.json",
+  "rankers": [
+    {
+      "type": "semanticHybrid",
+      "aliases": {
+        "proposition": ["offre commerciale", "devis"],
+        "incident": ["panne", "bug", "ne fonctionne plus", "erreur"],
+        "evolution": ["amélioration", "nouvelle fonctionnalité"]
+      }
+    }
+  ],
+  "routing": {
+    "floor_score": 30,
+    "top2_margin": 0.2,
+    "max_candidates": 5
+  }
+}

@@ -1,0 +1,212 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://a-i.swiss/base/schemas/base.config.v1.json",
+  "title": "BASE Configuration (declarative form)",
+  "description": "Optional project extension config (FR-CONFIG-*). This schema covers the DECLARATIVE (.json) form. The .mjs form may additionally carry functions (Ranker/Validator/PolicyEnforcer/AuthProvider adapters) that JSON cannot express; those are validated by shape at load time (`base.config.invalid`), not by this schema.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "rankers": {
+      "type": "array",
+      "description": "Extra rankers, applied AFTER the neutral core lexicalRanker. Declarative descriptors only in JSON: keywordIntent or semanticHybrid.",
+      "items": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "keywordIntent",
+              "semanticHybrid"
+            ],
+            "description": "Built-in declarative ranker descriptor."
+          },
+          "rules": {
+            "type": "object",
+            "description": "For type=keywordIntent: { \"<reasonLabel>\": { whenIncludes: string[], require: string[], boost: number } }. See ranker.md.",
+            "additionalProperties": {
+              "type": "object",
+              "required": [
+                "boost"
+              ],
+              "properties": {
+                "whenIncludes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "require": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "boost": {
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "aliases": {
+            "type": "object",
+            "description": "For type=semanticHybrid: { \"queryTerm\": [\"alias phrase\", ...] }.",
+            "additionalProperties": {
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "validators": {
+      "type": "array",
+      "description": "Extra validators, applied AFTER coreSchemaValidator. Declarative descriptors only in JSON (e.g. requireFields, forbidSensitivity). See validator.md.",
+      "items": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "additionalProperties": true,
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "requireFields",
+              "requireSchemaVersion",
+              "forbidSensitivity",
+              "piiScanner",
+              "routability"
+            ]
+          }
+        }
+      }
+    },
+    "routing": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Router thresholds. These are inspectable sort rules, not probabilities.",
+      "additionalProperties": false,
+      "properties": {
+        "floor_score": {
+          "type": "number",
+          "minimum": 0
+        },
+        "top2_margin": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "max_candidates": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "fallback": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "description": "Help target the Router attaches to an honest abstention (out_of_scope, or needs_clarification without a useful question). It NEVER turns an abstention into a routed result. Ids are resolved against the live inventory; a missing target yields no fallback.",
+          "additionalProperties": false,
+          "required": [
+            "agent",
+            "process"
+          ],
+          "properties": {
+            "agent": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Fallback agent id (e.g. \"concierge-base\")."
+            },
+            "process": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Fallback process id (e.g. \"accueil\")."
+            }
+          }
+        },
+        "policy": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": false,
+          "description": "Project-level routing deny: agent or process ids excluded from routing. A denied agent and all its processes are dropped from the routable corpus, in both strategies.",
+          "properties": {
+            "deny": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "minLength": 1
+              },
+              "description": "Agent or process ids to exclude from routing."
+            }
+          }
+        },
+        "embedder": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": true,
+          "description": "Routing embedder for `base build routing-embeddings` (the shipped semantic package). Provider-specific knobs (baseUrl, timeoutMs…) pass through. The API key comes from the environment, not from here.",
+          "properties": {
+            "provider": {
+              "enum": [
+                "ollama",
+                "openai"
+              ],
+              "description": "Which embedder factory: a local Ollama, or an OpenAI-compatible endpoint."
+            },
+            "model": {
+              "type": "string",
+              "description": "Embedding model id (required for openai; defaults for ollama)."
+            },
+            "baseUrl": {
+              "type": "string",
+              "description": "Override the provider's base URL (e.g. an internal gateway)."
+            }
+          }
+        }
+      }
+    },
+    "policy": {
+      "description": "PolicyEnforcer selection. Declarative form: a named built-in (e.g. \"advisory\"|\"strict\") with options. Functions only via .mjs.",
+      "type": [
+        "object",
+        "string"
+      ]
+    },
+    "auth": {
+      "description": "AuthProvider selection (MCP). Declarative form: \"none\", \"bearer\", or {\"type\":\"bearer\",\"env\":\"ENV_NAME\"}. Function adapters only via .mjs.",
+      "type": [
+        "object",
+        "string",
+        "null"
+      ]
+    },
+    "egress": {
+      "description": "Egress policy of this root (D22): \"local-only\" means no resource of this root ever leaves toward a remote model provider. Default: \"any\".",
+      "type": "string",
+      "enum": [
+        "local-only",
+        "any"
+      ]
+    }
+  },
+  "$comment": "Declarative descriptor vocabulary: rankers `{type:'keywordIntent', rules}` or `{type:'semanticHybrid', aliases}`, validators `{type:'requireFields'|'requireSchemaVersion'|'forbidSensitivity'|'piiScanner'|'routability', ...}`, routing thresholds `{floor_score, top2_margin, max_candidates}`, and policy `'advisory'|'strict'` or `{type:'strict', grants:[]}` are instantiated by tools/core/config.mjs; auth (MCP) `'none'|'bearer'` or `{type:'bearer', env?: string}` is interpreted by mcp/src/auth.ts after config resolution. Function-valued options (e.g. forbidSensitivity.unless) and arbitrary adapters are .mjs-only; unknown descriptors fail loudly with base.config.invalid."
+}

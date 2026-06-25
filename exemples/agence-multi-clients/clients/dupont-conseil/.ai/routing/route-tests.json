@@ -1,0 +1,6 @@
+[
+  {
+    "request": "Préparer un devis pour un client",
+    "expect": { "status": "routed", "agent": "assistant-devis", "process": "nouveau-devis" }
+  }
+]

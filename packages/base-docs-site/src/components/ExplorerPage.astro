@@ -1,0 +1,76 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { byTitleThenPath, loadModel, resourceHref } from "../lib/model";
+import { useTranslations, type Locale } from "../lib/i18n";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const model = loadModel();
+const resources = [...model.resources].sort(byTitleThenPath);
+const publicCount = resources.filter((resource) => resource.sensitivity === "public").length;
+const roleCounts = countBy(resources.map((resource) => resource.doc_role));
+const familyCounts = countBy(resources.map((resource) => resource.family));
+
+function countBy(values: string[]): Array<[string, number]> {
+  const counts = new Map<string, number>();
+  for (const value of values) counts.set(value, (counts.get(value) ?? 0) + 1);
+  return [...counts.entries()].sort(([a], [b]) => a.localeCompare(b));
+}
+---
+
+<StarlightPage frontmatter={{ title: t("explorer.title"), tableOfContents: false }}>
+  <p class="bd-muted">{t("explorer.lead")}</p>
+
+  <section class="bd-grid">
+    <div class="bd-card bd-stat"><strong>{model.stats.resources}</strong><span class="bd-muted">{t("explorer.resources")}</span></div>
+    <div class="bd-card bd-stat"><strong>{model.stats.source_resources}</strong><span class="bd-muted">{t("explorer.sources")}</span></div>
+    <div class="bd-card bd-stat"><strong>{publicCount}</strong><span class="bd-muted">{t("explorer.public")}</span></div>
+    <div class="bd-card bd-stat"><strong>{model.stats.warnings}</strong><span class="bd-muted">{t("explorer.warnings")}</span></div>
+  </section>
+
+  <h2>{t("explorer.shape")}</h2>
+  <h3>{t("explorer.roles")}</h3>
+  <div class="bd-chips">
+    {roleCounts.map(([role, count]) => <span class="bd-chip">{role}: {count}</span>)}
+  </div>
+  <h3>{t("explorer.families")}</h3>
+  <div class="bd-chips">
+    {familyCounts.map(([family, count]) => <span class="bd-chip">{family}: {count}</span>)}
+  </div>
+
+  <h2>{t("explorer.list")}</h2>
+  <input id="filter" class="bd-filter" type="search" placeholder={t("explorer.filter")} aria-label={t("explorer.filter")} />
+  <section style="display: grid; gap: 0.75rem;">
+    {resources.map((resource) => (
+      <a
+        class="bd-resource-link"
+        href={resourceHref(resource, lang)}
+        data-filter={`${resource.title} ${resource.path} ${resource.doc_role} ${resource.family}`.toLowerCase()}
+      >
+        <h3>{resource.title}</h3>
+        {resource.description && <p>{resource.description}</p>}
+        <div class="bd-meta">
+          <span>{resource.doc_role}</span>
+          <span>{resource.type}</span>
+          <span>{resource.sensitivity}</span>
+          <code>{resource.path}</code>
+        </div>
+      </a>
+    ))}
+  </section>
+
+  <script>
+    const input = document.querySelector<HTMLInputElement>("#filter");
+    const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-filter]"));
+    input?.addEventListener("input", () => {
+      const query = input.value.toLowerCase().trim();
+      for (const card of cards) {
+        card.style.display = !query || (card.dataset.filter ?? "").includes(query) ? "" : "none";
+      }
+    });
+  </script>
+</StarlightPage>

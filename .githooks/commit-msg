@@ -1,0 +1,12 @@
+#!/bin/sh
+# BASE local discipline hooks. Opt in once with:  git config core.hooksPath .githooks
+#
+# These are the same gates CI runs, brought to the moment of commit so a contributor meets them
+# before pushing (a gate you only meet in CI is a gate you learn to dread, then dodge). The argument
+# $1 is the path to the commit message file; both checks also read the staged diff.
+#
+#   spec-sync     — a runtime-code change touches specs/, or the message declares [SPEC-NEUTRAL: reason]
+#   changelog-sync — a public-surface/visible-docs change touches a CHANGELOG, or declares [CHANGELOG-SKIP: reason]
+set -e
+node tools/spec/spec-sync-check.mjs "$1"
+node tools/spec/changelog-sync-check.mjs --pr-body-file "$1"

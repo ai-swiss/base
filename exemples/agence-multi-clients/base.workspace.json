@@ -1,0 +1,9 @@
+{
+  "schema_version": "base.workspace.v1",
+  "id": "agence-demo",
+  "label": "Agence (démo multi-clients)",
+  "roots": [
+    { "id": "dupont-conseil", "label": "Dupont Conseil", "path": "clients/dupont-conseil", "default": true },
+    { "id": "martin-digital", "label": "Martin Digital", "path": "clients/martin-digital" }
+  ]
+}

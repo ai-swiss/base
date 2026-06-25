@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Obtenir BASE
+    url: https://github.com/ai-swiss/base/blob/HEAD/docs/start/obtenir-base.md
+    about: Choisissez le bon chemin pour récupérer BASE : ZIP, clone Git, copie d'un exemple ou pack navigateur.
+  - name: Aide pour utiliser un assistant (je suis perdu)
+    url: https://github.com/ai-swiss/base/blob/HEAD/docs/start/quickstart.md
+    about: Ouvrez un exemple et demandez de l'aide. BASE route votre demande vers le concierge (concierge-base), qui vous oriente. Le quickstart montre comment démarrer.
+  - name: Documentation (parcours par profil)
+    url: https://github.com/ai-swiss/base/blob/HEAD/docs/start/lire-dans-quel-ordre.md
+    about: Que lire selon votre profil (personne seule, PME, grande entreprise, développeur).
+  - name: Signaler une vulnérabilité (privé)
+    url: https://github.com/ai-swiss/base/security/advisories/new
+    about: Utilisez GitHub Security Advisories pour un signalement confidentiel (voir SECURITY.md).

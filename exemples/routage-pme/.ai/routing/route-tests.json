@@ -1,0 +1,12 @@
+[
+  { "request": "prépare une proposition commerciale pour Dupont", "expect": { "status": "routed", "agent": "commercial", "process": "nouveau-devis" } },
+  { "request": "le client conteste le montant de sa facture", "expect": { "status": "routed", "agent": "commercial", "process": "contestation-facture" } },
+  { "request": "faire une offre pour une facture contestée", "expect": { "status": "routed", "agent": "commercial", "process": "contestation-facture" } },
+  { "request": "relancer la facture impayée de Martin", "expect": { "status": "routed", "agent": "commercial", "process": "relance-client" } },
+  { "request": "l'application est en panne depuis ce matin", "expect": { "status": "routed", "agent": "support", "process": "ticket-incident" } },
+  { "request": "ce serait bien d'ajouter un export PDF", "expect": { "status": "routed", "agent": "support", "process": "demande-evolution" } },
+  { "request": "bug fonctionnalité", "expect": { "status": "ambiguous", "reason_code": "two_close_candidates", "agent": "support" } },
+  { "request": "vente", "expect": { "status": "needs_clarification", "reason_code": "no_clear_process", "agent": "commercial" } },
+  { "request": "créer un nouveau devis pour une facture contestée", "expect": { "status": "needs_clarification", "reason_code": "no_clear_process", "agent": "commercial" } },
+  { "request": "zzqq wibble flumph plover", "expect": { "status": "out_of_scope" } }
+]

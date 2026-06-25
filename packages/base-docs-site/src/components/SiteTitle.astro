@@ -1,0 +1,18 @@
+---
+// The header brand lockup, matching BASE Studio: the AI Swiss mark (this is a project of AI Swiss),
+// a hairline divider, then «BASE» in the brand red with «Documentation» as the slate descriptor.
+// One source of truth with Studio's `.brand`; only the descriptor word differs.
+import logoLight from "../assets/logo-ai-swiss.png";
+import logoDark from "../assets/logo-ai-swiss-dark.png";
+
+const locale = Astro.props.locale?.lang ?? Astro.currentLocale;
+const home = locale === "en" ? "/en/" : "/";
+---
+
+<a href={home} class="bd-brand" title="Documentation BASE, un projet d'AI Swiss">
+  <img class="bd-brand-logo bd-brand-logo-light" src={logoLight.src} alt="AI Swiss" />
+  <img class="bd-brand-logo bd-brand-logo-dark" src={logoDark.src} alt="AI Swiss" />
+  <span class="bd-brand-divider" aria-hidden="true"></span>
+  <span class="bd-brand-name">BASE</span>
+  <span class="bd-brand-desc">Documentation</span>
+</a>

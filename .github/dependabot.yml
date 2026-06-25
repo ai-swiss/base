@@ -1,0 +1,23 @@
+# Automated dependency updates. The core is zero-dependency by design (ARCHITECTURE.md), but the
+# dev toolchain, the MCP server, and the Studio UI carry a real supply-chain surface, and CI already
+# runs `npm audit`. Weekly, grouped, so updates arrive as a few reviewable PRs rather than a flood.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule: { interval: weekly }
+    groups:
+      dev-dependencies: { patterns: ["*"] }
+  - package-ecosystem: npm
+    directory: "/mcp"
+    schedule: { interval: weekly }
+    groups:
+      mcp-dependencies: { patterns: ["*"] }
+  - package-ecosystem: npm
+    directory: "/tools/studio/ui"
+    schedule: { interval: weekly }
+    groups:
+      studio-dependencies: { patterns: ["*"] }
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule: { interval: weekly }

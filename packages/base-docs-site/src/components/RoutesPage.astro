@@ -1,0 +1,74 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { loadModel } from "../lib/model";
+import { useTranslations, type Locale } from "../lib/i18n";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const model = loadModel();
+const fixtures = model.route_fixtures;
+---
+
+<StarlightPage frontmatter={{ title: t("routes.title"), tableOfContents: false }}>
+  <p class="bd-muted">{t("routes.lead")}</p>
+
+  <input id="filter" class="bd-filter" type="search" placeholder={t("routes.filter")} aria-label={t("routes.filter")} />
+
+  <section>
+    {fixtures.map((fixture) => {
+      const command = `node tools/base.mjs route ${JSON.stringify(fixture.request)} --root ${fixture.root}`;
+      const expected = fixture.expect
+        ? [fixture.expect.status, fixture.expect.agent, fixture.expect.process].filter(Boolean).join(" -> ")
+        : t("routes.noExpectation");
+      const actual = fixture.actual
+        ? [fixture.actual.status, fixture.actual.agent?.id, fixture.actual.process?.id].filter(Boolean).join(" -> ")
+        : t("routes.notResolved");
+      const haystack = `${fixture.root} ${fixture.request} ${expected} ${actual}`.toLowerCase();
+      return (
+        <details class="bd-fixture" data-filter={haystack}>
+          <summary>{fixture.request}</summary>
+          <div class="bd-meta">
+            <span>{t("routes.root")} : <code>{fixture.root}</code></span>
+            <span>{t("routes.expect")} : <code>{expected}</code></span>
+            <span>{t("routes.source")} : <code>{fixture.source_path}</code></span>
+          </div>
+          <div class="bd-grid">
+            <div class="bd-card">
+              <div class="bd-label">{t("routes.actual")}</div>
+              <p><code>{actual}</code></p>
+              {fixture.actual?.explanation && <p class="bd-muted">{fixture.actual.explanation}</p>}
+            </div>
+            <div class="bd-card">
+              <div class="bd-label">{t("routes.candidates")}</div>
+              {fixture.actual?.candidates.length ? (
+                <ul>
+                  {fixture.actual.candidates.map((candidate) => (
+                    <li><code>{candidate.resource?.id ?? "?"}</code> {candidate.score.toFixed(3)}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p class="bd-muted">{t("routes.noCandidates")}</p>
+              )}
+            </div>
+          </div>
+          <pre><code>{command}</code></pre>
+        </details>
+      );
+    })}
+  </section>
+
+  <script>
+    const input = document.querySelector<HTMLInputElement>("#filter");
+    const cards = Array.from(document.querySelectorAll<HTMLElement>("[data-filter]"));
+    input?.addEventListener("input", () => {
+      const query = input.value.toLowerCase().trim();
+      for (const card of cards) {
+        card.style.display = !query || (card.dataset.filter ?? "").includes(query) ? "" : "none";
+      }
+    });
+  </script>
+</StarlightPage>

@@ -1,0 +1,36 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { loadModel, resourceHref } from "../lib/model";
+import { useTranslations, type Locale } from "../lib/i18n";
+import { CONCEPT_STEPS } from "../lib/content";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const model = loadModel();
+
+function byId(id: string) {
+  return model.resources.find((resource) => resource.id === id || resource.source_id === id);
+}
+---
+
+<StarlightPage frontmatter={{ title: t("concepts.title"), tableOfContents: false }}>
+  <p class="bd-muted">{t("concepts.lead")}</p>
+
+  <section class="bd-grid">
+    {CONCEPT_STEPS.map((step, index) => {
+      const resource = byId(step.id);
+      return (
+        <article class="bd-card">
+          <div class="bd-label">{t("concepts.step")} {index + 1}</div>
+          <h2>{step.title[lang]}</h2>
+          <p class="bd-muted">{step.text[lang]}</p>
+          {resource && <a href={resourceHref(resource, lang)}>{t("concepts.read")}</a>}
+        </article>
+      );
+    })}
+  </section>
+</StarlightPage>

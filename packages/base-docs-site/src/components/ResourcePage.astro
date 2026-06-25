@@ -1,0 +1,111 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { loadModel, loadRenderedSource, resourceHref, type DocsResource } from "../lib/model";
+import { repoBlobUrl, resourcePills } from "../lib/metadata.mjs";
+import { useTranslations, type Locale } from "../lib/i18n";
+
+interface Props {
+  resource: DocsResource;
+  target: string;
+  lang: Locale;
+}
+
+const { resource, target, lang } = Astro.props;
+const t = useTranslations(lang);
+const model = loadModel();
+const renderedSource = loadRenderedSource(model, resource, lang);
+// Starlight already renders the page title; strip the body's own leading H1 so it isn't shown twice.
+const bodyHtml =
+  renderedSource.type === "html"
+    ? renderedSource.content.replace(/<h1\b[^>]*>[\s\S]*?<\/h1>/i, "")
+    : renderedSource.content;
+const sourceUrl = repoBlobUrl(resource.path);
+const pills = resourcePills(resource, lang);
+const tocHeadings = (renderedSource.headings ?? resource.headings)
+  .filter((heading) => heading.depth >= 2 && heading.depth <= 3)
+  .map((heading) => ({ depth: heading.depth, slug: heading.slug, text: heading.text }));
+const backlinks = resource.incoming_links.slice(0, 20);
+---
+
+<StarlightPage
+  frontmatter={{ title: renderedSource.title ?? resource.title, description: resource.description ?? undefined }}
+  headings={tocHeadings}
+>
+  {pills.length > 0 && (
+    <div class="bd-pills" aria-label={t("resource.metadata")}>
+      {pills.map((pill) => <span class={`bd-pill bd-pill-${pill.kind}`}>{pill.label}</span>)}
+    </div>
+  )}
+
+  {lang !== "fr" && !renderedSource.translated && (
+    <p class="bd-untranslated">{t("resource.untranslated")}</p>
+  )}
+
+  {renderedSource.type === "html" ? (
+    <article set:html={bodyHtml} />
+  ) : (
+    <pre><code>{bodyHtml}</code></pre>
+  )}
+
+  <details class="bd-about">
+    <summary>{t("resource.about")}</summary>
+    <div class="bd-about-grid">
+      <div>
+        <div class="bd-label">{t("resource.source")}</div>
+        <code>{resource.path}</code>
+      </div>
+      <div>
+        <div class="bd-label">{t("resource.role")}</div>
+        <code>{resource.doc_role}</code>
+      </div>
+      <div>
+        <div class="bd-label">{t("resource.type")}</div>
+        <code>{resource.type}</code>
+      </div>
+      <div>
+        <div class="bd-label">{t("resource.sensitivity")}</div>
+        <code>{resource.sensitivity}</code>
+      </div>
+      <div>
+        <div class="bd-label">{t("resource.level")}</div>
+        <code>{resource.learning_level}</code>
+      </div>
+      <div>
+        <div class="bd-label">{t("resource.target")}</div>
+        <code>{target}</code>
+      </div>
+      {resource.audience.length > 0 && (
+        <div>
+          <div class="bd-label">{t("resource.audience")}</div>
+          {resource.audience.join(", ")}
+        </div>
+      )}
+    </div>
+    <div class="bd-actions">
+      <a class="bd-button" href={sourceUrl}>{t("resource.openSource")}</a>
+      <a class="bd-button" href={`${lang === "fr" ? "" : `/${lang}`}/explorer/`}>{t("resource.browseModel")}</a>
+    </div>
+    {backlinks.length > 0 && (
+      <>
+        <div class="bd-label">{t("resource.backlinks")}</div>
+        <ul>
+          {backlinks.map((link) => (
+            <li>
+              <a href={resourceHref({ id: link.source_id }, lang)}>{link.source_path}</a>{" "}
+              {lang === "fr" && <span class="bd-muted">«{link.label}»</span>}
+            </li>
+          ))}
+        </ul>
+      </>
+    )}
+    {resource.route_examples.length > 0 && (
+      <>
+        <div class="bd-label">{t("resource.routeExamples")}</div>
+        <ul>
+          {resource.route_examples.map((example) => <li>{example}</li>)}
+        </ul>
+      </>
+    )}
+    <p class="bd-muted">{t("resource.projectionNote")}</p>
+  </details>
+</StarlightPage>

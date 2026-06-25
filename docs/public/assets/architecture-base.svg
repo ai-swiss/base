@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 520" width="900" height="520" role="img" aria-labelledby="archi-titre">
+  <title id="archi-titre">Architecture de BASE: CLI et serveur MCP au-dessus du broker, cinq ports d'extension, fichiers Markdown comme source de vérité</title>
+  <defs>
+    <marker id="fleche" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, 'Segoe UI', sans-serif" fill="#1f2937">
+    <!-- Adaptateurs -->
+    <rect x="110" y="36" width="290" height="56" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
+    <text x="255" y="71" text-anchor="middle" font-size="18" font-weight="600">CLI (base)</text>
+    <rect x="500" y="36" width="290" height="56" rx="8" fill="#f3f4f6" stroke="#d1d5db"/>
+    <text x="645" y="71" text-anchor="middle" font-size="18" font-weight="600">Serveur MCP</text>
+    <line x1="255" y1="92" x2="255" y2="126" stroke="#2563eb" stroke-width="1.5" marker-end="url(#fleche)"/>
+    <line x1="645" y1="92" x2="645" y2="126" stroke="#2563eb" stroke-width="1.5" marker-end="url(#fleche)"/>
+    <!-- Broker -->
+    <rect x="60" y="132" width="780" height="88" rx="10" fill="#f3f4f6" stroke="#2563eb" stroke-width="1.5"/>
+    <text x="450" y="170" text-anchor="middle" font-size="20" font-weight="700">Broker</text>
+    <text x="450" y="198" text-anchor="middle" font-size="15" fill="#6b7280">inventaire, validation, routage, accès, propose/commit, trace</text>
+    <line x1="195" y1="220" x2="195" y2="262" stroke="#2563eb" stroke-width="1.5" marker-end="url(#fleche)"/>
+    <line x1="340" y1="220" x2="340" y2="262" stroke="#2563eb" stroke-width="1.5" marker-end="url(#fleche)"/>
+    <line x1="485" y1="220" x2="485" y2="262" stroke="#2563eb" stroke-width="1.5" marker-end="url(#fleche)"/>
+    <line x1="630" y1="220" x2="630" y2="262" stroke="#2563eb" stroke-width="1.5" marker-end="url(#fleche)"/>
+    <line x1="775" y1="220" x2="775" y2="262" stroke="#2563eb" stroke-width="1.5" marker-end="url(#fleche)"/>
+    <!-- Ports -->
+    <text x="60" y="299" font-size="14" fill="#6b7280">Ports</text>
+    <rect x="130" y="268" width="130" height="50" rx="6" fill="#f3f4f6" stroke="#d1d5db"/>
+    <text x="195" y="299" text-anchor="middle" font-size="15">frontmatter</text>
+    <rect x="275" y="268" width="130" height="50" rx="6" fill="#f3f4f6" stroke="#d1d5db"/>
+    <text x="340" y="299" text-anchor="middle" font-size="15">validators</text>
+    <rect x="420" y="268" width="130" height="50" rx="6" fill="#f3f4f6" stroke="#d1d5db"/>
+    <text x="485" y="299" text-anchor="middle" font-size="15">rankers</text>
+    <rect x="565" y="268" width="130" height="50" rx="6" fill="#f3f4f6" stroke="#d1d5db"/>
+    <text x="630" y="299" text-anchor="middle" font-size="15">policy</text>
+    <rect x="710" y="268" width="130" height="50" rx="6" fill="#f3f4f6" stroke="#d1d5db"/>
+    <text x="775" y="299" text-anchor="middle" font-size="15">auth</text>
+    <line x1="195" y1="318" x2="195" y2="374" stroke="#2563eb" stroke-width="1.5" marker-end="url(#fleche)"/>
+    <line x1="485" y1="318" x2="485" y2="374" stroke="#2563eb" stroke-width="1.5" marker-end="url(#fleche)"/>
+    <line x1="775" y1="318" x2="775" y2="374" stroke="#2563eb" stroke-width="1.5" marker-end="url(#fleche)"/>
+    <!-- Fichiers -->
+    <rect x="60" y="380" width="780" height="70" rx="10" fill="#f3f4f6" stroke="#d1d5db"/>
+    <text x="450" y="410" text-anchor="middle" font-size="17" font-weight="700">Fichiers Markdown</text>
+    <text x="450" y="434" text-anchor="middle" font-size="15" fill="#6b7280">agents, process, compétences, données</text>
+    <!-- Légende -->
+    <text x="450" y="492" text-anchor="middle" font-size="13.5" fill="#6b7280">Le broker applique les garanties, les ports sont les points d'extension, les fichiers restent la source de vérité.</text>
+  </g>
+</svg>

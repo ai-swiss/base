@@ -1,0 +1,54 @@
+[
+  {
+    "request": "Nouveau devis pour Dupont SA : deux jours de conseil et un site web vitrine",
+    "expect": {
+      "status": "routed",
+      "agent": "assistant-devis",
+      "process": "nouveau-devis"
+    }
+  },
+  {
+    "request": "Je dois préparer une proposition commerciale pour un prospect",
+    "expect": {
+      "status": "routed",
+      "agent": "assistant-devis",
+      "process": "nouveau-devis"
+    }
+  },
+  {
+    "request": "Bonjour, je veux configurer mon assistant devis et modifier mes conditions",
+    "expect": {
+      "status": "routed",
+      "agent": "assistant-devis",
+      "process": "configuration"
+    }
+  },
+  {
+    "request": "Première utilisation, aide-moi à paramétrer mes conditions commerciales",
+    "expect": {
+      "status": "routed",
+      "agent": "assistant-devis",
+      "process": "configuration"
+    }
+  },
+  {
+    "request": "le client conteste une facture déjà envoyée",
+    "expect": {
+      "status": "out_of_scope"
+    }
+  },
+  {
+    "request": "modifier un devis existant de Dupont",
+    "expect": {
+      "status": "needs_clarification",
+      "agent": "assistant-devis"
+    }
+  },
+  {
+    "request": "audit de mon assistant devis",
+    "expect": {
+      "status": "ambiguous",
+      "agent": "assistant-devis"
+    }
+  }
+]

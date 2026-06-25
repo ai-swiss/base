@@ -1,0 +1,72 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { loadModel, resourceHref, type DocsResource } from "../lib/model";
+import { useTranslations, type Locale } from "../lib/i18n";
+
+interface Props {
+  lang: Locale;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const model = loadModel();
+const examples = model.resources
+  .filter((resource) => resource.path.startsWith("exemples/") && resource.path.endsWith("README.md"))
+  .sort((a, b) => a.title.localeCompare(b.title));
+
+function exampleId(resource: DocsResource): string {
+  return resource.path.split("/")[1];
+}
+
+function fixturesFor(id: string) {
+  return model.route_fixtures.filter((fixture) => fixture.root === `exemples/${id}`);
+}
+
+function operationalFor(id: string) {
+  return model.resources.filter((resource) => resource.owning_example === id && resource.doc_role === "operational");
+}
+---
+
+<StarlightPage frontmatter={{ title: t("examples.title"), tableOfContents: false }}>
+  <p class="bd-muted">{t("examples.lead")}</p>
+
+  <section class="bd-grid">
+    {examples.map((resource) => {
+      const id = exampleId(resource);
+      const fixtures = fixturesFor(id);
+      const operational = operationalFor(id);
+      return (
+        <article class="bd-card">
+          <h2><a href={resourceHref(resource, lang)}>{resource.title}</a></h2>
+          {resource.description && <p class="bd-muted">{resource.description}</p>}
+          <p><code>{resource.path}</code></p>
+
+          {fixtures.length > 0 && (
+            <>
+              <h3>{t("examples.prompts")}</h3>
+              <ol>
+                {fixtures.slice(0, 3).map((fixture) => (
+                  <li>{fixture.request}</li>
+                ))}
+              </ol>
+            </>
+          )}
+
+          {operational.length > 0 && (
+            <>
+              <h3>{t("examples.operational")}</h3>
+              <ul>
+                {operational.slice(0, 6).map((item) => (
+                  <li><a href={resourceHref(item, lang)}>{item.title}</a> <span class="bd-muted">{item.type}</span></li>
+                ))}
+              </ul>
+            </>
+          )}
+
+          <h3>{t("examples.action")}</h3>
+          <p class="bd-muted">{t("examples.actionText")} <code>exemples/{id}/</code>.</p>
+        </article>
+      );
+    })}
+  </section>
+</StarlightPage>

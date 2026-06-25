@@ -1,0 +1,11 @@
+[
+  {
+    "id": "devis-chemin-imparfait",
+    "seedInput": "Avant de chiffrer, consulte les règles dans catalogue/regles.md puis prépare le devis.",
+    "goals": [
+      "Retrouver les règles de tarification malgré le chemin imparfait (suggestions ou recherche)",
+      "Préparer un devis fondé sur les règles réelles, sans inventer"
+    ],
+    "persona": "Un client qui cite un chemin de mémoire, approximativement."
+  }
+]

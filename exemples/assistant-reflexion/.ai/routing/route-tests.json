@@ -1,0 +1,22 @@
+[
+  {
+    "request": "Aide-moi à clarifier une décision que j'hésite à prendre",
+    "expect": { "status": "routed", "agent": "assistant-reflexion", "process": "clarifier-une-decision" }
+  },
+  {
+    "request": "Aide-moi à explorer la question de mon orientation",
+    "expect": { "status": "routed", "agent": "assistant-reflexion", "process": "explorer-une-question" }
+  },
+  {
+    "request": "Préparer une note de décision écrite pour le choix que j'ai fait",
+    "expect": { "status": "routed", "agent": "assistant-reflexion", "process": "preparer-une-note-de-decision" }
+  },
+  {
+    "request": "Configurer mon espace de réflexion et mes préférences",
+    "expect": { "status": "routed", "agent": "assistant-reflexion", "process": "configuration" }
+  },
+  {
+    "request": "Bonjour, je voudrais configurer mon espace de réflexion",
+    "expect": { "status": "routed", "agent": "assistant-reflexion", "process": "configuration" }
+  }
+]

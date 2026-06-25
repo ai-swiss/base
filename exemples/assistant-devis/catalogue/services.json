@@ -1,0 +1,12 @@
+{
+  "catalogue_services": [
+    {
+      "id": "SRV-001",
+      "nom": "[Nom du service]",
+      "description": "[Description courte du service]",
+      "categorie": "[Catégorie : conseil, développement, formation, etc.]",
+      "unite": "[forfait / jour / heure / mois / pièce]",
+      "prix_unitaire_chf": 0
+    }
+  ]
+}

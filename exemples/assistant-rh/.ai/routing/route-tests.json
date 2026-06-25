@@ -1,0 +1,14 @@
+[
+  {
+    "request": "Préparer un entretien d'embauche pour un poste de comptable",
+    "expect": { "status": "routed", "agent": "assistant-rh", "process": "preparer-entretien" }
+  },
+  {
+    "request": "Publier une offre d'emploi pour un développeur",
+    "expect": { "status": "routed", "agent": "assistant-rh", "process": "publier-offre" }
+  },
+  {
+    "request": "Configurer les informations de mon entreprise",
+    "expect": { "status": "routed", "agent": "assistant-rh", "process": "configuration" }
+  }
+]

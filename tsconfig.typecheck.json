@@ -1,0 +1,36 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "allowJs": true,
+    "noEmit": true,
+    "strict": true,
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": [
+      "node"
+    ],
+    "lib": [
+      "ES2022"
+    ],
+    "noImplicitAny": false,
+    "useUnknownInCatchVariables": false,
+    "noUnusedLocals": true
+  },
+  "include": [
+    "tools/**/*.mjs",
+    "packages/*/index.mjs",
+    "packages/*/src/**/*.mjs"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/node_modules",
+    "mcp",
+    "tools/studio/ui",
+    "tests",
+    "exemples",
+    "**/*.test.mjs"
+  ]
+}
