@@ -17,7 +17,7 @@ jobs:
         # Node 20 test runner flags). Coverage/freshness/pack gates run once, on the newest Node.
         node: ['18', '20', '22', '24']
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
@@ -94,7 +94,7 @@ jobs:
     name: Static type-check (JS)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
@@ -113,7 +113,7 @@ jobs:
       run:
         working-directory: tools/studio/ui
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
@@ -133,7 +133,7 @@ jobs:
       run:
         working-directory: tools/studio/ui
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
           node-version: '24'
@@ -175,7 +175,7 @@ jobs:
       run:
         working-directory: mcp
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
@@ -200,7 +200,7 @@ jobs:
     # suite ("a test cites it" and "the suite passes" hold together).
     needs: [core, mcp]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           # Full history so the ID-immutability, ratchet and spec-sync gates can diff against the base.
           fetch-depth: 0
@@ -253,7 +253,7 @@ jobs:
     # request into a mechanism. Provenance held by goodwill is not provenance.
     if: github.event_name == 'pull_request'
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           # Full history so the PR commit range can be walked against the base branch.
           fetch-depth: 0
