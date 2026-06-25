@@ -42,7 +42,7 @@ jobs:
       # Software Bill of Materials (CycloneDX), attached as a build artifact for audit.
       - name: Generate SBOM (CycloneDX)
         run: npx --yes @cyclonedx/cyclonedx-npm@latest --omit dev --output-file sbom.cdx.json
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: sbom
           path: sbom.cdx.json
