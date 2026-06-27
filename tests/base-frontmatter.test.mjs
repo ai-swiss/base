@@ -197,3 +197,17 @@ describe("parseScalar", () => {
     assert.equal(parseScalar('"keep # inside"'), "keep # inside");
   });
 });
+
+describe("frontmatter — CRLF line endings (Windows)", () => {
+  it("parses a file with CRLF line endings identically to LF", () => {
+    const lf = "---\nid: demo\ntype: agent\ntitle: Demo\ndescription: D.\n---\nbody text\n";
+    const crlf = lf.replace(/\n/g, "\r\n");
+    const rLf = parseFrontmatter(lf);
+    const rCrlf = parseFrontmatter(crlf);
+    assert.deepEqual(rCrlf.errors, [], "CRLF file must not produce parse errors");
+    assert.equal(rCrlf.data.id, "demo");
+    assert.equal(rCrlf.data.type, "agent");
+    assert.equal(rCrlf.data.title, "Demo");
+    assert.equal(rCrlf.body.trim(), rLf.body.trim(), "body must match LF version");
+  });
+});

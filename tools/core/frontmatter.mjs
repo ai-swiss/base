@@ -23,11 +23,11 @@ function makeError(line, code, detail) {
 }
 
 export function parseFrontmatter(content) {
-  if (!content.startsWith(FRONTMATTER_DELIMITER + "\n")) {
+  if (!content.startsWith(FRONTMATTER_DELIMITER + "\n") && !content.startsWith(FRONTMATTER_DELIMITER + "\r\n")) {
     return { data: {}, raw: "", body: content, errors: [] };
   }
 
-  const allLines = content.split("\n");
+  const allLines = content.split(/\r?\n/);
   const end = allLines.findIndex((line, index) => index > 0 && line.trim() === FRONTMATTER_DELIMITER);
   if (end === -1) {
     return {

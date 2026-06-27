@@ -4,6 +4,11 @@ Tous les changements notables de BASE sont documentés ici. Le format suit l'esp
 
 BASE suit le [Semantic Versioning](https://semver.org/lang/fr/): la surface publique stable (format des ressources, commandes CLI, outils MCP, schémas de projection, contrat des points d'extension) ne casse pas sans incrément majeur. Détail: [Versions et stabilité](docs/reference/versions-et-stabilite.md).
 
+## [Unreleased]
+
+### Corrigé
+- **frontmatter**: `parseFrontmatter()` retournait `data: {}` et laissait le frontmatter dans le corps sur les fichiers à fins de ligne CRLF (Windows). Le test d'entrée `startsWith("---\n")` et le `split("\n")` ne tenaient pas compte du `\r`. Corrigé en acceptant `\r\n` et en splittant sur `/\r?\n/`; Studio affiche désormais les métadonnées correctement sur Windows.
+
 ## [1.0.0] - 2026-06-25
 
 Première version publique de BASE: un cadre **local-first** et **ouvert** pour structurer la collaboration humain-IA. Le savoir métier vit dans des fichiers Markdown que vous possédez; un cœur **sans dépendance tierce** (Node 18 ou plus) médie les actions sensibles; et tout ce qui sort vers un outil tiers reste un **choix explicite**. La promesse tient en une ligne: l'IA travaille à partir de ce que vous avez structuré plutôt que de suppositions, et vous gardez la main sur ce qu'elle voit, ce qu'il faut vérifier et où elle s'arrête.
