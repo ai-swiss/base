@@ -90,6 +90,33 @@ describe("base init (CLI)", () => {
     assert.match(await fs.readFile(path.join(tmpDir, ".ai", "base.mjs"), "utf8"), /BASE launcher/);
   });
 
+  it("an existing workspace missing its tool artifacts gets exactly the missing ones healed", async () => {
+    // Set up a minimal workspace with two roots but no CLAUDE.md / AGENTS.md.
+    for (const client of ["client-a", "client-b"]) {
+      await fs.mkdir(path.join(tmpDir, client, ".ai", "agents", "x"), { recursive: true });
+      await fs.writeFile(
+        path.join(tmpDir, client, ".ai", "agents", "x", "AGENT.md"),
+        "---\nid: x\ntype: agent\ndescription: X.\n---\n# X\n",
+      );
+    }
+    await fs.writeFile(
+      path.join(tmpDir, "base.workspace.json"),
+      JSON.stringify({ schema_version: "base.workspace.v1", roots: [{ id: "client-a", dir: "client-a" }, { id: "client-b", dir: "client-b" }] }),
+    );
+    // CLAUDE.md is absent — doctor would flag missing_tool_artifacts.
+    await assert.rejects(() => fs.access(path.join(tmpDir, "CLAUDE.md")));
+
+    const dry = await run("init", "--json");
+    const parsed = JSON.parse(dry.stdout.slice(dry.stdout.indexOf("{")));
+    assert.equal(parsed.detection.type, "workspace");
+    const planned = parsed.plan.map((e) => e.path);
+    assert.ok(planned.includes("CLAUDE.md"), "workspace healing proposes missing CLAUDE.md");
+    assert.equal(parsed.applied, false);
+
+    await run("init", "--yes");
+    assert.match(await fs.readFile(path.join(tmpDir, "CLAUDE.md"), "utf8"), /point d'entrée pour Claude Code/);
+  });
+
   it("a collection of roots gets a workspace file (--json exposes the plan)", async () => {
     for (const client of ["client-a", "client-b"]) {
       await fs.mkdir(path.join(tmpDir, client, ".ai", "agents", "x"), { recursive: true });

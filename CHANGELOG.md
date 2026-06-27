@@ -7,6 +7,7 @@ BASE suit le [Semantic Versioning](https://semver.org/lang/fr/): la surface publ
 ## [Unreleased]
 
 ### Corrigé
+- **base init**: sur un workspace existant, les artefacts d'outils manquants (ex. `CLAUDE.md`) n'étaient pas proposés. Le healing ne couvrait que `detection.type === "root"`; étendu à `"workspace"` pour respecter FR-INIT-004. (Fixes #12)
 - **base-docs-site**: le frontmatter YAML s'affichait en clair dans le corps des pages sur Windows. `stripFrontmatter()` testait `startsWith("---\n")` sans tenir compte des fins de ligne CRLF (`\r\n`). Corrigé en acceptant les deux, et en splittant sur `/\r?\n/` pour éviter les `\r` parasites dans le contenu rendu. (Fixes #10)
 
 ## [1.0.0] - 2026-06-25
