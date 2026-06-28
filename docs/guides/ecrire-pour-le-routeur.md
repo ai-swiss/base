@@ -14,6 +14,15 @@ keywords: [routage, use_when, examples, avoid_when, fixtures, route-test, formul
 
 Si une demande comme «Prépare un devis pour Dupont SA» n'atteint pas le bon process, votre assistant reste muet ou répond à côté: c'est la formulation de vos fichiers qui décide. Ce guide s'adresse aux créateurs d'assistants: il explique comment le routeur lit vos fichiers, comment écrire pour lui et comment vérifier que vos demandes arrivent à bon port. Aucune compétence technique n'est requise, sauf une commande de terminal pour tester.
 
+```mermaid
+flowchart TD
+    A[Formuler use_when avec les mots des utilisateurs] --> B[Ajouter des routing.examples varies]
+    B --> C[Ecarter les demandes voisines avec avoid_when]
+    C --> D{La demande route bien ?}
+    D -->|Non| A
+    D -->|Oui| E[Figer le comportement avec des route-tests]
+```
+
 ## Comment le routeur lit vos fichiers
 
 Le routeur ne comprend pas le sens de votre texte: il **compare des mots**. Pour chaque process, il construit un texte de routage à partir du `use_when` (le signal le plus fort), complété par les `routing.examples`; à défaut, il se rabat sur la description, le titre puis les mots-clés. Une demande route bien quand ses mots recoupent ce texte. En pratique, votre `use_when` doit surtout contenir **les mots que vos utilisateurs emploieraient**, et non une formulation élégante.

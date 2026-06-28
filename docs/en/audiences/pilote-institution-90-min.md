@@ -1,4 +1,4 @@
-<!-- fr-synced: ba0e8142a129919bb0ab5e6d55ee783fa5528676 -->
+<!-- fr-synced: 05e7b530b270929c91cdca4e4b11fde9564a9a10 -->
 # Institutional pilot, 90 minutes, no personal data
 
 Before committing an institution to an AI tool, you want to judge for yourself, with nothing at risk: this pilot lets you see BASE with your own eyes, **with no citizen's personal data whatsoever**, and decide in full awareness whether to go further. Concretely, it is a **time-boxed pilot** (about 90 minutes) that a government office can run on real commands: not putting a service into production, but seeing what BASE does, what it refuses to do without you, and what stays local. All it requires is working on internal, non-personal procedures.
@@ -38,6 +38,20 @@ Before any command, set the pilot's rule, in writing, for the team:
 - If a candidate document contains the slightest personal element, it is **out of pilot**.
 
 This rule is an **organizational *consigne***, not a mechanism: BASE does not know, on your behalf, that a text contains personal data. It is up to you to filter upstream. BASE then helps keep the boundary visible (the `sensitivity` metadata, egress control), but the decision to bring content in is yours.
+
+Overview of the pilot flow:
+
+```mermaid
+flowchart TD
+    E0[Step 0: no personal data] --> P1[Phase 1: see the shape of an assistant]
+    P1 --> P2[Phase 2: starter and import by diff]
+    P2 --> P3[Phase 3: validate and route]
+    P3 --> D{The router}
+    D -->|proposes agent and process| P4[Phase 4: local boundary and egress]
+    D -->|abstains| P4
+    P4 --> C[End-of-pilot checklist]
+    C --> A[Before any real data: AIPD/DPIA]
+```
 
 ## Phase 1: see the shape of an assistant (15 min)
 

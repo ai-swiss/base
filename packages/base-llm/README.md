@@ -24,3 +24,14 @@ console.log(getText(message));
 ```
 
 Tool-calling, typed errors (`.code`, `.retriable`), bounded retries with jitter, deadlines and abort are all handled in one tested transport layer (mirrors `@ai-swiss/base-ranker-semantic`). Choosing a model is always an explicit decision — there is no "default/best model" helper.
+
+## Composition: ensembles and monitoring
+
+Because every model is the same port, models compose. These meta-models each wrap one or more models and are themselves models, so they drop in anywhere a single model does (settings, Studio, the CLI):
+
+- [Mixture of Agents](docs/moa.md) — `createMoaModel`: N proposers answer in parallel, one aggregator synthesizes their drafts.
+- [Triumvirat](docs/triumvirat.md) — `createTriumviratModel`: a coordinator assigns Thinker / Worker / Verifier roles over a swappable pool, looping until a verifier accepts (the Sakana Fugu / TRINITY architecture).
+- [Ensembles in settings](docs/ensembles-settings.md) — configure MoA and Triumvirat from `.ai/studio.settings.json` without code.
+- [Langfuse monitoring](docs/langfuse.md) — `createLangfuseModel`: wrap any model to trace input, output, token usage, latency and errors to Langfuse, with zero added dependencies.
+
+Each page includes a diagram, an options table, and a runnable snippet.

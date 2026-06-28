@@ -1,4 +1,4 @@
-<!-- fr-synced: b25490d0f222545d9a8eeccac54151c1f25f5bac -->
+<!-- fr-synced: f338f764998f078a3f148c1681946fe159d0a91c -->
 # Migrate YOUR content
 
 *⏱ ~15 min · module 9/9, Practitioner track*
@@ -19,6 +19,21 @@ You have built up a "Back home" list across the modules. That's your backlog.
    - [ ] the data (rates, fact sheets) is separated from the processes that use it;
    - [ ] the steps with a human decision carry an `[A VALIDER]`;
    - [ ] anything that can expire carries a date (`valid_until`).
+
+```mermaid
+flowchart TD
+    A[Ask: import my existing procedures] --> B[The router launches importer-l-existant]
+    B --> C[Each conversion proposed as a diff]
+    C --> D{You validate the diff}
+    D -->|yes| E[Document imported]
+    D -->|no| C
+    E --> F[Questioning protocol]
+    F --> G[Import checklist]
+    G --> H{All passes}
+    H -->|yes| I[Import valid]
+    H -->|no| J[Refine the use_when or separate data and process]
+    J --> F
+```
 
 ✅ **Check**: for each imported document, the questioning protocol passes (cites the right doc, admits ignorance, routes correctly) AND the checklist is ticked.
 

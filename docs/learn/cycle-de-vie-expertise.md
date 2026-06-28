@@ -17,6 +17,18 @@ keywords: [cycle de vie, importer, evaluer, gouverner, vieillir, friction, docto
               validité)   (modèles)      abstentions)
 ```
 
+```mermaid
+flowchart LR
+    A[Importer l'existant] --> B[Editer]
+    B --> C[Evaluer]
+    C --> D[Executer chez l'hote]
+    D --> E[Retour du terrain]
+    E --> F[Gouverner l'egress]
+    F --> G[Vieillir sous surveillance]
+    G --> H[Doctor, sante]
+    H --> A
+```
+
 ## 1. Importer l'existant
 
 On part rarement d'une page blanche. Le process [`importer-l-existant`](../../.ai/agents/createur-agent/skills/processes/importer-l-existant/SKILL.md)

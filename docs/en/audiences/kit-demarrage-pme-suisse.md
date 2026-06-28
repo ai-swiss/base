@@ -1,4 +1,4 @@
-<!-- fr-synced: bdb5765a214ca14d12750a225cd15c728c49e9c6 -->
+<!-- fr-synced: 1d39f832c6d003d277090020b9bf68b30b09fe48 -->
 # Getting started with BASE in a Swiss SME
 
 Getting a small Swiss team to work with AI without going off the rails or rolling out a heavyweight platform: that is what is at stake here. This kit gives you the practicable minimum to start cleanly with BASE and frame a first, controlled use. It is not a substitute for legal advice, a security policy, or document governance.
@@ -92,5 +92,19 @@ A BASE use is ready for the team when:
 3. a responsible person reviews the outputs;
 4. `base validate` passes;
 5. the team knows what to do when the assistant marks `[A VALIDER]` or `[ATTENTION]`.
+
+```mermaid
+flowchart TD
+    A[Real workflow works] -->|yes| B[Allowed data written down]
+    B -->|yes| C[Responsible person reviews]
+    C -->|yes| D[base validate passes]
+    D -->|yes| E[Team knows how to react to markers]
+    E -->|yes| F[Ready for the team]
+    A -->|no| X[Keep in experimentation]
+    B -->|no| X
+    C -->|no| X
+    D -->|no| X
+    E -->|no| X
+```
 
 If any one of these is missing, keep the use in experimentation.
