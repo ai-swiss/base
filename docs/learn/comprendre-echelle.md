@@ -17,6 +17,15 @@ n'avez pas besoin, ou heurter un mur de lenteur quand le corpus grossit. Cette p
 de décision chiffrée, des petits projets aux corpus volumineux, pour savoir quand le scan en mémoire
 suffit, quand un index local devient utile, et quand une base externe se justifie.
 
+```mermaid
+flowchart TD
+    A[Quelle est la taille du corpus ?] --> B{Centaines a quelques milliers ?}
+    B -->|Oui| C[Scan en memoire avec routeRequest]
+    B -->|Non| D{Dizaines de milliers ?}
+    D -->|Oui| E[Index local avec base-index-local]
+    D -->|Non| F[Base externe dediee, OpenSearch ou base vectorielle]
+```
+
 ## Quand le scan en mémoire suffit
 
 Par défaut, `routeRequest` lit les ressources et les score en mémoire. Cette approche est simple, sans

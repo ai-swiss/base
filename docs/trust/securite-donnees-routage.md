@@ -28,6 +28,22 @@ Avec un provider configuré, deux types de texte peuvent être embeddés:
 
 ## Réduire l'exposition
 
+Le schéma suivant résume ce qui quitte la machine selon la configuration:
+
+```mermaid
+flowchart TD
+    A[Routage BASE] --> B{Un embedder est il configuré ?}
+    B -->|Non| C[Tout reste local, aucun envoi]
+    B -->|Oui| D{Vecteurs ressource pré calculés ?}
+    D -->|Oui| E[Seule la requête est envoyée]
+    D -->|Non| F[Requête et texte des ressources envoyés]
+    E --> G{Quel embedder ?}
+    F --> G
+    G -->|Ollama local| H[Aucune sortie réseau]
+    G -->|Proxy interne| I[Passerelle contrôlée, auth, mTLS, DLP]
+    G -->|Provider public| J[Texte envoyé au fournisseur]
+```
+
 - **Pré-calculez** les vecteurs ressource dans un environnement maîtrisé (`@ai-swiss/base-index-local`)
   et servez-les via `getResourceEmbedding`. À la requête, **seule la requête** est envoyée.
 - **Réduisez `textOf`** au minimum qui route bien; souvent `route_text` seul suffit:

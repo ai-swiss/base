@@ -1,4 +1,4 @@
-<!-- fr-synced: 8b18cba1be46653b92d1a568c7aef18fc79e5ec6 -->
+<!-- fr-synced: 54f945b325d420c33afb1ca56d89d61d651a0abd -->
 # Have your AI install BASE
 
 Installing BASE can be your AI's job, not yours: you walk away with a ready-to-use
@@ -48,6 +48,23 @@ Steps; check each output before continuing:
 
 Guardrails: NEVER overwrite an existing file; do not install anything else without
 asking me; if a step fails, show me the exact error instead of improvising.
+```
+
+Here is the flow your AI follows:
+
+```mermaid
+flowchart TD
+  A[Paste the block into the AI tool] --> B{Node 18 or later ?}
+  B -- No --> C[Install Node from nodejs.org]
+  C --> A
+  B -- Yes --> D{git available ?}
+  D -- Yes --> E[Clone the framework into BASE_DIR]
+  D -- No --> F[Download and unzip the ZIP]
+  E --> G[Preview the initialization HERE]
+  F --> G
+  G --> H[Initialize with explicit consent]
+  H --> I[Verify whereis and CLAUDE.md]
+  I --> J[Workspace ready]
 ```
 
 ## What happens next

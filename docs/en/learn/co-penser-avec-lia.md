@@ -1,4 +1,4 @@
-<!-- fr-synced: 223831703c2c361a52564a5edaf33d758f90635a -->
+<!-- fr-synced: 254eaff1359db085b870b149459eb5dd80ce822b -->
 # Why BASE
 
 > **The real question is not where your servers are, but who owns the articulation of your thinking with AI.**
@@ -41,6 +41,14 @@ Verifying must not drown you. A strong structure upstream makes verification lig
 - **Provide a shared memory.** A general-purpose chat model masters a great many verifiable domains, and knows nothing of yours. Two real shortcomings follow. First, by default, it does not share your memory: every exchange starts from scratch. Second, its relationship to language is underspecified, which is both its strength (it adapts to anything) and its weakness (it guesses instead of knowing). BASE addresses both: memory becomes a simple file structure; language becomes an explicit articulation, set down in black and white rather than left to guesswork.
 
 The operational form is a **co-thinking loop**: state the goal and the constraints, generate, verify against an explicit check, revise. You start again, and the structure carries the context so each turn stays light.
+
+```mermaid
+flowchart LR
+    A[State the goal and the constraints] --> B[Generate]
+    B --> C[Verify against an explicit check]
+    C --> D[Revise]
+    D --> A
+```
 
 ## Fine-grained control is what makes for efficiency
 

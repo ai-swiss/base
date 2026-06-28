@@ -122,6 +122,17 @@ Organiser une sortie pour notre groupe de 30 personnes
 
 💡 **Pourquoi ça a marché**: un process orchestre, une **compétence** factorise un savoir-faire réutilisable, un **modèle** porte la forme du livrable. Le routeur ne lit que le frontmatter (use_when, examples); le corps, lui, pointe vers la compétence et le modèle, que le modèle de langage applique ensuite. Le `[A VALIDER]` dans le modèle demande qu'un humain tranche le chiffre: la consigne est que la génération s'arrête plutôt que de décider à votre place.
 
+```mermaid
+flowchart TD
+    A[Demande du visiteur] --> B[Routeur lit le frontmatter, use_when et examples]
+    B --> C[Process reserver-une-sortie-groupe]
+    C --> D[Consulte la competence parler-au-visiteur]
+    C --> E[Remplit le modele offre-groupe]
+    E --> F[Document, PLACEHOLDERS remplis]
+    F --> G{Total marque A VALIDER}
+    G --> H[Validation humaine]
+```
+
 🔁 **Chez vous**: quel document répétitif de votre métier (devis, courrier-type, compte rendu) gagnerait à devenir un modèle à trous? Quel savoir-faire (un ton, des règles) mérite une compétence réutilisable?
 
 → **Et maintenant**: [Module 5: les données qui périment](praticien-5-donnees-qui-periment.md): le cycle de vie d'une expertise.

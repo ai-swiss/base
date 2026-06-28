@@ -53,6 +53,13 @@ Pour chaque marqueur: son sens, le moment où le poser, et qui le ferme.
 - **Forme enrichie (enjeux élevés).** Quand le choix a des conséquences importantes (montant élevé, engagement ferme, donnée difficile à corriger), on documente l'alternative écartée, le niveau de confiance et le coût d'un retour en arrière, par exemple: `[DECISION: Arche florale à 1100 CHF | Pivoines plus coûteuses | Alternative: roses standard 850 CHF | Confiance: haute | Réversibilité: faible (devis à refaire)]`. Vocabulaire suggéré, lu par l'humain comme par l'agent (ce n'est pas un champ analysé par le scanner): **Confiance: haute | moyenne | basse**, **Réversibilité: facile | moyenne | difficile**.
 - **Règle d'escalade.** Un agent qui s'apprête à figer un `[DECISION]` en **confiance basse** *ou* dont le retour en arrière serait **difficile** ne tranche pas seul: il pose un `[A VALIDER]` et laisse l'humain décider. On automatise ce qui est sûr et facilement réversible; on remonte le reste. C'est une convention de jugement, pas une syntaxe imposée.
 
+```mermaid
+flowchart TD
+    A[Choix validé, prêt à figer en DECISION] --> B{Confiance basse ou retour en arrière difficile ?}
+    B -->|Oui| C[Poser un A VALIDER, laisser l'humain décider]
+    B -->|Non| D[Automatiser, figer le DECISION]
+```
+
 ### Règles communes aux marqueurs métier
 
 - Ils vivent dans les **documents générés** (devis, fiches clients, rapports) et dans le **journal**, jamais dans les fichiers du framework (`AGENT.md`, `SKILL.md`, templates) ni dans la spec.

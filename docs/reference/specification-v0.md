@@ -53,6 +53,16 @@ La seule partie de la v0 qui reste prospective est la cible de portabilité entr
 2. **Couche intermédiaire**: la projection compile le noyau vers le format natif de chaque harness (sortie générée, jamais source); la réalisation lie chaque intention au meilleur mécanisme offert par le harness, sinon retombe sur le broker, et enregistre le niveau atteint.
 3. **Déclaration d'outil**: par agent, harness et intention, le niveau réellement tenu, calculable plutôt que rédactionnel. C'est ce que projette déjà `.ai/tools.md`.
 
+```mermaid
+flowchart TD
+    A[Noyau portable: Markdown et frontmatter YAML] --> B[Projection: compile vers le format natif du harness]
+    B --> C{Le harness offre le mecanisme?}
+    C -->|Oui| D[Realisation: lie l'intention au mecanisme natif]
+    C -->|Non| E[Repli sur le broker]
+    D --> F[Declaration d'outil: niveau reellement tenu]
+    E --> F
+```
+
 Le broker est la réalisation de repli: ce qu'un harness ne fait pas nativement, le broker le prend en charge dès lors que l'action passe par lui (confinement, dry-run, trace, écriture médiée). Une intention comme `requires_confirmation` n'atteint un niveau strict que pour les actions qui passent effectivement par lui.
 
 Cible de migration documentée: un dialecte sémantique unique (`base.resource.v2`) qui absorberait le dialecte ressource et le dialecte skill aujourd'hui distincts; les frontmatter natifs deviendraient des projections, générées et vérifiées en CI comme tout artefact dérivé.

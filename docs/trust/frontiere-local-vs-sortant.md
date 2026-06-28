@@ -48,6 +48,17 @@ La frontière est gardée à deux endroits, par deux autorités distinctes.
 
 Un exemple concret. Une fiche client contient un IBAN, et vous la marquez `confidential`. Vous demandez à votre assistant, branché par le broker, de rédiger un rappel de paiement avec un modèle distant. Avant l'appel, BASE voit le marqueur, retient la fiche, et l'assistant travaille sans que l'IBAN parte vers le fournisseur. La donnée sensible ne quitte pas votre machine, et vous n'avez rien eu à surveiller.
 
+La décision d'égress suit ce cheminement avant tout appel à un modèle distant:
+
+```mermaid
+flowchart TD
+    A["Demande vers un modèle distant"] --> B{"Chemin médié par le broker?"}
+    B -->|Non| C["Vous restez l'autorité d'égress (pas de retenue automatique)"]
+    B -->|Oui| D{"Ressource confidential ou racine local-only?"}
+    D -->|Oui| E["Retenue avant l'appel (la donnée ne part pas)"]
+    D -->|Non| F["Transmission autorisée (défaut permissif)"]
+```
+
 **Portée exacte du mécanisme.** La retenue opère sur les chemins médiés par le broker, là où BASE prépare ce qui part vers le modèle: le serveur MCP, le chat du Studio, l'évaluation. En ligne de commande directe (par exemple `base open` d'une ressource, puis copier-coller vers un outil IA), c'est vous qui restez l'autorité d'égress: aucune retenue automatique n'opère, par conception. Et la retenue se déclenche sur le **drapeau explicite `confidential`** d'une ressource (ou une racine locale uniquement), pas sur la taxonomie `sensitivity`: une donnée classée `restricted` ou `sensitive` mais non marquée `confidential` n'est pas retenue. Marquez `confidential` toute ressource qui ne doit jamais atteindre un modèle distant. Enfin, le **défaut est permissif**: une racine est en politique d'égress `any` sauf déclaration contraire, donc hors ressources `confidential` son contenu peut être transmis; déclarez la racine `local-only` dans `base.config.json` pour tout retenir vers un modèle distant.
 
 En résumé, l'institution décide où vont les données au niveau du fournisseur; BASE empêche, au niveau du broker, qu'une ressource explicitement confidentielle ou locale parte vers un modèle distant.

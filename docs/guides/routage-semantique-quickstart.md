@@ -25,6 +25,19 @@ en son sein, la **qualité du classement** des candidats: un ranker classe, mais
 décide. Vous passerez par trois chemins, du plus simple au plus robuste; commencez par le premier,
 n'allez plus loin que si vous en avez besoin.
 
+```mermaid
+flowchart TD
+    D["Demande"] --> V{"Quelle voie (config)"}
+    V -->|"Defaut"| V1["Voie 1: index genere + plancher mots-cles"]
+    V -->|"Opt-in, grands catalogues"| V2["Voie 2: embeddings + petit modele local"]
+    V1 --> Q["Qualite du classement (3 chemins)"]
+    Q --> C1["Chemin 1: zero config (lexical + semanticHybrid)"]
+    C1 --> C2["Chemin 2: embeddings reels"]
+    C2 --> C3["Chemin 3: index local optionnel"]
+    V1 --> R["Le routeur decide: routed, ambiguous, needs_clarification, out_of_scope"]
+    V2 --> R
+```
+
 Le routage BASE choisit le workflow primaire, pas toutes les ressources possibles. La chaîne complète
 est la suivante: choisir un agent, router vers un process, puis ouvrir les compétences, tools, templates,
 documents ou données dont ce process a besoin. Pour la doctrine complète, voir

@@ -29,6 +29,19 @@ vous passez un `embed` à `createSemanticRanker`, et BASE n'en impose **aucun** 
 BASE ne fournit volontairement **aucun** helper «meilleur provider»: figer une préférence technique
 dans le cœur reviendrait à choisir à votre place.
 
+```mermaid
+flowchart TD
+    A[Choisir un provider d'embeddings] --> B{Le texte peut-il sortir du perimetre?}
+    B -->|Non, confidentialite maximale| C[Local Ollama]
+    B -->|Oui| D{Gros corpus a indexer?}
+    D -->|Oui| E[Pre-calcule via index]
+    D -->|Non| F{Besoin de gouvernance centralisee?}
+    F -->|Oui| G[Gateway d'entreprise]
+    F -->|Non| H{Pile ML maison ou modele specialise?}
+    H -->|Oui| I[Modele interne]
+    H -->|Non| J[Cloud OpenAI-like]
+```
+
 ## Les critères
 
 - **Confidentialité.** Le texte sort-il de votre périmètre? Local et gateway interne le gardent;

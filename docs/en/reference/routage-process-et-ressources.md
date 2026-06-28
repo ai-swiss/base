@@ -1,7 +1,19 @@
-<!-- fr-synced: f79672bf1a18eba5830ee0e2ef78d8e4b5898dfa -->
+<!-- fr-synced: c192630befb37a2e09652f9440e6e5fc6841ed8a -->
 # Routing a request to the right process (and opening the right resources)
 
 A misrouted request loads everything, mixes everything together, and drowns the decisions that matter under a wall of instructions. BASE avoids this by distinguishing three gestures that AI tools often conflate: choosing an agent, routing to a process, opening the resources. Keeping them apart keeps what is actually being decided in plain sight. If you are building or using a BASE and want to know how a request finds its way, this page shows it.
+
+```mermaid
+flowchart TD
+    A[User request] --> B{Agent known ?}
+    B -->|Yes| C[Load AGENT.md]
+    B -->|No| D{Process known ?}
+    D -->|Yes| E[Point at SKILL.md]
+    D -->|No| F[base route]
+    F --> G{Route found ?}
+    G -->|Yes| H[agent then process]
+    G -->|No| I[out_of_scope, fallback]
+```
 
 ## 1. Choosing an agent
 

@@ -35,6 +35,14 @@ Quelles sont mes options ?
 3. *«Vous avez une plage où se baigner?»*: une vraie question touristique, mais aucun process ne correspond.
 4. *«Quelles sont mes options?»*: une demande d'aide générale.
 
+```mermaid
+flowchart TD
+    A[Demande du client] --> B{Intention reconnue ?}
+    B -->|Process correspondant| C[Route vers la bonne tâche]
+    B -->|Aucun process, info manquante| D[S'abstient et demande de préciser]
+    B -->|Demande d'aide générale| E[Propose un petit menu d'options]
+```
+
 ✅ **Vérifiez**: l'assistant doit, en substance: (1-2) entrer dans la bonne tâche; (3) ne PAS inventer une plage et demander de préciser ce que vous cherchez plutôt que de deviner; (4) proposer un petit menu d'options. Les deux issues de (3) sont instructives: voir Pourquoi.
 
 💡 **Pourquoi ça a marché**: le bon process est choisi par l'intention, pas par des mots-clés. Au palier consignes (sans CLI/MCP), c'est le modèle qui suit le routeur écrit dans CLAUDE.md: il PEUT déborder et improviser une réponse à «une plage?» au lieu de demander à préciser. C'est justement la limite que supprime le routage déterministe (la lettre, la mise à niveau).

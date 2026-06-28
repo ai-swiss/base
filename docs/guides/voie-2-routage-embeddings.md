@@ -26,6 +26,18 @@ si vous l'avez décidé.
 Les deux voies sont indépendantes: la Voie 2 n'est pas un étage au-dessus de la Voie 1, c'est une autre
 voie que la configuration sélectionne.
 
+```mermaid
+flowchart TD
+    A[Demande de routage] --> B{Voie configurée}
+    B -->|Voie 1 par défaut| C[L'assistant lit l'index et choisit]
+    C --> D[Plancher par mots-clés, filet hors-ligne]
+    B -->|Voie 2, deux modèles renseignés| E[Les embeddings retrouvent les candidats proches]
+    E --> F[Le petit modèle raffineur lit les candidats]
+    F --> G[Choisit un process ou demande une précision]
+    E -.modèles injoignables.-> C
+    F -.modèles injoignables.-> C
+```
+
 ## En avez-vous besoin?
 
 Soyez honnête avec vous-même avant d'installer quoi que ce soit.

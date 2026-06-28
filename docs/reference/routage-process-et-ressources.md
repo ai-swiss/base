@@ -14,6 +14,18 @@ keywords: [routage, process, agent, ressources, skills, competences, outils, doc
 
 Une demande mal aiguillée charge tout, mélange tout et noie les décisions qui comptent sous un mur d'instructions. BASE l'évite en distinguant trois gestes que les outils d'IA confondent souvent: choisir un agent, router vers un process, ouvrir les ressources. En les séparant, on garde sous les yeux ce qui se décide vraiment. Si vous construisez ou utilisez un BASE et voulez savoir comment une demande trouve son chemin, cette page le montre.
 
+```mermaid
+flowchart TD
+    A[Demande utilisateur] --> B{Agent connu ?}
+    B -->|Oui| C[Charger AGENT.md]
+    B -->|Non| D{Process connu ?}
+    D -->|Oui| E[Pointer SKILL.md]
+    D -->|Non| F[base route]
+    F --> G{Route trouvee ?}
+    G -->|Oui| H[agent puis process]
+    G -->|Non| I[out_of_scope, repli fallback]
+```
+
 ## 1. Choisir un agent
 
 Quand vous savez quel assistant utiliser, le plus simple est de le sélectionner directement:
