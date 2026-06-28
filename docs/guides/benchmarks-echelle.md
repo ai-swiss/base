@@ -41,6 +41,15 @@ nombre fragile.
 
 ## Lecture
 
+```mermaid
+flowchart TD
+    A[Combien de documents] --> B{Moins de quelques milliers}
+    B -->|oui| C[Le scan en mémoire suffit, ne pas activer l'index]
+    B -->|non| D{Entre 10 000 et 50 000}
+    D -->|oui| E[Activer l'index local]
+    D -->|non| F[Au-delà, envisager un moteur externe]
+```
+
 - **Jusqu'à quelques milliers de documents**, le scan en mémoire du cœur est déjà instantané: l'index
   n'apporte rien d'observable. Ne l'activez pas.
 - **À 10 000–50 000**, la construction reste sous la seconde et la recherche à chaud sous la

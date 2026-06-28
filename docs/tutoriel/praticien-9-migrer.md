@@ -34,6 +34,21 @@ Vous avez accumulé une liste «Chez vous» au fil des modules. C'est votre back
    - [ ] les étapes à décision humaine portent un `[A VALIDER]`;
    - [ ] ce qui peut périmer porte une date (`valid_until`).
 
+```mermaid
+flowchart TD
+    A[Demander: importer mes procedures existantes] --> B[Le routeur lance importer-l-existant]
+    B --> C[Chaque conversion proposee en diff]
+    C --> D{Vous validez le diff}
+    D -->|oui| E[Document importe]
+    D -->|non| C
+    E --> F[Protocole d'interrogation]
+    F --> G[Checklist d'import]
+    G --> H{Tout passe}
+    H -->|oui| I[Import valide]
+    H -->|non| J[Affiner le use_when ou separer donnees et process]
+    J --> F
+```
+
 ✅ **Vérifiez**: pour chaque document importé, le protocole d'interrogation passe (cite le bon doc, admet l'ignorance, route bien) ET la checklist est cochée.
 
 💡 **Pourquoi ça a marché**: c'est ici que le tutoriel devient votre outil: la même structure que l'office du tourisme de Veytaux, sur votre métier. La checklist encode ce que les modules ont enseigné: vous importez avec une grille, jamais à l'aveugle.

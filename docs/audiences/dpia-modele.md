@@ -76,6 +76,15 @@ Mécanisme appliqué par BASE: une ressource marquée `confidential: true`, ou u
 
 Réserve: la distinction local/distant repose sur la localité déclarée ou déduite du fournisseur (`tools/core/model-settings.mjs`), qu'un proxy mal configuré placé devant un service distant pourrait travestir; c'est donc un contrôle honnête, pas une preuve absolue.
 
+```mermaid
+flowchart TD
+    A[Requête vers le modèle] --> B{Ressource confidential: true ou root egress: local-only ?}
+    B -->|Oui| C[Refus avant l'appel, la donnée reste locale]
+    B -->|Non| D{Modèle local ou distant ?}
+    D -->|Local| E[Traitement sur la machine, pas d'égress]
+    D -->|Distant| F[Égress vers le fournisseur, flux à évaluer]
+```
+
 À compléter pour votre traitement:
 
 - **Cartographie des flux:** [A COMPLETER] (qui saisit quoi, où les fichiers sont stockés, quels flux sortent de la machine).

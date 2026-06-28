@@ -1,4 +1,4 @@
-<!-- fr-synced: c1d58ba07f0080e7ce4a719abf7e7bec598cd060 -->
+<!-- fr-synced: 270eef117f2e9c6c8e5e3eccda344304b9942590 -->
 # Keeping an expertise alive after deployment
 
 "And after deployment?" That is the question decision-makers ask, and it is the right one. This page is for the leaders who deploy an assistant and want to know how it holds up over time. An assistant is not a project that ends: it is an expertise that lives. BASE provides tooling for every stage of that life, from the first document imported to aging under watch. Here is the full loop.
@@ -10,6 +10,18 @@
   doctor <── age <── govern <── field feedback
   (health)   (status,  egress     (frictions,
              validity) (models)    abstentions)
+```
+
+```mermaid
+flowchart LR
+    A[Import what exists] --> B[Edit]
+    B --> C[Evaluate]
+    C --> D[Run at the host]
+    D --> E[Field feedback]
+    E --> F[Govern the egress]
+    F --> G[Age under watch]
+    G --> H[Doctor, health]
+    H --> A
 ```
 
 ## 1. Import what already exists

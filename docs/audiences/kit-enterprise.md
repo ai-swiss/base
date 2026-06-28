@@ -18,6 +18,19 @@ Déployer BASE en organisation, c'est décider qui peut faire quoi avec vos assi
 
 L'application des règles ne vaut que pour les actions qui passent par le broker, la CLI, le MCP ou un connecteur contrôlé. Là, BASE fournit: le confinement des chemins, le mode propose puis commit avec diff et validation, le dry-run par défaut des tools, des traces minimales et des points d'extension (validateurs, politique, ranker, auth) configurés via `base.config.{json,mjs}`. Le routeur, lui, choisit le workflow adapté à la demande et évite à l'utilisateur d'avoir à chercher le bon process: il n'applique pas les permissions.
 
+```mermaid
+flowchart TD
+    A[Action demandee] --> B{Passe par broker, CLI, MCP ou connecteur controle ?}
+    B -->|Non| C[Aucune application des regles]
+    B -->|Oui| D[Confinement des chemins]
+    D --> E{Type d'action}
+    E -->|Lecture restreinte| F[Grant requis]
+    E -->|Ecriture ou invocation| G[Confirmation explicite]
+    F --> H[Propose puis commit avec diff et validation]
+    G --> H
+    H --> I[Dry-run par defaut, traces minimales]
+```
+
 ## Exemple de configuration stricte
 
 `base.config.mjs` est du code projet de confiance, chargé uniquement depuis la racine confinée du BASE (jamais depuis des données de ressources). Les mêmes descripteurs fonctionnent en `base.config.json`; le format `.mjs` permet en plus de passer des fonctions pour les cas avancés.

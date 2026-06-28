@@ -1,4 +1,4 @@
-<!-- fr-synced: 7e6a347bb412b3e8e7a285d87c223a99621eb385 -->
+<!-- fr-synced: bba615a9b31faa3b7934e2d24861000553a552de -->
 # Keeping your data under control when routing uses a provider
 
 As soon as BASE's semantic routing relies on an embeddings provider, text leaves your machine, and you need to be able to say exactly which text and how to control it. For teams wiring up this routing, this page shows what is actually sent, how to reduce exposure, how to go through an internal proxy, and how to log without ever exposing domain content.
@@ -16,6 +16,22 @@ With a provider configured, two kinds of text can be embedded:
    `keywords` + `body` (`textForResource`). You control this scope.
 
 ## Reducing exposure
+
+The following diagram summarizes what leaves the machine depending on the configuration:
+
+```mermaid
+flowchart TD
+    A[BASE routing] --> B{Is an embedder configured ?}
+    B -->|No| C[Everything stays local, nothing is sent]
+    B -->|Yes| D{Resource vectors pre computed ?}
+    D -->|Yes| E[Only the query is sent]
+    D -->|No| F[Query and resource text are sent]
+    E --> G{Which embedder ?}
+    F --> G
+    G -->|Local Ollama| H[No network egress]
+    G -->|Internal proxy| I[Controlled gateway, auth, mTLS, DLP]
+    G -->|Public provider| J[Text sent to the provider]
+```
 
 - **Pre-compute** the resource vectors in a controlled environment (`@ai-swiss/base-index-local`)
   and serve them through `getResourceEmbedding`. At query time, **only the query** is sent.

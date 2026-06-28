@@ -24,6 +24,13 @@ BASE distingue deux niveaux, et cette distinction fonde son honnêteté:
 
 La condition qui fait basculer une propriété de consigne à mécanisme est toujours la même: **l'action passe par le chemin du broker** (CLI, cœur, ou MCP déléguant au broker). Si l'action emprunte un autre chemin (accès direct au shell, au système de fichiers ou à une API externe sans passer par BASE), la même propriété redevient une simple consigne.
 
+```mermaid
+flowchart TD
+    A[Action sur une ressource] --> B{Passe par le chemin du broker (CLI base, cœur, ou MCP déléguant) ?}
+    B -->|Oui| C[Mécanisme: la propriété est appliquée, le broker peut bloquer, médier ou refuser]
+    B -->|Non, accès direct au shell, aux fichiers ou à une API externe| D[Consigne: simple intention, suivie selon la bonne volonté du modèle]
+```
+
 ## Les deux mondes d'un fichier
 
 Cette frontière n'est pas abstraite: elle est inscrite dans la structure même d'un fichier BASE, qui a deux parties parlant chacune à un monde différent.

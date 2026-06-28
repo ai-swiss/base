@@ -1,4 +1,4 @@
-<!-- fr-synced: 1fb0289fd6310c17dd16f0c4be4badf6f411a843 -->
+<!-- fr-synced: fec4b2e371f1e8e296bdd609be08ae81d8f7eaf0 -->
 # Mechanisms vs consignes
 
 ## Why this distinction is at the heart of trustworthy AI governance
@@ -11,6 +11,13 @@ BASE distinguishes two levels, and that distinction is the basis of its honesty:
 - a *consigne* is an instruction expressed in the metadata or the context. It steers a cooperative model and serves as an audit signal, but it constrains nothing mechanically. A consigne is not code that runs, even if a model sometimes follows it so well that it looks like one: there is always a margin of error, varying by domain. For a rule that has to be strict, you never rely on a model; you need a mechanism.
 
 The condition that flips a property from consigne to mechanism is always the same: **the action goes through the broker's path** (CLI, core, or MCP delegating to the broker). If the action takes another path (direct access to the shell, the file system, or an external API without going through BASE), the same property reverts to a mere consigne.
+
+```mermaid
+flowchart TD
+    A[Action on a resource] --> B{Goes through the broker's path (base CLI, core, or MCP delegating) ?}
+    B -->|Yes| C[Mechanism: the property is enforced, the broker can block, mediate or refuse]
+    B -->|No, direct access to shell, files or an external API| D[Consigne: a mere intention, followed by the model's goodwill]
+```
 
 ## A file's two worlds
 

@@ -1,4 +1,4 @@
-<!-- fr-synced: 7d55e3423acdaefa2d37e9f6863c5857ddcfc7c5 -->
+<!-- fr-synced: e1a44dba9171206c397c7c670d5b5e173decdbc1 -->
 # Distribute to a team
 
 *⏱ ~20 min · module 3/3, Team track*
@@ -9,6 +9,16 @@
 
 Distributing a BASE means distributing files: **git** for history and review, **MCP**
 for the shared mechanical guarantees (deterministic routing, mediated writes), for the whole team.
+
+```mermaid
+flowchart TD
+    Dev[Team member] -->|improvement| PR[Branch and pull request]
+    PR -->|review then merge| Git[(BASE versioned by git)]
+    Git --> Root[mon-assistant project]
+    Serveur[MCP server] -->|reads the root| Root
+    Outil[Tool: Claude Desktop, Cursor, ChatGPT] -->|MCP| Serveur
+    Serveur -->|deterministic routing, mediated writes| Outil
+```
 
 1. **Version it.** In your project, initialize git and commit:
 

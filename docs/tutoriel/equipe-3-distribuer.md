@@ -24,6 +24,16 @@ learning_level: advanced
 Distribuer un BASE, c'est distribuer des fichiers: **git** pour l'historique et la revue, **MCP**
 pour les garanties mécaniques partagées (routage déterministe, écritures médiées), pour toute l'équipe.
 
+```mermaid
+flowchart TD
+    Dev[Membre de l'équipe] -->|amélioration| PR[Branche et pull request]
+    PR -->|revue puis fusion| Git[(BASE versionné par git)]
+    Git --> Root[Projet mon-assistant]
+    Serveur[Serveur MCP] -->|lit le root| Root
+    Outil[Outil: Claude Desktop, Cursor, ChatGPT] -->|MCP| Serveur
+    Serveur -->|routage déterministe, écritures médiées| Outil
+```
+
 1. **Versionnez.** Dans votre projet, initialisez git et commitez:
 
    ```

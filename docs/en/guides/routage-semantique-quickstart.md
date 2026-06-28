@@ -1,9 +1,22 @@
-<!-- fr-synced: 3c77f786c6d7ec92131977f3f8777f1c81b23235 -->
+<!-- fr-synced: a57a9c3ec1fbbf766b4471bdc4eecfa4258e080f -->
 # Setting up semantic routing, from zero config to real embeddings
 
 The moment you install BASE, requests should reach the right agent and the right process with no initial config, then improve in quality when the need arises: that is what you set up here. BASE routes a request, or abstains honestly when nothing fits.
 
 BASE routes in **two ways, chosen by configuration**. **Track 1** is the default: the assistant reads the generated index and chooses, with a deterministic keyword floor as an offline safety net. **Track 2** is optional, for large catalogs: embeddings retrieve a handful of candidates and a small local model refines them (it chooses, or asks for clarification); see [Track 2, embedding-based routing](voie-2-routage-embeddings.md). This page details Track 1 and, within it, the **ranking quality** of candidates: a ranker ranks, but the router is what decides. You will go through three paths, from the simplest to the most robust; start with the first, and go further only if you need to.
+
+```mermaid
+flowchart TD
+    D["Request"] --> V{"Which track (config)"}
+    V -->|"Default"| V1["Track 1: generated index + keyword floor"]
+    V -->|"Opt-in, large catalogs"| V2["Track 2: embeddings + small local model"]
+    V1 --> Q["Ranking quality (3 paths)"]
+    Q --> C1["Path 1: zero config (lexical + semanticHybrid)"]
+    C1 --> C2["Path 2: real embeddings"]
+    C2 --> C3["Path 3: optional local index"]
+    V1 --> R["The router decides: routed, ambiguous, needs_clarification, out_of_scope"]
+    V2 --> R
+```
 
 BASE routing chooses the primary workflow, not every possible resource. The full chain is this: choose an agent, route to a process, then open the competences, tools, templates, documents, or data that the process needs. For the full doctrine, see [`docs/reference/routage-process-et-ressources.md`](../reference/routage-process-et-ressources.md).
 
