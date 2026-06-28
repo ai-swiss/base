@@ -117,7 +117,9 @@ describe("base init (CLI)", () => {
     // The user-global config now points at this framework — modifiable by hand.
     const cfg = JSON.parse(await fs.readFile(path.join(tmpDir, ".config", "base", "config.json"), "utf8"));
     assert.equal(cfg.schema_version, "base.user-config.v1");
-    assert.ok(cfg.framework_dir.endsWith("/base") || cfg.framework_dir.includes("Repositories"));
+    // framework_dir is the framework root this CLI belongs to, resolved from the CLI's own
+    // location. Assert that invariant, not the maintainer's checkout directory name.
+    assert.equal(cfg.framework_dir, path.dirname(path.dirname(cliPath)));
 
     // whereis (a global command, runs from anywhere) reads it back.
     const { stdout: w } = await execFileAsync("node", [cliPath, "whereis", "--json"], {
