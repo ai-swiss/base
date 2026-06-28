@@ -1,4 +1,4 @@
-<!-- fr-synced: 9dc67ac197f236de47b7b466946085c6cf0cd3e5 -->
+<!-- fr-synced: 440a02337e57dba37c7c76a6916b993840433f2d -->
 # Make the tourist office talk
 
 *⏱ ~10 min · module 1/3, Discovery track*
@@ -20,6 +20,14 @@ Quelles sont mes options ?
 2. *"Organize an outing for our group of 30 people"*: it switches over to preparing an offer.
 3. *"Do you have a beach to swim at?"*: a genuine tourism question, but no process matches it.
 4. *"What are my options?"*: a request for general help.
+
+```mermaid
+flowchart TD
+    A[Client request] --> B{Intent recognized?}
+    B -->|Matching process| C[Routes to the right task]
+    B -->|No process, missing info| D[Abstains and asks to clarify]
+    B -->|General help request| E[Offers a small menu of options]
+```
 
 ✅ **Check**: the assistant must, in substance: (1-2) enter the right task; (3) NOT invent a beach, and ask you to clarify what you're looking for rather than guess; (4) offer a small menu of options. Both outcomes of (3) are instructive: see Why.
 

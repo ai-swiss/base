@@ -65,6 +65,23 @@ Garde-fous: n'écrase JAMAIS un fichier existant; n'installe rien d'autre sans m
 demander; si une étape échoue, montre-moi l'erreur exacte au lieu de bricoler.
 ```
 
+Voici le déroulé que votre IA suit:
+
+```mermaid
+flowchart TD
+  A[Coller le bloc dans l'outil IA] --> B{Node 18 ou plus ?}
+  B -- Non --> C[Installer Node depuis nodejs.org]
+  C --> A
+  B -- Oui --> D{git disponible ?}
+  D -- Oui --> E[Cloner le framework dans BASE_DIR]
+  D -- Non --> F[Telecharger et decompresser le ZIP]
+  E --> G[Apercu de l'initialisation ICI]
+  F --> G
+  G --> H[Initialiser avec accord explicite]
+  H --> I[Verifier whereis et CLAUDE.md]
+  I --> J[Espace de travail pret]
+```
+
 ## Ce qui se passe ensuite
 
 Votre dossier contient maintenant un agent, sa configuration, et les fichiers que votre outil

@@ -47,6 +47,14 @@ Vérifier ne doit pas vous noyer. Une structure forte en amont rend la vérifica
 
 La forme opérationnelle est une **boucle de co-pensée**: énoncer le but et les contraintes, générer, vérifier contre un contrôle explicite, réviser. On recommence, et la structure porte le contexte pour que chaque tour reste léger.
 
+```mermaid
+flowchart LR
+    A[Énoncer le but et les contraintes] --> B[Générer]
+    B --> C[Vérifier contre un contrôle explicite]
+    C --> D[Réviser]
+    D --> A
+```
+
 ## Le contrôle fin fait l'efficacité
 
 **Avoir accès à l'information n'est pas avoir accès à l'information utile.** Brancher toute sa boîte mail et tout son disque comme contexte, c'est du bruit si rien n'est ciblé. Choisir ce que l'IA voit relève de la confidentialité, mais aussi et surtout de l'**efficacité**: en information (le bon contexte, pas tout), en coût (un contexte serré est plus rapide et moins cher), et en attention (vous relisez une étape cadrée, pas un méga-résultat).

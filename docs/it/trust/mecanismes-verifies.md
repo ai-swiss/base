@@ -1,0 +1,23 @@
+<!-- fr-synced: c392261726d8ff5c072bc936d15f0477b7b544d8 -->
+
+# Meccanismi verificati: garanzia, funzione, test
+
+Una garanzia vale solo se il codice la applica e un test la protegge. Questa vista raccoglie le garanzie che BASE mantiene esattamente in questo modo: ogni riga collega una garanzia alla funzione che la applica e al test che **fallirebbe** se si rompesse; qui non c'e nulla di inventato. E la lettura breve per un dossier di valutazione; la mappatura esaustiva dei requisiti verso i test risiede in `specs/current/10_core/requirements-matrix.md`, rigenerata e verificata in integrazione continua.
+
+Promemoria di vocabolario: un **meccanismo** e applicato dal broker (il codice lo verifica, un test lo protegge); una **consigne** e un'istruzione seguita dal modello, e quindi fallibile. Questa pagina elenca solo meccanismi. La distinzione e descritta in dettaglio in [`mecanismes-vs-consignes.md`](mecanismes-vs-consignes.md), e il legame tra ogni affermazione pubblica e la sua prova in [`evidence.md`](evidence.md).
+
+| Garanzia | Meccanismo (codice) | Test che fallirebbe | Limite di portata |
+| --- | --- | --- | --- |
+| Una risorsa confidenziale non parte verso un modello remoto, verificato **prima** della chiamata | `tools/core/egress.mjs` → `checkEgress` | `tests/base-egress.test.mjs` (un IBAN segreto non raggiunge il modello) | Percorsi mediati dal broker (server MCP, chat dello Studio, valutazione); attivato dal flag `confidential` o da una radice `local-only`, non dalla tassonomia `sensitivity`; **il valore predefinito di una radice e permissivo (`any`)**, quindi solo una risorsa contrassegnata (o una radice `local-only`) viene trattenuta (vedi [La frontiera](frontiere-local-vs-sortant.md)); in CLI diretta, l'umano resta l'autorita. |
+| Il server MCP tratta un client connesso come **remoto per impostazione predefinita**: confidenziale e radici `local-only` trattenuti indipendentemente dal trasporto (`stdio` come HTTP) | `mcp/src/base-core-adapter.ts` (egress `modelLocality: remote` per impostazione predefinita) | `mcp/tests/index.test.ts` (una risorsa confidenziale e trattenuta salvo `BASE_MCP_ALLOW_CONFIDENTIAL=1`, FR-EGRESS-004) | Un operatore che sa che il client e locale e affidabile puo autorizzarlo con `BASE_MCP_ALLOW_CONFIDENTIAL=1`. |
+| Una scrittura sensibile non viene mai applicata senza conferma | `tools/core/policy.mjs` (rifiuto di una scrittura `sensitive`/`restricted` non confermata) | `tests/base-core.test.mjs` (l'opt-out non si applica mai a questi livelli) | Scritture che passano attraverso il broker. |
+| Il modello propone, l'umano valida: scrittura in due tempi, mediata e atomica | `tools/core/writes.mjs` → `createBrokerWrites` | `tests/base-core.test.mjs` (un `commitChange` senza conferma viene rifiutato) | Nulla viene scritto senza il passaggio di validazione. |
+| I percorsi sono confinati, i symlink in uscita rifiutati, le radici annidate isolate | `tools/core/confine.mjs` | `tests/base-core.test.mjs` | Protegge l'accesso ai file sotto il broker. |
+| Il routing sceglie un agente e un processo, oppure **si astiene**, in modo deterministico | `tools/core/routing.mjs` → `decideRoute` | `base route-test`, rigiocato radice per radice in CI (`.github/workflows/ci.yml`) | Routing lessicale per impostazione predefinita (zero rete); il ranking semantico e opzionale e puo girare localmente. |
+| Il nucleo non ha alcuna dipendenza a runtime (gira con `node` nudo) | `package.json` (zero dipendenze) e il motore `tools/**` | `tests/architecture.test.mjs` (fallisce su qualsiasi dipendenza dichiarata o import non relativo) | Lo Studio (applicazione web), il server MCP e la generazione del sito di documentazione hanno le proprie dipendenze. |
+| La documentazione non ha link morti ne pagine orfane | `tools/docs/model.mjs`, `tools/doctor/diagnose.mjs` | `tests/base-docs.test.mjs`, `tests/base-doctor.test.mjs` | Copre il corpus di documentazione. |
+| Lo Studio ascolta solo in locale (loopback) | `tools/studio/server.mjs` (rifiuto di qualsiasi host non-loopback) | `tests/studio-server.test.mjs` | Lo Studio non si espone alla rete. |
+
+Ogni cella «Meccanismo» e «Test» indica un file reale del repository: potete aprirlo, leggere la funzione ed eseguire il test. E questo il senso di «verificabile da un terzo»: la garanzia non e una promessa, e un comportamento che il codice applica e che un test protegge.
+
+Per cio che BASE **non** garantisce da solo (esattezza degli output di un modello, IAM, DLP, archiviazione legale e il resto), vedi [`securite-et-limites.md`](securite-et-limites.md). Per la giurisdizione dell'hoster e l'esposizione extraterritoriale, vedi [`souverainete-et-confiance.md`](souverainete-et-confiance.md).

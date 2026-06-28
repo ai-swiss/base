@@ -1,4 +1,4 @@
-<!-- fr-synced: f200c870de137be95c460c0c0e956759955a4776 -->
+<!-- fr-synced: cc8b7a7584246944c3f41d7c8428bc5d99bf0df1 -->
 # Knowing when to turn on the local index (benchmarks)
 
 If you run a BASE repository and you're unsure whether to turn on the local index, this page gives you reproducible numbers to make the call. You'll see how many documents it takes before the in-memory scan no longer suffices, what the index brings at that point, and what it costs.
@@ -25,6 +25,15 @@ Synthetic corpus (agents + processes, 20 processes per agent), median of 20 quer
 The numbers vary from machine to machine: rerun `bench` to measure your own. No aggressive threshold is enforced in CI: a *smoke* test only checks that the report is produced, not that it hits a brittle number.
 
 ## Reading the numbers
+
+```mermaid
+flowchart TD
+    A[How many documents] --> B{Fewer than a few thousand}
+    B -->|yes| C[In-memory scan suffices, do not turn on the index]
+    B -->|no| D{Between 10,000 and 50,000}
+    D -->|yes| E[Turn on the local index]
+    D -->|no| F[Beyond that, consider an external engine]
+```
 
 - **Up to a few thousand documents**, the core's in-memory scan is already instant: the index brings nothing observable. Don't turn it on.
 - **At 10,000 to 50,000**, the build stays under a second and warm search under a millisecond: the index makes comfortable what a repeated scan would make costly.

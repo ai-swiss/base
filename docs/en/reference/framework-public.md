@@ -1,4 +1,4 @@
-<!-- fr-synced: 76af5eee944a870e378f21341ab5e050e83321e1 -->
+<!-- fr-synced: 26978391401c9a6f07d56c21001a07d8a31fe343 -->
 # Adopting public BASE: from local to team
 
 If you are an individual, a freelancer, a startup, a small or mid-sized business, or a small team, this page shows you what public BASE gives you: a way to structure your collaboration with AI without installing a heavy platform. It also explains how to adopt it in stages, staying simple on the surface without blocking your later growth.
@@ -120,6 +120,18 @@ BASE reuses the `SKILL.md` format, already familiar in several harnesses, but it
 This distinction keeps an agent from having only one big list of skills. A process can declare or suggest the competences it needs; the router can find the right process, then open only the useful knowledge. This is an important difference from harnesses that mostly expose a flat catalog of skills.
 
 The full doctrine is: select the agent when it is known, route to a process when the workflow has to be chosen, then open the resources useful to the process. It is detailed in `docs/reference/routage-process-et-ressources.md`.
+
+```mermaid
+flowchart TD
+    A[User request] --> B{Agent known?}
+    B -->|Yes| C[Select the agent]
+    B -->|No| D[Route to a process]
+    C --> D
+    D --> E{Process found?}
+    E -->|No| F[Structured abstention]
+    E -->|Yes| G[Open the resources useful to the process]
+    G --> H[Execute with the opened context]
+```
 
 ## Permission modes
 

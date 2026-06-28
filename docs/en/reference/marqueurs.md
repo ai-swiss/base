@@ -1,4 +1,4 @@
-<!-- fr-synced: 8c55638acab6c5fbe9d3178a6e80b79985905dce -->
+<!-- fr-synced: ea39bb91b48807f14ff61049a74807160db4cf19 -->
 # BASE markers and when to place them
 
 A marker placed badly, or understood differently by the human, the agent, and the tooling, loses track of the real state of the work. To prevent that, the vocabulary is defined once, here: which markers exist, what each one means, and when to place it. A marker is a searchable text cue, written in brackets inside a document, that makes that state visible without leaving the file. It serves as a shared reference for anyone writing or reviewing in BASE, as well as for the agent assisting them.
@@ -41,6 +41,13 @@ For each marker: its meaning, when to place it, and who closes it.
 - **Who closes it.** Nothing. A `[DECISION]` is a durable record of the choice, which stays in the document as history, not an open item to handle.
 - **Enriched form (high stakes).** When the choice has significant consequences (a large amount, a firm commitment, data that is hard to correct), you document the alternative ruled out, the level of confidence, and the cost of reversing course, for example: `[DECISION: Arche florale à 1100 CHF | Pivoines plus coûteuses | Alternative: roses standard 850 CHF | Confiance: haute | Réversibilité: faible (devis à refaire)]`. Suggested vocabulary, read by human and agent alike (it is not a field parsed by the scanner): **Confiance: haute | moyenne | basse**, **Réversibilité: facile | moyenne | difficile**.
 - **Escalation rule.** An agent about to lock in a `[DECISION]` at **low confidence** *or* whose reversal would be **hard** does not decide alone: it places an `[A VALIDER]` and lets the human decide. We automate what is certain and easily reversible; we escalate the rest. This is a convention of judgment, not an imposed syntax.
+
+```mermaid
+flowchart TD
+    A[Validated choice, ready to lock in as DECISION] --> B{Low confidence or hard to reverse ?}
+    B -->|Yes| C[Place an A VALIDER, let the human decide]
+    B -->|No| D[Automate, lock in the DECISION]
+```
 
 ### Rules common to domain markers
 

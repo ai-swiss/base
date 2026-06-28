@@ -1,4 +1,4 @@
-<!-- fr-synced: bcec1c976117859bd310910f23b6d5dfc198c5e4 -->
+<!-- fr-synced: d6b9fdf9cda323341e86fafd0ba43b7f99fee844 -->
 # The boundary: local by default
 
 Knowing what stays on your machine and what may leave for a remote service is knowing what you can entrust to BASE with your eyes open. This page draws that boundary, for an institution that needs to know what to expect. It is informational and is neither legal advice nor a compliance opinion: the institution remains responsible for its own data protection impact assessment (DPIA) and security policy.
@@ -35,6 +35,17 @@ The boundary is guarded in two places, by two distinct authorities.
 - **BASE refuses to let confidential or strictly local resources leave for a remote model, before any call.** This is an egress control mechanism: a resource marked confidential, or a root declared local-only, is not transmitted to a remote model, and the check happens **before** the call, not after. This mechanism protects against the unintended transmission of resources placed under the broker's control. It does not control what the user types directly into an AI tool outside BASE, nor what the provider then does with the data it receives.
 
 A concrete example. A customer record contains an IBAN, and you mark it `confidential`. You ask your assistant, wired in through the broker, to draft a payment reminder with a remote model. Before the call, BASE sees the marker, holds the record back, and the assistant works without the IBAN leaving for the provider. The sensitive data does not leave your machine, and you had nothing to watch over.
+
+The egress decision follows this path before any call to a remote model:
+
+```mermaid
+flowchart TD
+    A["Request to a remote model"] --> B{"Path mediated by the broker?"}
+    B -->|No| C["You remain the egress authority (no automatic withholding)"]
+    B -->|Yes| D{"Resource confidential or root local-only?"}
+    D -->|Yes| E["Withheld before the call (the data does not leave)"]
+    D -->|No| F["Transmission allowed (permissive default)"]
+```
 
 **Exact scope of the mechanism.** The withholding operates on the paths mediated by the broker, where BASE prepares what goes out to the model: the MCP server, the Studio chat, evaluation. On a direct command line (for example `base open` on a resource, then copy-pasting into an AI tool), you remain the egress authority: no automatic withholding operates, by design. And the withholding triggers on a resource's **explicit `confidential` flag** (or a local-only root), not on the `sensitivity` taxonomy: data classified `restricted` or `sensitive` but not marked `confidential` is not withheld. Mark `confidential` any resource that must never reach a remote model. Finally, the **default is permissive**: a root has egress policy `any` unless declared otherwise, so apart from `confidential` resources its content may be transmitted; declare the root `local-only` in `base.config.json` to withhold everything from a remote model.
 

@@ -1,4 +1,4 @@
-<!-- fr-synced: 045e3c1fd0c55ba0929c1da08728f3f86d4dc6b0 -->
+<!-- fr-synced: 816663bbe9448c3c454909e9731a6db8ed8f8267 -->
 # Adoption in an organization
 
 AI does not get installed in an organization the way software does: by decree, all at once, for everyone. An organization can check every technical box and end up, six months later, with nothing but a handful of isolated uses that nobody shares. Adoption that lasts rests on two movements running in opposite directions, and on their meeting. From the bottom, people take ownership of the dialogue with AI and structure their work in their own way. From the top, the organization makes available, AI-assisted, the few flows that block everyone. The first engine surfaces what works; the second pushes down what is common.
@@ -59,7 +59,17 @@ The first two tiers rise from the field. The third descends. Some flows do not d
 
 The two engines do not work one without the other. From the bottom, ownership produces practices no one would have dictated in advance; without it, the instituted flows stay shells no one takes ownership of. From the top, the assisted flows lift the common blockages and provide a frame; without them, ownership stays an archipelago of personal uses that never becomes an organization.
 
-They meet at the team tier. That is where an individual practice becomes a shared process, and where an instituted flow comes back down to be tested on real work. The descent imposes a discipline the ascent does not demand: a personal practice commits only its author; an institutional flow commits everyone who relies on it. Few flows descend, and those that do stay under watch. A [friction](./cycle-de-vie-expertise.md) flagged on a common flow is the bottom engine correcting the top engine.
+They meet at the team tier. That is where an individual practice becomes a shared process, and where an instituted flow comes back down to be tested on real work.
+
+```mermaid
+flowchart TB
+    I["Tier 3: the institution opens the common flows"]
+    E["Tier 2: the team promotes a shared process"]
+    P["Tier 1: the person takes ownership"]
+    P -->|"surfacing (what works)"| E
+    I -->|"descent (what is common)"| E
+```
+ The descent imposes a discipline the ascent does not demand: a personal practice commits only its author; an institutional flow commits everyone who relies on it. Few flows descend, and those that do stay under watch. A [friction](./cycle-de-vie-expertise.md) flagged on a common flow is the bottom engine correcting the top engine.
 
 Over time, none of this settles all at once. You almost always start with a few isolated trials; use spreads the day people truly take ownership of it; and only a handful of flows end up held at scale. It is a slope, not a staircase: the steps overlap, you skip some, you go back. Spotting them helps you know where you stand, as long as you do not turn it into a required march, identical for everyone.
 

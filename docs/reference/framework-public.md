@@ -132,6 +132,18 @@ Cette distinction évite qu'un agent ait seulement une grande liste de skills. U
 
 La doctrine complète est: sélectionner l'agent quand il est connu, router vers un process quand le workflow doit être choisi, puis ouvrir les ressources utiles au process. Elle est détaillée dans `docs/reference/routage-process-et-ressources.md`.
 
+```mermaid
+flowchart TD
+    A[Demande utilisateur] --> B{Agent connu?}
+    B -->|Oui| C[Selectionner l'agent]
+    B -->|Non| D[Router vers un process]
+    C --> D
+    D --> E{Process trouve?}
+    E -->|Non| F[Abstention structuree]
+    E -->|Oui| G[Ouvrir les ressources utiles au process]
+    G --> H[Executer avec le contexte ouvert]
+```
+
 ## Modes de permission
 
 BASE public est honnête sur ce qu'il peut garantir:

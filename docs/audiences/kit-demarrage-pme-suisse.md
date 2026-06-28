@@ -104,4 +104,18 @@ Un usage BASE est prêt pour l'équipe quand:
 4. `base validate` passe;
 5. l'équipe sait quoi faire quand l'assistant marque `[A VALIDER]` ou `[ATTENTION]`.
 
+```mermaid
+flowchart TD
+    A[Workflow réel fonctionne] -->|oui| B[Données autorisées écrites]
+    B -->|oui| C[Personne responsable valide]
+    C -->|oui| D[base validate passe]
+    D -->|oui| E[Équipe sait réagir aux marqueurs]
+    E -->|oui| F[Prêt pour l'équipe]
+    A -->|non| X[Garder en expérimentation]
+    B -->|non| X
+    C -->|non| X
+    D -->|non| X
+    E -->|non| X
+```
+
 Si l'un de ces points manque, gardez l'usage en expérimentation.

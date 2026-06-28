@@ -1,4 +1,4 @@
-<!-- fr-synced: ffa337024debda686c2369c8cf42343d3ce4f15b -->
+<!-- fr-synced: 7303fe6266734682aecc6efc5960aa2dfd50407e -->
 # Impact assessment template (DPIA)
 
 Before you put an assistant in your teams' hands, you need to be able to justify what it does with the data, to your institution and to your data protection officer (DPO). This skeleton gives you a defensible outline for that assessment, and draws a clean line between what BASE guarantees technically and what remains your responsibility: you know exactly what you are committing to.
@@ -63,6 +63,15 @@ By default, everything stays local. The point to analyze first is **egress**: th
 Mechanism enforced by BASE: a resource marked `confidential: true`, or an entire root marked `egress: local-only`, **is not sent to a remote model**. The check happens **before** the call, so the data does not leave the machine; the refusal is shown, never silent. This is a mechanism, not a *consigne*.
 
 Caveat: the local/remote determination relies on the declared or deduced provider locality (`tools/core/model-settings.mjs`), which a misconfigured proxy placed in front of a remote service could misrepresent; it is therefore an honest control, not an absolute proof.
+
+```mermaid
+flowchart TD
+    A[Request to the model] --> B{Resource confidential: true or root egress: local-only ?}
+    B -->|Yes| C[Refusal before the call, data stays local]
+    B -->|No| D{Local or remote model ?}
+    D -->|Local| E[Processing on the machine, no egress]
+    D -->|Remote| F[Egress to the provider, flow to evaluate]
+```
 
 To fill in for your processing:
 

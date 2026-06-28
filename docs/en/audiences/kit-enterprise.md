@@ -1,4 +1,4 @@
-<!-- fr-synced: b6adf48b10ba9b6144971e51c0c5f8ea1c96bf8e -->
+<!-- fr-synced: 875227e79f92bee9f1a6bea6ec0140894b3f83b8 -->
 # Deploying BASE in an organization
 
 Deploying BASE in an organization means deciding who can do what with your assistants and keeping control of sensitive actions, without handing your know-how over to a platform. The challenge for a team or an IT department: stay in control of what the framework actually enforces, know how to lock it down, and choose a deployment mode that matches your requirements. BASE brings two things that complement your existing stack: a language for expertise in files you own, and honest mediation of sensitive actions, pluggable without forking the core. But it is not a compliance platform: BASE replaces neither IAM, nor SSO, nor RBAC, nor DLP, nor SIEM, nor regulatory retention (see [Security and limits](../trust/securite-et-limites.md)).
@@ -6,6 +6,19 @@ Deploying BASE in an organization means deciding who can do what with your assis
 ## What is actually enforced
 
 Rule enforcement applies only to actions that go through the broker, the CLI, the MCP, or a controlled connector. There, BASE provides: path confinement, the propose then commit mode with diff and validation, dry-run by default for tools, minimal traces, and extension points (validators, policy, ranker, auth) configured via `base.config.{json,mjs}`. The router, for its part, picks the workflow suited to the request and spares the user from having to hunt for the right process: it does not enforce permissions.
+
+```mermaid
+flowchart TD
+    A[Requested action] --> B{Goes through broker, CLI, MCP or controlled connector ?}
+    B -->|No| C[No rule enforcement]
+    B -->|Yes| D[Path confinement]
+    D --> E{Action type}
+    E -->|Restricted read| F[Grant required]
+    E -->|Write or invocation| G[Explicit confirmation]
+    F --> H[Propose then commit with diff and validation]
+    G --> H
+    H --> I[Dry-run by default, minimal traces]
+```
 
 ## A strict configuration example
 

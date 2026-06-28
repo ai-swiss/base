@@ -51,6 +51,20 @@ Avant toute commande, posez la règle du pilote, par écrit, pour l'équipe:
 
 Cette règle est une **consigne d'organisation**, pas un mécanisme: BASE ne sait pas, à votre place, qu'un texte contient des données personnelles. C'est à vous de filtrer en amont. BASE aide ensuite à garder la frontière visible (métadonnée `sensitivity`, contrôle d'égress), mais la décision d'entrée des contenus vous appartient.
 
+Vue d'ensemble du déroulé du pilote:
+
+```mermaid
+flowchart TD
+    E0[Etape 0: aucune donnee personnelle] --> P1[Phase 1: voir la forme d'un assistant]
+    P1 --> P2[Phase 2: starter et import par diff]
+    P2 --> P3[Phase 3: valider et router]
+    P3 --> D{Le routeur}
+    D -->|propose agent et process| P4[Phase 4: frontiere local et egress]
+    D -->|s'abstient| P4
+    P4 --> C[Checklist de fin de pilote]
+    C --> A[Avant toute donnee reelle: AIPD/DPIA]
+```
+
 ## Phase 1: voir la forme d'un assistant (15 min)
 
 Ouvrez l'exemple de l'office du tourisme de Veytaux pour voir, sans rien installer de nouveau, à quoi ressemble un assistant BASE: un agent, des process, des données, un template, des scénarios.

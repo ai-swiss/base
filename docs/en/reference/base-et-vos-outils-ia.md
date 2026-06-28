@@ -1,4 +1,4 @@
-<!-- fr-synced: ca4181608f457081e35a170e8c64f7dc402c7127 -->
+<!-- fr-synced: e9966b96132fd307f127afc28a43dc5262a53401 -->
 # Keep your AI tools, own the intelligence they run
 
 > This page is for anyone already using an AI tool (an assistant, a platform, a suite) and wondering where BASE fits. In a nutshell: you keep your tools for execution, and you own in BASE the intelligence they run.
@@ -68,6 +68,18 @@ The recommended path, whatever the tool, governed and auditable:
 3. It **runs the generation** with the platform's model and connectors.
 4. At the process's **decision points**, the agent **stops for human validation** (most recent platforms offer a "draft" or "require approval" mode).
 5. After approval, the write is **applied**, and a trace keeps the memory of it (at the level of detail you choose).
+
+```mermaid
+flowchart TD
+    A[Scheduler, scheduled trigger] --> B[Execution agent calls BASE's MCP server]
+    B --> C[Generation with the platform's model and connectors]
+    C --> D{Process decision point}
+    D -->|Action with consequences| E[Proposal, a diff shown]
+    E --> F[Human validation]
+    D -->|Low-risk step, verifiable by a rule| G[Automatic confirmation]
+    F --> H[Write applied and trace kept]
+    G --> H
+```
 
 On the BASE side, nothing is written blind: actions with consequences go through a **proposal** (a diff shown) before being applied; low-risk steps, verifiable by a rule, can be confirmed automatically. You calibrate, step by step, what is automatic and what waits for a human.
 

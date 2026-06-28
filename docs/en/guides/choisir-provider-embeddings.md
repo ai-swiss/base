@@ -1,4 +1,4 @@
-<!-- fr-synced: c42ce8744fdd3b36492f6e44f8bcd495787032a2 -->
+<!-- fr-synced: f1811e6c781b84473f80663efc3332688f47619f -->
 # Choosing your embeddings provider
 
 This page helps anyone putting BASE into production decide where their embeddings come from, according to their privacy, cost, and governance constraints. Embedding text is an explicit choice: you pass an `embed` to `createSemanticRanker`, and BASE imposes **none** on your behalf.
@@ -14,6 +14,19 @@ This page helps anyone putting BASE into production decide where their embedding
 | **Pre-computed (index)** | `getResourceEmbedding` served by `vectorFor(index, resource)` from `@ai-swiss/base-index-local` | large corpus; resource text does not travel at query time |
 
 BASE deliberately provides **no** "best provider" helper: hard-coding a technical preference into the core would amount to choosing on your behalf.
+
+```mermaid
+flowchart TD
+    A[Choose an embeddings provider] --> B{Can the text leave your perimeter?}
+    B -->|No, maximum privacy| C[Local Ollama]
+    B -->|Yes| D{Large corpus to index?}
+    D -->|Yes| E[Pre-computed via index]
+    D -->|No| F{Need centralized governance?}
+    F -->|Yes| G[Enterprise gateway]
+    F -->|No| H{In-house ML stack or specialized model?}
+    H -->|Yes| I[Internal model]
+    H -->|No| J[Cloud OpenAI-like]
+```
 
 ## The criteria
 
