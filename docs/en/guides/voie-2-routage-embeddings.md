@@ -1,4 +1,4 @@
-<!-- fr-synced: a26c81280e4755cd5cebbee8c80ef3d7ef65e3bb -->
+<!-- fr-synced: d582ba5e1b080529a75ebb6cbf80f42cfe706bb5 -->
 # Track 2, embedding-based routing (optional, for scale)
 
 BASE routes in two ways, and you choose through configuration. Track 1 is the default and is enough for
@@ -13,6 +13,18 @@ most BASE roots. Track 2 is a convenience for large catalogs. You only need it i
 
 The two tracks are independent: Track 2 is not a layer on top of Track 1, it is another track that the
 configuration selects.
+
+```mermaid
+flowchart TD
+    A[Routing request] --> B{Configured track}
+    B -->|Track 1 by default| C[The assistant reads the index and chooses]
+    C --> D[Keyword floor, offline safety net]
+    B -->|Track 2, both models entered| E[Embeddings retrieve the closest candidates]
+    E --> F[The small refiner model reads the candidates]
+    F --> G[Chooses a process or asks for clarification]
+    E -.models unreachable.-> C
+    F -.models unreachable.-> C
+```
 
 ## Do you need it?
 

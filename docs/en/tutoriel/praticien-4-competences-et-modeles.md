@@ -1,4 +1,4 @@
-<!-- fr-synced: 6d4491659db84827446557af13e63d689afdb6fe -->
+<!-- fr-synced: 229d5f5f900909fec589c145be550895fd2d71cb -->
 # Competences and templates
 
 *⏱ ~18 min · module 4/9, Practitioner track*
@@ -107,6 +107,17 @@ Organiser une sortie pour notre groupe de 30 personnes
 ✅ **Check**: `base validate --root .` passes (competence, template, and process are valid resources); `base route "Organiser une sortie pour notre groupe de 30 personnes" --root .` routes to `reserver-une-sortie-groupe`; and the generated offer has its `[PLACEHOLDERS]` filled in with an `[A VALIDER]` on the amount.
 
 💡 **Why it worked**: a process orchestrates, a **competence** factors out a reusable know-how, a **template** carries the shape of the deliverable. The router reads only the frontmatter (use_when, examples); the body, for its part, points to the competence and the template, which the language model then applies. The `[A VALIDER]` in the template asks that a human decide the figure: the instruction is for generation to stop rather than decide for you.
+
+```mermaid
+flowchart TD
+    A[Visitor request] --> B[Router reads the frontmatter, use_when and examples]
+    B --> C[Process reserver-une-sortie-groupe]
+    C --> D[Consults the competence parler-au-visiteur]
+    C --> E[Fills the template offre-groupe]
+    E --> F[Document, PLACEHOLDERS filled in]
+    F --> G{Total marked A VALIDER}
+    G --> H[Human validation]
+```
 
 🔁 **At home**: which repetitive document in your line of work (quotes, form letters, reports) would benefit from becoming a fill-in-the-blanks template? Which know-how (a tone, some rules) deserves a reusable competence?
 

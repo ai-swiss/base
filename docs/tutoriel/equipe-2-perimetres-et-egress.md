@@ -32,6 +32,15 @@ Le client Dupont Conseil contient une ressource déjà marquée confidentielle:
 
 💡 **Pourquoi ça a marché**: la gouvernance vit dans des fichiers (`confidential: true` sur une ressource, ou `egress: local-only` sur un root entier), pas dans une console. La règle est unique: rien de confidentiel ne part vers un modèle distant, et le contrôle se fait AVANT l'appel, donc le document ne quitte jamais la machine. Le refus se DIT: c'est la différence entre une consigne (suivie) et un mécanisme (appliqué).
 
+```mermaid
+flowchart TD
+    A[Demande de modification sur une ressource] --> B{Ressource confidentielle?}
+    B -- Non --> P[Envoi autorise]
+    B -- Oui --> C{Modele distant ou local?}
+    C -- Local (Ollama) --> P
+    C -- Distant (API) --> R[Refus AVANT tout appel, le document ne quitte pas la machine]
+```
+
 🔁 **Chez vous**: quelles de vos données ne doivent JAMAIS quitter votre machine vers une API? Marquez-les `confidential: true`, ou passez tout le root en `egress: local-only`.
 
 → **Et maintenant**: [Module 3: distribuer](equipe-3-distribuer.md).

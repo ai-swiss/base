@@ -74,6 +74,18 @@ Le chemin recommandé, quel que soit l'outil, gouverné et auditable:
 4. Aux **points de décision** du process, l'agent **s'arrête pour validation humaine** (la plupart des plateformes récentes proposent un mode «brouillon» ou «exiger une approbation»).
 5. Après approbation, l'écriture est **appliquée**, et une trace en garde la mémoire (au niveau de détail que vous choisissez).
 
+```mermaid
+flowchart TD
+    A[Planificateur, declencheur planifie] --> B[Agent d'execution appelle le serveur MCP de BASE]
+    B --> C[Generation avec le modele et les connecteurs de la plateforme]
+    C --> D{Point de decision du process}
+    D -->|Action a consequence| E[Proposition, un diff montre]
+    E --> F[Validation humaine]
+    D -->|Etape a faible risque, verifiable par une regle| G[Confirmation automatique]
+    F --> H[Ecriture appliquee et trace conservee]
+    G --> H
+```
+
 Côté BASE, rien ne s'écrit en aveugle: les actions à conséquence passent par une **proposition** (un diff montré) avant d'être appliquées; les étapes à faible risque, vérifiables par une règle, peuvent être confirmées automatiquement. Vous calibrez, étape par étape, ce qui est automatique et ce qui attend un humain.
 
 La pièce maîtresse: le process est du texte que **vous possédez**. Vous pouvez changer de planificateur, de modèle ou de plateforme sans le réécrire.

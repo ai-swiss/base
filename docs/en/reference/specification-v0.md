@@ -1,4 +1,4 @@
-<!-- fr-synced: 41d20072d31ae54d86e801e0ff1a98d61d85a632 -->
+<!-- fr-synced: 07917297c3698cc37ef72c539981af908b860cf0 -->
 # BASE Spec v0: founding principle and where to read the current spec
 
 This page is a landmark for anyone looking for the BASE specification. It states the founding principle and points to the up-to-date engineering specification, so you don't end up working from a stale text.
@@ -53,6 +53,16 @@ The only part of v0 that stays forward-looking is the target of portability acro
 1. **Portable core**: Markdown and semantic YAML frontmatter, declaring intents and hooks, never mechanisms specific to a single tool.
 2. **Intermediate layer**: the projection compiles the core to each harness's native format (generated output, never source); the realization binds each intent to the best mechanism the harness offers, otherwise falls back to the broker, and records the level reached.
 3. **Tool declaration**: per agent, harness, and intent, the level actually held, computable rather than editorial. This is what `.ai/tools.md` already projects.
+
+```mermaid
+flowchart TD
+    A[Portable core: Markdown and YAML frontmatter] --> B[Projection: compiles to the harness native format]
+    B --> C{Does the harness offer the mechanism?}
+    C -->|Yes| D[Realization: binds the intent to the native mechanism]
+    C -->|No| E[Fall back to the broker]
+    D --> F[Tool declaration: level actually held]
+    E --> F
+```
 
 The broker is the fallback realization: whatever a harness does not do natively, the broker takes on as soon as the action passes through it (confinement, dry-run, trace, mediated write). An intent like `requires_confirmation` reaches a strict level only for the actions that actually pass through it.
 

@@ -1,4 +1,4 @@
-<!-- fr-synced: 36c0c73d58c62decee49a18db64187d87a227d13 -->
+<!-- fr-synced: 17c53c9e60a8dc5b9e9e85da9d6de5220e530b51 -->
 # Security and limits
 
 Before you trust BASE with data or actions, you need to know what the local core actually protects and what you still have to add for your context: trust it too much and you expose what you assumed was covered. Whether you are deciding for yourself or for a public administration, here is the boundary. BASE improves your control over human-AI collaboration, but it does not turn a general-purpose AI tool into an enterprise-grade security environment.
@@ -30,6 +30,19 @@ An action passes through BASE when it uses the CLI, the broker, or the MCP serve
 - `base propose` then `base commit`, or `propose_change` then `commit_change`: write through a proposed, confirmed, and verified change.
 
 In these cases, BASE can enforce confinement, `allow` / `deny` / `needs_approval` decisions, dry-run, confirmation, and a minimal trace. If the action bypasses these entry points, it depends on the native rights of the tool or the environment.
+
+```mermaid
+flowchart TD
+    A[An action is requested] --> B{Does it go through the CLI, the broker, or MCP ?}
+    B -->|Yes| C[BASE enforces confinement]
+    C --> D{Decision allow, deny, or needs_approval}
+    D -->|allow or needs_approval| E[Dry-run then explicit confirmation]
+    D -->|deny| F[Action refused]
+    E --> G[Execution with a minimal trace]
+    B -->|No| H[No mechanical block]
+    H --> I[Native rights OS, folder, connector, API, token]
+    I --> J[YAML metadata stays a guide and an audit signal]
+```
 
 ## What public BASE protects
 

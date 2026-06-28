@@ -34,7 +34,7 @@ const KEY_REQUIRED_TYPES = new Set(["anthropic", "google"]);
 // The provider types that can embed (anthropic/google have no embeddings endpoint).
 const EMBEDDING_PROVIDER_TYPES = new Set(["ollama", "openai-compatible"]);
 
-const EMPTY = { providers: [], aliases: {}, defaults: {}, discovered: {} };
+const EMPTY = { providers: [], aliases: {}, defaults: {}, discovered: {}, ensembles: {} };
 const LOOPBACK = /^(localhost|127\.0\.0\.1|\[?::1\]?)$/i;
 
 /**
@@ -92,8 +92,71 @@ export async function readSettings(contextDir, { env = process.env } = {}) {
  * read from the environment via the provider's apiKeyEnv. Unknown provider → BAD_REQUEST.
  */
 export async function resolveModel(contextDir, ref, { env = process.env, fetch, timeoutMs } = /** @type {{ env?: NodeJS.ProcessEnv, fetch?: typeof globalThis.fetch, timeoutMs?: number }} */ ({})) {
-  const { provider, model } = await resolveProviderModel(contextDir, ref, { env });
+  const settings = await readSettings(contextDir, { env });
+  const name = String(ref ?? "").trim();
+  // An ensemble ref (moa / triumvirat) resolves to a meta-model composed from member refs.
+  const ensemble = settings.ensembles?.[name];
+  if (ensemble) return buildEnsembleModel(settings, name, ensemble, { env, fetch, timeoutMs });
+  const { provider, model } = resolveProviderModelFrom(settings, ref);
   return await buildProviderModel(provider, model, { env, fetch, timeoutMs });
+}
+
+/**
+ * Build a MoA or Triumvirat meta-model from an ensemble settings block, resolving each member
+ * ref through the same provider registry as a normal model.
+ * @param {any} settings
+ * @param {string} name
+ * @param {any} ensemble
+ * @param {{ env?: any, fetch?: any, timeoutMs?: number }} opts
+ */
+async function buildEnsembleModel(settings, name, ensemble, { env = process.env, fetch, timeoutMs } = {}) {
+  const llm = await import("@ai-swiss/base-llm");
+  const buildRef = async (ref) => {
+    const { provider, model } = resolveProviderModelFrom(settings, ref);
+    return buildProviderModel(provider, model, { env, fetch, timeoutMs });
+  };
+  const type = ensemble?.type;
+
+  if (type === "moa") {
+    if (!Array.isArray(ensemble.proposers) || ensemble.proposers.length === 0) {
+      throw new ApiError(`ensemble "${name}" (moa) needs a non-empty "proposers" list`, "BAD_REQUEST");
+    }
+    if (!ensemble.aggregator) {
+      throw new ApiError(`ensemble "${name}" (moa) needs an "aggregator" ref`, "BAD_REQUEST");
+    }
+    const [proposers, aggregator] = await Promise.all([
+      Promise.all(ensemble.proposers.map(buildRef)),
+      buildRef(ensemble.aggregator),
+    ]);
+    return llm.createMoaModel({
+      proposers,
+      aggregator,
+      id: name,
+      ...(ensemble.synthesisPrompt ? { synthesisPrompt: ensemble.synthesisPrompt } : {}),
+    });
+  }
+
+  if (type === "triumvirat") {
+    const poolRefs = ensemble.pool;
+    if (!poolRefs || typeof poolRefs !== "object" || Array.isArray(poolRefs) || Object.keys(poolRefs).length === 0) {
+      throw new ApiError(`ensemble "${name}" (triumvirat) needs a non-empty "pool" object`, "BAD_REQUEST");
+    }
+    const entries = await Promise.all(
+      Object.entries(poolRefs).map(async ([key, ref]) => [key, await buildRef(ref)]),
+    );
+    const coordinator = ensemble.coordinator ? await buildRef(ensemble.coordinator) : undefined;
+    return llm.createTriumviratModel({
+      pool: Object.fromEntries(entries),
+      id: name,
+      ...(coordinator ? { coordinator } : {}),
+      ...(Number.isInteger(ensemble.maxTurns) ? { maxTurns: ensemble.maxTurns } : {}),
+    });
+  }
+
+  throw new ApiError(
+    `ensemble "${name}" has unknown type "${type}" (expected "moa" or "triumvirat")`,
+    "BAD_REQUEST",
+  );
 }
 
 /**
@@ -104,6 +167,11 @@ export async function resolveModel(contextDir, ref, { env = process.env, fetch, 
  */
 async function resolveProviderModel(contextDir, ref, { env = process.env } = {}) {
   const settings = await readSettings(contextDir, { env });
+  return resolveProviderModelFrom(settings, ref);
+}
+
+/** Resolve a ref against already-read settings (no file IO) — used by ensembles to resolve members. */
+function resolveProviderModelFrom(settings, ref) {
   const s = String(ref ?? "").trim();
   const slash = s.indexOf("/");
   let providerId;

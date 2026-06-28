@@ -14,6 +14,12 @@ locale **`npm run check`** (le cœur des gates, à passer avant de pousser), et 
 davantage). «Vert en local» n'est donc pas «vert partout»: la CI ajoute la couverture, les
 artefacts régénérés, le doctor, le smoke pack, et les suites MCP et Studio.
 
+```mermaid
+flowchart LR
+    A[Hook de commit (optionnel)] --> B[npm run check (avant de pousser)]
+    B --> C[CI (couverture, doctor, smoke, MCP, Studio)]
+```
+
 ## `npm run check` (le cœur, en local)
 
 | Gate | Vérifie | Corriger |

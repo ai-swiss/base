@@ -16,6 +16,17 @@ Consulter ou publier la documentation de son BASE sans jamais la recopier ailleu
 
 L'interface du site est bilingue, français par défaut avec une bascule vers l'anglais. La version française de chaque page fait foi; voir [Langues](langues.md). Le contenu garde la langue de sa source, conformément aux [langues de BASE](langues.md). La navigation latérale est générée depuis `navigation.json`, la projection de navigation du modèle documentaire: aucune liste de pages n'est maintenue à la main.
 
+```mermaid
+flowchart TD
+    A[Fichiers canoniques (Markdown, JSON, specs)] --> B[Modèle documentaire]
+    B --> C[Site interactif]
+    C --> D[Voir en local]
+    C --> E[Site statique interne]
+    C --> F[Site public filtré]
+    B --> G[Validation des invariants]
+    G --> F
+```
+
 ## Voir en local
 
 Depuis la racine du dépôt:

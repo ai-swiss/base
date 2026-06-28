@@ -42,6 +42,19 @@ Une action passe par BASE quand elle utilise la CLI, le broker ou le serveur MCP
 
 Dans ces cas, BASE peut appliquer confinement, décisions `allow` / `deny` / `needs_approval`, dry-run, confirmation et trace minimale. Si l'action contourne ces points d'entrée, elle dépend des droits natifs de l'outil ou de l'environnement.
 
+```mermaid
+flowchart TD
+    A[Une action est demandée] --> B{Passe par la CLI, le broker ou le MCP ?}
+    B -->|Oui| C[BASE applique le confinement]
+    C --> D{Décision allow, deny ou needs_approval}
+    D -->|allow ou needs_approval| E[Dry-run puis confirmation explicite]
+    D -->|deny| F[Action refusée]
+    E --> G[Exécution avec trace minimale]
+    B -->|Non| H[Aucun blocage mécanique]
+    H --> I[Droits natifs OS, dossier, connecteur, API, token]
+    I --> J[Les métadonnées YAML restent un guide et un signal d'audit]
+```
+
 ## Ce que BASE public protège
 
 BASE public fournit des garde-fous locaux:

@@ -1,7 +1,16 @@
-<!-- fr-synced: aa224e4fc8067a23f9036a59fd06f411ec4e21ec -->
+<!-- fr-synced: 8ea40981db54eae95e0b6ee6811e2a7dd8b35d37 -->
 # Writing for the router
 
 If a request like "Draft a quote for Dupont SA" never reaches the right process, your assistant stays silent or answers beside the point: it's the wording of your files that decides. This guide is for assistant builders. It explains how the router reads your files, how to write for it, and how to check that your requests arrive where they should. No technical skill is required, except for one terminal command to test.
+
+```mermaid
+flowchart TD
+    A[Write use_when with your users' words] --> B[Add varied routing.examples]
+    B --> C[Rule out neighboring requests with avoid_when]
+    C --> D{Does the request route well ?}
+    D -->|No| A
+    D -->|Yes| E[Lock the behavior with route-tests]
+```
 
 ## How the router reads your files
 

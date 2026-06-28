@@ -64,7 +64,17 @@ Les deux premiers paliers montent depuis le terrain. Le troisième descend. Cert
 
 Les deux moteurs ne fonctionnent pas l'un sans l'autre. Par le bas, l'appropriation produit des pratiques que personne n'aurait dictées d'avance; sans elle, les flux institués restent des coquilles que personne ne s'approprie. Par le haut, les flux assistés lèvent les blocages communs et donnent un cadre; sans eux, l'appropriation reste un archipel d'usages personnels qui ne fait jamais organisation.
 
-Ils se rencontrent au palier de l'équipe. C'est là qu'une pratique individuelle devient un process partagé, et là qu'un flux institué redescend pour être éprouvé sur le travail réel. La descente impose une discipline que la remontée ne réclame pas: une pratique personnelle n'engage que son auteur; un flux institutionnel engage tous ceux qui s'y fient. Peu de flux descendent, et ceux qui descendent restent sous surveillance. Une [friction](./cycle-de-vie-expertise.md) signalée sur un flux commun, c'est le moteur du bas qui corrige le moteur du haut.
+Ils se rencontrent au palier de l'équipe. C'est là qu'une pratique individuelle devient un process partagé, et là qu'un flux institué redescend pour être éprouvé sur le travail réel.
+
+```mermaid
+flowchart TB
+    I["Palier 3 : l'institution ouvre les flux communs"]
+    E["Palier 2 : l'équipe promeut un process partagé"]
+    P["Palier 1 : la personne s'approprie"]
+    P -->|"remontée (ce qui marche)"| E
+    I -->|"descente (ce qui est commun)"| E
+```
+ La descente impose une discipline que la remontée ne réclame pas: une pratique personnelle n'engage que son auteur; un flux institutionnel engage tous ceux qui s'y fient. Peu de flux descendent, et ceux qui descendent restent sous surveillance. Une [friction](./cycle-de-vie-expertise.md) signalée sur un flux commun, c'est le moteur du bas qui corrige le moteur du haut.
 
 Dans le temps, rien de tout cela ne s'installe d'un coup. On commence presque toujours par quelques essais isolés; l'usage se répand le jour où des personnes se l'approprient vraiment; et seule une poignée de flux finit tenue à l'échelle. C'est une pente, pas un escalier: les étapes se chevauchent, on en saute, on revient en arrière. Les repérer aide à savoir où l'on en est, à condition de ne pas en faire une marche obligée, identique pour tous.
 

@@ -34,6 +34,8 @@ export default defineConfig({
       locales: {
         root: { label: "Français", lang: "fr" },
         en: { label: "English", lang: "en" },
+        de: { label: "Deutsch", lang: "de" },
+        it: { label: "Italiano", lang: "it" },
       },
       social: [{ icon: "github", label: "GitHub", href: "https://github.com/ai-swiss/base" }],
       customCss: ["./src/styles/custom.css"],

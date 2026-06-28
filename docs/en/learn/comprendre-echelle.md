@@ -1,10 +1,19 @@
-<!-- fr-synced: a08ce1fa80da94cb5616f0d709ad7680258ec022 -->
+<!-- fr-synced: d75bebf8e1a782dfbd8ac6a8fb4f19069f923fd1 -->
 # Choosing between scan, local index, and external store based on your scale
 
 Sizing BASE's routing well means avoiding two pitfalls: paying for infrastructure you don't need, or
 hitting a wall of slowness as the corpus grows. This page gives you a quantified decision rule, from
 small projects to large corpora, so you know when an in-memory scan is enough, when a local index
 becomes useful, and when an external store is justified.
+
+```mermaid
+flowchart TD
+    A[What is the corpus size?] --> B{Hundreds to a few thousand?}
+    B -->|Yes| C[In-memory scan with routeRequest]
+    B -->|No| D{Tens of thousands?}
+    D -->|Yes| E[Local index with base-index-local]
+    D -->|No| F[Dedicated external store, OpenSearch or vector store]
+```
 
 ## When an in-memory scan is enough
 
