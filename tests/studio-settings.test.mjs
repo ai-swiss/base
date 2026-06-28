@@ -41,7 +41,7 @@ describe("studio settings — read/write", () => {
 
   it("reads empty settings when no file exists", async () => {
     const s = await readSettings(dir);
-    assert.deepEqual(s, { providers: [], aliases: {}, defaults: {}, discovered: {} });
+    assert.deepEqual(s, { providers: [], aliases: {}, defaults: {}, discovered: {}, ensembles: {} });
   });
 
   it("writes valid settings and reads them back with keyDetected + locality, never the key", async () => {
