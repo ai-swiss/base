@@ -5,7 +5,7 @@
 > Owns: FR-POLICY-*
 
 ## The key fact: the choke-point already exists
-Every mediated read/write/execute already passes through `canAccessResource`, and the broker acts on `deny` (throws in `openResource`/`invokeTool`/`commitChange`). **Writes are now genuinely gated** through the propose→commit flow (`writes.md`) - the CLI/MCP *do* write, but only through that mediated, verified path. "Advisory" now means only that the **default adapter is permissive for `needs_approval`** (it proceeds). The remaining advisory→strict step is making the policy a **swappable port** (an adapter that *bites* on `needs_approval`), with no core change.
+Every mediated read/write/execute already passes through `canAccessResource`, and the broker acts on `deny` (throws in `openResource`/`invokeTool`/`commitChange`). **Writes are now genuinely gated** through the propose→commit flow (`writes.md`): the CLI/MCP *do* write, but only through that mediated, verified path. "Advisory" now means only that the **default adapter is permissive for `needs_approval`** (it proceeds). The remaining advisory→strict step is making the policy a **swappable port** (an adapter that *bites* on `needs_approval`), with no core change.
 
 ## Interface
 ```js
@@ -40,7 +40,7 @@ export function strictPolicy({ grants = new Set() } = {}) {
   };
 }
 ```
-The already-parsed YAML metadata is split in two categories:
+The already-parsed YAML metadata splits into two categories:
 
 - `sensitivity`, `requires_confirmation` and future explicit policy fields can feed the real gate when an action passes through the broker.
 - `requires[].access` is a workflow need: it says the process expects to read, write or execute a referenced resource. It does not grant access and is not enforced by itself.
@@ -59,7 +59,7 @@ A policy can only enforce **what passes through the broker**. Strict mode is *ai
 BASE **documents** this boundary rather than hiding it (vision §4; perimeter.md). The conformance matrix states, per harness, the real mode (advisory/hybrid/strict).
 
 ## Wiring
-The broker calls `config.policy(resource, action, ctx)` at the same points it calls `canAccessResource` today. `DEFAULTS.policy` is `null`, which `resolvePolicy` maps to `advisoryPolicy`, so the effective default is advisory and behaviour is unchanged unless an integrator sets `policy` in `base.config.json` or, for trusted executable adapters, `base.config.mjs`.
+The broker calls `config.policy(resource, action, ctx)` at the same points it calls `canAccessResource` today. `DEFAULTS.policy` is `null`, which `resolvePolicy` maps to `advisoryPolicy`, so the effective default is advisory and behaviour stays unchanged unless an integrator sets `policy` in `base.config.json` or, for trusted executable adapters, `base.config.mjs`.
 
 ## How it's proven
 - `advisoryPolicy` is the default and matches FR-POLICY-001 (`tests/base-policy.test.mjs`).

@@ -48,7 +48,7 @@ Utiliser ce process quand l'utilisateur dit:
 
 ### 1. Cadrer le périmètre
 
-Demande quel dossier analyser si ce n'est pas évident, puis précise que l'entretien produit des propositions, pas des modifications automatiques.
+Demande quel dossier analyser si ce n'est pas évident, puis rappelle que l'entretien produit des propositions, et non des modifications automatiques.
 
 > «Je vais vérifier la cohérence du BASE, les liens, les marqueurs ouverts, les descriptions manquantes, les routes attendues, les artefacts générés, la posture MCP et les ressources qui méritent d'être promues. Je vous proposerai ensuite les corrections à valider.»
 
@@ -63,7 +63,7 @@ Analyser:
 - tools dont le script manque;
 - chemins qui sortent du projet.
 
-Si la CLI est disponible, s'appuyer sur (ajouter `--root <dossier>` pour cibler un BASE précis, sinon la racine courante):
+Si la CLI est disponible, s'appuyer sur les commandes suivantes (ajouter `--root <dossier>` pour cibler un BASE précis, sinon la racine courante):
 
 ```bash
 base validate --root <dossier>
@@ -106,11 +106,11 @@ Repérer les fichiers qui reviennent souvent dans les workflows:
 - scripts locaux utiles;
 - documents métier suffisamment génériques pour l'équipe.
 
-Proposer une promotion seulement si la ressource est claire, réutilisable et validée par l'utilisateur.
+Ne proposer une promotion que si la ressource est claire, réutilisable et validée par l'utilisateur.
 
 ### 5. Évaluer la readiness
 
-Si l'utilisateur demande un audit, une publication ou un partage d'équipe, produire une lecture par niveau:
+Si l'utilisateur demande un audit, une publication ou un partage d'équipe, en proposer une lecture par niveau:
 
 - **Usage local**: validation, workflows utilisables, données lisibles, marqueurs compréhensibles.
 - **Équipe / PME**: descriptions, route-tests, ressources promues, responsabilités humaines, données sensibles identifiées.

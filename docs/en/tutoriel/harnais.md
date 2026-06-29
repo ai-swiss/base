@@ -1,8 +1,8 @@
-<!-- fr-synced: 7b63c08db9716f99d3669ade98ab99d38aa759d7 -->
+<!-- fr-synced: 1a5093423e0ba18489c24df663c597c11f7f0feb -->
 # Step 0: connect your AI tool
 
-**You will** make your AI tool able to read a BASE folder and respond from it, proven by a simple
-question at the end.
+**You will** make your AI tool able to read a BASE folder and respond from it; a simple question, at
+the end, will prove it.
 **You need** a computer, an internet connection, and the BASE folder on your machine. If you don't
 have it yet, [Try it without installing anything](../start/essayer-sans-installer.md) shows the
 simplest way to get it; examples like `veytaux-tourisme` are in there.
@@ -16,7 +16,7 @@ Before any module, your tool must be installed AND connected. Choose:
 | **ChatGPT / Claude Desktop** | Via the MCP server (mechanical guarantees). | Yes (config) |
 | **Another tool** | Ask the concierge: *help me connect BASE to my tool*. It reads your tool's docs and guides you. | Depends on the tool |
 
-For the mechanical guarantees (deterministic routing, mediated writes), connect the MCP server: see
+For the mechanical guarantees (deterministic routing, validated writes), connect the MCP server: see
 BASE's getting-started documentation.
 
 ✅ **Check**: open the `exemples/veytaux-tourisme` folder in your tool and ask *"who are you?"*. The

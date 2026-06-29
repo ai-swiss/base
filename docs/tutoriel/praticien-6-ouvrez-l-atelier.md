@@ -8,7 +8,7 @@ scope: public
 status: active
 sensitivity: public
 license: CC-BY-4.0
-keywords: [praticien, studio, atelier, modèle, réglages, ollama, veytaux, tourisme]
+keywords: [praticien, studio, atelier, modele, reglages, ollama, veytaux, tourisme]
 audience: [builder]
 learning_level: intermediate
 ---
@@ -23,16 +23,16 @@ learning_level: intermediate
 
 1. Lancez l'atelier: `base studio --root exemples/veytaux-tourisme`. Votre navigateur s'ouvre.
 2. Onglet **Réglages**. S'il n'y a aucun provider, le guide «Connecter un modèle» s'affiche.
-3. Suivez le chemin le plus simple pour vous (Ollama local sans clé, ou une clé d'API que vous
-   collez dans votre terminal). Le guide imprime l'étape suivante à chaque fois.
+3. Suivez le chemin le plus simple pour vous (Ollama en local sans clé, ou une clé d'API que vous
+   collez dans votre terminal). À chaque fois, le guide affiche l'étape suivante.
 4. Une fois le test de connexion vert, cliquez «définir comme défauts d'évaluation».
 
 ✅ **Vérifiez**: l'écran Réglages montre votre provider avec un test de connexion vert, et vos défauts d'évaluation sont définis.
 
-💡 **Pourquoi ça a marché**: Studio est l'atelier, il travaille sur les MÊMES fichiers que votre outil IA. Les clés d'API ne sont jamais saisies ni stockées dans l'écran: vous nommez une variable d'environnement, ce qui garde vos secrets hors des fichiers.
+💡 **Pourquoi ça a marché**: Studio est l'atelier, et il agit sur les MÊMES fichiers que votre outil IA. Vos clés d'API ne sont jamais ni saisies ni stockées dans l'écran: vous vous contentez d'y nommer une variable d'environnement, et vos secrets restent ainsi hors des fichiers du projet.
 
 🔁 **Chez vous**: quel modèle utiliserez-vous pour vos évaluations, un modèle local (gratuit, privé) ou une API (plus puissante)?
 
 → **Et maintenant**: [Module 7: la première évaluation](praticien-7-premiere-evaluation.md).
 
-🆘 **Pannes courantes**: *«Aucun modèle»* après avoir installé Ollama: rechargez la page des Réglages. *La clé n'est pas détectée*: exportez la variable dans le MÊME terminal que `base studio`, puis relancez.
+🆘 **Pannes courantes**: *«Aucun modèle»* après l'installation d'Ollama: rechargez la page des Réglages. *La clé n'est pas détectée*: exportez la variable dans le MÊME terminal que `base studio`, puis relancez.

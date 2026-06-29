@@ -6,7 +6,7 @@
 2. Demandez, mot pour mot: **«Dupont SA a-t-il droit à la remise fidélité?»**
 3. L'assistant lit `catalogue/regles-tarification.md` et `clients/dupont-sa.md`, répond non (la remise fidélité demande deux mandats, Dupont SA en est à son premier), cite sa source et pose un `[A VALIDER]`. Rien n'est écrit ni envoyé sans vous.
 
-**Le moyen le plus rapide de voir BASE en action.** Ce dossier est déjà rempli avec les données d'une entreprise fictive, **Atelier Léman Sàrl**, un studio de design lausannois, et contient un devis déjà généré.
+**Le moyen le plus rapide de voir BASE en action.** Ce dossier est déjà rempli avec les données d'une entreprise fictive, **Atelier Léman Sàrl**, un studio de design lausannois, et contient un devis tout prêt.
 
 ## Voir un résultat fini en 60 secondes
 
@@ -44,6 +44,6 @@ Données **fictives et illustratives** (entreprise, prix, conditions, devis). El
 
 ---
 
-BASE est un framework par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
 
 Licence: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)

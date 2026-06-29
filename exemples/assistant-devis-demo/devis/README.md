@@ -16,4 +16,4 @@ Exemple: `2026-03-15_dupont-sa.md`
 
 ## Numérotation
 
-Les devis sont numérotés de façon séquentielle: `DEV-2026-001`, `DEV-2026-002`, etc. L'assistant propose le prochain numéro et l'inscrit une fois le devis validé.
+Les devis sont numérotés en continu: `DEV-2026-001`, `DEV-2026-002`, etc. L'assistant propose le prochain numéro et l'inscrit une fois le devis validé.

@@ -25,13 +25,13 @@ Demande à l'utilisateur:
 
 Avant de commencer, vérifie que `profil/identite.md` est rempli. Sinon, charge `skills/processes/configuration/SKILL.md`.
 
-Si `.ai/journal/` contient des entrées récentes, lis-les pour le contexte.
+Si `.ai/journal/` contient des entrées récentes, lis-les pour te remettre en contexte.
 
 ## Étapes
 
 ### 1. Comprendre le projet
 
-Lis la description et reformule-la en termes clairs:
+Lis la description et reformule-la clairement:
 
 > «Si je comprends bien, votre projet consiste à:
 > - [objectif principal]
@@ -53,7 +53,7 @@ Clarifie si nécessaire:
 Lis la compétence `skills/competences/methode-projet/SKILL.md` pour la méthodologie.
 
 Propose une décomposition en 3 à 7 grandes étapes (pas plus). Pour chaque étape:
-- Un nom clair et actionnable
+- Un intitulé clair et orienté action
 - Ce qu'elle produit concrètement (livrable ou décision)
 - Les dépendances éventuelles (quelle étape doit être terminée avant)
 

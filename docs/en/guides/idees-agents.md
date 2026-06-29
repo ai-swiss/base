@@ -1,11 +1,11 @@
-<!-- fr-synced: 2e3e89ecdaae59e168dd69cb6411e3f7bb461187 -->
+<!-- fr-synced: 669bf6d8968b0fd9bc445adb9ef17a7f6d164f51 -->
 # Agent ideas for your line of work
 
-This page is for you if you want an AI assistant but don't know where to start. It brings together concrete examples, sector by sector, to give you an idea you can pick up right away.
+This page is for you if you want an AI assistant but don't know where to start. It brings together concrete examples, sector by sector, to offer you an idea you can pick up.
 
-Each idea is a starting point. The assistant creator helps you turn it into an assistant suited to your context, subject to your business, legal, regulatory, and confidentiality constraints.
+Each idea is a starting point. The assistant creator helps you turn it into an assistant fitted to your context, in keeping with your business, legal, regulatory, and confidentiality constraints.
 
-We draw a clear line between two cases. *Example available* means a ready-to-copy folder exists in [`exemples/`](../../../exemples/). The other ideas remain to be built with the assistant creator: no example has been shipped yet.
+Two cases stand clearly apart. *Example available* means a ready-to-copy folder exists in [`exemples/`](../../../exemples/). The other ideas remain to be built with the assistant creator: no example has been shipped yet.
 
 > **Important**: BASE structures work and knowledge. It does not replace a licensed professional, or a legal, medical, financial, HR, or compliance review when one is required.
 
@@ -13,7 +13,7 @@ We draw a clear line between two cases. *Example available* means a ready-to-cop
 
 ## Sales and business development
 
-| Assistant | What it does for you |
+| Assistant | What it helps you do |
 |-----------|------------------------|
 | **Quotes and proposals** | Prices and drafts professional quotes from client requests |
 | **Prospecting** | Prepares your meetings, qualifies leads, tracks your pipeline |
@@ -26,7 +26,7 @@ We draw a clear line between two cases. *Example available* means a ready-to-cop
 
 ## Communication and marketing
 
-| Assistant | What it does for you |
+| Assistant | What it helps you do |
 |-----------|------------------------|
 | **Social media** | Drafts LinkedIn, Instagram, and Facebook posts in your tone |
 | **Newsletter** | Structures and writes your regular mailings |
@@ -39,7 +39,7 @@ We draw a clear line between two cases. *Example available* means a ready-to-cop
 
 ## Human resources
 
-| Assistant | What it does for you |
+| Assistant | What it helps you do |
 |-----------|------------------------|
 | **Recruitment** | Drafts job postings, prepares interviews, evaluates candidates |
 | **Onboarding** | Creates welcome guides for new team members |
@@ -52,7 +52,7 @@ We draw a clear line between two cases. *Example available* means a ready-to-cop
 
 ## Administration and management
 
-| Assistant | What it does for you |
+| Assistant | What it helps you do |
 |-----------|------------------------|
 | **Meeting minutes** | Turns your notes into structured minutes after every meeting |
 | **Project management** | Tracks tasks, prepares progress updates, writes wrap-ups |
@@ -65,7 +65,7 @@ We draw a clear line between two cases. *Example available* means a ready-to-cop
 
 ## Specialized professions
 
-| Assistant | What it does for you |
+| Assistant | What it helps you do |
 |-----------|------------------------|
 | **Architecture firm** | Client brief, requirements program, site monitoring, handover reports |
 | **Real estate agency** | Valuations, listing copy, tracking of viewings and negotiations |
@@ -79,10 +79,10 @@ We draw a clear line between two cases. *Example available* means a ready-to-cop
 
 ## Food service and hospitality
 
-| Assistant | What it does for you |
+| Assistant | What it helps you do |
 |-----------|------------------------|
 | **Restaurant** | Menu creation, supplier management, food cost calculation, inventories |
-| **Hotel** | Check-in/check-out, concierge service, review management, reports |
+| **Hotel** | Arrivals and departures, concierge service, review management, reports |
 | **Caterer / events** | Event quotes, logistics planning, registration management |
 
 > *No example shipped yet: to be built with the assistant creator*
@@ -91,7 +91,7 @@ We draw a clear line between two cases. *Example available* means a ready-to-cop
 
 ## Education and nonprofits
 
-| Assistant | What it does for you |
+| Assistant | What it helps you do |
 |-----------|------------------------|
 | **Teacher** | Prepares teaching units and assessments, with differentiation |
 | **School / training center** | Enrollment, course scheduling, parent communication, report cards |
@@ -104,7 +104,7 @@ We draw a clear line between two cases. *Example available* means a ready-to-cop
 
 ## Agriculture and trades
 
-| Assistant | What it does for you |
+| Assistant | What it helps you do |
 |-----------|------------------------|
 | **Farm** | Crop planning, plot tracking, direct sales, declarations |
 | **Tradesperson** | Job quotes, site planning, invoicing, warranty tracking |

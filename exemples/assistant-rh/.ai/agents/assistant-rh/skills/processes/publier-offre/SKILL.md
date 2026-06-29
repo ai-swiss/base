@@ -56,7 +56,7 @@ Questions à poser une par une:
 
 Lis `entreprise/identite.md` et `entreprise/politique-rh.md` pour:
 - Récupérer la description de l'entreprise (pour l'introduction de l'annonce)
-- Vérifier les avantages à mentionner
+- Relever les avantages à mentionner
 - Confirmer les conditions de travail (vacances, télétravail, prévoyance)
 
 Lis aussi la compétence `skills/competences/metier-rh/SKILL.md` pour les bonnes pratiques de rédaction.

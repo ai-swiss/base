@@ -18,7 +18,7 @@ learning_level: advanced
 *⏱ ~15 min · module 2/3, parcours Équipe*
 
 **Vous allez**: déclencher puis lire un refus d'egress sur une vraie ressource confidentielle, prouvé par le ✅ ci-dessous.
-**Il vous faut**: le module 1 terminé; l'atelier ouvert sur `exemples/agence-multi-clients`; un modèle DISTANT (API) connecté dans les Réglages (guide «Connecter un modèle», parcours Praticien module 6). Le contrôle se fait AVANT tout appel au modèle: même une clé non valide suffit à observer le refus.
+**Il vous faut**: le module 1 terminé; l'atelier ouvert sur `exemples/agence-multi-clients`; un modèle DISTANT (API) connecté dans les Réglages (guide «Connecter un modèle», parcours Praticien module 6). Le contrôle a lieu AVANT tout appel au modèle: une clé même invalide suffit à observer le refus.
 ↻ **Rappel**: sans regarder: qu'est-ce qu'un root garantit? (un périmètre d'écriture isolé)
 
 Le client Dupont Conseil contient une ressource déjà marquée confidentielle:
@@ -30,10 +30,10 @@ Le client Dupont Conseil contient une ressource déjà marquée confidentielle:
 
 ✅ **Vérifiez**: BASE refuse l'envoi vers le modèle distant et l'explique («ce document est confidentiel … choisissez un modèle local»); vous voyez le motif à l'écran. La même demande avec un modèle LOCAL (Ollama) passe: c'est exactement la règle.
 
-💡 **Pourquoi ça a marché**: la gouvernance vit dans des fichiers (`confidential: true` sur une ressource, ou `egress: local-only` sur un root entier), pas dans une console. La règle est unique: rien de confidentiel ne part vers un modèle distant, et le contrôle se fait AVANT l'appel, donc le document ne quitte jamais la machine. Le refus se DIT: c'est la différence entre une consigne (suivie) et un mécanisme (appliqué).
+💡 **Pourquoi ça a marché**: la gouvernance vit dans des fichiers (`confidential: true` sur une ressource, ou `egress: local-only` sur un root entier), non dans une console. La règle est unique: rien de confidentiel ne part vers un modèle distant, et le contrôle a lieu AVANT que BASE n'appelle le modèle; le document confidentiel n'est donc jamais envoyé. BASE veille sur ses propres surfaces (chat, eval, lecture MCP); il ne fait pas pare-feu autour des autres outils que vous pourriez lancer. Le refus se DIT: c'est toute la différence entre une consigne (qu'on suit) et un mécanisme (qui s'applique).
 
 🔁 **Chez vous**: quelles de vos données ne doivent JAMAIS quitter votre machine vers une API? Marquez-les `confidential: true`, ou passez tout le root en `egress: local-only`.
 
 → **Et maintenant**: [Module 3: distribuer](equipe-3-distribuer.md).
 
-🆘 **Pannes courantes**: *Pas de refus*: le modèle choisi est-il bien DISTANT? (un modèle local comme Ollama est autorisé, c'est voulu). La ressource porte-t-elle `confidential: true`? *Aucun modèle à choisir dans le chat*: ajoutez d'abord un provider dans les Réglages (parcours Praticien module 6).
+🆘 **Pannes courantes**: *Pas de refus*: le modèle choisi est-il bien DISTANT? (un modèle local comme Ollama est autorisé, c'est voulu). La ressource porte-t-elle bien `confidential: true`? *Aucun modèle à choisir dans le chat*: ajoutez d'abord un fournisseur dans les Réglages (parcours Praticien module 6).

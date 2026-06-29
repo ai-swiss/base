@@ -29,7 +29,7 @@ allowed-tools: Read
 
 # Comprendre BASE
 
-Expliquer BASE **à la bonne profondeur**, en lisant la doc canonique d'abord. Ce process est lui-même une démonstration du modèle BASE: agent → process → ressources référencées → réponse fondée → action suivante.
+Expliquer BASE **à la bonne profondeur**, en lisant d'abord la doc canonique. Ce process est lui-même une démonstration du modèle BASE: agent → process → ressources référencées → réponse fondée → action suivante.
 
 ## Méthode
 
@@ -37,13 +37,13 @@ Expliquer BASE **à la bonne profondeur**, en lisant la doc canonique d'abord. C
 2. Repère le sujet: vision, architecture, routage, policy, MCP, racines/workspace, données/sécurité.
 3. Ouvre les sources canoniques listées pour ce sujet.
 4. Réponds dans la langue et à la profondeur de l'utilisateur.
-5. Dis ce que ça change pour sa tâche en cours, s'il y en a une.
+5. Dis ce que cela change pour sa tâche en cours, s'il en a une.
 6. Propose une action suivante, ou de revenir à la tâche interrompue.
 
 ## Sources à lire selon le sujet
 
 - Vision / pourquoi:
-  - `docs/learn/co-penser-avec-lia.md` (le pourquoi: vérification, quatre pertes, méthode), commence ici
+  - `docs/learn/co-penser-avec-lia.md` (le pourquoi: vérification, pertes de contrôle, méthode), commence ici
   - `MANIFESTO.md`
   - `docs/learn/pratiques-co-pensee.md`
   - `docs/learn/comprendre.md`
@@ -66,7 +66,7 @@ Expliquer BASE **à la bonne profondeur**, en lisant la doc canonique d'abord. C
 
 ## Profondeur selon le profil
 
-- **Débutant**: la métaphore du collègue venu d'ailleurs, amnésique (représentation riche du monde, mais pas du vôtre); des fichiers texte que vous gardez; l'IA suit vos process.
+- **Débutant**: la métaphore du collègue venu d'ailleurs, amnésique (riche représentation du monde, mais pas du vôtre); des fichiers texte qui restent les vôtres; l'IA suit vos process.
 - **Praticien**: agent / process / compétences / ressources; route d'abord, ouvre ensuite.
 - **Architecte**: les six plans (texte = vérité, routeur = choix, broker = garanties, index = échelle, MCP = exposition, LLM = orchestration), ports & adaptateurs, confinement racine/workspace, abstention honnête.
 

@@ -1,14 +1,13 @@
-<!-- fr-synced: 4526c4fa3435d16b5086cf491328517bb8035fc8 -->
+<!-- fr-synced: 3edd7f1640e1d44bee40b32b4241426c938a92b6 -->
 # Official BASE visuals to download
 
-This page gathers the official BASE visuals, ready to use and royalty-free under an open license. Journalists, partners, and authors will find here the logo and the architecture diagram to illustrate an article, a presentation, or a publication without having to recreate them.
+This page gathers the official BASE visuals, ready to use and released under an open license. Journalists, partners, and authors will find here the structure diagram to illustrate an article, a presentation, or a publication without having to redraw it.
 
 ## Contents
 
 | File | Description |
 | --- | --- |
-| `logo-base.svg` | BASE wordmark with its tagline, system typography, transparent background |
-| `architecture-base.svg` | Diagram of the three-layer architecture: adapters (CLI, MCP), broker and ports, Markdown files |
+| `structure-base.svg` | A big-picture diagram of BASE: your AI tools, the surfaces (CLI, MCP server, Studio, documentation UI), the core (the broker) that enforces the guarantees, the extension points, and your Markdown files as the source of truth |
 
 ## License and attribution
 
@@ -16,4 +15,4 @@ These visuals are published under the [CC BY 4.0](https://creativecommons.org/li
 
 ## Other formats
 
-Need a high-resolution PNG, a dark variant, or a different crop? Request it through [a-i.swiss](https://a-i.swiss), specifying the medium and the expected format.
+Need a high-resolution PNG, a dark variant, or a different crop? Submit a request at [a-i.swiss](https://a-i.swiss), specifying the medium and the formats you need.

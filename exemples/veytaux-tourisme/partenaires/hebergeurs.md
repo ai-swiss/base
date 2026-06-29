@@ -7,7 +7,7 @@ description: Les hébergements partenaires de Veytaux et leurs particularités, 
 scope: team
 status: active
 sensitivity: internal
-keywords: [hébergeurs, partenaires, hôtel, groupe, réservation]
+keywords: [hebergeurs, partenaires, hotel, groupe, reservation]
 ---
 # Les hébergeurs partenaires
 

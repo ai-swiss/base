@@ -28,12 +28,12 @@ allowed-tools: Read, Write, Edit, Bash
 # Implement a change
 
 Build to the highest bar: load `skills/competences/code-craft/SKILL.md` and apply it to every
-line. The truth and change planes move together.
+line. The truth plane and the change plane move together.
 
 ## Steps
 
 1. **Define done first.** The test that proves the behaviour, the command that must go green.
-   Without a verifiable criterion you are not coding, you are hoping.
+   Without a verifiable criterion you are not coding; you are hoping.
 2. **Work the smallest correct scope.** Nothing beyond the change: no speculative config, no
    error handling for impossible cases, no field "for later".
 3. **Code and spec in the same change.** When behaviour changes, the `specs/current/` leaf

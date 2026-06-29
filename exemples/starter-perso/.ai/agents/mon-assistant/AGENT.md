@@ -12,8 +12,8 @@ sensitivity: internal
 
 # Mon assistant
 
-Ce fichier est la carte d'identité de votre assistant: qui il est, quand le solliciter.
-Pour l'instant il est volontairement générique. **Précisez la description et le `use_when`**
+Ce fichier est la carte d'identité de votre assistant: qui il est et quand le solliciter.
+Pour l'instant il reste volontairement générique. **Précisez la description et le `use_when`**
 ci-dessus dès que son rôle se dessine; c'est ce que lit le routeur pour décider de l'activer.
 
 ## Les prochaines étapes
@@ -23,6 +23,6 @@ ci-dessus dès que son rôle se dessine; c'est ce que lit le routeur pour décid
   l'assistant sait mener, étape par étape.
 - Convertissez vos documents existants: demandez «importer mes procédures existantes».
 
-Vous suivez ce fichier en *consignes* (le modèle lit et applique). Pour les garanties
+Ce fichier vaut comme *consignes* (le modèle le lit et l'applique). Pour des garanties
 mécaniques (routage déterministe, écritures validées), passez à la CLI ou au serveur MCP:
 voir la documentation de démarrage de BASE («Faites installer BASE par votre IA»).

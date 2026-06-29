@@ -14,12 +14,12 @@ allowed-tools: Read Write Edit Glob Grep
 
 # Configuration du profil
 
-Guider l'utilisateur pas à pas pour configurer son profil et ses préférences de travail. Ce process se lance à la première utilisation ou quand `profil/identite.md` contient encore des placeholders.
+Guider l'utilisateur pas à pas pour configurer son profil et ses préférences de travail. Ce process se lance à la première utilisation, ou lorsque `profil/identite.md` contient encore des champs à compléter.
 
 ## Inputs
 
 Avant de commencer, vérifie:
-- **`profil/identite.md`**: contient-il des placeholders (`[...]`) ou est-il rempli?
+- **`profil/identite.md`**: contient-il des champs à compléter (`[...]`), ou est-il déjà rempli?
 
 Si tout est déjà rempli, informe l'utilisateur et propose de passer directement à la création d'un projet.
 
@@ -29,11 +29,11 @@ Si `.ai/journal/` contient des entrées récentes, lis-les pour reprendre le con
 
 ### 1. Accueil
 
-> «Bienvenue! Je suis votre assistant projet. Avant de commencer, j'ai besoin de vous connaître un peu. Quelques questions rapides, ça prend 2 minutes. On y va?»
+> «Bienvenue! Je suis votre assistant projet. Avant de commencer, j'aimerais faire connaissance. Quelques questions rapides, l'affaire de 2 minutes. On y va?»
 
 ### 2. Identité
 
-Pose les questions une par une. Ne passe à la suivante que quand la réponse est claire.
+Pose les questions une à une. Ne passe à la suivante que lorsque la réponse est claire.
 
 Questions:
 - Votre prénom et nom

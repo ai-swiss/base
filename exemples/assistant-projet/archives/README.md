@@ -14,4 +14,4 @@ archives/
 │   └── bilan-final.md          Bilan de clôture
 ```
 
-Les archives restent lisibles et consultables: l'assistant peut s'y référer pour un historique ou un retour d'expérience.
+Les archives restent consultables: l'assistant peut s'y référer pour retracer un historique ou tirer un retour d'expérience.

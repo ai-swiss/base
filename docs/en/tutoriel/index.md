@@ -1,10 +1,10 @@
-<!-- fr-synced: cf90921d730df482a65797dd85a00f16aa03f3c5 -->
+<!-- fr-synced: 5c49298d090cdf44f73c6db0af5ec480b6f5c030 -->
 # Learn BASE by Doing
 
 **Your AI tool is the experience; Studio is the workshop.** This tutorial has you build, with
 your own hands, an assistant for an imaginary tourist office (**Veytaux-les-Bains**) and then
 bring it onto YOUR files. Every step ends with a check: you never move on without proof that
-everything works. That is the advantage of BASE: every step is validated by a deterministic check you inspect and confirm.
+everything works. This verification is just one brick among others, serving what BASE really builds: a base you own and keep legible. The check rests on a deterministic test that you inspect and confirm yourself.
 
 ## Choose your starting point
 

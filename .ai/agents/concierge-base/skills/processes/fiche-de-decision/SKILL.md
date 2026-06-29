@@ -26,20 +26,20 @@ allowed-tools: Read, Write
 
 # Fiche de décision
 
-Quand plusieurs choix sont ouverts, une fiche vaut mieux qu'un fil de discussion: la personne note
-chaque point, commente, puis renvoie l'ensemble d'un coup. La personne décide; la fiche structure la
-décision.
+Quand plusieurs choix sont ouverts, une fiche vaut mieux qu'un fil de discussion: la personne y note
+chaque point, le commente, puis vous renvoie l'ensemble d'un coup. La personne décide; la fiche
+structure la décision.
 
 ## Étapes
 
 1. **Lister les vraies décisions.** Une carte par point. Chaque carte: le contexte, **votre
-   recommandation** (mettez-la en tête) et, si utile, votre lecture préalable. Ne gonflez pas avec
-   des points déjà réglés.
+   recommandation** (mettez-la en tête) et, si utile, votre lecture préalable. N'y ajoutez pas de
+   points déjà réglés.
 2. **Construire depuis le modèle.** Copiez le modèle de l'agent,
    `.ai/agents/concierge-base/templates/decision-sheet.html`, vers `.temp/AAAA-MM-JJ_sujet/<nom>.html`.
    Renseignez le titre, l'intro, `STORAGE_KEY`, `EXPORT_FILE` et le tableau `POINTS` (`id`, `title`,
    `what`, `reco`, `recoSummary`, `scaleLabel`).
-3. **Garder ça propre.** Pas de référence à un cadre externe; le style est déjà dans le modèle.
+3. **Rester sobre.** Pas de référence à un cadre externe; le style est déjà dans le modèle.
    `.temp/` est ignoré par git, la fiche reste un brouillon.
 4. **Ouvrir la fiche** pour la personne et attendre. La fiche s'enregistre dans le navigateur;
    l'export est un Markdown qu'elle vous rend.

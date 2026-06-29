@@ -7,7 +7,7 @@ description: Les tarifs de l'office du tourisme de Veytaux: taxe de séjour, vis
 scope: team
 status: active
 sensitivity: internal
-keywords: [tarifs, prix, taxe-de-sejour, visite, groupe, barème]
+keywords: [tarifs, prix, taxe-de-sejour, visite, groupe, bareme]
 ---
 # Les tarifs de l'Office du tourisme de Veytaux-les-Bains
 

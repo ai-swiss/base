@@ -19,7 +19,7 @@ routing:
     - Mettre par écrit une décision déjà prise.
     - Paramétrage initial de l'espace.
 name: explorer-une-question
-keywords: [explorer, approfondir, comprendre, réfléchir, faire le point, mettre de l'ordre, synthétiser, notes]
+keywords: [explorer, approfondir, comprendre, reflechir, faire le point, mettre de l'ordre, synthetiser, notes]
 argument-hint: "[la question ou le sujet]"
 user-invocable: true
 allowed-tools: Read Write Edit Glob Grep
@@ -27,7 +27,7 @@ allowed-tools: Read Write Edit Glob Grep
 
 # Explorer une question
 
-Aider la personne à approfondir une question ouverte ou à mettre de l'ordre dans ses notes, en gardant toujours visible la différence entre ce qui est établi, ce qui est son opinion, et ce que tu supposes. Le but est qu'elle pense mieux, pas que tu penses à sa place.
+Aider la personne à approfondir une question ouverte ou à mettre de l'ordre dans ses notes, en gardant toujours visible la différence entre ce qui est établi, ce qui relève de son opinion, et ce que tu supposes. Le but est qu'elle pense mieux, non que tu penses à sa place.
 
 Lis `skills/competences/validation-aux-bons-moments/SKILL.md`. Si la personne a des notes, demande où elles se trouvent et lis-les avant de synthétiser.
 
@@ -59,7 +59,7 @@ Distingue clairement les trois registres, et garde-les distincts dans tout ce qu
 
 ### 3. Ouvrir des angles
 
-Propose des angles que la personne n'a peut-être pas vus, en les présentant comme des questions, pas des vérités:
+Propose des angles que la personne n'a peut-être pas vus, en les présentant comme des questions plutôt que comme des vérités:
 
 > «Voici quelques angles pour ouvrir la réflexion:
 > - [angle 1, sous forme de question]

@@ -1,4 +1,4 @@
-<!-- fr-synced: ec9d02b13cf99b8cb102272c262bbc6ad8624da3 -->
+<!-- fr-synced: e0696e152e1a1de5f1f5879fd7d5efe55dee02fd -->
 # Open the Studio, connect a model
 
 *⏱ ~10 min · module 6/9, Practitioner track*
@@ -15,7 +15,7 @@
 
 ✅ **Check**: the Settings screen shows your provider with a green connection test, and your evaluation defaults are set.
 
-💡 **Why it worked**: Studio is the workshop, it works on the SAME files as your AI tool. API keys are never typed or stored in the screen: you name an environment variable, which keeps your secrets out of the files.
+💡 **Why it worked**: Studio is the workshop, and it acts on the SAME files as your AI tool. Your API keys are never typed or stored in the screen: all you do there is name an environment variable, and that keeps your secrets out of the project's files.
 
 🔁 **At home**: which model will you use for your evaluations, a local model (free, private) or an API (more powerful)?
 

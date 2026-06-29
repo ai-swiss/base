@@ -1,6 +1,6 @@
 # Courriers
 
-Ce dossier contient les courriers et emails créés par l'assistant. Chaque document est un fichier markdown nommé par date et destinataire.
+Ce dossier contient les courriers et les emails rédigés par l'assistant. Chaque document est un fichier markdown nommé d'après sa date et son destinataire.
 
 ## Convention de nommage
 
@@ -22,4 +22,4 @@ YYYY-MM-DD_reponse_destinataire.md
 
 ## Organisation
 
-Les courriers sont classés par date de création. Pour retrouver un courrier, consultez le nom du fichier ou demandez à l'assistant de lister l'historique.
+Les courriers sont classés par date de création. Pour en retrouver un, parcourez les noms de fichiers ou demandez à l'assistant de lister l'historique.

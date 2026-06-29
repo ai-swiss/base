@@ -7,7 +7,7 @@
 ## `listMarkers(root)` — FR-MARKERS-001
 Returns the project's **open markers**, typed and located, for surfacing work-in-progress (e.g. a session-opening status line: "2 `[A VALIDER]`, 1 `[DECISION]` — resume?").
 
-- Scans every resource **except framework/reference files** (`isMarkerReferencePath`: `.ai/agents/`, `docs/`, `specs/`, `tests/`, `tools/`, `mcp/`, `README.md`, test files). So it surfaces markers in **business documents**, not in the framework's own prose.
+- Scans every resource **except framework/reference files** (`isMarkerReferencePath`: `.ai/agents/`, `docs/`, `specs/`, `tests/`, `tools/`, `mcp/`, `README.md`, test files), so it surfaces markers in **business documents**, not in the framework's own prose.
 - Pattern: `[A COMPLETER | A VALIDER | ATTENTION | DECISION]`, with an optional `: <text>` payload.
 - Returns `[{ path, line, type, text }]`, sorted by priority (`A VALIDER` < `A COMPLETER` < `ATTENTION` < `DECISION`), then path, then line.
 - Traces `op:"markers", action:"read"`.

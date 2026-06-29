@@ -12,7 +12,7 @@ keywords: [benchmark, echelle, index, performance, reproductible]
 
 # Savoir quand activer l'index local (benchmarks)
 
-Si vous gérez un dépôt BASE et hésitez à activer l'index local, cette page vous donne des chiffres reproductibles pour trancher. Vous y verrez à partir de combien de documents le scan en mémoire ne suffit plus, ce que l'index apporte alors, et ce qu'il coûte.
+Si vous gérez un dépôt BASE et hésitez à activer l'index local, cette page vous donne des chiffres reproductibles pour trancher. Vous y lirez à partir de combien de documents le scan en mémoire cesse de suffire, ce que l'index apporte dès lors, et ce qu'il coûte.
 
 ## Reproduire
 
@@ -23,8 +23,8 @@ npm run bench:index
 ```
 
 Corpus synthétique (agents + process, 20 process par agent), médiane de 20 requêtes par taille. Build à
-froid; recherche mesurée à froid (scan du vocabulaire à chaque requête) et à chaud (vocabulaire en
-cache sur l'objet index).
+froid; recherche mesurée à froid (le vocabulaire est balayé à chaque requête) et à chaud (le vocabulaire
+reste en cache sur l'objet index).
 
 ## Résultats (portable, Node 24)
 
@@ -35,22 +35,22 @@ cache sur l'objet index).
 | 10 500 | 83 ms | 0,65 ms | 0,13 ms |
 | 52 500 | 394 ms | 5,3 ms | 0,9 ms |
 
-Les chiffres varient selon la machine: relancez `bench` pour mesurer la vôtre. Aucun seuil agressif
-n'est imposé en CI: un test *smoke* vérifie seulement que le rapport est produit, pas qu'il atteint un
+Les chiffres varient d'une machine à l'autre: relancez `bench` pour mesurer la vôtre. Aucun seuil strict
+n'est imposé en CI: un test *smoke* vérifie seulement que le rapport est produit, et non qu'il atteint un
 nombre fragile.
 
 ## Lecture
 
 - **Jusqu'à quelques milliers de documents**, le scan en mémoire du cœur est déjà instantané: l'index
-  n'apporte rien d'observable. Ne l'activez pas.
-- **À 10 000–50 000**, la construction reste sous la seconde et la recherche à chaud sous la
+  n'apporte rien de perceptible. Ne l'activez pas.
+- **De 10 000 à 50 000**, la construction reste sous la seconde et la recherche à chaud sous la
   milliseconde: l'index rend confortable ce qu'un scan répété rendrait coûteux.
 - **Au-delà**, voir [Comprendre l'échelle](../learn/comprendre-echelle.md): un moteur externe devient
-  légitime, derrière la même forme candidats → décision.
+  légitime, derrière la même logique candidats → décision.
 
 ## Avec et sans embeddings
 
-Les chiffres ci-dessus sont **lexicaux** (zéro dépendance). Les embeddings pré-calculés ajoutent un
-coût au build (un appel fournisseur par document, groupé par lots) et un vecteur stocké par document; à la
-requête, seule la requête est embeddée. Cette partie s'exécute à l'usage et dépend du modèle ou du
+Les chiffres ci-dessus sont **lexicaux** (sans aucune dépendance). Les embeddings pré-calculés ajoutent un
+coût au build (un appel fournisseur par document, traité par lots) et un vecteur stocké par document; à la
+requête, seuls les embeddings de la requête sont calculés. Cette partie s'exécute à l'usage et dépend du modèle ou du
 fournisseur; elle n'entre pas dans le gate de fraîcheur déterministe de l'index.

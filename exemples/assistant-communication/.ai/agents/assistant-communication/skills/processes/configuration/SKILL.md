@@ -14,16 +14,16 @@ allowed-tools: Read Write Edit Glob Grep
 
 # Configuration de la communication
 
-Guider l'utilisateur pas à pas pour configurer toutes les informations nécessaires au fonctionnement de l'assistant communication. Ce process se lance à la première utilisation ou quand les fichiers métier contiennent encore des placeholders.
+Guider l'utilisateur pas à pas pour réunir toutes les informations dont l'assistant communication a besoin pour fonctionner. Ce process se lance à la première utilisation, ou lorsque les fichiers métier contiennent encore des champs à compléter.
 
 ## Inputs
 
 Avant de commencer, vérifie:
-- **`entreprise/identite.md`**: contient-il des placeholders (`[...]`) ou est-il rempli?
-- **`entreprise/charte-editoriale.md`**: contient-il des données réelles ou le template vide?
-- **`charte/ton-et-style.md`**: contient-il des données réelles ou le template vide?
+- **`entreprise/identite.md`**: est-il rempli, ou contient-il encore des champs à compléter (`[...]`)?
+- **`entreprise/charte-editoriale.md`**: contient-il des données réelles ou le modèle vide?
+- **`charte/ton-et-style.md`**: contient-il des données réelles ou le modèle vide?
 
-Si tout est déjà rempli, informe l'utilisateur et propose de passer directement à la création de contenu.
+Si tout est déjà rempli, signale-le à l'utilisateur et propose de passer directement à la création de contenu.
 
 Si `.ai/journal/` contient des entrées récentes, lis-les pour reprendre le contexte.
 
@@ -35,7 +35,7 @@ Si `.ai/journal/` contient des entrées récentes, lis-les pour reprendre le con
 
 ### 2. Identité de l'entreprise
 
-Pose les questions une par une. Ne passe à la suivante que quand la réponse est claire.
+Pose les questions une par une. Ne passe à la suivante qu'une fois la réponse claire.
 
 Questions:
 - Nom de l'entreprise
@@ -56,11 +56,11 @@ Questions:
 **⚠ Point de décision - avant écriture:**
 > «Je suis prêt à enregistrer ces informations dans votre fiche entreprise. Confirmez-vous?»
 
-Écris dans `entreprise/identite.md`. Utilise `[A COMPLETER: ...]` pour les champs non renseignés.
+Écris dans `entreprise/identite.md`. Pour les champs restés vides, utilise `[A COMPLETER: ...]`.
 
 ### 3. Approche éditoriale
 
-> «Avant de définir votre ton de voix, parlons de votre approche globale de la communication.»
+> «Avant de définir votre ton, parlons de votre approche d'ensemble de la communication.»
 
 Pose les questions une par une:
 - Pourquoi communiquez-vous? Quel est l'objectif principal? (ex. partager votre expertise, créer de la confiance, attirer de nouveaux clients)
@@ -85,7 +85,7 @@ Pose les questions une par une:
 
 ### 4. Charte éditoriale: ton et style
 
-> «Passons maintenant à votre voix de marque. C'est ce qui rend votre communication reconnaissable et cohérente.»
+> «Passons maintenant à votre voix de marque: c'est elle qui rend votre communication reconnaissable et cohérente.»
 
 Pose les questions une par une:
 - Comment décrivez-vous la personnalité de votre entreprise? (ex. innovante, rassurante, accessible, experte, chaleureuse)
@@ -95,7 +95,7 @@ Pose les questions une par une:
 - Avez-vous des exemples de communications passées qui vous représentent bien?
 
 Si l'utilisateur hésite, propose des exemples concrets:
-> «Par exemple, une fiduciaire pourrait avoir un ton rassurant et précis, tandis qu'une agence créative serait plutôt dynamique et directe. Qu'est-ce qui vous ressemble le plus?»
+> «Une fiduciaire, par exemple, adoptera plutôt un ton rassurant et précis, tandis qu'une agence créative se montrera dynamique et directe. Qu'est-ce qui vous ressemble le plus?»
 
 > «Voici votre voix de marque telle que je la comprends:
 > - **Personnalité**: [adjectifs]
@@ -114,7 +114,7 @@ Si l'utilisateur hésite, propose des exemples concrets:
 
 ### 5. Thèmes clés
 
-> «Maintenant, parlons de ce sur quoi vous communiquez. Quels sont les grands sujets que votre entreprise aborde dans sa communication?»
+> «Voyons maintenant ce dont vous parlez. Quels sont les grands sujets que votre entreprise aborde dans sa communication?»
 
 Questions:
 - Quels sont les 3 à 5 thèmes principaux sur lesquels vous communiquez? (ex. innovation, durabilité, expertise métier, vie d'équipe, conseils pratiques)
@@ -122,7 +122,7 @@ Questions:
 - Quelle est la répartition souhaitée entre contenu éducatif, promotionnel et relationnel?
 
 Si l'utilisateur ne sait pas, propose des catégories courantes:
-> «Beaucoup de PME communiquent sur ces axes: leur expertise métier, les coulisses de l'équipe, des conseils pratiques pour leurs clients, et leurs actualités. Qu'est-ce qui vous parle?»
+> «Beaucoup de PME communiquent sur quelques axes: leur expertise métier, les coulisses de l'équipe, des conseils pratiques pour leurs clients et leurs actualités. Qu'est-ce qui vous parle?»
 
 > «Vos thèmes clés:
 > 1. [Thème 1]: [brève description]
@@ -140,7 +140,7 @@ Si l'utilisateur ne sait pas, propose des catégories courantes:
 
 ### 6. Audiences cibles
 
-> «Dernière étape: à qui parlez-vous? Décrivons ensemble vos audiences principales.»
+> «Dernière étape: à qui vous adressez-vous? Décrivons ensemble vos audiences principales.»
 
 Pour chaque audience, demande:
 - Qui sont-ils? (rôle, secteur, profil)
@@ -187,8 +187,8 @@ Confirme:
 
 ## Ce que tu ne fais jamais dans ce process
 
-- **Inventer des informations manquantes.** Si l'utilisateur ne répond pas à une question, utilise `[A COMPLETER: ...]`. Ne devine jamais un ton, une audience ou un thème.
+- **Inventer des informations manquantes.** Si l'utilisateur ne répond pas à une question, note `[A COMPLETER: ...]`. Ne devine jamais un ton, une audience ou un thème.
 - **Poser toutes les questions d'un coup.** Une question à la fois.
 - **Écrire dans un fichier sans point de décision.** Chaque écriture est précédée d'un point de décision explicite.
-- **Sauter une étape.** Même si l'utilisateur veut aller vite.
-- **Imposer un ton ou un style.** L'identité de communication appartient à l'entreprise. Tu proposes des options, tu ne décides pas.
+- **Sauter une étape**, même si l'utilisateur veut aller vite.
+- **Imposer un ton ou un style.** L'identité de communication appartient à l'entreprise: tu proposes des options, tu ne décides pas.

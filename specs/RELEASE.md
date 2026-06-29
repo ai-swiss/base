@@ -12,7 +12,7 @@ git switch main && git pull
 ```
 
 If `tools/studio/ui/e2e/.run` or `coverage/` exist from a prior run, they are ignored and the scanner
-skips them — but a truly clean tree is the baseline.
+skips them, but a truly clean tree is the baseline.
 
 ## 2. Core + packages (~5s)
 
@@ -79,7 +79,7 @@ cd ../../..
 
 - Bump versions per [SemVer](../docs/reference/versions-et-stabilite.md) (core + any changed package).
 - Update `CHANGELOG.md` (and each package's, if changed): promote `[Unreleased]` to the new version.
-- Freeze the spec: in `specs/current/CHANGELOG.md` move `[Unreleased]` to `[X.Y.Z] - <date>`. The git tag **is** the frozen spec — no `specs/vX.Y.Z/` tree is copied (read a past spec with `git show vX.Y.Z:specs/current/...`).
+- Freeze the spec: in `specs/current/CHANGELOG.md` move `[Unreleased]` to `[X.Y.Z] - <date>`. The git tag **is** the frozen spec; no `specs/vX.Y.Z/` tree is copied (read a past spec with `git show vX.Y.Z:specs/current/...`).
 - Confirm no em-dashes in French public content; specs/docs updated for any behaviour change.
 - Tag, then let CI re-run the same gates across Node 18/20/22/24.
 

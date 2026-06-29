@@ -21,11 +21,11 @@ La qualité d'un travail assisté par IA ne dépend pas d'abord de l'intelligenc
 
 On ne peut valider que ce qui est découpé et rendu visible au bon moment. Un raisonnement livré d'un seul bloc, déjà conclu, n'offre aucune prise: on l'approuve sans le lire, ou on le rejette en entier. Un raisonnement découpé en étapes crée des points où une erreur se voit encore, tant qu'elle est peu coûteuse à corriger.
 
-Ce constat ne faiblit pas quand les modèles s'améliorent: il se renforce. Plus un modèle est convaincant, plus la tentation est grande de déléguer sans regarder, et plus une erreur non vue coûte cher. La structure est ce qui garde l'humain dans la boucle au lieu de l'en sortir.
+Ce constat ne faiblit pas à mesure que les modèles s'améliorent: il se renforce. Plus un modèle est convaincant, plus la tentation est grande de déléguer sans regarder, et plus une erreur non vue coûte cher. C'est la structure qui maintient l'humain dans la boucle au lieu de l'en écarter.
 
 ## Le mauvais réflexe à éviter
 
-Le piège n'est pas l'erreur du modèle. Le piège est de **ne plus regarder**. Un assistant qui produit vite et bien invite à confier puis à passer à autre chose. C'est ainsi qu'une supposition fausse traverse toute une réflexion sans être vue, jusqu'à la décision.
+Le piège n'est pas l'erreur du modèle. Le piège est de **ne plus regarder**. Un assistant qui produit vite et bien invite à lui confier le travail, puis à passer à autre chose. C'est ainsi qu'une supposition fausse traverse toute une réflexion sans être vue, jusqu'à la décision.
 
 L'antidote n'est pas de se méfier de tout. C'est de placer la vérification là où elle compte, et seulement là, pour qu'elle reste tenable.
 

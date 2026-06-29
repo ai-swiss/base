@@ -14,17 +14,17 @@ execution:
 
 # Exemple de tool
 
-Ce dossier est **optionnel**. Il contient des scripts et connecteurs que l'agent peut utiliser quand la plateforme le permet.
+Ce dossier est **optionnel**. On y range les scripts et les connecteurs que l'agent peut mobiliser lorsque la plateforme s'y prête.
 
 ## Types de tools
 
 - **Scripts**: calculs, transformations de données, validations
-- **Connecteurs**: appels à des API externes (CRM, ERP, email)
-- **Utilitaires**: génération de PDF, anonymisation, import/export
+- **Connecteurs**: appels aux API externes (CRM, ERP, messagerie)
+- **Utilitaires**: génération de PDF, anonymisation, import et export
 
 ## Conventions
 
 - Un fichier par outil: `[action]-[cible]_v1.[ext]`
-- Documenter les entrées/sorties en commentaire en tête de fichier
-- Pas de dépendances lourdes, les tools doivent être autonomes
-- Les règles métier restent dans les skills, pas dans les tools
+- Documenter les entrées et les sorties en commentaire, en tête de fichier
+- Pas de dépendances lourdes: un tool doit rester autonome
+- Les règles métier demeurent dans les skills, jamais dans les tools

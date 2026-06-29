@@ -1,4 +1,4 @@
-<!-- fr-synced: a08ce1fa80da94cb5616f0d709ad7680258ec022 -->
+<!-- fr-synced: 2d8154729adf2d9b12aef32d927cbf13d0a223ae -->
 # Choosing between scan, local index, and external store based on your scale
 
 Sizing BASE's routing well means avoiding two pitfalls: paying for infrastructure you don't need, or
@@ -10,11 +10,11 @@ becomes useful, and when an external store is justified.
 
 By default, `routeRequest` reads the resources and scores them in memory. This approach is simple,
 with no state and no artifact to regenerate, and it is **enough** for hundreds, even a few thousand
-resources. Most projects need nothing more. Don't add complexity before you observe a cost.
+resources. Most projects need nothing more. Don't add complexity before you've seen what it costs.
 
 ## When a local index helps
 
-When the corpus grows (tens of thousands of resources) and a per-request scan becomes uncomfortable,
+When the corpus grows (tens of thousands of resources) and a per-request scan becomes burdensome,
 derive a local index with `@ai-swiss/base-index-local`:
 
 ```bash
@@ -29,7 +29,7 @@ an index of **52,500 documents** builds in ~0.4 s and searches when warm in **un
 
 Indexed routing returns the same statuses as the default in-memory routing. To preserve this parity,
 `routeWithIndex` scores all the routables stored in the index with the same injected Ranker and the
-same injected Router. Teams that know their routing is lexically compatible can enable postings
+same injected Router. Teams whose routing lends itself to a lexical comparison can enable postings
 prefiltering (`candidateMode: "lexical"`) as an explicit optimization.
 
 ## When an external store becomes legitimate
@@ -41,8 +41,8 @@ of your choice in behind it.
 
 ## Why the index stays a projection
 
-The index is **never** a source of truth. It is rebuilt deterministically from: the inventory,
-derived routing signals, frontmatter, titles/descriptions, `route_text`, and optional embeddings.
+The index is **never** a source of truth. It is rebuilt deterministically from the inventory,
+derived routing signals, frontmatter, titles and descriptions, `route_text`, and optional embeddings.
 Consequences:
 
 - **Deletable.** Erase `.ai/index/local.json`: you lose nothing, regenerate it.
@@ -54,4 +54,4 @@ Consequences:
 ## In one sentence
 
 BASE knows when a scan is enough, when an index helps, and how much each option costs. Reproducible
-benchmarks measure it: that beats an assertion.
+benchmarks measure it: that beats a mere assertion.

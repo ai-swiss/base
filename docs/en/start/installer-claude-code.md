@@ -1,7 +1,7 @@
-<!-- fr-synced: 0a4c1d4c8fb7e3703f988769bb8ebf50f50a0fc8 -->
+<!-- fr-synced: 922e595a6ac776a7debe3c39ac5adb39428fdce8 -->
 # Install Claude Code
 
-By the end of this page, you will have an assistant that reads and edits your files under your control, ready to work on your real documents: BASE stops being text you read and becomes a tool that acts. This assumes you are comfortable in a terminal and have an Anthropic account. In a few minutes, you install Claude Code, launch it in a BASE example, and make a first request; you will also know what to do if you get stuck.
+By the end of this page, you will have an assistant that reads and edits your files under your control, ready to work on your real documents: BASE stops being text you read and becomes a framework that acts. This assumes you are comfortable in a terminal and have an Anthropic account. In a few minutes, you install Claude Code, launch it in a BASE example, and make a first request; you will also know what to do if you get stuck.
 
 Claude Code, Anthropic's command-line AI agent, is just one entry point among many: most AI tools that can read and edit your files will do (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code). This page documents Claude Code; for the others, refer to their installer.
 

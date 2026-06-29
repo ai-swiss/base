@@ -1,7 +1,7 @@
-<!-- fr-synced: 8b120a1e1b1bc8fddc875ade3d6a6eff6339136e -->
+<!-- fr-synced: 394c4af7847af624518b8df43b4c485f5e0561b2 -->
 # Shape your first assistant
 
-In a few minutes, you turn a task you repeat by hand into an assistant that takes it on, with no code and without giving up any control: it proposes, you approve. Concretely, you copy an example into an AI tool that can read your files (GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code, for instance), you say what you want to do, and the assistant does the rest.
+In a few minutes, you hand off a task you repeat by hand to an assistant that takes it on, with no code and without giving up any control: it proposes, you approve. Concretely, you copy an example into an AI tool that can read your files (GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code, for instance), you say what you want to do, and the assistant does the rest.
 
 > **No repository yet?** See [Get BASE](obtenir-base.md) to choose a ZIP, a Git clone, an example copy, or the browser pack.
 >
@@ -9,7 +9,7 @@ In a few minutes, you turn a task you repeat by hand into an assistant that take
 >
 > **Only a browser (ChatGPT, Claude)?** You do not need to install anything to start: follow [Try BASE without installing anything](essayer-sans-installer.md).
 
-You can use this quickstart in three ways:
+This quickstart lends itself to three uses:
 
 - for your private life, by copying an example and adapting it to your own tasks;
 - for a startup or a small business, by stabilizing one useful workflow before extending it;
@@ -31,7 +31,7 @@ Copy the `exemples/assistant-devis/` folder into your workspace (your Desktop or
 | **Claude Code** | Run `claude` in the copied folder |
 | **ChatGPT** | Set up the [MCP server](installer-mcp.md) → load the agent → make a concrete request |
 
-> **Prefer a visual workshop?** Studio is optional: run `npm run studio` to open the workshop and see your files, your agents, and their processes at a glance. Your AI tool stays the day-to-day experience; Studio is the workshop.
+> **Prefer a visual workshop?** Studio is optional: run `npm run studio` to open the workshop and see your files, your agents, and their processes at a glance. Your AI tool stays the day-to-day experience; Studio is only a supplementary workshop.
 
 ## 3. Say what you want to do
 
@@ -52,7 +52,7 @@ Two cues make this control visible:
 
 Concretely: you ask to add a line to the quote. The assistant does not write it right away; it shows you the line and the new total; you say "yes", and only then does the file change. You see the effect before it exists.
 
-This control also covers what leaves your machine: a resource marked confidential is not sent to a remote model, and the check happens before the call. Details: [What can leave, and what BASE holds back](../trust/frontiere-local-vs-sortant.md).
+This control also covers what leaves your machine: for what goes through the BASE tools, a resource marked confidential is not sent to a remote model, and the check happens before the call. Details: [What can leave, and what BASE holds back](../trust/frontiere-local-vs-sortant.md).
 
 **Going further:** the [co-thinking practices](../learn/pratiques-co-pensee.md) show, by example, the ways of working with AI that carry the most value.
 

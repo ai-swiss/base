@@ -14,13 +14,13 @@ keywords: [connecter, outil, cursor, claude, chatgpt, copilot, mcp, installer, d
 
 # Connecter votre outil IA
 
-Brancher BASE sur l'outil IA que vous utilisez déjà, c'est garder la méthode lisible et **valider au bon moment** plutôt que de déléguer sans regarder: vous restez la personne qui décide, l'outil exécute sous votre regard. Cela suppose un outil IA capable de lire vos fichiers (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code); BASE s'y greffe.
+Brancher BASE sur l'outil IA que vous utilisez déjà, c'est garder la méthode lisible et **valider au bon moment** au lieu de déléguer sans regarder: vous demeurez la personne qui décide, l'outil exécute sous vos yeux. Encore faut-il un outil IA capable de lire vos fichiers (GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code, par exemple); BASE s'y greffe.
 
-Deux niveaux suffisent dans la plupart des cas. Commencez par le plus simple.
+Dans la plupart des cas, deux niveaux suffisent. Commencez par le plus simple.
 
 ## Le plus simple: ouvrir le dossier
 
-Aucune installation. Vous ouvrez un dossier d'exemple (ou votre propre BASE) dans un outil qui lit les fichiers de projet. Les artefacts projetés (`CLAUDE.md`, `.cursor/rules/`) donnent à l'outil le contexte BASE et la règle de routage. Ils ne choisissent pas automatiquement un agent métier: votre première demande doit porter une intention.
+Aucune installation. Vous ouvrez un dossier d'exemple (ou votre propre BASE) dans un outil qui lit les fichiers de projet. Les artefacts projetés (`CLAUDE.md`, `.cursor/rules/`) transmettent à l'outil le contexte BASE et la règle de routage. Ils ne désignent pas pour autant un agent métier: c'est à votre première demande de porter une intention.
 
 | Outil | Ce que vous faites |
 |-------|--------------------|
@@ -29,11 +29,11 @@ Aucune installation. Vous ouvrez un dossier d'exemple (ou votre propre BASE) dan
 | **Claude Desktop / ChatGPT (sans MCP)** | Collez un pack navigateur (voir [Obtenir BASE](../start/obtenir-base.md)) et formulez une demande concrète. Mode consignes, sans garanties mécaniques. |
 | **Autre éditeur lisant `AGENTS.md`** | Ouvrez le dossier; l'`AGENTS.md` projeté décrit l'agent. |
 
-C'est le palier navigateur et fichier: le modèle suit la méthode, et vous gardez la main pour la relire.
+C'est le palier du navigateur et du fichier: le modèle suit la méthode, et vous gardez la main pour la relire.
 
 ## Pour une équipe: le serveur MCP de BASE
 
-Quand vous voulez les **garanties mécaniques** (routage déterministe par défaut, écriture médiée qui propose puis commit, exécution gardée), branchez le serveur MCP de BASE. C'est le même broker qu'en CLI, exposé à votre outil.
+Lorsque vous tenez aux **garanties mécaniques** (routage déterministe par défaut, écriture médiée qui propose puis commit, exécution gardée), branchez le serveur MCP de BASE. C'est le même broker qu'en CLI, exposé cette fois à votre outil.
 
 | Outil | Procédure |
 |-------|-----------|
@@ -55,7 +55,7 @@ Forme minimale d'un serveur local en `stdio` (chemins à adapter):
 }
 ```
 
-En lecture seule, ajoutez `--read-only`. La référence complète (modes, distant, authentification, sécurité) vit dans [`mcp/README.md`](../../mcp/README.md), source de vérité.
+Pour une lecture seule, ajoutez `--read-only`. La référence complète (modes, distant, authentification, sécurité) figure dans [`mcp/README.md`](../../mcp/README.md), qui fait foi.
 
 ## Quel palier pour quel besoin
 
@@ -67,4 +67,4 @@ En lecture seule, ajoutez `--read-only`. La référence complète (modes, distan
 
 ## Votre outil n'est pas listé
 
-Le principe vaut pour la plupart des outils qui lisent des fichiers de projet ou parlent MCP. Chargez l'agent d'accueil (`concierge-base`) et demandez «aide-moi à connecter BASE à mon outil»: il lit la documentation de votre outil et vous guide, en gardant la couture de validation. Voir aussi [BASE et vos outils IA](../reference/base-et-vos-outils-ia.md).
+Le principe vaut pour la plupart des outils qui lisent des fichiers de projet ou dialoguent en MCP. Chargez l'agent d'accueil (`concierge-base`) et demandez «aide-moi à connecter BASE à mon outil»: il lit la documentation de votre outil et vous guide, sans jamais relâcher la couture de validation. Voir aussi [BASE et vos outils IA](../reference/base-et-vos-outils-ia.md).

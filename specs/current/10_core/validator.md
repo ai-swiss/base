@@ -5,7 +5,7 @@
 > Owns: FR-VALID-*, FR-ONTOLOGY-*
 
 ## Intent
-The **core validates only the minimum BASE requires** (`base.resource.v1`). Everything else (organisation rules, PII, retention) is **opt-in** via additional `Validator`s. This keeps the contract honest: the core never pretends to know an organisation's rules.
+The **core validates only the minimum BASE requires** (`base.resource.v1`). Everything else (organisation rules, PII, retention) is **opt-in** through additional `Validator`s. This keeps the contract honest: the core never pretends to know an organisation's rules.
 
 ## Pattern: Notification accumulator
 A `Validator` **never throws** and **never mutates** the resource; it appends to a `Notification`. (Collect *all* problems, not just the first.)
@@ -72,7 +72,7 @@ Adapters register their own codes in `core/codes.mjs` (or a namespaced extension
 
 ## Design rules
 - `coreSchemaValidator` is the **first** element of the pipeline (dogfooding; no special-case path).
-- Codes are **stable**; French messages live in `core/codes.mjs`, decoupled from codes (so CI/adapters react to codes, and i18n is trivial).
+- Codes are **stable**; French messages live in `core/codes.mjs`, decoupled from the codes (so CI and adapters react to codes, and i18n is trivial).
 - Order independence: validators must not depend on each other's order.
 
 ## How it's proven
@@ -83,6 +83,6 @@ Adapters register their own codes in `core/codes.mjs` (or a namespaced extension
 
 Files BASE writes for itself at run time (currently `.ai/studio.settings.json`) are machine
 state, never knowledge: `inventoryResources` skips them, so they never appear as resources,
-cards, facet counts or doctor findings. The list lives in `tools/core/runtime-artifacts.mjs` —
-one place, every consumer inherits additions. The file tree still shows them as plain
-(non-resource) files: the explorer shows the truth of the disk.
+cards, facet counts or doctor findings. The list lives in one place,
+`tools/core/runtime-artifacts.mjs`, so every consumer inherits additions. The file tree still
+shows them as plain (non-resource) files: the explorer shows the truth of the disk.

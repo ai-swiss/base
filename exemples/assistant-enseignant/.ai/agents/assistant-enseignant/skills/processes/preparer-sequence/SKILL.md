@@ -23,7 +23,7 @@ allowed-tools: Read Write Edit Glob Grep
 
 # Préparer une séquence
 
-Préparer une séquence d'enseignement de A à Z: objectifs d'apprentissage, prérequis, déroulé par phases, différenciation, matériel. La séquence est un document de travail pour l'enseignant, pas un script à suivre mot à mot.
+Préparer une séquence d'enseignement de bout en bout: objectifs d'apprentissage, prérequis, déroulé par phases, différenciation, matériel. La séquence est un document de travail pour l'enseignant, non un script à suivre mot à mot.
 
 ## Inputs
 
@@ -101,7 +101,7 @@ Pour chaque activité centrale, propose deux variantes en t'appuyant sur le prof
 
 ### 6. Matériel
 
-Liste le matériel et les supports nécessaires, phase par phase. Marque `[A COMPLETER: ...]` ce qui dépend de ressources que tu ne connais pas (manuel utilisé, fiches existantes).
+Liste le matériel et les supports nécessaires, phase par phase. Signale par `[A COMPLETER: ...]` ce qui dépend de ressources que tu ne connais pas (manuel utilisé, fiches existantes).
 
 ### 7. Enregistrer la séquence
 

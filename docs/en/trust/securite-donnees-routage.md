@@ -1,33 +1,33 @@
-<!-- fr-synced: 7e6a347bb412b3e8e7a285d87c223a99621eb385 -->
+<!-- fr-synced: 0bada1d51b3fb860b595a36f84a2a82b76d63890 -->
 # Keeping your data under control when routing uses a provider
 
-As soon as BASE's semantic routing relies on an embeddings provider, text leaves your machine, and you need to be able to say exactly which text and how to control it. For teams wiring up this routing, this page shows what is actually sent, how to reduce exposure, how to go through an internal proxy, and how to log without ever exposing domain content.
+The moment BASE's semantic routing relies on an embeddings provider, text leaves your machine, and you then need to say precisely which text, and how to keep it in check. Written for teams wiring up this routing, this page lays out what actually goes out, how to reduce exposure, how to go through an internal proxy, and how to log without ever revealing domain content.
 
 ## Nothing is sent without explicit configuration
 
-The BASE core **never** calls a provider. In a zero-provider configuration, no data leaves the machine. Sending becomes possible only if you supply an `embed` (directly or via `createOpenAICompatibleEmbedder` / `createOllamaEmbedder`). The zero-config path (lexical + `semanticHybrid`) is entirely local.
+The BASE core **never** calls a provider. With no provider configured, no data leaves the machine. Sending becomes possible only if you supply an `embed`, whether directly or via `createOpenAICompatibleEmbedder` / `createOllamaEmbedder`. The zero-config path (lexical + `semanticHybrid`) stays entirely local.
 
 ## Which strings are sent
 
-With a provider configured, two kinds of text can be embedded:
+Once a provider is configured, two kinds of text can go out to it:
 
-1. **The query** (the user's request).
+1. **The query**, that is, the user's request.
 2. **The text of each routable resource**: by default `route_text` + `title` + `description` +
-   `keywords` + `body` (`textForResource`). You control this scope.
+   `keywords` + `body` (`textForResource`). This scope stays under your control.
 
 ## Reducing exposure
 
 - **Pre-compute** the resource vectors in a controlled environment (`@ai-swiss/base-index-local`)
-  and serve them through `getResourceEmbedding`. At query time, **only the query** is sent.
-- **Trim `textOf`** to the minimum that still routes well; often `route_text` alone is enough:
+  and serve them through `getResourceEmbedding`. At query time, **only the query** goes out.
+- **Trim `textOf`** to the bare minimum needed to route well; often `route_text` alone is enough:
 
   ```js
   createSemanticRanker({ embed, textOf: (r) => [r.route_text, r.title].filter(Boolean).join("\n") });
   ```
 
 - **Stay local** with `createOllamaEmbedder()`: no network egress.
-- **Go through an internal gateway**: `createOpenAICompatibleEmbedder({ baseUrl })` pointing to a reverse
-  proxy you control (auth, mTLS, DLP). Configured well, this proxy keeps domain text out of any public endpoint.
+- **Go through an internal gateway**: `createOpenAICompatibleEmbedder({ baseUrl })` pointed at a reverse
+  proxy under your control (auth, mTLS, DLP). Tuned well, this proxy keeps domain text out of any public endpoint.
 
 ## Secrets
 

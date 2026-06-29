@@ -11,7 +11,7 @@ sensitivity: internal
 
 # Plan template
 
-A plan turns a request into an execution plan precise enough that two implementers would
+A plan turns a request into a specification precise enough that two implementers would
 produce nearly the same code. It lives in `.plans/YYYY-MM-DD_subject.md` (personal, gitignored)
 and is disposable after merge: the code, tests and CHANGELOG must stand on their own. The
 doctrine behind each section is in [`../skills/competences/code-planning/SKILL.md`](../skills/competences/code-planning/SKILL.md).
@@ -33,7 +33,7 @@ doctrine behind each section is in [`../skills/competences/code-planning/SKILL.m
 |---|---|---|---|
 
 ## Detailed slices
-### Slice 1 — <name>
+### Slice 1: <name>
 - Why this shape: <3-5 lines, naming the doctrine principles it embodies>
 - Signatures / files touched:
 - Rules (each paired with a named test):

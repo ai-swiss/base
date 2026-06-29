@@ -33,7 +33,7 @@ Connaissances métier sur la communication professionnelle pour PME et startups,
 
 ### Engagement
 
-- Répondre aux commentaires dans les 2 premières heures booste la visibilité
+- Répondre aux commentaires dans les 2 premières heures renforce la visibilité
 - Les posts avec une opinion personnelle génèrent plus d'engagement que les annonces factuelles
 - Les images et documents augmentent la portée (mais pas les liens externes, que LinkedIn pénalise)
 
@@ -74,7 +74,7 @@ Connaissances métier sur la communication professionnelle pour PME et startups,
 ### Règles d'or
 
 - **Un email = un objectif.** Ne pas mélanger promotion, information et invitation dans le même envoi.
-- **Mobile first.** Plus de 60% des emails sont lus sur mobile. Paragraphes courts, boutons larges.
+- **Penser au mobile d'abord.** Plus de 60% des emails sont lus sur mobile. Paragraphes courts, boutons larges.
 - **Personnalisation.** Au minimum le prénom. Idéalement, segmenter par centres d'intérêt.
 - **Test de l'objet.** L'objet détermine le taux d'ouverture. Toujours tester 2 variantes si possible.
 
@@ -134,4 +134,4 @@ Chaque entreprise se positionne sur ces 4 axes. La charte éditoriale fige ces c
 | Pas de message clair | Le lecteur ne sait pas quoi retenir | Définir le message clé avant de rédiger |
 | Ton incohérent | Le lecteur ne reconnaît pas l'entreprise | Toujours consulter la charte avant d'écrire |
 | Pas d'appel à l'action | Le lecteur ne sait pas quoi faire | Chaque contenu a un objectif. Le formuler. |
-| Publier sans relire | Fautes, incohérences, oublis | Toujours un checkpoint de relecture |
+| Publier sans relire | Fautes, incohérences, oublis | Toujours une étape de relecture |

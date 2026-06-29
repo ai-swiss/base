@@ -15,11 +15,11 @@ learning_level: beginner
 
 # Étape 0: brancher votre outil IA
 
-**Vous allez** rendre votre outil IA capable de lire un dossier BASE et d'y répondre, prouvé par
-une question simple à la fin.
-**Il vous faut** un ordinateur, une connexion internet, et le dossier de BASE sur votre machine. Si vous ne l'avez pas encore, [Essayer sans rien installer](../start/essayer-sans-installer.md) montre le moyen le plus simple de le récupérer; les exemples comme `veytaux-tourisme` s'y trouvent.
+**Vous allez** rendre votre outil IA capable de lire un dossier BASE et d'y répondre; une question
+simple, à la fin, en fera la preuve.
+**Il vous faut** un ordinateur, une connexion internet et le dossier de BASE sur votre machine. Si vous ne l'avez pas encore, [Essayer sans rien installer](../start/essayer-sans-installer.md) indique la façon la plus simple de le récupérer; on y trouve les exemples comme `veytaux-tourisme`.
 
-Avant tout module, votre outil doit être installé ET connecté. Choisissez:
+Avant tout module, votre outil doit être installé ET connecté. À vous de choisir:
 
 | Outil | Premier geste | Terminal requis? |
 |-------|---------------|-------------------|
@@ -28,8 +28,8 @@ Avant tout module, votre outil doit être installé ET connecté. Choisissez:
 | **ChatGPT / Claude Desktop** | Via le serveur MCP (garanties mécaniques). | Oui (config) |
 | **Un autre outil** | Demandez au concierge: *aide-moi à connecter BASE à mon outil*. Il lit la doc de votre outil et vous guide. | Selon l'outil |
 
-Pour les garanties mécaniques (routage déterministe, écritures validées), branchez le serveur
-MCP: voir la documentation de démarrage de BASE.
+Pour bénéficier des garanties mécaniques (routage déterministe, écritures validées), branchez le
+serveur MCP: voir la documentation de démarrage de BASE.
 
 ✅ **Vérifiez**: ouvrez le dossier `exemples/veytaux-tourisme` dans votre outil et demandez
 *«qui es-tu?»*. L'assistant doit, en substance, se présenter comme l'assistant de l'office du
@@ -37,24 +37,24 @@ tourisme de Veytaux-les-Bains (renseignements aux visiteurs et sorties de groupe
 d'autre chose, voir les pannes ci-dessous.
 
 🆘 **Pannes courantes**:
-- *L'assistant parle de «routage» ou de «BASE» au lieu de l'office du tourisme*: vous avez
-  ouvert la racine du dépôt, pas le sous-dossier. Rouvrez `exemples/veytaux-tourisme`.
-- *Il ne répond rien de spécifique*: votre outil ne lit pas les fichiers du projet: vérifiez
-  que vous avez ouvert le DOSSIER (pas un fichier seul), et que le chat est en mode agent.
+- *L'assistant parle de «routage» ou de «BASE» au lieu de l'office du tourisme*: c'est que vous
+  avez ouvert la racine du dépôt, et non le sous-dossier. Rouvrez `exemples/veytaux-tourisme`.
+- *Il ne répond rien de précis*: votre outil ne lit pas les fichiers du projet. Vérifiez que vous
+  avez bien ouvert le DOSSIER (et non un fichier seul), et que le chat est en mode agent.
 
 ## La commande `base` (parcours Praticien et Équipe)
 
-Ces deux parcours utilisent un terminal. Quand un module écrit `base ...`, il s'agit du lanceur
-que chaque dossier BASE contient: lancez-le avec **`node .ai/base.mjs`** depuis le dossier où vous
-travaillez (le dépôt, ou votre propre projet). Il trouve le moteur tout seul: rien à installer,
-rien à mettre sur le PATH (le paquet `base` n'est pas publié; ce lanceur le remplace).
+Ces deux parcours passent par un terminal. Quand un module écrit `base ...`, il désigne le lanceur
+que contient chaque dossier BASE: lancez-le avec **`node .ai/base.mjs`** depuis le dossier où vous
+travaillez (le dépôt ou votre propre projet). Il trouve le moteur seul: rien à installer, rien à
+ajouter au PATH (le paquet `base` n'est pas publié; ce lanceur en tient lieu).
 
-Pour taper moins, créez un raccourci de session:
+Pour avoir moins à taper, créez un raccourci de session:
 
 - macOS / Linux: `alias base='node .ai/base.mjs'`
 - Windows (PowerShell): `function base { node .ai/base.mjs @args }`
 
-Ensuite `base route "..."` marche tel quel.
+Dès lors, `base route "..."` fonctionne tel quel.
 
 ✅ **Vérifiez (avant le parcours Praticien)**: depuis `exemples/veytaux-tourisme`,
 `node .ai/base.mjs --help` affiche la liste des commandes.

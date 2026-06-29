@@ -19,7 +19,7 @@ routing:
     - Explorer une question ouverte.
     - Paramétrage initial de l'espace.
 name: preparer-une-note-de-decision
-keywords: [note de décision, mémo, formaliser, mettre par écrit, rédiger ma décision, justifier mon choix]
+keywords: [note de decision, memo, formaliser, mettre par ecrit, rediger ma decision, justifier mon choix]
 argument-hint: "[la décision à formaliser]"
 user-invocable: true
 allowed-tools: Read Write Edit Glob Grep
@@ -27,7 +27,7 @@ allowed-tools: Read Write Edit Glob Grep
 
 # Préparer une note de décision
 
-Mettre par écrit une décision déjà prise, dans une note claire et fidèle. Une note de décision n'invente rien: elle restitue un raisonnement que la personne a mené et validé. La structure de la note est elle-même une protection: elle oblige à rendre explicites le choix, ses raisons, et ce qui reste incertain.
+Mettre par écrit une décision déjà prise, dans une note claire et fidèle. Une note de décision n'invente rien: elle restitue un raisonnement que la personne a mené et validé. Sa structure est elle-même une protection, car elle oblige à rendre explicites le choix, ses raisons et ce qui reste incertain.
 
 Lis `skills/competences/validation-aux-bons-moments/SKILL.md`. Si une réflexion existe déjà dans `reflexions/` sur ce sujet, lis-la: elle contient probablement les critères, options et hypothèses.
 
@@ -40,7 +40,7 @@ Lis `skills/competences/validation-aux-bons-moments/SKILL.md`. Si une réflexion
 
 ### 1. Vérifier que la décision est mûre
 
-Une note de décision formalise un choix **déjà fait**. Avant de rédiger, vérifie-le honnêtement:
+Une note de décision formalise un choix **déjà fait**. Avant de rédiger, assure-t'en honnêtement:
 
 > «Pour écrire une note de décision, il faut que le choix soit arrêté. Avez-vous bien tranché, ou hésitez-vous encore?»
 
@@ -48,7 +48,7 @@ Une note de décision formalise un choix **déjà fait**. Avant de rédiger, vé
 - Si la personne hésite encore: ne rédige pas une note qui figerait une décision non prise. Propose plutôt `clarifier-une-decision`, puis reviens.
 - Si le choix est arrêté: continue.
 
-Ce refus de formaliser trop tôt est volontaire: écrire une décision lui donne du poids, et il ne faut pas donner ce poids à une hésitation.
+Ce refus de formaliser trop tôt est volontaire: écrire une décision lui donne du poids, et une hésitation ne mérite pas ce poids.
 
 ### 2. Réunir les éléments validés
 
@@ -56,7 +56,7 @@ Reprends, depuis la réflexion existante ou en le demandant: le contexte, le cho
 
 > «Voici ce que je reprends de votre réflexion. Dites-moi ce qui n'est pas à jour.»
 
-Tout élément qui n'a pas été validé reste marqué `[A VALIDER: ...]` ou `[HYPOTHESE: ...]`. Tu ne transformes pas une hypothèse en certitude en la recopiant dans une note propre.
+Tout élément qui n'a pas été validé reste marqué `[A VALIDER: ...]` ou `[HYPOTHESE: ...]`. Recopier une hypothèse dans une note soignée ne la change pas en certitude.
 
 ← Validation des éléments
 
@@ -72,7 +72,7 @@ Assemble la note avec le template `templates/note-de-decision_v1.md`: contexte, 
 >
 > ---
 >
-> Remarquez la section *Hypothèses assumées*: elle garde visible ce sur quoi la décision repose sans certitude. C'est ce qui vous permettra, plus tard, de comprendre pourquoi vous aviez choisi ainsi. Qu'ajusteriez-vous?»
+> Remarquez la section *Hypothèses assumées*: elle garde visible ce sur quoi la décision repose sans certitude. Plus tard, elle vous rappellera pourquoi vous aviez choisi ainsi. Qu'ajusteriez-vous?»
 
 ← Validation de la note
 
@@ -83,7 +83,7 @@ Assemble la note avec le template `templates/note-de-decision_v1.md`: contexte, 
 
 Enregistre dans `reflexions/YYYY-MM-DD_sujet_decision.md`.
 
-> «C'est enregistré. Relisez-la avant de vous y fier: c'est votre décision, et c'est vous qui l'assumez.»
+> «C'est enregistré. Relisez-la avant de vous y fier: cette décision est la vôtre, et c'est vous qui l'assumez.»
 
 ### 5. Journal
 

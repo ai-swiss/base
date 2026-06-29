@@ -1,13 +1,13 @@
-<!-- fr-synced: 4a53f90892c2b76fcca6b4d983196fcab927c4e4 -->
+<!-- fr-synced: 7714a85b064ad3cf169b27da13aa0153672da334 -->
 # BASE's gates
 
-BASE's discipline is held by controls, not by trust. This page lists them so that, faced with a
-failure, a contributor knows what the gate checks and how to fix it.
+BASE's discipline rests on controls, not on trust. This page catalogs them so that, when something
+fails, a contributor knows what the gate checks and how to fix it.
 
-Three levels: the commit **hook** (optional, `git config core.hooksPath .githooks`), the local
-**`npm run check`** command (the heart of the gates, to pass before pushing), and **CI** (which runs
-more of them). So "green locally" is not "green everywhere": CI adds the coverage, the regenerated
-artifacts, the doctor, the smoke pack, and the MCP and Studio suites.
+There are three levels: the commit **hook** (optional, `git config core.hooksPath .githooks`), the
+local **`npm run check`** command (the heart of the gates, to be run before you push), and **CI**
+(which runs more of them). "Green locally," then, does not mean "green everywhere": CI adds coverage,
+the regenerated artifacts, the doctor, the smoke pack, and the MCP and Studio suites.
 
 ## `npm run check` (the heart, locally)
 

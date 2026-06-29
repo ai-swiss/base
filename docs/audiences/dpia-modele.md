@@ -13,20 +13,20 @@ keywords: [dpia, aipd, nlpd, nfadp, gdpr, protection-des-donnees, gouvernance, e
 
 # Modèle d'analyse d'impact (DPIA)
 
-Avant de mettre un assistant entre les mains de vos équipes, vous devez pouvoir justifier ce qu'il fait des données, devant votre institution et votre délégué à la protection des données (DPO). Ce squelette vous donne une trame défendable pour cette analyse, et sépare nettement ce que BASE garantit techniquement de ce qui reste votre responsabilité: vous savez ainsi exactement ce qui vous engage.
+Avant de confier un assistant à vos équipes, vous devez pouvoir justifier ce qu'il fait des données, devant votre institution comme devant votre délégué à la protection des données (DPO). Ce squelette vous offre une trame défendable pour cette analyse et sépare nettement ce que BASE garantit techniquement de ce qui demeure votre responsabilité: vous savez ainsi exactement ce qui vous engage.
 
 > **Page informative, pas un avis juridique.** Ce document est un point de départ réutilisable. Il ne remplace pas une analyse d'impact relative à la protection des données (DPIA au sens du RGPD, AIPD au sens de la nLPD/nFADP). L'analyse réelle, sa validation et sa tenue à jour relèvent de votre institution et de son délégué à la protection des données (DPO). BASE ne fournit ni l'IAM, ni la DLP, ni le SIEM, ni la rétention réglementaire (voir [Sécurité et limites](../trust/securite-et-limites.md)).
 
 ## Comment utiliser ce squelette
 
-Copiez cette structure dans votre registre. Remplacez chaque marqueur `[A COMPLETER]` par les éléments propres à votre traitement. La structure suit une trame compatible nLPD/nFADP et RGPD, mais l'adéquation à votre cadre légal exact reste à vérifier par votre DPO.
+Copiez cette structure dans votre registre. Remplacez chaque marqueur `[A COMPLETER]` par les éléments propres à votre traitement. La trame suit une logique compatible nLPD/nFADP et RGPD, mais son adéquation à votre cadre légal précis reste à vérifier par votre DPO.
 
-Une distinction traverse tout le document, parce qu'elle est au cœur de l'honnêteté de BASE:
+Une distinction traverse tout le document, car elle est au cœur de l'honnêteté de BASE:
 
 - **Mécanisme**: une règle appliquée par le médiateur de BASE (le code), donc opposable et vérifiable.
 - **Consigne**: une instruction suivie par le modèle, donc utile mais non garantie.
 
-Une mesure n'est une garantie que si elle repose sur un mécanisme. Ne créditez pas une consigne comme un contrôle technique dans votre analyse de risque.
+Une mesure ne devient une garantie que si elle repose sur un mécanisme. Gardez-vous de faire passer une consigne pour un contrôle technique dans votre analyse de risque.
 
 ## 1. Description du traitement
 
@@ -34,8 +34,8 @@ Une mesure n'est une garantie que si elle repose sur un mécanisme. Ne créditez
 - **Responsable du traitement:** [A COMPLETER]
 - **Service ou unité métier:** [A COMPLETER]
 - **Description fonctionnelle:** [A COMPLETER] (par exemple: assistant de rédaction de courriers internes, structuration de procédures, aide à la réponse à des demandes).
-- **Rôle de BASE:** BASE structure le savoir métier en fichiers que vous possédez et médiatise les actions sensibles. BASE n'est ni un runtime d'agent, ni un moteur d'orchestration, ni un dispositif de RAG, ni une plateforme de conformité.
-- **Rôle du modèle:** l'exécution générative (le modèle) est votre choix et vit hors de BASE. Le modèle peut être local (par exemple via Ollama) ou distant (API). Ce choix est déterminant pour l'analyse (voir section 5).
+- **Rôle de BASE:** BASE structure le savoir métier en fichiers que vous possédez et médie les actions sensibles. BASE n'est ni un runtime d'agent, ni un moteur d'orchestration, ni un dispositif de RAG, ni une plateforme de conformité.
+- **Rôle du modèle:** l'exécution générative (le modèle) relève de votre choix et se situe hors de BASE. Le modèle peut être local (par exemple via Ollama) ou distant (API). Ce choix est déterminant pour l'analyse (voir section 5).
 
 ## 2. Catégories de données
 
@@ -44,7 +44,7 @@ BASE en lui-même ne stocke que ce que vous y mettez:
 - les **fichiers de ressources** que vous déposez (le savoir métier, en Markdown);
 - un **journal de trace local** (`.ai/trace`) qui enregistre les opérations médiées: opération, ressource, statut, durée, sans contenu métier par défaut.
 
-Le routage par défaut est **100 % local** (lexical, zéro réseau). Le routage sémantique avancé n'envoie du texte à un fournisseur d'embeddings que si vous l'activez explicitement, et une option locale existe (voir [Sécurité des données de routage](../trust/securite-donnees-routage.md)).
+Le routage par défaut **ne fait aucun appel réseau** (lexical). Le routage sémantique avancé n'envoie de texte à un fournisseur d'embeddings que si vous l'activez explicitement, et une option locale existe (voir [Sécurité des données de routage](../trust/securite-donnees-routage.md)).
 
 À compléter pour votre traitement:
 
@@ -72,9 +72,11 @@ La détermination de la base légale relève de votre institution et de son DPO.
 
 Par défaut, tout reste local. Le point à analyser en priorité est l'**égress**: l'appel au modèle distant, s'il a lieu. Voir le tutoriel [Périmètres et gouvernance d'égress](../tutoriel/equipe-2-perimetres-et-egress.md).
 
-Mécanisme appliqué par BASE: une ressource marquée `confidential: true`, ou un root entier marqué `egress: local-only`, **n'est pas envoyée à un modèle distant**. Le contrôle a lieu **avant** l'appel, donc la donnée ne quitte pas la machine; le refus est affiché, jamais silencieux. C'est un mécanisme, pas une consigne.
+Mécanisme appliqué par BASE: une ressource marquée `confidential: true`, ou un root entier marqué `egress: local-only`, **n'est pas envoyée à un modèle distant**. Le contrôle intervient **avant** l'appel, si bien que la donnée ne quitte pas la machine; le refus s'affiche, jamais en silence. C'est un mécanisme, et non une consigne.
 
-Réserve: la distinction local/distant repose sur la localité déclarée ou déduite du fournisseur (`tools/core/model-settings.mjs`), qu'un proxy mal configuré placé devant un service distant pourrait travestir; c'est donc un contrôle honnête, pas une preuve absolue.
+Portée à cadrer dans votre analyse: ce contrôle s'applique aux surfaces de BASE qui appellent un modèle (le chat, l'évaluation, la lecture via MCP), et non comme un pare-feu réseau autour de votre poste. La politique par défaut est permissive (`egress: any`): rien n'est retenu tant que vous n'avez pas marqué une ressource `confidential: true` ou un root `egress: local-only`. BASE ne peut empêcher ni un humain, ni un autre outil lisant les fichiers directement sur le disque, d'envoyer ces données ailleurs. Le mécanisme garantit le comportement de BASE, non celui de l'ensemble de votre environnement.
+
+Réserve: la distinction local/distant repose sur la localité déclarée ou déduite du fournisseur (`tools/core/model-settings.mjs`), qu'un proxy mal configuré placé devant un service distant pourrait fausser; c'est donc un contrôle honnête, non une preuve absolue.
 
 À compléter pour votre traitement:
 
@@ -87,12 +89,12 @@ Réserve: la distinction local/distant repose sur la localité déclarée ou dé
 ## 6. Destinataires et sous-traitants
 
 - **Destinataires internes:** [A COMPLETER].
-- **Sous-traitant principal à évaluer:** le fournisseur du modèle distant choisi, le cas échéant. BASE ne lie à aucun fournisseur; si vous exécutez un modèle local, il n'y a pas de transfert vers un tiers à ce titre.
+- **Sous-traitant principal à évaluer:** le cas échéant, le fournisseur du modèle distant retenu. BASE ne vous lie à aucun fournisseur; si vous exécutez un modèle local, aucun transfert vers un tiers n'a lieu à ce titre.
 - **Clauses contractuelles à vérifier (si modèle distant):** [A COMPLETER] (localisation des données, sous-traitance ultérieure, durée de conservation côté fournisseur, usage pour entraînement, sécurité).
 - **Transferts hors du pays / hors zone applicable:** [A COMPLETER].
-- **Juridiction de l'hébergeur et exposition extraterritoriale:** [A COMPLETER]. La localité d'exécution ne règle pas la juridiction: un hébergeur soumis à une loi étrangère, comme le CLOUD Act américain, peut être contraint de livrer des données où qu'elles soient stockées, alors qu'un acteur suisse reste contraignable en droit suisse. Voir [`souverainete-et-confiance.md`](../trust/souverainete-et-confiance.md).
+- **Juridiction de l'hébergeur et exposition extraterritoriale:** [A COMPLETER]. La localité d'exécution ne règle pas la question de la juridiction: un hébergeur soumis à une loi étrangère, comme le CLOUD Act américain, peut être contraint de livrer des données où qu'elles soient stockées, là où un acteur suisse demeure contraignable en droit suisse. Voir [`souverainete-et-confiance.md`](../trust/souverainete-et-confiance.md).
 
-Note: BASE stocke des **noms** de variables d'environnement, pas des clés d'API en clair, dans ses réglages. La gestion effective des secrets reste de votre ressort.
+Note: dans ses réglages, BASE stocke des **noms** de variables d'environnement, et non des clés d'API en clair. La gestion effective des secrets reste de votre ressort.
 
 ## 7. Conservation et suppression
 
@@ -100,7 +102,7 @@ Note: BASE stocke des **noms** de variables d'environnement, pas des clés d'API
 - **Durée de conservation du journal de trace:** [A COMPLETER]. Le journal `.ai/trace` est local et peut être purgé selon votre politique. Décrivez la procédure de purge retenue.
 - **Procédure de suppression / droit à l'effacement:** [A COMPLETER].
 
-Rappel: BASE ne fournit pas de rétention réglementaire ni d'archivage légal automatiques. Ces obligations relèvent de vos systèmes et de vos procédures.
+Rappel: BASE ne fournit ni rétention réglementaire ni archivage légal automatiques. Ces obligations relèvent de vos systèmes et de vos procédures.
 
 ## 8. Risques et mesures d'atténuation
 
@@ -138,4 +140,4 @@ Mesures complémentaires à documenter: [A COMPLETER].
 
 ---
 
-Le DPO de votre institution est propriétaire de la DPIA réelle. Ce squelette ne fait que faciliter sa rédaction. Pour le modèle de menace public et les limites du cœur local, voir [Sécurité et limites](../trust/securite-et-limites.md) et [Souveraineté et confiance](../trust/souverainete-et-confiance.md).
+Le DPO de votre institution reste responsable de la DPIA réelle. Ce squelette n'a d'autre rôle que d'en faciliter la rédaction. Pour le modèle de menace public et les limites du cœur local, voir [Sécurité et limites](../trust/securite-et-limites.md) et [Souveraineté et confiance](../trust/souverainete-et-confiance.md).

@@ -7,7 +7,7 @@ description: Comment venir à Veytaux-les-Bains et quand l'office est ouvert, à
 scope: team
 status: active
 sensitivity: internal
-keywords: [accès, horaires, car-postal, gare, ouverture, webcam, wifi]
+keywords: [acces, horaires, car-postal, gare, ouverture, webcam, wifi]
 ---
 # Accès et horaires à Veytaux-les-Bains
 

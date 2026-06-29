@@ -1,429 +1,347 @@
 # BASE
 
-[![CI](https://github.com/ai-swiss/base/actions/workflows/ci.yml/badge.svg)](https://github.com/ai-swiss/base/actions/workflows/ci.yml)
-[![Licence: Apache-2.0 + CC BY 4.0](https://img.shields.io/badge/licence-Apache--2.0%20%2B%20CC%20BY%204.0-blue.svg)](LICENSE)
-[![Node](https://img.shields.io/badge/node-%E2%89%A518-43853d.svg)](https://nodejs.org)
+> **Qui possède l'articulation de votre façon de penser avec l'IA, vous ou votre fournisseur?**
 
-**Bâtir des Assistants avec une Structure d'Expertise**
-*Build Assistants with Structured Expertise*
+**Articulez avec vos mots votre façon de penser avec l'IA, dans des fichiers que vous possédez, lisibles par tous, exploitables par l'IA.**
+
+<sub>BASE = **Bâtir des Assistants avec une Structure d'Expertise** · *Build Assistants with Structured Expertise*</sub>
+
+[![Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](CHANGELOG.md)
+[![CI](https://github.com/ai-swiss/base/actions/workflows/ci.yml/badge.svg)](https://github.com/ai-swiss/base/actions/workflows/ci.yml)
+[![Licence: Apache-2.0 + CC BY 4.0](https://img.shields.io/badge/licence-Apache--2.0%20%2B%20CC%20BY%204.0-blue.svg)](LICENSING.md)
 
 🇬🇧 [English version](README.en.md)
 
-> **Reprenez la main sur votre travail avec l'IA.** BASE vous garde souverain sur la façon dont vous structurez et articulez cette collaboration: ce que l'IA doit savoir, ce qu'elle peut faire, ce que vous attendez, les instructions que vous lui donnez. Tout cela vit dans des fichiers que vous possédez et emportez d'un outil à l'autre. La souveraineté qui compte se joue **autour des modèles**, pas seulement dans vos serveurs.
+![BASE: reprendre la main sur l'IA. Une personne travaille sereinement sous un dôme transparent sous un flux constant de nouveaux outils et d'informations. La souveraineté qui compte est avant tout cognitive: articuler ses interactions avec l'IA dans des fichiers qu'on possède.](docs/public/assets/base-cognitive-sovereignty.png)
 
-**Par où entrer:** [Essayer maintenant](#essayer-maintenant) · [Pourquoi BASE](#pourquoi-base-existe) · [Pour votre profil](#pour-qui) · [Lire dans le bon ordre](#lire-dans-le-bon-ordre)
+> **En bref.** BASE est un **cadre** gratuit et ouvert pour articuler votre savoir et votre savoir-faire avec l'IA, dans des fichiers texte que vous possédez. **Pour qui:** tout le monde, du particulier curieux à l'entreprise. **Ce que ça coûte:** BASE lui-même est gratuit; il vous faut un outil d'IA pour l'exécuter (gratuit ou payant, voir [§4](#4-votre-base-en-2-minutes)). **Ce que ça ne fait pas:** ça ne rend pas l'IA infaillible et ça ne remplace pas vos dispositifs de sécurité; ça vous aide à reprendre la main sur la façon dont vous pensez avec l'IA. *Les passages plus techniques sont là pour qui en veut; vous pouvez les sauter.*
 
-## Ce qu'apporte BASE
+**Commencer, deux portes, selon que votre outil d'IA lit vos fichiers ou non:**
 
-Articulez librement votre façon de penser et de travailler avec l'IA, de manière portable. Un assistant pour votre métier en découle.
+- **S'il ne lit pas vos fichiers** (un simple chat web, pour essayer sans rien installer): [**Parlez à BASE en y glissant vos fichiers**](#sans-terminal-le-plus-simple) → §9.
+- **S'il lit vos fichiers** (le vrai socle): [**Votre base en 2 minutes**](#4-votre-base-en-2-minutes) → §4.
 
-Ce que BASE met entre vos mains, c'est la **structure de votre intelligence de travail**: ce que l'assistant sait, ce qu'il sait faire, ce qu'il doit vérifier, vos règles, vos instructions. Cette structure est posée en texte lisible, surtout du Markdown, à côté de vos données dans les formats qui vous arrangent. Vous la lisez et la modifiez comme une simple note, et la force vient de la façon dont elle est structurée, pas d'une plateforme.
+<sub>Aussi: [Exemples](#3-reprendre-une-base-existante) · [Pourquoi BASE existe](#5-pourquoi-base-existe) · [BASE vs un chat ou une plateforme](#6-base-vs-un-chat-ou-une-plateforme) · [Pour qui](#7-pour-qui) · [Installer](#9-essayer-installer-connecter)</sub>
+<br><sub>Porté par [AI Swiss](https://a-i.swiss) (association suisse à but non lucratif) · gratuit et ouvert (Apache-2.0 + CC BY 4.0, licences irrévocables) · des fichiers que vous possédez et pouvez emporter ([gouvernance](GOVERNANCE.md)).</sub>
 
-L'enjeu n'est pas d'adopter un grand produit d'IA. Il est d'**organiser la collaboration humain-IA**: ce qu'elle doit savoir, ce qu'elle peut faire, ce qui doit être vérifié, ce qui doit rester portable et sous votre contrôle. C'est ce que BASE structure.
+---
 
-## Comment se présente un assistant
+## 1. BASE en bref
 
-Pour comprendre ce que vous construisez, une image suffit. Un assistant BASE tient en quelques pièces lisibles:
+BASE est un **cadre**: une manière d'articuler votre savoir et votre savoir-faire avec l'IA, dans des fichiers texte que vous possédez. Pas un produit, pas une plateforme. Que vous soyez un particulier qui organise ses pensées ou une entreprise qui structure ses process, c'est de vos **interactions avec l'IA au quotidien** qu'il s'agit, pas seulement de votre travail.
 
-- **une fiche de poste**: qui il est, et quoi faire selon la demande;
-- **son savoir-faire et son savoir, séparés**: les *processes* (comment faire, étape par étape) d'un côté, les *compétences* (ce qu'il connaît de votre métier) de l'autre;
-- **vos données**, à côté, dans des dossiers simples qu'il lit et propose de mettre à jour.
+**L'enjeu.** La souveraineté qui compte le plus n'est pas matérielle (où tournent les modèles, les puces, les serveurs) mais **cognitive**, ce que nous appelons la **souveraineté cognitive**: qui structure vos interactions avec l'IA, qui y injecte de l'information à votre place, qui vous incite à déléguer plutôt qu'à vérifier. Sa conséquence est vérifiable: avec BASE, vous pouvez **ouvrir et lire vous-même** les fichiers qui portent votre savoir-faire. Vous reprenez la main, et ce que vous bâtissez devient **essentiellement indépendant du modèle** qui l'exécute. BASE n'est pas strictement indépendant du modèle: un modèle reste meilleur ici que là, plus ou moins élégant à rédiger, plus ou moins fidèle à suivre des consignes sur de longs contextes. Mais au niveau des **marches à suivre**, les modèles avancés d'aujourd'hui suivent de façon comparable des instructions bien exprimées; vos procédures tiennent à travers eux, et une structure forte en amont abaisse la capacité nécessaire pour qu'un modèle les suive de façon fiable. **Les outils passent, le contexte reste.**
 
-C'est cette séparation du savoir-faire et du savoir, bien plus que le mot «skill», qui fait la différence. Le détail complet est plus bas, dans la section «Comment ça fonctionne».
+**Le concret.** Vous externalisez votre savoir et votre savoir-faire dans une **base que vous possédez**, organisée sur deux axes:
 
-## Le plus simple: parlez-lui
+- **vos instructions**, d'un côté, faites d'une **fiche de poste** (qui est l'assistant, quoi faire selon la demande), de ses **processes** (le **savoir-faire**: comment faire, étape par étape) et de ses **compétences** (le **savoir**: ce qu'il connaît de votre domaine);
+- **vos données**, de l'autre, séparées des instructions: l'assistant les lit et propose de les mettre à jour.
 
-Que vous vouliez **comprendre, utiliser ou contribuer**, le plus direct est de parler à BASE. Deux gestes suffisent.
+Ce sont des fichiers texte que vous ouvrez et lisez comme une note: les fichiers de votre ordinateur suffisent, aucune autre base de données n'est requise (vous pouvez en brancher une, sur un drive partagé par exemple, mais rien ne l'exige), et aucune expertise de développeur n'est requise.
 
-1. **Téléchargez le contenu du dépôt** sur votre ordinateur (le ZIP, ou un clone). Tout est en fichiers texte, en local.
-2. **Ouvrez ce dossier dans un outil d'IA qui lit vos fichiers locaux**, c'est-à-dire qui voit l'entièreté du dépôt, pas seulement un message que vous collez. Par exemple Claude Code, Cursor, Antigravity, GitHub Copilot ou OpenCode. Un chat web classique, lui, ne parcourt pas un dossier local (ChatGPT n'y accède qu'en mode développeur, via MCP). Dites-lui de charger `AGENTS.md`, puis demandez ce que vous cherchez: «explique-moi BASE», «aide-moi à démarrer pour mon métier», «par où contribuer?».
+Vous entendez souvent parler d'agents. Ici, les agents ne sont rien d'autre que vos **fils de pensée**: de simples fichiers texte que vous dictez vous-même selon vos besoins. La force vient de **deux axes de séparation**:
 
-Il a alors accès à tout, vous oriente, et pose pour vous les questions utiles. Et pour une première victoire concrète en deux minutes, voici par où commencer.
+- **Axe 1, vos instructions séparées de vos données.** C'est la frontière de sécurité: une donnée lue ne doit pas pouvoir se faire passer pour une instruction. C'est ce qui rend le travail lisible, maintenable, et plus résistant à l'injection par une donnée externe (un principe de conception, voir [§5](#5-pourquoi-base-existe)).
+- **Axe 2, le savoir-faire séparé du savoir,** à l'intérieur des instructions.
 
-## Votre première victoire, en 2 minutes
+Vous entendez aussi souvent parler de «skill»: ici, un skill n'est rien d'autre qu'un savoir ou un savoir-faire articulé par vous, selon vos besoins, dans un simple fichier texte, avec ce séparateur important en plus, le savoir-faire distinct du savoir. (Ces deux axes sont posés une fois, proprement, dans [ARCHITECTURE.md](ARCHITECTURE.md); le README en est la vue lisible.)
 
-1. **Ouvrez un dossier d'exemple et regardez ce qu'il contient.** Prenez **`exemples/assistant-devis-demo/`** (ce dossier, pas la racine du dépôt) dans un outil d'IA capable de lire les fichiers de votre ordinateur. Parcourez `catalogue/regles-tarification.md` et `clients/dupont-sa.md`: vous voyez la matière dont l'assistant se nourrit.
-2. **Posez la question, mot pour mot:** «Dupont SA a-t-il droit à la remise fidélité?»
-3. **Observez.** L'assistant s'appuie sur ce que vous venez de voir, répond **non** (la remise fidélité demande deux mandats, Dupont SA en est à son premier). Conformément à sa consigne, il nomme les fichiers qui le justifient et pose un `[A VALIDER]`. Faute de vos règles, un assistant générique aurait servi un «oui» plausible. Ici, il a proposé et signalé ce qui reste à valider; il n'a rien changé à votre place.
+> **Limite honnête.** BASE garde vos *fichiers* locaux; il ne contrôle pas ce que l'outil d'IA que vous y branchez transmet ensuite à son fournisseur. «Vos fichiers restent locaux» n'est pas «vos données restent locales»: dialoguer avec un modèle distant envoie du contenu au dehors, vers un fournisseur dont la juridiction (p. ex. CLOUD Act) n'est pas forcément celle de votre machine. C'est donc là, et non dans BASE, que devra se surveiller l'extraction de vos données.
 
-Envie d'un document fini? Demandez ensuite «Montre-moi le devis DEV-2026-001». Rien à installer côté BASE; bloqué? dites «aide».
+### Le scénario du lundi matin
 
-> **Outils.** N'importe quel outil d'IA capable de lire les fichiers de votre ordinateur convient, par exemple Claude Code, Cursor, Antigravity, GitHub Copilot ou OpenCode. Toutes les plateformes ne sont pas compatibles, et BASE n'en privilégie aucune.
+Lundi matin, un client demande un devis. Sur une plateforme web d'IA standard, vous réexpliquez peut-être votre activité pour la énième fois; vous avez peut-être la charge mentale de chercher des instructions particulières dans un menu, de retrouver une conversation, de remettre la main sur un assistant perdu quelque part dans l'interface. La réponse peut être approximative.
+
+Avec une base qui articule votre savoir-faire, vous écrivez comme à un collègue, en langage naturel: «J'ai un nouveau devis à faire pour Dupont SA, trois jours de conseil en stratégie.» L'assistant charge vos process, commence à les suivre et travaille **avec vous**: il prépare un **brouillon** et pose un `[A VALIDER]`. Rien ne part sans vous. Vous calibrez soigneusement l'effort selon la nature de la tâche, et notamment selon la balance risque-bénéfice qui vous appartient: c'est une collaboration qui se construit, pas une délégation.
+
+Surtout, vous tenez là une **base dans un format cohérent**, qui peut devenir votre standard et garantit une cohérence à travers tout le savoir et le savoir-faire que vous structurez: pour en avoir la visibilité, pour le maintenir, pour l'évaluer, et, à terme dans une grande entreprise, pour bâtir toute une gouvernance autour. Vous passez de petites pièces recollées au fil de l'eau à une **base solide** que vous possédez et que vous affinez à tout moment.
+
+Vous ne lancez pas l'IA pour revenir le lendemain quand «c'est fini»: vous **observez, recadrez, itérez**. L'IA propose, vous décidez; c'est vous qui menez la danse, à chaque échange.
+
+---
+
+## 2. Le cadre, brique par brique
+
+BASE produit une base de départ **délibérément minimale**, qui ne contient que les **briques clés**, celles qui deviennent capitales à mesure que votre usage s'étend.
+
+> **Deux registres dans BASE.** Un *mécanisme* est appliqué par le code quand l'action passe par BASE: le résultat est déterministe. Une *consigne* est lue par le modèle: utile, mais faillible, et le résultat peut varier. Chaque brique précise lequel. Une consigne n'est jamais une garantie.
+
+Les briques, et pourquoi elles comptent quand vous grandissez:
+
+- **Vos textes, avec un standard d'organisation.** Tout part de fichiers texte écrits avec vos mots, rangés selon une structure de dossiers lisible. C'est ce standard partagé qui rend votre base navigable et cohérente, pour vous comme pour l'IA, des premières notes jusqu'à une grande organisation.
+- **Des métadonnées qui permettent d'activer des mécanismes.** De petits en-têtes simples au-dessus de vos fichiers (quelques lignes) suffisent à activer des comportements du code: marquer une ressource sensible, signaler un process, cadrer un accès. Vous pilotez ces comportements par le texte.
+- **Une séparation des instructions et des données, et du savoir-faire et du savoir.** Les deux axes posés en [§1](#1-base-en-bref): vos instructions d'un côté, vos données de l'autre (Axe 1, la frontière de sécurité); et, à l'intérieur des instructions, le savoir-faire séparé du savoir (Axe 2). C'est cette double séparation qui rend une base maintenable, auditable, et plus résistante à l'injection par une donnée externe. → [§8](#8-comment-cela-fonctionne)
+- **Un routage progressif de vos intentions vers vos processus.** À partir de ce que vous demandez, l'assistant descend de proche en proche, de la racine vers le bon agent puis le bon process, en lisant un index généré de votre base (`.ai/routing/index.md`). C'est une **découverte progressive**, menée par le modèle mais garantie par un **plancher déterministe**: le code (`base route`), sans aucun modèle, assure que pour une même demande vous obtenez la même route, ou une abstention motivée, jamais un choix mal étayé. Ce routage de base n'exige rien d'autre qu'un outil d'IA capable de lire vos fichiers; un mode sémantique optionnel (par embeddings) reste possible pour de très grands catalogues. → [détail](docs/reference/routage-process-et-ressources.md)
+- **Le Studio: voir et éditer vos objets sur une page.** Une page web, ouverte uniquement sur votre propre ordinateur, qui vous permet de **voir d'un coup d'œil** tout ce que vous avez créé, vos process et vos ressources, de façon centralisée, et de les **éditer directement sur une page** plutôt que de les chercher dans vos fichiers. `base studio --root <dossier>` → [détail](tools/studio/ui/README.md)
+- **L'évaluation et le monitoring: suivre la qualité de vos process dans le temps.** À mesure qu'on grandit, il devient important de suivre la qualité de ses process et leur évolution dans le temps. On peut faire tourner un modèle-juge qui essaie d'exécuter vos process et recense les échecs ou les difficultés. Ces évaluations ne reflètent pas exactement votre outil d'IA, et le juge lui-même est faillible (à calibrer); elles servent d'alarme de **régression relative** entre deux versions de vos process, pas de note absolue, mais elles livrent assez d'information utile pour surveiller la qualité et faire remonter les problèmes. Dans une organisation, un rôle de **monitoring** peut suivre tous les process partagés, avec des utilisateurs réels ou fictifs.
+- **Une science appliquée de l'interaction humain-IA, et des mécanismes de vérification.** BASE embarque une interface vers toute une documentation sur la façon de bien travailler avec l'IA, et des mécanismes pour rendre cette interaction plus solide, dont des marqueurs cherchables (`[A VALIDER]`, `[DECISION]`). Rappel de fond: **un modèle de langage ne vérifie jamais, il génère.** Selon la balance risque-bénéfice que vous visez, vous outillez cette vérification: une **brique** que vous possédez et gardez en main, pas un axe imposé. → [§5](#5-pourquoi-base-existe)
+- **Un contrôle d'egress, pour montrer la gouvernance par métadonnées.** Quand un appel distant passe **par BASE**, une ressource marquée `confidential` est retenue avant l'appel puis remplacée par un avis explicite, jamais omise en silence: c'est un **mécanisme**, pas une consigne. Par défaut rien n'est retenu: la retenue se déclenche sur le drapeau explicite `confidential` ou une racine `local-only`, pas sur le simple niveau de sensibilité. Ce n'est ni un pare-feu ni une DLP autour des outils tiers. Et l'egress n'est qu'un exemple: ces métadonnées sont extensibles, et ce bref bloc de texte en tête de vos fichiers peut activer autant d'autres mécanismes de gouvernance que vous en concevez. → [détail](docs/trust/frontiere-local-vs-sortant.md)
+
+> **Vérifiable en 30 s (invariants du code).** Zéro dépendance runtime (`package.json` n'a aucun champ `dependencies`), le Studio refuse toute liaison non-loopback au démarrage, l'egress est une seule fonction pure partagée par toutes les surfaces. `git clone … && npm run check`. Détail et liens vers les `FR-*` en [§8](#8-comment-cela-fonctionne).
 
 <details>
-<summary><strong>Autres portes d'entrée</strong>: selon votre situation</summary>
+<summary><strong>Aspects de compatibilité (un peu plus technique): MCP, espaces multi-dossiers, CLI, confinement du Studio</strong></summary>
 
-- **Apprendre en construisant** (30 min, chaque étape vérifiée): le [tutoriel «Apprendre en faisant»](docs/tutoriel/index.md), un office du tourisme de village, de A à Z.
-- **Sans éditeur de code**: si vous avez une IA qui permet de téléverser des fichiers, c'est une voie possible pour tester. Voir [Essayer BASE sans rien installer](docs/start/essayer-sans-installer.md): ouvrez un exemple dans un chat IA web en y joignant ses fichiers.
-- **Poser des questions à BASE**: ouvrez le contenu du dépôt dans une IA, chargez `AGENTS.md` (le point d'entrée) et demandez-lui de vous expliquer BASE et de poser, pour vous, toutes les questions utiles.
-- **Que votre IA l'installe pour vous** (sans toucher un terminal vous-même): [Faites installer BASE par votre IA](docs/start/installer-par-votre-ia.md).
-- **Encore plus court**: [voir BASE en action](docs/start/demo-60-secondes.md), en moins d'une minute.
+- **Le serveur MCP (le plus important ici).** Le MCP **expose la même intelligence**, celle que vous avez structurée dans BASE, à n'importe quel outil compatible. Là où l'usage courant tend à empiler dans le MCP quantité d'outils à exposer, BASE fait le choix inverse: exposer avant tout le **routage**, pour qu'il soit la porte structurée et portable, la seule qui compte vraiment. Or aujourd'hui la grande majorité des outils d'IA acceptent le MCP: vous branchez le serveur et vous retrouvez l'intelligence de votre base dans cet outil, qu'il s'agisse d'un outil grand public ou de votre propre ERP en entreprise. Côté sûreté: en local, il expose les mêmes primitives que la CLI, par la même voie d'écriture; **lecture seule par défaut sur HTTP**, et toute exposition non-locale exige un **jeton (bearer token)**. → [mcp/](mcp/)
+- **Les espaces multi-dossiers.** Plusieurs dossiers chargés côte à côte dans BASE, isolés les uns des autres: vous évitez de tout mettre dans le même dossier sur votre ordinateur. Une racine imbriquée reste isolée.
+- **La CLI.** `base <commande>` permet, à vous mais surtout à l'IA et à vos outils d'IA, de faire des choses structurées en lisant quelques commandes simples: bâtir, router, auditer, évaluer.
+- **Le confinement du Studio.** Le Studio n'écoute que sur `127.0.0.1` (loopback) et refuse toute liaison non-locale au démarrage, sauf override explicite `BASE_STUDIO_ALLOW_INSECURE_REMOTE` (à vos risques, qui n'ajoute pas d'authentification), avec une protection contre le DNS-rebinding. C'est ce confinement, pas une authentification, qui le rend sûr dans ce cadre.
+- **Le contrôle d'egress, en pratique.** Une seule fonction pure décide, partagée par toutes les surfaces, donc la règle ne peut pas diverger. Hors du chemin qui passe par BASE, c'est vous l'autorité d'egress. (Mécanisme et défaut décrits dans la liste des briques ci-dessus.) → [détail](docs/trust/frontiere-local-vs-sortant.md)
+- **Le monitoring, par l'exemple.** Quand un modèle bute sur un process, l'incident remonte dans une interface; la personne responsable trie et oriente vers les bons correctifs. Ainsi: «les utilisateurs ne parviennent pas à connecter leur messagerie, faute du connecteur voulu», ce qui conduit à le mettre à disposition.
+</details>
 
-La racine du dépôt, c'est le framework (le routeur et les outils pour bâtir ou auditer un BASE), pas un assistant prêt à l'emploi. Ouvrez toujours un dossier d'exemple.
+> **Des couches légères et indépendantes.** Vous prenez ce dont vous avez besoin, et rien de plus. On peut faire tourner l'UI de documentation ou le Studio, ou non. On peut faire tourner le serveur MCP, ou non. On peut s'en tenir à travailler un peu avec des fichiers structurés et quelques métadonnées, ou monter toute la mécanique vers une structure solide d'entreprise. Côté garanties du code (mêmes invariants que ci-dessus, détail et liens vers les `FR-*` en [§8](#8-comment-cela-fonctionne)): aucun champ `dependencies` runtime dans `package.json` (seuls des `devDependencies` de build et des `peerDependencies` optionnelles), le cœur n'importe que la bibliothèque standard de Node; une seule voie d'écriture pour CLI, Studio et MCP; l'egress est une seule fonction pure partagée; tout est vérifié par `npm run check`.
+
+---
+
+## 3. Reprendre une base existante
+
+On parle beaucoup d'agents, mais un agent n'a pas besoin de contraindre la grammaire de nos interactions avec l'IA. Un agent peut être simplement un **fil de pensée** organisé dans un fichier texte: soit une marche à suivre particulière, soit une certaine personnalité qu'on infuse à l'IA. Les agents ne sont pas des choses à collectionner, ni des employés à recruter; les voir ainsi crée surtout la charge mentale de les retrouver et de deviner lequel s'applique à quel problème. Ce qui compte, c'est l'articulation de votre pensée, couchée dans des fichiers texte avec vos mots, sans formalisme imposé. La finesse des modèles d'aujourd'hui, capables de suivre des instructions nuancées, nous laisse précisément cette liberté: articuler comme nous l'entendons.
+
+Chacun des exemples ci-dessous est une **base que vous possédez**, votre savoir et votre savoir-faire articulés avec vos mots, séparés de vos données. Vous en copiez une comme tête de pont, vous la faites grandir, elle reste à vous, essentiellement indépendante du modèle.
+
+| Exemple | Ce qu'il vous aide à faire |
+| --- | --- |
+| [Base de réflexion](exemples/assistant-reflexion/) | Structurer votre pensée, vos sources et vos positions sur un sujet, pour suivre votre propre fil |
+| [Starter perso](exemples/starter-perso/) | Partir d'une base pour organiser votre savoir personnel: notes, projets, suivi |
+| [Assistant devis](exemples/assistant-devis/) | Préparer des devis professionnels: prix, TVA, conditions, export optionnel |
+| [Assistant RH](exemples/assistant-rh/) | Publier des offres, préparer les entretiens, évaluer les candidats |
+| [Assistant communication](exemples/assistant-communication/) | Rédiger posts LinkedIn et newsletters dans votre ton de voix |
+| [Assistant courrier](exemples/assistant-courrier/) | Rédiger et répondre à vos courriers et emails clients |
+| [Assistant projet](exemples/assistant-projet/) | Structurer, planifier et suivre vos projets avec jalons |
+| [Assistant enseignant](exemples/assistant-enseignant/) | Préparer séquences d'enseignement et évaluations |
+| [Agence multi-clients](exemples/agence-multi-clients/) | Tenir un espace multi-dossiers, un BASE par client |
+
+[Voir tous les exemples →](exemples/) · *Pour un autre besoin, décrivez-le simplement à BASE: il sait bâtir avec vous une structure simple qui rend votre interaction avec l'IA durable, en l'ancrant dans des fichiers que vous possédez.*
+
+---
+
+## 4. Votre base en 2 minutes
+
+Voyez votre savoir structuré être exploité par n'importe quel modèle que vous y branchez. Au préalable, une distinction qui change tout: il y a les outils d'IA capables de **lire vos fichiers locaux**, et les autres.
+
+Aujourd'hui, l'enjeu est d'externaliser votre savoir et votre savoir-faire **en le possédant**, disponible sur votre ordinateur (ou votre drive partagé, ou tout fichier auquel vous avez accès). Pour cela, le vrai socle, c'est un outil d'IA qui peut **lire et éditer des fichiers locaux que vous possédez**. Un navigateur n'est pas le plus simple: c'est une porte d'entrée pour tester et comprendre la structure, mais avec des limites immédiates.
+
+D'abord, récupérez le dossier d'exemple `exemples/assistant-devis-demo/`, par clonage du dépôt ou par le bouton vert **Code** → **Download ZIP** (sur Windows, «Extraire tout»; un double-clic sur le ZIP ne suffit pas). Puis, selon votre outil:
+
+**(a) Avec un outil d'IA qui lit vos fichiers (le vrai socle).** Ouvrez ce dossier (**pas** la racine du dépôt) dans l'outil, puis posez la question, mot pour mot: **«Dupont SA a-t-il droit à la remise fidélité?»**
+
+**(b) Avec un simple chat web (pour tester).** Glissez les fichiers de `catalogue/` et `clients/` dans le chat (ou attachez `regles-tarification.md` et `dupont-sa.md`), puis posez la même question. Vous verrez vite les limites: il faut **téléverser** les fichiers, sans synchronisation continue avec vos fichiers locaux, et vous versez des fichiers entiers sur une plateforme. C'est bien pour comprendre; mais la condition de base pour être vraiment libre de vos interactions, c'est de pouvoir, au minimum, lire et éditer des fichiers texte que vous possédez. → [Essayer sans installer](docs/start/essayer-sans-installer.md)
+
+> **Honnêteté sur la démo.** Ce dossier d'exemple route **directement vers un agent unique** (son `CLAUDE.md` pointe l'agent du devis): il ne livre pas d'index de routage. Pour voir le **routage progressif** lui-même, lancez `base route "<demande>" --root exemples/assistant-devis-demo` (qui régénère l'index `.ai/routing/index.md` et montre la route). La démo ne prétend donc pas embarquer un index qu'elle ne contient pas.
+
+**Ce que vous devriez observer.** Un assistant qui suit la consigne répond **typiquement non** (la remise fidélité demande deux mandats, et `dupont-sa.md` indique «Client (1er mandat)»), cite `dupont-sa.md` et `regles-tarification.md`, pose un `[A VALIDER]`, et ne change rien à votre place.
+
+> **Changez de modèle, observez.** La même base, repointée vers un autre modèle, refait la tâche: votre savoir-faire ne dépend pas du modèle du moment. Repointez et observez la différence par vous-même.
+
+> **Les mécanismes de vérification sont visibles.** L'assistant cite ses sources et pose `[A VALIDER]`: ce sont des marqueurs que vous voyez passer. Ce sont aussi des *consignes* qui dépendent des instructions que vous avez données, et dont vous restez souverain et libre: vous pouvez les exiger sur n'importe quel outil. Si votre modèle ne cite pas, c'est la preuve vivante que c'est une consigne: ouvrez les deux fichiers vous-même (ils sont dans le ZIP, ou demandez à l'IA de vous les montrer) et constatez le «1er mandat».
+> **Outils.** Tout outil d'IA capable de lire et d'éditer vos fichiers convient, par exemple Claude Code, Cursor, Antigravity, GitHub Copilot ou OpenCode; BASE n'en privilégie aucun.
+
+> **Coût.** **BASE lui-même est gratuit; il vous faut un outil d'IA pour l'exécuter, gratuit ou payant.** Beaucoup d'usages courants sont déjà possibles avec une option gratuite, d'autant qu'une structure forte en amont abaisse la capacité de modèle nécessaire; une option payante (à l'usage ou par abonnement) reste plus confortable pour les raisonnements les plus difficiles. Côté BASE, aucune sortie réseau dans le routage de base; ce qui sort ensuite dépend de l'outil d'IA que vous choisissez. Rien à payer par utilisateur, aucun abonnement imposé par BASE: le coût récurrent reste celui de l'outil d'IA que vous choisissez, et il est le vôtre à négocier.
+
+*Rappel: la racine du dépôt est le cadre. Pour un usage, ouvrez un dossier d'exemple.*
+
+---
+
+## 5. Pourquoi BASE existe
+
+> **Qui possède l'articulation de votre façon de penser avec l'IA, vous ou votre fournisseur?**
+
+BASE n'est ni un produit d'IA de plus (ChatGPT, Copilot, Claude Code…), ni un discours de concepts (esprit critique, transparence). C'est une **troisième voie**: apprendre, de façon **scientifique et souveraine**, à mener votre interaction avec l'IA et à bâtir une base qui est à vous. BASE n'outille pas seulement: il **embarque la documentation** de cette science appliquée de l'interaction humain-IA.
+
+Travailler avec l'IA expose à de nombreuses **pertes de contrôle potentielles**: sur la souveraineté, sur la compréhension, sur la durée, sur la vérification. Les sections qui suivent en reprennent les principales.
+
+### Souveraineté cognitive, pas seulement matérielle
+
+La souveraineté qui compte ne se joue pas seulement dans vos serveurs, mais dans ces questions:
+
+> **Qui structure mes interactions avec l'IA? Qui injecte de l'information à ma place? Qui m'incite à déléguer plutôt qu'à vérifier? Où est ma souveraineté cognitive?**
+
+BASE y répond par trois ancrages: (a) vous articulez vos interactions, avec vos mots, dans des fichiers que vous possédez, lisibles par tous, exploitables par l'IA; (b) c'est vous qui injectez votre savoir et votre savoir-faire, pas un tiers à votre place: ce qui est versé dans le contexte vient de *vos* bases d'information, pas de commandes ou d'instructions glissées à votre insu; (c) votre savoir-faire devient **essentiellement indépendant du modèle** qui l'exécute, vous changez de modèle sans repartir de zéro.
+
+> **Bornage honnête (pas de sovereign-washing).** La localité dit *où* un modèle tourne, pas son origine ni sa juridiction: le CLOUD Act existe, et un modèle exécuté localement n'est pas pour autant un modèle suisse. Ce qui sort dépend de votre configuration et de votre contrat. BASE garde souveraine la couche d'expertise; le choix du modèle reste le vôtre, à vérifier. → [Souveraineté et confiance](docs/trust/souverainete-et-confiance.md)
+
+### Le déplacement de la valeur
+
+Les modèles s'améliorent, bien moins vite que n'explose la quantité d'outils qui en tirent parti dans la société, mais ils s'améliorent. Et à mesure qu'ils progressent, ce qu'on attend d'eux, c'est qu'ils suivent **de plus en plus finement** les instructions qu'on leur donne, et qu'ils soient de plus en plus efficaces dans la collaboration avec nous: se comporter comme s'ils partageaient suffisamment notre représentation du monde pour que nous parlions de la même chose; susciter dans l'échange les points intermédiaires et les itérations nécessaires pour clarifier et s'aligner. Autrement dit, on attend des modèles qu'ils deviennent des **experts de l'interaction humain-IA**, posée sur les fondamentaux de toute interaction entre entités différentes, humaines ou non, selon la balance risque-bénéfice qu'on souhaite (s'il n'y avait aucun risque, on pourrait tout déléguer, mais ce n'est pas le but ici).
+
+C'est pourquoi la valeur se déplace. Dans la plupart des discours actuels, elle tient au modèle ou au produit du moment; avec BASE, elle tient à l'**articulation de votre savoir-faire**, dans une base que vous possédez. Deux actifs se capitalisent: votre **contexte** et vos **outils**. Le risque, c'est de tout lier dans une boîte que vous ne possédez pas; BASE garde la couche de contexte (et le routage, et l'index) à vous et **séparable du modèle**, de sorte que changer de fournisseur devient un simple réglage, non une migration (selon la tâche, le recalage peut demander un peu de travail, mais on ne réécrit jamais la base). Les outils passent, le contexte reste.
+
+### Pourquoi c'est durable, et non un palliatif
+
+Ce besoin ne dépend pas de la puissance du modèle. Un cœur plus puissant génère mieux et raisonne mieux, mais il ne devine toujours pas votre contexte ni ne se vérifie lui-même: c'est pourquoi la structure est **durable**, pas un palliatif en attendant des modèles meilleurs. Quelle que soit l'architecture à venir, deux choses ne changent pas: un modèle ne connaît pas votre contexte par défaut, et son cœur génératif ne se vérifie pas lui-même. Aussi puissant soit-il, un modèle ne peut pas deviner une information qu'il n'a jamais reçue: tant que votre réalité n'est consignée nulle part (votre contexte, vos fichiers), elle lui reste invisible.
+
+### Co-penser avec l'IA
+
+L'IA **ne se comporte pas comme un logiciel numérique classique**. Le raccourci mental le plus opérant est peut-être un **collègue venu d'ailleurs**, un peu amnésique, qui a une représentation riche du monde mais pas du vôtre; qui ne prend pas le café avec vous et ne connaît pas tout votre contexte. Le cœur génératif démarre **chaque conversation** avec une fenêtre de contexte vide. La clé, ce n'est pas un réglage qu'on fait une fois: c'est de **structurer l'information pour qu'elle soit disponible à la bonne granularité, au bon moment**, dans toutes vos interactions avec l'IA. Par exemple, du plus brut au plus élaboré:
+
+- des **transcriptions brutes** de vos réunions et de vos échanges;
+- aux **notes** que vous en dérivez;
+- aux **articulations projet** que vous bâtissez par-dessus.
+
+BASE rend ce geste rapide et fiable en gardant cette mémoire dans vos fichiers, prête à être refournie, et ciblée par le routage. Deux contraintes distinctes l'imposent: le cœur génératif est **sans état** (chaque appel redémarre à vide, rien n'est reporté d'un appel à l'autre), *et* sa fenêtre de contexte est de **taille finie**. La première impose de refournir le contexte; la seconde de le **cibler**, d'où l'enjeu d'y remettre la **bonne** information, pas toute l'information.
+
+Cette méthode s'adosse à des principes éprouvés: un canal n'achemine de façon fiable que ce que sa capacité et un **code partagé** autorisent (Shannon, 1948), d'où l'enjeu de **termes compatibles**; des **objectifs clairs**, sans quoi la collaboration échoue même quand l'autre est brillant (par analogie avec la théorie des objectifs, Locke & Latham); des **boucles de correction**, comme une réunion qui recadre (Wiener, 1948). Le goulot de la collaboration humain-IA est la **compréhension partagée**, pas la puissance. → [Co-penser avec l'IA](docs/learn/co-penser-avec-lia.md) · [La co-pensée en pratique, 16 principes](docs/learn/pratiques-co-pensee.md)
+
+### La vérification, une brique non optionnelle
+
+Le cœur génératif génère, mais ne **vérifie jamais**; une large part des usages échouent faute d'une véritable ingénierie de la vérification. Traitez chaque réponse comme une **hypothèse**: la vérification vous incombe. Pour l'essentiel du travail quotidien, le seul vérificateur, c'est vous, sauf sur des terrains formels où une vérification externe automatique est possible, comme le code ou les maths (un compilateur, une preuve). La bonne nouvelle n'est pas seulement qu'une structure forte en amont allège la vérification en aval: c'est aussi que **la structure peut inclure la vérification elle-même**, sous forme d'itération, de relecture, de réancrage dans des données fiables. BASE outille cette ingénierie avec des éléments que vous possédez (marqueurs, gate d'écriture, évaluation), assez pour rendre la sortie fiable à livrer, sans pour autant garantir qu'une réponse soit vraie.
+
+> **Ce que vous possédez vraiment.** Des fichiers Markdown, sans format propriétaire ni dépendance captive: versionnables, lisibles par les humains comme par l'IA, librement réutilisables. Ce que vous ne possédez pas: le modèle, sa juridiction, et ce qui sort une fois la conversation engagée.
+
+<details>
+<summary><strong>Une note d'honnêteté: ce que BASE n'est pas</strong></summary>
+
+BASE ne rend pas l'IA infaillible. Il ne remplace ni IAM/SSO (gestion des identités et authentification unique), ni RBAC (droits par rôle), ni DLP/SIEM (prévention de fuite et supervision), ni archivage légal, ni conformité nLPD/RGPD, et cocher une case réglementaire ne se confond pas avec être conforme. Il se branche **en amont** de ces dispositifs, sans en modifier le cœur. La résistance à l'injection découle de la séparation instructions/données ([§1](#1-base-en-bref)); c'est un principe de conception, pas un mécanisme. Une revue de sécurité externe est prévue, pas encore réalisée. Modèle de menace: [Sécurité et limites](docs/trust/securite-et-limites.md).
 </details>
 
 ---
 
-## L'essentiel
+## 6. BASE vs un chat ou une plateforme
 
-L'IA a rendu la production presque sans effort. Mais elle ne supprime pas le besoin de contexte, de méthode, de vérification, de responsabilité et de mémoire: plus il devient facile de produire, plus il devient important de structurer ce qui guide la production.
+La vraie alternative n'est pas «un produit plutôt qu'un autre»: c'est *consommer un produit d'IA* ou *réciter des concepts* d'un côté, *apprendre à mener l'interaction et posséder sa base* de l'autre. BASE ne remplace pas les plateformes; il vous rend propriétaire de la couche qui les rend utiles.
 
-C'est là que se joue la souveraineté qui compte. Pas seulement «où sont mes serveurs?», mais **autour des modèles**: qui possède l'articulation de votre façon de penser avec l'IA, vous ou votre fournisseur? Vos instructions, votre savoir, vos process forment la couche des interactions. C'est la souveraineté cognitive, et personne ne vous la rend si vous la cédez. BASE la garde dans des fichiers que vous possédez, indépendants du modèle: gardez votre suite IA pour l'exécution, possédez l'intelligence qu'elle exécute.
+| | Un chat générique | Une plateforme d'IA | Avec BASE |
+| --- | --- | --- | --- |
+| Possession | échanges captifs | locataire | vos fichiers |
+| Indépendance du modèle, capitalisation | non | parfois (choix du modèle) | oui: vous changez de modèle sans réécrire votre base |
+| Structurer l'interaction | en partie, sans transparence sur ce qui est injecté | en partie, sans transparence sur ce qui est injecté | oui, et vous voyez ce qui est injecté |
+| Maintenance | à refaire à chaque fois | écrans à entretenir | fichiers texte versionnables |
+| Vérification (le cœur ne vérifie jamais) | possible, à votre charge | possible, à votre charge | oui, avec mécanismes en plus *et* la doc de la science appliquée |
+| Coût de sortie, réversibilité | tout perdu | élevé | copie libre, à tout moment |
+| Ce que cela demande | rien, mais tout est à refaire | prendre l'outil en main | un peu de structure, et un outil qui lit vos fichiers |
 
-Concrètement, BASE vous aide à éviter quatre pertes de contrôle:
-
-- **la souveraineté**: opérer sans posséder;
-- **la compréhension**: délivrer sans intuition;
-- **la durée**: déployer sans savoir maintenir;
-- **la vérification**: produire sans contrôle.
-
-La vérification, justement, n'est pas une garantie que BASE vous donnerait: c'est un savoir-faire que vous gardez, et que la structure rend tenable. Un *process* n'ouvre que les ressources utiles à une tâche (moins de bruit, moins de coût, une revue plus légère); les décisions importantes restent visibles (un `[A VALIDER]`, une proposition montrée avant toute écriture); et BASE distingue honnêtement une *consigne* (suivie par le modèle) d'un *mécanisme* (réellement appliqué par le code).
-
-**Ce que BASE change, et pourquoi: [Pourquoi BASE](docs/learn/co-penser-avec-lia.md).** BASE ne se réduit pas à un format de fichiers: il embarque une documentation sur la façon d'interagir avec l'IA, cette science appliquée de la collaboration humain-IA qui fait la différence dans les usages réels.
-
-> **Apprendre en faisant?** Construisez un assistant pour un office du tourisme de village en 30 minutes, sans rien installer côté BASE: [le tutoriel pas à pas](docs/tutoriel/index.md).
-
----
-
-## Le routage: BASE va chercher le bon process
-
-Une demande mal aiguillée charge tout, mélange tout, et noie les décisions qui comptent sous un mur d'instructions. BASE l'évite en routant vers **vos** process. Trois gestes, selon ce que vous savez déjà:
-
-- **choisir un assistant** directement, si vous savez lequel;
-- **formuler une demande centralisée**: BASE route vers le bon process quand plusieurs sont possibles;
-- **ouvrir directement** l'assistant ou les sous-fichiers que vous voulez utiliser.
-
-Le routeur peut aussi s'abstenir honnêtement, avec une raison lisible, plutôt que de deviner. Si rien ne correspond, il vous oriente vers un accueil au lieu de vous laisser sans suite. Voir [Routage, process et ressources](docs/reference/routage-process-et-ressources.md).
-
-## Voir et soigner votre travail: Studio et la documentation
-
-Au quotidien, vous travaillez dans votre outil d'IA, sur vos fichiers. À mesure que vos process s'accumulent, vous voudrez les **voir et les éditer d'un coup d'œil**, plutôt que de fouiller des sous-dossiers. Deux interfaces locales sont là pour ça, en agrément, jamais en obligation:
-
-- **BASE Studio** (`npm run studio -- <dossier>`, sur `http://127.0.0.1:5174`, en loopback): parcourir et éditer vos ressources avec la même barrière propose puis commit, lancer une évaluation et lire les verdicts, et dialoguer avec un panneau de co-pensée. Voir [BASE Studio](tools/studio/ui/README.md).
-- **La documentation, en local** (`npm run docs:serve`): une interface pour parcourir toute la documentation. Vous pouvez aussi demander à votre IA de lancer la commande pour vous.
-
----
-
-## Pourquoi BASE existe
-
-Cette technologie ne se comporte pas comme un logiciel numérique classique. On ne l'utilise pas seulement en cliquant sur des boutons ou en remplissant des champs. On interagit avec un système capable de produire des comportements linguistiques proches de ceux d'un interlocuteur: il reformule, généralise, infère, propose, se trompe avec assurance, et peut suivre une méthode si on la lui donne. Il ne pense pas pour autant comme un humain. La bonne conclusion: il demande une **méthode** pratique de collaboration, savoir quand, quoi et comment vérifier. C'est l'objet de [Pourquoi BASE](docs/learn/co-penser-avec-lia.md).
-
-Une image utile est celle d'un **collègue venu d'ailleurs, amnésique**: il a une représentation riche du monde, mais pas du vôtre. Il comprend le langage, repère des régularités, se montre plus solide là où il a été le plus entraîné comme le code ou les maths, et peut aider vite. Mais il ne prend pas le café avec vous tous les matins: il ne connaît ni vos clients, ni vos contraintes, ni vos habitudes, ni votre seuil de risque, ni l'histoire de vos dossiers, et chaque conversation repart de zéro. Si rien n'est écrit, il improvise. Si tout est dispersé dans une interface, il devient difficile à maintenir. Donnez-lui un contexte structuré, et il travaille enfin dans votre réalité.
-
-Le réflexe hérité du monde numérique consiste souvent à faire rentrer cette collaboration dans des interfaces complexes: agents configurés à la main, instructions réparties dans plusieurs écrans, permissions disséminées, combinaisons fragiles. BASE prend le chemin inverse: un point d'accès conversationnel simple, et la structure durable dans des fichiers lisibles, versionnables et portables. L'objectif n'est pas de remplacer les plateformes IA, mais de vous rendre propriétaire de la structure qui les rend utiles. Ce socle est aussi une pierre de fondation: on bâtit par-dessus, jusqu'à une plateforme d'entreprise solide, sans toucher au cœur.
-
-> **Le contexte du lancement.** BASE a été présenté publiquement le 25 juin 2026 (Innovaud × AI Swiss). La présentation de cadrage est disponible comme document de contexte: [Lancement de BASE, la présentation](docs/public/2026-06-25-lancement-base.pdf) (en français seulement).
-
----
-
-## Le scénario du lundi matin
-
-Lundi matin. Un client vous demande un devis. Sur une plateforme web d'IA standard, vous réexpliquez votre activité pour la énième fois, vous obtenez une réponse approximative, vous corrigez, reformulez, corrigez encore, et finissez un bon moment plus tard avec quelque chose d'à peu près utilisable.
-
-Avec des fichiers qui articulent votre savoir-faire, structurés en amont, il suffit de dire: «Nouveau devis pour Dupont SA, 3 jours de conseil en stratégie.» Vos process connaissent déjà vos prix, vos conditions, votre modèle de document. L'assistant correspondant propose un devis complet; il peut même vous challenger, vous inciter à valider, vous pousser à itérer. Et si vous bâtissez, au fil des échanges, quelque chose qui fonctionne et a la bonne granularité, vous tenez un actif puissant.
-
-Cette structure ne tombe pas du ciel. Vous la **bâtissez au fil de vos échanges**: à chaque fois que vous touchez une information, vous la rangez à la bonne granularité, pour l'avoir à portée de main la prochaine fois. C'est un actif que vous affinez, et dont vous tirez parti à tout moment. Au passage, vous pouvez demander à BASE d'en faire l'entretien.
-
----
-
-## Démo rapide et assistants prêts à configurer
-
-BASE fournit une série d'exemples: des façons de structurer différents métiers. Ce ne sont que des exemples, et c'est volontaire. Ils montrent concrètement que ces structures sont simples et intuitives, des fichiers texte avec peu de rigidité. Surtout, pour un autre besoin, vous n'avez pas à les refaire à la main: demandez à BASE d'articuler quelque chose de similaire pour votre cas, et il vous propose une structure efficace, celle qui rend l'IA vraiment utile sur ce que vous voulez faire. Copiez un dossier, ouvrez-le, et formulez votre demande, par exemple «aide-moi à préparer un devis pour un nouveau client».
-
-| Exemple                                                          | Ce qu'il fait pour vous                                                                    |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| **[Démo devis pré-remplie](exemples/assistant-devis-demo/)**     | Montre un devis complet en moins d'une minute, avec des données fictives déjà prêtes |
-| **[Assistant réflexion](exemples/assistant-reflexion/)**         | Structure une décision ou une question personnelle pour rendre les hypothèses vérifiables |
-| **[Assistant devis](exemples/assistant-devis/)**                 | Prépare des devis professionnels à partir d'une demande client: prix, TVA, conditions, export optionnel |
-| **[Assistant communication](exemples/assistant-communication/)** | Rédige vos posts LinkedIn et newsletters dans votre ton de voix                            |
-| **[Assistant courrier](exemples/assistant-courrier/)**           | Rédige et répond à vos courriers et emails clients, dans le bon registre                   |
-| **[Assistant RH](exemples/assistant-rh/)**                       | Publie des offres d'emploi, prépare les entretiens, évalue les candidats                   |
-| **[Assistant projet](exemples/assistant-projet/)**               | Structure, planifie et suit vos projets avec jalons et points d'avancement                 |
-| **[Assistant réunion](exemples/assistant-reunion/)**             | Transforme vos notes en comptes-rendus structurés et suit décisions et actions             |
-| **[Assistant enseignant](exemples/assistant-enseignant/)**       | Prépare des séquences d'enseignement et des évaluations à partir de votre programme        |
-| **[Starter personnel](exemples/starter-perso/)**                 | Un point de départ personnel dont vous précisez le rôle au fil de l'usage                  |
-| **[Office du tourisme (Veytaux)](exemples/veytaux-tourisme/)**   | Exemple territorial de bout en bout, le fil rouge du tutoriel pas à pas                    |
-| **[Routage PME](exemples/routage-pme/)**                         | Démontre le Router: process proches, ambiguïtés, contre-exemples et fixtures               |
-| **[Agence multi-clients](exemples/agence-multi-clients/)**       | Un workspace multi-racines, un BASE par client                                             |
-
-Chaque assistant est **prêt à configurer** et conçu pour vous garder la main: il vous pose des questions sur votre activité, vos services, vos règles, propose, et s'arrête là où vous avez demandé à valider. Le niveau de friction est celui que vous inscrivez dans ses instructions.
-
-*Besoin d'un assistant pour un autre métier?* Ouvrez le dossier BASE et dites «Lis `.ai/agents/createur-agent/AGENT.md`». Le créateur d'assistant vous guide de A à Z, par la conversation. [Plus d'idées →](docs/guides/idees-agents.md)
-
-> Côté outils d'IA, le mot technique pour ce que vous appelez un assistant est «agent» (d'où `AGENT.md` et `.ai/agents/`). BASE le réutilise par pragmatisme, pour que les outils s'y retrouvent, sans en faire le modèle mental du travail.
-
----
-
-## Ce qui change face à une plateforme web d'IA standard
-
-| Sur une plateforme web d'IA standard                  | Avec un assistant BASE                                     |
-| ----------------------------------------------------- | ---------------------------------------------------------- |
-| Vous réexpliquez votre contexte à chaque conversation | L'assistant s'appuie sur vos fichiers métier à jour |
-| Les réponses sont génériques et approximatives        | Les réponses s'appuient sur vos process, sur ce que vous attendez, sur les données que vous avez pointées et les outils que vous autorisez |
-| Vos échanges restent captifs, ni portables ni à vous  | Vos documents vivent dans vos dossiers, lisibles, versionnables, portables d'un outil à l'autre |
-| L'IA devine ce que vous voulez                        | L'IA suit vos process, étape par étape                     |
-
-## Pourquoi la vérification compte
-
-Sur certains terrains, un vérificateur existe en dehors de vous: un compilateur pour le code, une preuve en mathématiques. Là, l'IA peut aller loin en autonomie, parce que l'erreur se détecte d'elle-même. Mais pour l'essentiel des tâches du quotidien, dans la plupart des métiers, le seul vérificateur possible, c'est vous. Comme avec ce collègue venu d'ailleurs et amnésique, il faut sans cesse interagir: pour recadrer, pour vérifier, pour garder l'intuition de ce qui se crée. Faire partie du processus, afin que la dette de vérification ne s'accumule pas et que vous restiez capable de juger, parce que c'est en travaillant avec l'IA qu'on développe l'intuition de ce qu'elle produit.
-
-Traitez chaque réponse de l'IA comme une **hypothèse**, plus ou moins solide selon ce que vous lui avez donné: avec des instructions et des informations claires, elle s'appuie souvent fidèlement dessus; sans elles, elle improvise. Accepter sans vérifier, c'est accumuler une **dette de vérification**: des affirmations non testées qui s'effondrent au premier regard critique d'un client ou d'un partenaire.
-
-C'est vous qui décidez du niveau de friction. BASE vous permet de placer des **points de décision** avant les écritures, les exécutions sensibles et les actions difficiles à annuler, et vous encourage à le faire au bon endroit. Pour juger où les poser et à quelle intensité, BASE embarque justement l'articulation de cette science appliquée de l'interaction humain-IA. Leur application mécanique dépend ensuite de l'outil et du passage par le broker, la CLI, le MCP ou un connecteur contrôlé; le routeur choisit le workflow, il n'applique pas les permissions. Les **marqueurs** (`[A VALIDER]`, `[DECISION]`) rendent l'état de votre travail cherchable en une seconde, même après des mois. Et si c'est utile, vous gardez une trace des échanges, non pas complète mais réglée au bon niveau: quelques grandes étapes, juste de quoi reprendre le travail plus tard. Vous améliorez ces process au fil du temps, en restant souverain. C'est le principe de la [co-pensée humain-IA](docs/learn/pratiques-co-pensee.md): on éprouve ce que l'IA produit avant de s'y fier.
-
-## Des principes éprouvés pour collaborer avec l'IA
-
-Bien collaborer avec l'IA n'est pas une intuition neuve. Cela s'appuie sur des idées éprouvées de longue date sur la façon d'articuler la communication et la coopération avec une entité qui n'est pas un autre soi, humaine ou non. Trois exemples qui valent encore:
-
-- des **termes compatibles** pour échanger sans perte (Shannon, 1948);
-- des **objectifs clairs**, sans quoi la collaboration échoue même quand l'autre est brillant (Locke & Latham, 1990);
-- des **boucles de correction**, comme une réunion qui recadre (Wiener, 1948).
-
-BASE met ces principes au travail avec l'IA. Le détail, principe par principe: [la co-pensée en pratique](docs/learn/pratiques-co-pensee.md).
-
-## Pourquoi BASE, et pas…?
-
-BASE n'est pas un produit d'IA de plus. C'est la **couche que vous possédez** sous l'outil que vous utilisez.
+«Ingénierie de la vérification», pas «vérité»: BASE rend la vérification *tenable*, il ne garantit pas qu'une réponse soit vraie. On peut vérifier dans un chat ou ailleurs; BASE y ajoute des mécanismes et, surtout, la documentation qui dit *quoi* mettre dans l'interaction humain-IA selon votre niveau de risque-bénéfice.
 
 | Au lieu de… | Ce que vous gagnez avec BASE |
-| ----------- | ----------------------------- |
-| **Un chat générique, en vrac** | Votre contexte ne se réexplique plus à chaque session: il vit dans vos fichiers, repris d'une fois sur l'autre. |
-| **Un assistant personnalisé de plateforme** | Vous n'êtes pas locataire d'une plateforme: votre savoir est articulé dans des fichiers portables, versionnables, qui marchent d'un outil d'IA à l'autre et survivent au prochain. |
-| **Un assemblage d'agents à configurer** | Vous n'entretenez ni tuyauterie ni écrans de configuration: l'orchestration reste au modèle, et BASE structure le *quoi* (vos textes, vos process, vos garde-fous) que vous possédez, pas une mécanique à maintenir. |
-| **Un seul gros `CLAUDE.md`** | Le routeur n'injecte que le bon process, pas tout, tout le temps; et il **sépare le savoir-faire du savoir**, au lieu d'un mur d'instructions qui finit en usine à gaz. |
-| **Le format `SKILL.md` / `AGENTS.md` seul** | «Agent», «skill»: ce ne sont que des noms, la grammaire que les grands fournisseurs d'IA ont imposée aujourd'hui. L'essentiel est ailleurs: une **articulation libre et portable** qui suit *votre* fil de pensée, où un savoir-faire puise dans autant de fichiers et de textes que vous voulez. Vous ne pliez pas votre pensée à une grammaire rigide d'un skill par tâche; vous structurez juste ce qu'il faut pour retrouver, articuler et router votre savoir. C'est ça, la méthode de BASE, cette science appliquée de l'interaction humain-IA: tout se dit en fichiers texte, au fil de la pensée. Et par-dessus, vous greffez routage testé, validation, écriture médiée, évaluation. |
-| **La recherche sémantique (RAG) seule** | L'accès à l'information est un **outil** pour l'IA: un modèle ne lance pas de lui-même une recherche coûteuse, il lui faut un moteur, et la recherche sémantique sert à ça (BASE peut s'en servir). Mais elle ne remplace pas l'articulation de votre savoir ni ce que vous attendez de l'IA. |
-
-Le détail dans [Comprendre BASE](docs/learn/comprendre.md) et [le cadre public](docs/reference/framework-public.md).
-
----
-
-## Pour qui?
-
-| Niveau | Ce que BASE apporte | Ce qui reste à votre charge |
-| ------ | ------------------- | --------------------------- |
-| **Vie privée / personnel** | Reprendre la main pour organiser, avec l'IA, vos projets, vos documents, vos démarches, votre apprentissage ou vos tâches récurrentes, à partir de fichiers simples. | Choisir ce que vous confiez à l'outil IA, relire, décider, garder vos fichiers à jour. |
-| **Start-up** | Une base solide pour s'approprier l'IA: partir de ses process personnels, faire remonter ceux qui servent à l'équipe, expérimenter vite et créer de nouveaux flux de travail qui font de la valeur. | Stabiliser ce qui devient répétable, éviter les promesses non vérifiées, protéger les données sensibles. |
-| **PME / équipe** | Des workflows partagés, des ressources découvrables, une validation légère, un entretien régulier et une promotion Personal → Team. | Définir qui valide, versionner les fichiers, gérer les données sensibles. |
-| **Grande entreprise** | Un cœur portable et durable, autour duquel se greffent facilement vos exigences: savoir, processus, ressources, connecteurs, et le réglementaire. | Ajouter IAM, SSO, RBAC, audit, rétention, DLP, SIEM et exigences réglementaires via vos systèmes enterprise. |
-
-> **Pas sûr du bon point de départ?** Ne lisez pas un mode d'emploi: demandez-le à BASE. Ouvrez le projet, puis «je suis [un particulier, une PME, un développeur, une personne du secteur public, un curieux], par où commencer?». L'accueil vous conduit à la porte qui vous correspond.
-
-BASE est clé en main pour démarrer localement, extensible pour grandir, et une grande organisation peut l'affiner sans changer les abstractions sous-jacentes: les mêmes abstractions servent du débutant à l'entreprise. Il ne remplace ni la politique de sécurité, ni l'IAM, ni l'archivage légal, ni la gouvernance documentaire d'une grande organisation.
-
----
-
-## Combien ça coûte
-
-BASE est gratuit et ouvert (code Apache-2.0, contenus CC BY 4.0). Ce que vous payez, c'est l'**outil d'IA qui l'exécute**, et vous avez le choix:
-
-- **Gratuit et local.** Une bonne part du travail de connaissance courant (dialoguer, rédiger, reformuler, suivre un process cadré) tient déjà avec un **modèle libre tournant sur un bon ordinateur portable**: pas d'abonnement, et rien qui sorte vers un tiers.
-- **Plus confortable avec un modèle de pointe** (ouvert ou propriétaire): l'expérience est plus fluide, en général à l'usage ou par abonnement.
-
-Vous n'avez pas à trancher seul: pour choisir un modèle et une configuration adaptés à votre métier et à vos contraintes de données, **demandez à BASE de vous guider**, ou ouvrez la documentation (`npm run docs:serve`), qui traite ces questions de choix et de configuration.
-
----
-
-## Lire dans le bon ordre
-
-Vous n'avez pas besoin de tout comprendre pour commencer. **Quel que soit votre profil, commencez par [Pourquoi BASE](docs/learn/co-penser-avec-lia.md).** Cette boussole donne les premiers pas; le parcours complet par profil vit dans [Lire dans quel ordre](docs/start/lire-dans-quel-ordre.md), la source de vérité.
-
-| Si vous êtes... | Commencez par | Ignorez au début |
-| --------------- | ------------- | ---------------- |
-| **Une personne seule, indépendant ou usage privé** | `README.md`, `docs/learn/co-penser-avec-lia.md`, `docs/start/quickstart.md` (ou `docs/start/essayer-sans-installer.md` si vous n'avez qu'un navigateur), puis un dossier dans `exemples/` | `mcp/`, `tools/`, `tests/`, `base.schema.json`, `base.manifest.json` |
-| **Une PME ou petite équipe** | `README.md`, `docs/learn/co-penser-avec-lia.md`, `docs/start/quickstart.md`, `docs/audiences/kit-demarrage-pme-suisse.md` | `docs/reference/specification-v0.md` tant que vous ne concevez pas d'intégration |
-| **Une grande entreprise** | `docs/learn/co-penser-avec-lia.md`, `docs/reference/framework-public.md`, `docs/audiences/kit-enterprise.md`, `docs/reference/etat-implementation.md` | Les exemples métier comme preuve d'usage, pas comme architecture finale |
-| **Une institution publique** | `docs/trust/souverainete-et-confiance.md`, `docs/audiences/kit-administration-secteur-public.md`, `docs/trust/securite-et-limites.md` | Le mode navigateur seul pour des données personnelles ou sensibles |
-
-Règle simple: pour essayer, partez de `exemples/`. Pour adapter, regardez `.ai/agents/`. Pour intégrer ou auditer, regardez `tools/`, `mcp/`, `tests/` et la spécification.
-
-Les fichiers `CLAUDE.md` et `.cursor/rules/` ne sont pas le cœur de BASE: ce sont des adaptateurs pour que Claude Code et Cursor trouvent le bon assistant automatiquement. Pour un autre outil, **demandez à BASE comment le relier à votre système**. Le cœur portable reste dans `.ai/agents/`, les documents Markdown, les schémas et les commandes locales.
-
-### Une note sur la langue
-
-La documentation de BASE existe en français et en anglais (la version française fait foi; voir [Langues](docs/reference/langues.md)); l'allemand et l'italien sont bienvenus en contribution. Et **les assistants que vous construisez fonctionnent dans n'importe quelle langue**: le routage compare les mots d'une demande à ceux de vos propres assistants, sans grammaire ni lexique d'une langue donnée. Construisez votre assistant avec des mots-clés français, allemands, italiens ou anglais, et il route et répond dans cette langue. La souveraineté est aussi linguistique.
-
----
-
-## Essayer maintenant
-
-Chaque exemple est un dossier indépendant dans `exemples/`. Téléchargez-le, ouvrez-le dans votre outil d'IA, puis formulez votre demande, par exemple «aide-moi à préparer un devis pour un nouveau client».
-
-| Outil | Comment démarrer |
-| ----- | ---------------- |
-| **Cursor** | Ouvrez un dossier d'exemple comme projet, puis dites votre demande dans le chat. `.cursor/rules/` charge l'assistant. |
-| **Claude Code** | Lancez `claude` dans le dossier d'un exemple, puis dites votre demande. `CLAUDE.md` donne le contexte. |
-| **ChatGPT, Claude Desktop et autres apps** | Via le [serveur MCP](mcp/). Pour l'installer, ouvrez la documentation (`npm run docs:serve`) ou demandez simplement à BASE de vous guider; il expose alors les ressources locales que vous choisissez de connecter. |
-| **Codex, Windsurf, Antigravity, GitHub Copilot, OpenCode…** | Chargez `AGENT.md` comme contexte. La découverte automatique des compétences dépend de l'outil. |
-
-Toutes les plateformes ne sont pas compatibles, et BASE n'en privilégie aucune: choisissez celle que vous préférez. [Obtenir BASE (ZIP, clone, copie d'exemple) →](docs/start/obtenir-base.md) · [Guide d'installation →](docs/start/installer.md) · [Guide express →](docs/start/quickstart.md) · [Tutoriel pas à pas →](docs/tutoriel/index.md)
-
-**Vous êtes une PME ou une petite équipe?** Avant de partager un assistant, lisez le [kit de démarrage PME suisse](docs/audiences/kit-demarrage-pme-suisse.md): données autorisées, validation humaine, versioning simple et entretien mensuel.
-
-**Vous avez déjà une base structurée comme dans BASE?** Dites «Fais l'entretien de ma base». L'assistant vérifie les liens, les marqueurs ouverts, les descriptions manquantes et les ressources à promouvoir, puis attend votre validation avant toute modification.
-
----
-
-## Comment ça fonctionne
-
-Reprenons la structure vue plus haut, en détail. Un assistant réunit une fiche de poste, son savoir-faire et son savoir séparés, et vos données à côté.
-
-```
-AGENT.md                          La fiche de poste : qui il est, que faire selon la demande
-    │
-    ├── skills/
-    │   ├── processes/            Le savoir-faire : comment faire X, étape par étape
-    │   └── competences/          Le savoir : ce qu'il connaît de votre métier
-    │
-    ├── templates/                Les formulaires : à quoi ressemblent les documents
-    │
-    └── tools/                    La boîte à outils : scripts (optionnel)
-```
-
-Ce squelette est volontairement minimal: tout le reste est libre. Autour, vous placez les fichiers que vous voulez comme contexte (un document Word, un PowerPoint, un tableur, ce que vous manipulez déjà), comme matière à discuter dans la marche à suivre que vous articulez avec l'IA. Vous pouvez même donner accès à certaines tables d'une base de données, pour peu que l'outil correspondant existe (en entreprise, c'est souvent l'IT qui le fournit). BASE structure la marche à suivre; le matériau, lui, reste le vôtre, dans ses formats.
-
-Les données métier (votre activité, vos clients, vos documents) vivent **à côté**, dans des dossiers simples. L'assistant les lit et propose de les créer ou de les mettre à jour. Les actions sensibles passent par un point de décision; les garanties strictes exigent un outil ou un connecteur qui médie réellement l'action.
-
-Le savoir-faire et le savoir s'écrivent au format **SKILL.md**, un fichier Markdown lisible, de plus en plus reconnu par les outils d'IA. Certains harnesses les découvrent nativement, d'autres demandent de pointer l'assistant vers les fichiers pertinents; le format reste portable même quand l'intégration varie. La distinction compte: une liste de compétences ne dit pas quel process suivre ni quelles connaissances ouvrir pour bien l'exécuter. BASE route donc d'abord vers un process; les compétences, outils, templates et données sont ensuite référencés ou découverts comme ressources de contexte.
-
-## CLI locale
-
-BASE inclut une CLI légère pour les usages Personal/PME et les premiers contrôles d'équipe. Ces commandes sont optionnelles pour essayer un exemple, mais utiles pour maintenir un BASE fiable.
-
-Par défaut, la CLI détecte la racine BASE la plus proche depuis le dossier courant (`.ai/` ou `base.manifest.json`) et l'affiche, par exemple `BASE root: .`. Pour les scripts, la CI et les dossiers ambigus, gardez `--root <dossier>`. Pour plusieurs racines explicites, utilisez un `base.workspace.json`.
-
-Au cœur du dépôt (entretien du framework):
-
-```bash
-npm install
-npm run validate                 # structure et liens du dépôt
-npm run index                    # (re)génère base.manifest.json (projection dérivée)
-npm run entretien                # rapport d'entretien (marqueurs ouverts, descriptions manquantes)
-node tools/base.mjs route-test --root .   # rejoue les routes attendues du dépôt
-```
-
-Sur un assistant (ici la démo devis; `--root` cible n'importe quel dossier d'assistant):
-
-```bash
-ex=exemples/assistant-devis-demo
-node tools/base.mjs discover "devis client" --root $ex
-node tools/base.mjs route "Je dois préparer une proposition commerciale pour un prospect" --root $ex
-node tools/base.mjs open calculer-devis --projection metadata --root $ex
-node tools/base.mjs invoke calculer-devis devis/DEV-2026-001.json --root $ex   # dry-run par défaut
-```
-
-`base invoke` fait un dry-run par défaut: il montre l'action prévue avant toute exécution. `base propose` montre un diff sans rien écrire; `base commit` applique après votre validation (confirmation par défaut, paramétrable par ressource). Le Router choisit un assistant et un process, ou s'abstient avec une raison lisible; il ne charge pas toutes les instructions.
-
-> **Souveraineté des données.** Par défaut, le routage est **100 % local** (lexical, zéro réseau). Le routage sémantique optionnel peut, **si vous l'activez explicitement**, envoyer du texte à un fournisseur d'embeddings, jamais par défaut, et vous choisissez quoi envoyer (option locale Ollama disponible). Détail: [Sécurité et données du routage](docs/trust/securite-donnees-routage.md).
-
-Pour les corpus plus difficiles, le package officiel `@ai-swiss/base-ranker-semantic` ajoute un ranker à vrais embeddings, sans alourdir le cœur. Pour les très grands corpus, `@ai-swiss/base-index-local` fournit un index dérivé et supprimable (voir `docs/guides/routage-semantique-quickstart.md` et `docs/learn/comprendre-echelle.md`).
-
-## Évaluer un assistant
-
-L'évaluation (`base eval`) mesure un assistant en conditions réelles: un utilisateur simulé (un modèle) dialogue avec le process via le vrai broker, puis un juge indépendant (un autre modèle) note la conversation au regard des objectifs du scénario. Le verdict est structuré (résultat, mode d'échec, gravité, preuves, piste de correction) et tourne en local avec Ollama, sans clé. Voir [tools/eval/README.md](tools/eval/README.md).
-
-```bash
-npm run eval -- --root exemples/assistant-devis --agent assistant-devis \
-  --process nouveau-devis --scenarios exemples/assistant-devis/.ai/experiments/scenarios/ \
-  --ollama --model qwen3.5:9b-q4_K_M --json-mode
-npm run studio -- exemples/assistant-devis    # http://127.0.0.1:5174 (onglet Évaluations)
-```
-
-## Portable entre outils d'IA
-
-| Plateforme | Fonctionnement |
-| ---------- | -------------- |
-| **Cursor** | Ouvrez le dossier comme projet. `.cursor/rules/` charge l'assistant selon les règles du projet. |
-| **Claude Code (terminal)** | Lancez `claude` dans le dossier. `CLAUDE.md` donne le contexte de départ. |
-| **Claude Code (extension)** | Ouvrez un chat et pointez vers le chemin de `AGENT.md`. |
-| **ChatGPT, Claude Desktop** | Via le [serveur MCP](mcp/). Pour l'installer, ouvrez la documentation (`npm run docs:serve`) ou demandez à BASE de vous guider; il expose alors les ressources locales que vous choisissez de connecter. |
-| **Codex, Windsurf, Antigravity, GitHub Copilot, OpenCode…** | Chargez `AGENT.md` comme contexte. La découverte automatique des compétences dépend de l'outil. |
-
-Pas de base de données obligatoire. Des fichiers texte, principalement Markdown, qui restent lisibles partout. Votre assistant est **portable**: changez d'outil quand vous voulez, vos fichiers restent.
-
----
-
-## Aller plus loin
-
-| Ce que vous voulez | Où aller |
 | --- | --- |
-| La raison d'être de BASE | [Pourquoi BASE](docs/learn/co-penser-avec-lia.md) |
-| Apprendre en faisant | [Tutoriel pas à pas](docs/tutoriel/index.md) |
-| Les principes de la co-pensée | [La co-pensée en pratique (16 principes)](docs/learn/pratiques-co-pensee.md) |
-| Savoir quoi lire selon votre profil | [Lire dans quel ordre](docs/start/lire-dans-quel-ordre.md) |
-| Confiance, sécurité et preuves | [Sécurité et limites](docs/trust/securite-et-limites.md) · [Preuves](docs/trust/evidence.md) |
-| Souveraineté et conformité | [Souveraineté, confiance et conformité](docs/trust/souverainete-et-confiance.md) |
-| Évaluer et soigner vos assistants | [BASE Studio](tools/studio/ui/README.md) · [Évaluation](tools/eval/README.md) |
-| La documentation interactive | [Documentation interactive](docs/reference/documentation-interactive.md) |
-| Déployer en organisation ou en administration | [Kit entreprise](docs/audiences/kit-enterprise.md) · [Kit secteur public](docs/audiences/kit-administration-secteur-public.md) |
-| Le cadre public et les couches | [Cadre public BASE](docs/reference/framework-public.md) |
-| La vision et la contribution | [Manifeste](MANIFESTO.md) · [Contribuer](CONTRIBUTING.md) |
-
-Le reste se trouve par profil dans [Lire dans quel ordre](docs/start/lire-dans-quel-ordre.md), ou en parcourant la [documentation](docs/).
-
-### Structure du projet
-
-Arborescence non exhaustive (le détail complet est dans la [documentation](docs/)):
-
-```
-base/
-│
-├── docs/                              Apprendre l'approche
-│   ├── start/                         Premiers pas, installation, quickstart, parcours de lecture
-│   ├── learn/                         Concepts, philosophie, principes et passage à l'échelle
-│   ├── guides/                        Guides pratiques: routage, providers, diffusion, idées métier
-│   ├── audiences/                     PME, entreprise, institution publique, profils d'usage
-│   ├── reference/                     Cadre public, CLI/docs, compatibilité, versioning, langues
-│   ├── trust/                         Sécurité, souveraineté, preuves, limites et licence
-│   ├── public/                        Presse, matériaux publics et présentation de lancement
-│   └── en/                            Traduction anglaise de la documentation
-│
-├── BASE_BOOTSTRAP.md                   Bootstrap générique pour harness IA
-├── base.schema.json                    Schéma progressif des ressources BASE
-├── LICENSE                             Double licence : code Apache-2.0, contenus CC BY 4.0
-├── SECURITY.md                         Politique de signalement et périmètre sécurité
-├── CONTRIBUTING.md                     Adapter et réutiliser sans alourdir
-├── tools/                             CLI locale, Studio, évaluation, génération de doc
-├── tests/                             Tests du contrat public et des garde-fous
-├── specs/                             Spécification d'ingénierie (UR/FR/NFR/AD, schémas)
-├── packages/                          Packages officiels optionnels (ranker sémantique, index local)
-├── base.manifest.json                  Index généré par `base index`, régénérable
-│
-├── exemples/                          Exemples indépendants (copiez et utilisez)
-│   ├── assistant-devis-demo/          Démo pré-remplie avec devis déjà généré
-│   ├── assistant-devis/               Générateur de devis pour PME
-│   ├── assistant-communication/       Rédaction LinkedIn, newsletters, communication
-│   ├── assistant-courrier/            Courriers et emails clients : rédaction et réponse
-│   ├── assistant-rh/                  Recrutement, offres d'emploi, entretiens
-│   ├── assistant-projet/              Gestion de projets
-│   ├── assistant-reflexion/           Réflexion personnelle : structurer pour valider
-│   ├── assistant-reunion/             Comptes-rendus de réunion, suivi des décisions et actions
-│   ├── assistant-enseignant/          Séquences d'enseignement et évaluations
-│   ├── starter-perso/                 Point de départ personnel à préciser au fil de l'usage
-│   ├── veytaux-tourisme/              Office du tourisme de village (fil rouge du tutoriel)
-│   ├── routage-pme/                   Routage déterministe : process proches, contre-exemples, fixtures
-│   └── agence-multi-clients/          Workspace multi-racines, un BASE par client
-│
-├── mcp/                               Serveur MCP (connecter à ChatGPT, Claude Desktop, etc.)
-├── CLAUDE.md                           Adaptateur Claude Code, pas le cœur du framework
-├── .cursor/rules/                      Adaptateur Cursor, pas le cœur du framework
-│
-└── .ai/agents/                        Le framework
-    ├── concierge-base/               Accueil et aide BASE (cible de repli du routeur)
-    ├── createur-agent/                Créez votre propre assistant par la conversation
-    │   └── skills/
-    │       ├── processes/             /creer-agent, /ameliorer-agent, /diagnostic
-    │       └── competences/           architecture, exemples, outils-connus
-    └── _template/                     Base de copie pour nouveaux assistants
-        └── skills/
-            ├── processes/             Templates de workflows
-            └── competences/           Marqueurs, journal, communication (standard)
-```
+| **Un seul gros `CLAUDE.md`** | Plutôt qu'un mur unique où tout est injecté en bloc, un **routage progressif**: l'assistant descend un index généré de votre base (`.ai/routing/index.md`) vers le bon process, sépare savoir-faire / savoir *et* garde vos données distinctes des instructions, au lieu d'un mur où instructions et données se mélangent (et où l'injection prospère). |
+| **Le format `SKILL.md` / `AGENTS.md` seul** | «Agent», «skill»: ce ne sont que des noms. Là où l'on tend à plier sa pensée à un format, un skill par tâche, BASE vous en affranchit: un savoir-faire puise dans autant de fichiers que vous le voulez, sans grammaire imposée. |
+| **Un assemblage d'agents à configurer** | Vous n'entretenez ni tuyauterie ni écrans: l'orchestration reste au modèle, et BASE structure le *quoi* (vos textes, vos process, vos garde-fous) que vous possédez. |
+| **La recherche sémantique (RAG) seule** | La recherche sémantique est une mise en correspondance mathématique: elle trouve des passages proches, mais sans toujours la finesse de porter *vos* intentions. Mieux vaut lui fournir d'emblée l'information pertinente, ou laisser un modèle creuser, souvent au prix de ressources gaspillées. Le choix de ce qui compte doit vous rester. |
 
 ---
 
-BASE est un framework **créé par Charles-Edouard Bardyn** (Directeur Scientifique, VP et cofondateur d'[AI Swiss](https://a-i.swiss), association suisse indépendante à but non lucratif) et aujourd'hui **maintenu par un mainteneur principal**, sous l'intendance d'AI Swiss et ouvert à la contribution et à la co-maintenance. [Innovaud](https://innovaud.ch) est partenaire du projet et a contribué à amorcer les exemples métier pour PME.
+## 7. Pour qui
 
-BASE est pensé comme une **amorce**: un point de départ que vous **forkez, adaptez et faites grandir** dans la direction qu'il trace. Il est conçu pour servir de socle à une architecture d'IA souveraine et portable. La double licence (Apache-2.0 pour le code, CC BY 4.0 pour les contenus) vous y autorise pleinement: reprenez-le pour démarrer une multitude de projets, personnels ou collectifs, et gardez vos fichiers à vous.
+De l'interaction humain-IA en général: du particulier curieux à l'entreprise. Les mêmes abstractions servent: clé en main pour démarrer, extensibles pour grandir.
 
-Licence: code sous Apache-2.0; documentation, agents, skills et exemples sous CC BY 4.0. Voir `LICENSE`.
+| Profil | Ce que BASE apporte | Ce qui reste à votre charge |
+| --- | --- | --- |
+| **Particulier / curieux / étudiant** | Une structure pour travailler avec l'IA et suivre votre propre fil: organisez ce que vous savez au fur et à mesure de vos besoins, librement mais assez structuré pour faire grandir votre base. | Choisir ce que vous confiez à l'outil, relire, décider, tenir votre base à jour. |
+| **Métier / indépendant** | Une base pour votre activité, à partir de vos règles et données, gardée quel que soit l'outil. | Relire, décider, tenir vos fichiers à jour. |
+| **Dirigeant** | Souveraineté et durabilité: vous capitalisez le savoir-faire collectif, et changer de modèle devient un simple réglage, non une migration (voir [§6](#6-base-vs-un-chat-ou-une-plateforme)). | Gouvernance des accès, conformité, et le choix du modèle / fournisseur. |
+| **Sécurité / conformité / secteur public** | Cœur auditable, mécanismes testés, routage local par défaut. BASE se branche **en amont** de vos dispositifs (IAM/SSO/RBAC/DLP/SIEM), il ne les remplace pas; egress borné sur ses propres surfaces. | IAM/SSO/RBAC/DLP/SIEM via vos systèmes. L'analyse d'impact (DPIA) reste de votre ressort: traiter des données personnelles via un modèle distant est un transfert à évaluer. Lire [Sécurité et limites](docs/trust/securite-et-limites.md) et [La frontière local / sortant](docs/trust/frontiere-local-vs-sortant.md). |
+| **Développeur / contributeur** | Cœur sans dépendance runtime, tout testé et spécifié. | Voir le bloc dédié en [§8](#8-comment-cela-fonctionne). |
+| **Sceptique / journaliste** | Ouvrez les fichiers, vérifiez les claims; consigne vs mécanisme assumé. | Aucune confiance préalable requise. → [Preuves](docs/trust/evidence.md) (claim → mécanisme/test → limite). |
+
+### Risque, continuité, sortie (pour le décideur)
+
+- **Indépendance du modèle = contrôle du risque:** votre savoir-faire survit à tout changement de modèle; changer de fournisseur tient du réglage, non de la migration. Le danger n'est pas «utiliser un fournisseur», c'est lier votre contexte *et* votre outillage dans une boîte que vous ne pouvez ni copier ni faire évoluer. BASE garde la couche de contexte et le routage à vous et séparables.
+- **Captivité (lock-in):** des fichiers que vous possédez, portables d'un outil à l'autre, que vous pouvez copier et faire évoluer librement (**forker**) à tout moment.
+- **Continuité:** BASE est conçu pour être **facile à reprendre**. Licences irrévocables (Apache-2.0 / CC BY 4.0) et cœur sans dépendance externe le rendent reprenable par quiconque: `git clone + npm ci + npm run check` (zéro dépendance runtime) suffit à le remettre en marche de bout en bout, tout étant testé et spécifié. La gouvernance et ses garanties de continuité sont détaillées dans [GOVERNANCE](GOVERNANCE.md).
+- **Intendance:** AI Swiss, association sans but non lucratif, neutre vis-à-vis des modèles; aucun lien vendeur exclusif.
+
+Pour défendre le choix de BASE devant une DSI ou la conformité: [Souveraineté, confiance et conformité](docs/trust/souverainete-et-confiance.md).
+
+---
+
+## 8. Comment cela fonctionne
+
+### La structure, en détail
+
+Un assistant réunit, **d'un côté**, ses instructions (fiche de poste + savoir-faire + savoir, séparés), et **de l'autre**, vos données, séparées autant que possible, parce qu'une donnée lue ne doit pas pouvoir se faire passer pour une instruction (voir l'invariant de frontière dans [ARCHITECTURE.md](ARCHITECTURE.md)).
+
+```
+INSTRUCTIONS (ce que vous écrivez)            DONNÉES (séparées)
+AGENT.md             La fiche de poste        data/        Vos fichiers métier
+  └── skills/                                 sources/     Vos sources de référence
+        ├── processes/   Le savoir-faire ┐
+        │                  (savoir-faire ⟂ savoir, Axe 2)
+        └── competences/ Le savoir       ┘    (lus par l'assistant,
+  templates/          Formulaires (opt.)       mis à jour via propose→commit)
+  tools/              Scripts (opt.)
+
+  Axe 1 (frontière de sécurité):  données ──lues──▶ jamais exécutées comme instructions
+```
+
+Ces deux séparations sont les deux axes minimaux qui suffisent: l'un sépare ce qui est vrai de votre monde (savoir, données) de la façon d'agir dessus (savoir-faire, instructions); l'autre sépare ce que **vous** affirmez (instructions) de ce qui est lu et pourrait être adverse (données). C'est pourquoi le squelette est minimal sans rien manquer. Tout le reste est optionnel et extensible: templates, scripts, ou n'importe quel fichier qu'une IA peut exploiter, ajoutés selon votre propre structure; l'essentiel est de cadrer le savoir et le savoir-faire, le reste vous appartient. Le savoir-faire et le savoir s'écrivent au format **SKILL.md**, un Markdown lisible: certains outils le découvrent nativement, d'autres demandent de pointer les fichiers; l'intégration varie, le format reste à vous.
+
+### Le routage, en détail
+
+Trois gestes, du plus guidé au plus direct, selon ce que vous savez déjà: **formuler votre demande** et laisser BASE la router vers le bon process; **choisir vous-même l'assistant** quand vous savez lequel; **ouvrir directement le fichier** voulu quand vous savez où aller. Par défaut, le routage est **progressif**: l'assistant lit un index généré de votre base (`.ai/routing/index.md`) et descend de proche en proche, de la racine vers l'agent puis le process. Un **plancher déterministe**, le code seul sans modèle (`base route` / `route_request`), confirme et sert de repli: pour une même demande, la même route, *ou* une abstention motivée. L'abstention honnête vaut quand ce plancher de BASE est sollicité (déterministe), pas quand le modèle devine seul (consigne). Un mode sémantique optionnel (embeddings, opt-in) reste possible pour de très grands catalogues. Un process n'ouvre que les ressources utiles à une tâche: contexte ciblé plutôt qu'exhaustif, donc plus d'information utile par token dans une fenêtre bornée.
+
+### Évaluer et observer votre base
+
+Quand vous le souhaitez (rien ne tourne automatiquement), vous pouvez **évaluer vos processus**, et pas seulement la sortie d'un modèle: un juge-modèle (faillible, à calibrer) signale des **régressions relatives** entre deux versions de vos process, utile comme alarme, pas comme note absolue. Vous la lancez à la demande, depuis le Studio ou par `npm run eval` (en local, sur Ollama par défaut). C'est ce qui rend une base possédée **maintenable** dans la durée, plutôt qu'un simple amas de fichiers.
+
+### Pour le contributeur
+
+Maintenu activement par un mainteneur principal sous l'intendance d'AI Swiss, et conçu pour être facilement repris: licences irrévocables, cœur sans dépendance, tout testé et spécifié. La continuité est détaillée dans [GOVERNANCE](GOVERNANCE.md).
+
+```bash
+git clone https://github.com/ai-swiss/base.git && cd base && npm ci && npm run check
+```
+
+`npm ci` d'abord (durée variable selon le réseau), puis `npm run check` (typiquement 1 à 2 minutes); les invariants sont *gate-enforced*, pas aspirationnels (`npm run check` vérifie spec, typecheck, validate, route-test, hygiène doc, suite complète, ratchet de couverture). Pour changer un comportement, trouvez son `FR-*` dans `specs/current/10_core/` (la carte est [ARCHITECTURE.md](ARCHITECTURE.md)), lisez le test, changez code + spec + test ensemble. Par où commencer: [CONTRIBUTING](CONTRIBUTING.md). Que vous travailliez avec ou sans IA, la démarche est la même.
+
+<details>
+<summary><strong>Souveraineté linguistique, et les trois plans</strong></summary>
+
+**Langue.** Les assistants fonctionnent dans n'importe quelle langue: le routage progressif descend votre index quelle que soit la langue de la demande, sans grammaire par langue. La souveraineté est aussi linguistique.
+
+**Trois plans** pour qu'un état actuel ne soit jamais confondu avec un plan: vérité = specs + code; changement = decisions + CHANGELOG; brouillon = `.plans` + `.reviews`. Détail dans [ARCHITECTURE.md](ARCHITECTURE.md).
+</details>
+
+---
+
+## 9. Essayer, installer, connecter
+
+### Sans terminal (le plus simple)
+
+**Parlez-lui.** Téléchargez le dossier (bouton vert **Code** → **Download ZIP**; sur Windows, «Extraire tout», un double-clic ne suffit pas), ouvrez-le dans un outil d'IA qui lit vos fichiers locaux *ou* attachez les fichiers dans un chat web. Demandez «explique-moi BASE», «aide-moi à démarrer une base pour mon activité» ou «par où contribuer?», et laissez l'IA mener le setup avec vous.
+
+→ [Essayer sans installer](docs/start/essayer-sans-installer.md) · [Faire installer par votre IA](docs/start/installer-par-votre-ia.md)
+
+<details>
+<summary><strong>L'alternative en ligne de commande</strong> (optionnelle, pour les personnes à l'aise techniquement)</summary>
+
+```bash
+base studio --root <dossier>      # l'atelier graphique, loopback http://127.0.0.1:5174
+npm run docs:serve                # la documentation, en local
+base route "<demande>"            # router une demande (plancher déterministe, local)
+base validate                     # vérifier structure et liens
+npm run eval                      # évaluer vos processus (local, Ollama par défaut)
+```
+
+Connecter le serveur MCP à un outil d'IA: [mcp/](mcp/). Quickstart contributeur: `git clone … && npm ci && npm run check`.
+
+*Rappel: la racine est le cadre; pour un usage, ouvrez un exemple.*
+</details>
+
+---
+
+## 10. Aller plus loin
+
+**Apprendre** (BASE embarque la documentation de la science appliquée de l'interaction humain-IA): [Tutoriel pas à pas](docs/tutoriel/index.md) (un office du tourisme, de A à Z) · [Co-penser avec l'IA](docs/learn/co-penser-avec-lia.md) · [La co-pensée en pratique, 16 principes](docs/learn/pratiques-co-pensee.md) · [Routage, process et ressources](docs/reference/routage-process-et-ressources.md)
+<br><sub>Au passage, vous bâtissez votre <strong>littératie IA</strong> en la pratiquant: co-pensée, réflexes de vérification, distinction consigne / mécanisme. C'est un effet recherché, pas un à-côté.</sub>
+
+**Contribuer:** [CONTRIBUTING](CONTRIBUTING.md) (par où commencer) · [DEVELOPING](DEVELOPING.md) (la forge, la commande unique) · [ARCHITECTURE](ARCHITECTURE.md) (la carte du code) · [specs/](specs/README.md) (le contrat, les `FR-*`)
+
+**Confiance et sécurité:** [Preuves](docs/trust/evidence.md) (claims → tests → limites) · [Sécurité et limites](docs/trust/securite-et-limites.md) (modèle de menace, revue externe à venir) · [La frontière local / sortant](docs/trust/frontiere-local-vs-sortant.md) · [Souveraineté et confiance](docs/trust/souverainete-et-confiance.md) (défendre le choix devant une DSI)
+
+**Signaler, échanger, demander de l'aide:** [issues](https://github.com/ai-swiss/base/issues/new/choose) (templates fournis) · [Discussions](https://github.com/ai-swiss/base/discussions) pour les questions ouvertes · vulnérabilités en privé via [SECURITY](SECURITY.md)
+
+**Gouvernance et pérennité:** [GOVERNANCE](GOVERNANCE.md) (continuité, co-maintenance)
+
+**Contexte:** [Lancement de BASE](docs/public/2026-06-25-lancement-base.pdf), document de contexte (Innovaud × AI Swiss, 25.06.2026, en français).
+
+---
+
+## Licence et attribution
+
+Code sous **Apache-2.0**; documentation, agents, skills et exemples sous **CC BY 4.0** (double licence détaillée dans [LICENSING.md](LICENSING.md), textes complets dans [LICENSES/](LICENSES/)). Voir [GOVERNANCE](GOVERNANCE.md) · [Code de conduite](CODE_OF_CONDUCT.md) · [CONTRIBUTING](CONTRIBUTING.md).
+
+Créé par **Charles-Edouard Bardyn** à AI Swiss (association à but non lucratif, intendance neutre vis-à-vis des modèles). Innovaud est partenaire dans l'articulation des exemples de cas d'usage entreprise.
+
+BASE est une **amorce** que vous copiez, adaptez et faites grandir; la double licence vous y autorise pleinement. On peut bâtir par-dessus, jusqu'à une plateforme d'entreprise, sans toucher au cœur.

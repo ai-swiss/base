@@ -1,19 +1,19 @@
-<!-- fr-synced: 4c69f0cae012026065cc9232a1c25c4064d8bc73 -->
+<!-- fr-synced: ff80479ceed0389d5132d65304b36d7936102f56 -->
 # Understanding which language BASE uses, and where
 
-If you are wondering why the documentation is in French while the specifications are in English, this page explains it in a single read. It is for anyone discovering the project, contributing, or wanting to build an assistant: it says which language governs what, and why your own assistants are bound by neither of those two languages.
+If you are wondering why the documentation is in French while the specifications are in English, this page explains it in a few lines. It is for anyone discovering the project, contributing to it, or wanting to build an assistant: it says which language governs what, and why your own assistants are bound to neither one.
 
 ## French for the method
 
-The public documentation (`docs/`, [README](../../../README.md), [Manifesto](../../../MANIFESTO.md)) is in French. It is the language of the method: the one in which BASE explains why to structure collaboration with AI, how to verify, and how to keep sovereignty over your files. In a multilingual country, writing the method in a national language simply makes it more accessible to its readers.
+The public documentation (`docs/`, [README](../../../README.md), [Manifesto](../../../MANIFESTO.md)) is in French. It is the language of the method: the one in which BASE explains why to structure collaboration with AI, how to verify, and how to keep sovereignty over your files. In a multilingual country, writing the method in a national language brings it closer to its readers.
 
 ## English for the technical contract
 
-The engineering specifications ([`specs/`](../../../specs/current/README.md)) are in English, the language of the technical contract. The requirements, invariants, and architecture decisions are tied there to the code and the tests, and their audience is contributors and maintainers, whose working language is English. The precision of an engineering contract suffers from loose translations; a single normative version, in English, avoids divergence.
+The engineering specifications ([`specs/`](../../../specs/current/README.md)) are in English, the language of the technical contract. The requirements, invariants, and architecture decisions are tied there to the code and the tests; they speak to contributors and maintainers, whose working language is English. The precision of an engineering contract suffers under loose translations: a single normative version, in English, prevents divergence.
 
 ## Your assistants speak the language of their users
 
-Assistants built with BASE are not bound to any particular language. The default routing is lexical: it compares the normalized words of a request to those of your own files, with no grammar or lexicon of any given language. An assistant declared with German, Italian, or English keywords routes and answers in that language. The language of the framework's documentation imposes nothing on the language of your assistants.
+Assistants built with BASE are not bound to any particular language. The default routing is lexical: it compares the normalized words of a request to those of your own files, without relying on the grammar or lexicon of any given language. An assistant declared with German, Italian, or English keywords routes in that language. The language of the framework's documentation imposes nothing on the language of your assistants.
 
 ## Who reads what
 
@@ -26,7 +26,7 @@ Assistants built with BASE are not bound to any particular language. The default
 
 ## Translations
 
-Already available: the [README in English](../../../README.en.md) and the manifesto in [English](../../../MANIFESTO.en.md), [German](../../../MANIFESTO.de.md), and [Italian](../../../MANIFESTO.it.md). The other translations (a `README.de.md`, a folder per language) are especially welcome contributions. The convention is described in [CONTRIBUTING](../../../CONTRIBUTING.md): keep the restraint of the original, do not translate technical identifiers, and note at the top of the file that **the French version is authoritative**.
+Already available: the [README in English](../../../README.en.md) as well as the manifesto in [English](../../../MANIFESTO.en.md), [German](../../../MANIFESTO.de.md), and [Italian](../../../MANIFESTO.it.md). The other translations (a `README.de.md`, a folder per language) are among the most welcome contributions of all. The convention is set out in [CONTRIBUTING](../../../CONTRIBUTING.md): keep the restraint of the original, do not translate technical identifiers, and note at the top of the file that **the French version is authoritative**.
 
 ---
 

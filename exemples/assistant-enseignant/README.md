@@ -37,7 +37,7 @@ assistant-enseignant/
 
 ## Limites
 
-Cet assistant a des limites assumées:
+Cet assistant a des limites claires:
 
 - **Il ne remplace jamais le jugement pédagogique.** Il structure le matériel: séquences, grilles, corrigés. C'est l'enseignant qui enseigne, qui évalue les élèves et qui connaît sa classe.
 - **Les données d'élèves sont sensibles.** L'assistant travaille avec des profils de classe anonymisés (effectif, niveau général, besoins de différenciation), jamais avec des noms d'élèves ni des dossiers individuels.
@@ -49,10 +49,10 @@ Cet exemple est un point de départ. Pour créer un assistant totalement différ
 
 ## Avertissement
 
-Cet exemple est **illustratif**. Son objectif principal est de démontrer les possibilités d'interaction humain-IA à travers un assistant structuré. Les contenus pédagogiques générés ne constituent pas un référentiel officiel. Avant toute utilisation réelle, remplacez les données par les vôtres et vérifiez les contenus auprès des plans d'études et des directives de votre établissement.
+Cet exemple est **illustratif**. Il vise avant tout à montrer les possibilités d'interaction entre l'humain et l'IA grâce à un assistant structuré. Les contenus pédagogiques générés ne constituent pas un référentiel officiel. Avant toute utilisation réelle, remplacez les données par les vôtres et vérifiez les contenus auprès des plans d'études et des directives de votre établissement.
 
 ---
 
-BASE est un framework par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
 
 Licence: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)

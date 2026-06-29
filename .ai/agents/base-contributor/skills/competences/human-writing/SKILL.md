@@ -13,9 +13,9 @@ allowed-tools: Read
 
 # Conventions d'écriture (français)
 
-Ces conventions valent pour toute la prose française de BASE: documentation, README, gouvernance, messages. Elles assurent un rendu cohérent et soigné. Les barrières `check-emdash` et `check-lexique` en vérifient une partie automatiquement.
+Ces conventions valent pour toute la prose française de BASE: documentation, README, gouvernance, messages. Elles garantissent un rendu cohérent et soigné. Les barrières `check-emdash` et `check-lexique` en vérifient une partie automatiquement.
 
-La règle qui prime est la cohérence: une seule convention, tenue d'un bout à l'autre. Un texte à moitié conforme trahit une relecture bâclée.
+La règle qui prime est la cohérence: une seule convention, tenue d'un bout à l'autre. Un texte à moitié conforme trahit une relecture négligée.
 
 ## Guillemets
 

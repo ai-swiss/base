@@ -22,7 +22,7 @@ routing:
 
 # Demande d'évolution
 
-Cadrer une demande d'évolution pour qu'elle soit priorisable, sans la confondre avec un incident.
+Cadrer une demande d'évolution pour la prioriser, sans la confondre avec un incident.
 
 ## Étapes
 

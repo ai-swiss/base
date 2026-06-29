@@ -15,7 +15,7 @@ allowed-tools: Read Write Edit Glob Grep
 
 # Préparer un entretien
 
-Préparer un entretien d'embauche de manière structurée: relire l'offre, analyser le profil du candidat, formuler les questions, construire la grille d'évaluation, et après l'entretien, aider à capturer les notes et l'évaluation.
+Préparer un entretien d'embauche de manière structurée: relire l'offre, analyser le profil du candidat, formuler les questions, construire la grille d'évaluation, puis, une fois l'entretien passé, aider à consigner les notes et l'évaluation.
 
 ## Inputs
 
@@ -132,7 +132,7 @@ Propose un déroulement type:
 
 ### 6. Après l'entretien: capturer les notes
 
-Quand l'utilisateur revient après l'entretien, aide-le à structurer ses observations:
+Quand l'utilisateur revient après l'entretien, aide-le à mettre de l'ordre dans ses observations:
 
 > «Comment s'est passé l'entretien avec [nom]? Je vous propose de remplir la grille ensemble:»
 

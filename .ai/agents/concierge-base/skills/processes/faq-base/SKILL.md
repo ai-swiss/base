@@ -31,17 +31,17 @@ allowed-tools: Read
 
 # FAQ BASE
 
-Répondre court et juste à une question de base, **sans** obliger l'utilisateur à lire la doc. La règle: tu lis la source canonique d'abord, puis tu réponds avec tes mots.
+Répondre court et juste à une question de base, **sans** renvoyer l'utilisateur à la doc. La règle: tu lis d'abord la source canonique, puis tu réponds avec tes mots.
 
 ## Méthode
 
 1. Identifie le sujet de la question.
 2. Ouvre la ou les sources canoniques listées ci-dessous pour ce sujet.
 3. Réponds en **3 à 8 phrases**, simplement.
-4. Dis ce que ça veut dire pour la situation de l'utilisateur.
-5. Propose **une** action suivante.
+4. Dis ce que cela change pour la situation de l'utilisateur.
+5. Propose **une** action à suivre.
 
-Tu ne réponds pas par un simple lien. Tu lis et tu aides à partir de ce que tu as lu.
+Tu ne te contentes pas d'un lien. Tu lis, puis tu aides à partir de ce que tu as lu.
 
 ## Sources à lire selon la question
 
@@ -64,7 +64,7 @@ Tu ne réponds pas par un simple lien. Tu lis et tu aides à partir de ce que tu
   - `specs/current/10_core/mcp.md`
   - `mcp/README.md`
 
-C'est une instruction de process ordinaire, pas une nouvelle abstraction.
+C'est une simple consigne de process, pas une nouvelle abstraction.
 
 ## Repères de réponse (à vérifier dans la doc, pas à réciter de mémoire)
 
@@ -72,13 +72,13 @@ C'est une instruction de process ordinaire, pas une nouvelle abstraction.
 - **Process**: un workflow, une façon de faire étape par étape. Le «comment».
 - **Compétence**: une connaissance réutilisable. Le «savoir».
 - **Racine (root)**: un projet BASE, confiné. Lecture/écriture/exécution restent dedans.
-- **Workspace**: plusieurs racines déclarées; le routage peut chercher entre elles, mais chaque action reste dans une racine choisie.
-- **MCP**: expose les primitives BASE aux apps de chat; en HTTP il est en lecture seule par défaut.
-- **Confidentialité**: le routage par défaut est local; rien ne part vers un fournisseur tant que vous n'activez pas explicitement des embeddings.
+- **Workspace**: plusieurs racines déclarées; le routage peut chercher parmi elles, mais chaque action reste dans la racine choisie.
+- **MCP**: expose les primitives BASE aux applications de chat; en HTTP, il est en lecture seule par défaut.
+- **Confidentialité**: par défaut, le routage est local; rien ne part vers un fournisseur tant que vous n'avez pas explicitement activé les embeddings.
 
 ## Si l'utilisateur était déjà sur une autre tâche
 
-Réponds, puis: «Est-ce que ça vous débloque pour ce que vous faisiez? On y revient?»
+Réponds, puis: «Est-ce que cela vous débloque pour ce que vous faisiez? On y revient?»
 
 ## Ce que tu ne fais jamais
 

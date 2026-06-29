@@ -12,23 +12,23 @@ keywords: [routage, use_when, examples, avoid_when, fixtures, route-test, formul
 
 # Écrire pour le routeur
 
-Si une demande comme «Prépare un devis pour Dupont SA» n'atteint pas le bon process, votre assistant reste muet ou répond à côté: c'est la formulation de vos fichiers qui décide. Ce guide s'adresse aux créateurs d'assistants: il explique comment le routeur lit vos fichiers, comment écrire pour lui et comment vérifier que vos demandes arrivent à bon port. Aucune compétence technique n'est requise, sauf une commande de terminal pour tester.
+Lorsqu'une demande telle que «Prépare un devis pour Dupont SA» n'atteint pas le bon process, votre assistant reste muet ou répond à côté: tout se joue dans la formulation de vos fichiers. Ce guide s'adresse aux créateurs d'assistants. Il explique comment le routeur lit vos fichiers, comment écrire à son intention et comment s'assurer que vos demandes arrivent à bon port. Aucune compétence technique n'est requise, hormis une commande de terminal pour les essais.
 
 ## Comment le routeur lit vos fichiers
 
-Le routeur ne comprend pas le sens de votre texte: il **compare des mots**. Pour chaque process, il construit un texte de routage à partir du `use_when` (le signal le plus fort), complété par les `routing.examples`; à défaut, il se rabat sur la description, le titre puis les mots-clés. Une demande route bien quand ses mots recoupent ce texte. En pratique, votre `use_when` doit surtout contenir **les mots que vos utilisateurs emploieraient**, et non une formulation élégante.
+Le routeur ne saisit pas le sens de votre texte: il **compare des mots**. Pour chaque process, il compose un texte de routage à partir du `use_when` (le signal le plus fort), complété par les `routing.examples`; faute de quoi, il s'appuie sur la description, le titre, puis les mots-clés. Une demande route bien quand ses mots recoupent ce texte. En pratique, votre `use_when` doit avant tout reprendre **les mots qu'emploieraient vos utilisateurs**, plutôt qu'une formule élégante.
 
 ## Formuler un bon `use_when`
 
-Écrivez le `use_when` du point de vue de l'utilisateur, pas du vôtre. Le jargon interne («gestion du cycle de vente») ne route rien si personne ne le tape; les mots concrets («devis», «prix», «offre») routent.
+Rédigez le `use_when` du point de vue de l'utilisateur, non du vôtre. Le jargon interne («gestion du cycle de vente») ne route rien si personne ne le saisit; les mots concrets («devis», «prix», «offre»), eux, routent.
 
-Avant, un `use_when` faible:
+Avant, un `use_when` trop faible:
 
 ```yaml
 use_when: Gestion des propositions commerciales et du cycle de vente.
 ```
 
-Après, un `use_when` fort:
+Après, un `use_when` solide:
 
 ```yaml
 use_when: Quand un client demande un devis, un prix ou une offre chiffrée.
@@ -43,11 +43,11 @@ routing:
 
 ## Donner des exemples variés
 
-Les `routing.examples` sont des formulations réelles d'utilisateurs. Donnez-en au moins trois pour la même intention, avec des mots différents: une formulation directe, une question, puis une demande exprimée dans l'urgence. Le routeur retrouve alors l'intention plus souvent, y compris quand la demande reprend les mots d'un exemple plutôt que les vôtres.
+Les `routing.examples` sont des formulations telles que vos utilisateurs les emploient. Donnez-en au moins trois pour une même intention, avec des mots distincts: une tournure directe, une question, puis une demande exprimée dans l'urgence. Le routeur retrouve alors l'intention plus souvent, y compris lorsque la demande reprend les mots d'un exemple plutôt que les vôtres.
 
 ## Écarter les demandes voisines
 
-`routing.avoid_when` liste les contre-exemples: des demandes proches qui doivent aller ailleurs. Si «relancer une facture» appartient à un autre process, le déclarer ici annule le score du mauvais candidat au lieu de laisser deux process se disputer la demande.
+`routing.avoid_when` recense les contre-exemples: des demandes voisines qui doivent aboutir ailleurs. Si «relancer une facture» relève d'un autre process, le déclarer ici annule le score du mauvais candidat, plutôt que de laisser deux process se disputer la demande.
 
 ## Vérifier que ça route
 
@@ -55,22 +55,22 @@ Les `routing.examples` sont des formulations réelles d'utilisateurs. Donnez-en 
 node tools/base.mjs route "il me faut une offre pour un client" --root <dossier>
 ```
 
-Lisez le résultat: le process choisi, le score, et les raisons (`route:<terme>` indique quels mots ont matché). Si le routeur s'abstient ou hésite, les raisons disent pourquoi: c'est en général un mot qui manque dans votre `use_when` ou vos exemples. Ajoutez `--json` pour le détail complet.
+Lisez le résultat: le process retenu, le score et les raisons (`route:<terme>` signale les mots qui ont concordé). Si le routeur s'abstient ou hésite, les raisons en disent la cause: le plus souvent, un mot fait défaut dans votre `use_when` ou vos exemples. Ajoutez `--json` pour le détail complet.
 
 ## Figer le comportement
 
-Une fois les routes correctes, déclarez-les dans `.ai/routing/route-tests.json`: chaque entrée donne une demande et la route attendue. Puis:
+Une fois les routes correctes, consignez-les dans `.ai/routing/route-tests.json`: chaque entrée associe une demande à la route attendue. Puis:
 
 ```bash
 node tools/base.mjs route-test --root <dossier>
 ```
 
-La commande rejoue toutes les routes et échoue si l'une d'elles casse. Vos routes importantes sont protégées contre les régressions, même quand l'assistant grandit.
+La commande rejoue toutes les routes et échoue dès que l'une d'elles cède. Vos routes essentielles sont ainsi protégées des régressions, même à mesure que l'assistant s'étoffe.
 
 ## Une limite honnête
 
-Le routeur lexical par défaut est rudimentaire mais efficace, et il reste sensible à la formulation: des mots absents ne correspondent à rien, même quand le sens est proche. C'est le prix de l'explicabilité: chaque score se justifie par des raisons inspectables, sans réseau ni dépendance. Il reste par ailleurs extensible par adaptateurs. Pour les corpus difficiles (beaucoup de process proches, vocabulaire très varié), un ranker sémantique optionnel existe: voir le [Quickstart routage sémantique](routage-semantique-quickstart.md).
+Le routeur lexical par défaut est rudimentaire, mais efficace; il reste sensible à la formulation, car des mots absents ne correspondent à rien, le sens fût-il proche. C'est la rançon de l'explicabilité: chaque score se justifie par des raisons inspectables, sans réseau ni dépendance. Des adaptateurs permettent au demeurant de l'étendre. Pour les corpus délicats (process nombreux et voisins, vocabulaire très varié), un ranker sémantique facultatif existe: voir le [Quickstart routage sémantique](routage-semantique-quickstart.md).
 
 ---
 
-BASE est un framework par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).

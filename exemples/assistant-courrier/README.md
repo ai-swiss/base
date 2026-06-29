@@ -1,6 +1,6 @@
 # Assistant Courrier
 
-Un assistant IA qui aide les PME et les indépendants à rédiger leurs courriers et leurs emails, et à y répondre: clients, fournisseurs, partenaires.
+Un assistant IA qui aide les PME et les indépendants à rédiger leurs courriers et leurs emails, et à y répondre, qu'il s'agisse de clients, de fournisseurs ou de partenaires.
 
 ## Essayez en 30 secondes
 
@@ -36,7 +36,7 @@ assistant-courrier/
 
 ## Garde-fous
 
-Cet assistant **ne signe ni n'envoie jamais à votre place**. Il rédige, vous relisez, vous signez, vous envoyez. Il est conçu pour ne pas inventer un prix, une date, un délai ou un engagement: si une information manque, il vous la demande ou la marque comme à compléter. L'humain signe, donc l'humain vérifie.
+Cet assistant **ne signe ni n'envoie jamais à votre place**. Il rédige, vous relisez, vous signez, vous envoyez. Il est conçu pour ne jamais inventer un prix, une date, un délai ou un engagement: si une information manque, il vous la demande ou la signale comme à compléter. L'humain signe, donc l'humain vérifie.
 
 ## Adapter à votre usage
 
@@ -48,6 +48,6 @@ Cet exemple est **illustratif**. Son objectif principal est de démontrer les po
 
 ---
 
-BASE est un framework par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
 
 Licence: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)

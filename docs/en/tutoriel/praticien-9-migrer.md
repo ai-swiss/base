@@ -1,4 +1,4 @@
-<!-- fr-synced: b25490d0f222545d9a8eeccac54151c1f25f5bac -->
+<!-- fr-synced: f399959b53db8fa57a859904a063b36d0c033a6a -->
 # Migrate YOUR content
 
 *⏱ ~15 min · module 9/9, Practitioner track*
@@ -7,7 +7,7 @@
 **You need**: the previous modules; your `mon-office-tourisme` folder (or a folder of your own) open.
 ↻ **Reminder**: without looking, what does every write in BASE go through? (the gate: propose then commit)
 
-You have built up a "Back home" list across the modules. That's your backlog.
+You have built up a "Back home" list across the modules. There's your reserve of tasks still to come.
 
 1. In your folder, ask: *"import my existing procedures"*. The router launches the
    `importer-l-existant` process, which proposes each conversion as a diff: nothing is written without you.
@@ -22,7 +22,7 @@ You have built up a "Back home" list across the modules. That's your backlog.
 
 ✅ **Check**: for each imported document, the questioning protocol passes (cites the right doc, admits ignorance, routes correctly) AND the checklist is ticked.
 
-💡 **Why it worked**: this is where the tutorial becomes your tool: the same structure as the Veytaux tourism office, applied to your domain. The checklist encodes what the modules taught: you import with a grid, never blind.
+💡 **Why it worked**: this is where the tutorial becomes your base: the same structure as the Veytaux tourism office, applied to your domain. The checklist encodes what the modules taught: you import with a grid, never blind.
 
 🔁 **Back home**: plan the next one: which third document, which next task to automate?
 

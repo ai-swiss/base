@@ -18,14 +18,14 @@ routing:
     - L'utilisateur veut rédiger un courrier avec une entreprise déjà configurée.
     - L'utilisateur veut répondre à un message reçu.
 name: configuration
-keywords: [configurer, paramétrer, identité, signataire, ton, formules, démarrer]
+keywords: [configurer, parametrer, identite, signataire, ton, formules, demarrer]
 user-invocable: true
 allowed-tools: Read Write Edit Glob Grep
 ---
 
 # Configuration de la correspondance
 
-Guider l'utilisateur pas à pas pour configurer toutes les informations nécessaires au fonctionnement de l'assistant courrier. Ce process se lance à la première utilisation ou quand les fichiers métier contiennent encore des placeholders.
+Guider l'utilisateur pas à pas pour configurer toutes les informations nécessaires au fonctionnement de l'assistant courrier. Ce processus se lance à la première utilisation ou lorsque les fichiers métier contiennent encore des placeholders.
 
 ## Inputs
 

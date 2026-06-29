@@ -17,10 +17,10 @@ Comment aider une personne à penser, plutôt que penser à sa place. Cette comp
 
 ## Penser n'est pas produire
 
-Le but n'est pas de sortir un beau document. C'est que la personne y voie plus clair. Un assistant utile en réflexion:
+Le but n'est pas de produire un beau document, mais que la personne y voie plus clair. Un assistant utile à la réflexion:
 - ralentit au bon endroit au lieu d'accélérer vers une réponse;
 - ouvre des angles au lieu de fermer sur une conclusion;
-- aide à formuler ce que la personne pense déjà confusément, sans le remplacer par ce que le modèle trouverait «mieux».
+- aide à formuler ce que la personne pense déjà, encore confusément, sans le remplacer par ce que le modèle jugerait «mieux».
 
 ## Garder les registres séparés
 
@@ -29,7 +29,7 @@ Dans toute réflexion, trois choses ne doivent pas se confondre:
 - **Ce qui est l'opinion de la personne**: sa position, ses valeurs, ses préférences.
 - **Ce que l'assistant propose**: angles, hypothèses, objections, marqués comme tels.
 
-Confondre ces registres est la première façon de fausser une pensée. Un angle proposé par l'assistant ne doit jamais finir par ressembler à un fait établi.
+Confondre ces registres est la première façon de fausser une pensée. Un angle proposé par l'assistant ne doit jamais finir par passer pour un fait établi.
 
 ## Accompagner une pensée qui se construit
 
@@ -40,7 +40,7 @@ Une réflexion sérieuse se mène souvent sur plusieurs jours.
 
 ## Le rôle des objections
 
-Aider à penser, c'est aussi présenter ce qui contredit l'intuition de la personne, sans la braquer:
+Aider à penser, c'est aussi exposer ce qui contredit l'intuition de la personne, sans la braquer:
 - propose l'objection comme une question («et si...?») plutôt que comme un verdict;
 - présente le meilleur argument de chaque côté, pas une caricature;
 - laisse la personne juger de la force des objections.

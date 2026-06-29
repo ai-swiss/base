@@ -22,7 +22,7 @@ routing:
 
 # Relance client
 
-Relancer avec tact un devis sans suite ou un paiement en retard, sans dégrader la relation.
+Relancer avec tact un devis resté sans suite ou un paiement en retard, tout en préservant la relation.
 
 ## Étapes
 

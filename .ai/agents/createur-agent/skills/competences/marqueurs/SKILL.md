@@ -13,18 +13,18 @@ allowed-tools: Read
 
 # Marqueurs
 
-Conventions pour rendre l'état du travail observable directement dans les fichiers. Les marqueurs sont du texte structuré, placé dans les documents générés (devis, fiches clients, rapports) et dans le journal. Ils ne sont jamais placés dans les fichiers du framework (skills, AGENT.md).
+Conventions pour rendre l'état du travail lisible à même les fichiers. Un marqueur est un fragment de texte structuré, posé dans les documents générés (devis, fiches clients, rapports) et dans le journal. On n'en pose jamais dans les fichiers du cadre (skills, AGENT.md).
 
-Chaque marqueur correspond à une phase de la boucle de co-pensée (Cadrer → Confier → Évaluer → Ajuster).
+Chaque marqueur répond à une phase de la boucle de co-pensée (Cadrer → Confier → Évaluer → Ajuster).
 
 ## Les 4 marqueurs
 
 | Marqueur | Phase | Quand l'utiliser |
 |----------|-------|-----------------|
-| `[A COMPLETER: champ]` | Cadrer | Une information manquante est nécessaire pour avancer. L'agent ou l'utilisateur devra la fournir. |
-| `[A VALIDER: description]` | Confier | L'agent propose quelque chose qui n'a pas encore été confirmé par l'utilisateur. |
-| `[ATTENTION: description]` | Évaluer | Un risque, une incohérence ou une alerte que l'utilisateur devrait examiner. |
-| `[DECISION: choix \| raison]` | Ajuster | Un choix a été confirmé par l'utilisateur. Enregistré pour traçabilité. |
+| `[A COMPLETER: champ]` | Cadrer | Il manque une information pour avancer. À l'agent ou à l'utilisateur de la fournir. |
+| `[A VALIDER: description]` | Confier | L'agent propose quelque chose que l'utilisateur n'a pas encore confirmé. |
+| `[ATTENTION: description]` | Évaluer | Un risque, une incohérence ou une alerte à examiner par l'utilisateur. |
+| `[DECISION: choix \| raison]` | Ajuster | L'utilisateur a confirmé un choix. On le consigne pour la traçabilité. |
 
 ## Exemples concrets
 
@@ -54,7 +54,7 @@ Chaque marqueur correspond à une phase de la boucle de co-pensée (Cadrer → C
 
 ## Forme enrichie de [DECISION]
 
-La forme courante suffit dans la plupart des cas. Quand le choix a des conséquences importantes (montant élevé, engagement ferme, donnée difficile à corriger), la forme enrichie aide à retracer pourquoi le choix a été fait:
+La forme courante suffit dans la plupart des cas. Lorsque le choix porte à conséquence (montant élevé, engagement ferme, donnée difficile à corriger), la forme enrichie aide à retracer ce qui l'a motivé:
 
 **Forme courante** (par défaut):
 ```
@@ -68,7 +68,7 @@ La forme courante suffit dans la plupart des cas. Quand le choix a des conséque
 
 ## Comment chercher les marqueurs
 
-Pour retrouver tous les éléments en attente dans un projet:
+Pour retrouver tout ce qui reste en attente dans un projet:
 - `[A VALIDER]` → éléments en attente de confirmation
 - `[A COMPLETER]` → informations manquantes
 - `[ATTENTION]` → alertes à examiner
@@ -77,7 +77,7 @@ Pour retrouver tous les éléments en attente dans un projet:
 ## Règles d'usage
 
 - Les marqueurs vivent dans les **documents générés** (devis, fiches clients, rapports) et dans le **journal**
-- Ils ne sont **jamais** placés dans les fichiers du framework (AGENT.md, SKILL.md, templates)
-- Un marqueur `[A VALIDER]` devient `[DECISION]` quand l'utilisateur confirme
-- Un marqueur `[A COMPLETER]` disparaît quand l'information est fournie
-- Un marqueur `[ATTENTION]` reste tant que le risque n'a pas été traité
+- On ne les pose **jamais** dans les fichiers du cadre (AGENT.md, SKILL.md, templates)
+- Un marqueur `[A VALIDER]` devient `[DECISION]` dès que l'utilisateur confirme
+- Un marqueur `[A COMPLETER]` disparaît une fois l'information fournie
+- Un marqueur `[ATTENTION]` demeure tant que le risque n'a pas été traité

@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: kit-demarrage-pme-suisse
 type: document
 title: Démarrer avec BASE en PME suisse
-description: Le minimum praticable pour faire travailler une petite équipe suisse avec BASE: premier workflow, données autorisées, validation, versioning, entretien et limites.
+description: Le minimum praticable pour faire travailler une petite équipe suisse avec BASE: premier workflow, données autorisées, validation, versionner simplement, entretien et limites.
 scope: public
 status: active
 sensitivity: public
@@ -12,7 +12,7 @@ keywords: [pme, suisse, equipe, gouvernance, donnees, validation, nLPD, entretie
 
 # Démarrer avec BASE en PME suisse
 
-Faire travailler une petite équipe suisse avec l'IA sans déraper ni déployer une plateforme lourde: voilà ce qui se joue ici. Ce kit donne le minimum praticable pour démarrer proprement avec BASE et cadrer un premier usage maîtrisé. Il ne remplace ni un avis juridique, ni une politique de sécurité, ni une gouvernance documentaire.
+Faire travailler une petite équipe suisse avec l'IA sans déraper ni déployer une plateforme lourde: voilà l'enjeu. Ce kit réunit le minimum nécessaire pour démarrer proprement avec BASE et cadrer un premier usage maîtrisé. Il ne tient lieu ni d'avis juridique, ni de politique de sécurité, ni de gouvernance documentaire.
 
 ## 1. Choisir un premier workflow
 
@@ -22,9 +22,9 @@ Commencez par une tâche répétable, visible et peu risquée:
 - rédiger une newsletter;
 - préparer un entretien;
 - structurer un projet;
-- traiter une demande support.
+- traiter une demande d'assistance.
 
-Évitez comme premier cas d'usage les décisions juridiques, RH sensibles, médicales, financières réglementées ou irréversibles.
+Pour un premier cas d'usage, écartez les décisions juridiques, RH sensibles, médicales, financières réglementées ou irréversibles.
 
 ## 2. Définir les données autorisées
 
@@ -35,7 +35,7 @@ On peut entrer: informations publiques, exemples fictifs, modèles internes non 
 On n'entre pas: secrets, mots de passe, données médicales, données RH sensibles, données client non nécessaires, documents confidentiels sans accord ou environnement adapté.
 ```
 
-BASE garde les fichiers localement, mais l'outil IA utilisé peut traiter le contenu de la conversation selon ses propres conditions. Pour la nLPD, le RGPD ou des obligations sectorielles, l'organisation reste responsable du traitement, du fournisseur choisi et des droits d'accès.
+BASE conserve les fichiers localement, mais l'outil IA employé peut traiter le contenu de la conversation selon ses propres conditions. Au regard de la nLPD, du RGPD ou d'obligations sectorielles, l'organisation demeure responsable du traitement, du fournisseur retenu et des droits d'accès.
 
 ## 3. Nommer les responsabilités
 
@@ -47,23 +47,23 @@ Pour chaque assistant partagé, décidez:
 - qui lance l'entretien mensuel;
 - qui tranche quand l'assistant signale une incertitude.
 
-Une bonne règle: l'IA propose, la personne responsable signe.
+La règle tient en une phrase: l'IA propose, la personne responsable signe.
 
 ## 4. Versionner simplement
 
-Pour une petite équipe, Git est idéal si elle le maîtrise. Sinon, commencez plus simplement:
+Pour une petite équipe qui le maîtrise, Git est l'outil idéal. Sinon, commencez plus modestement:
 
-- gardez les fichiers dans un dossier partagé maîtrisé;
-- datez les changements importants dans un journal;
-- ne modifiez pas les modèles critiques sans relecture;
-- conservez une copie avant les changements majeurs;
+- gardez les fichiers dans un dossier partagé tenu en main;
+- consignez les changements importants, datés, dans un journal;
+- ne touchez pas aux modèles critiques sans relecture;
+- conservez une copie avant tout changement majeur;
 - lancez `base validate` avant de partager une nouvelle version.
 
-Si l'équipe grandit, passez à Git, à des revues de changements et à des droits d'accès formalisés.
+À mesure que l'équipe grandit, passez à Git, à des relectures de changements et à des droits d'accès formalisés.
 
 ## 5. Installer le rituel mensuel
 
-Une fois par mois, ou avant chaque partage important, lancez ces trois commandes. Elles passent par un terminal et supposent Node installé (comme à l'installation); si personne dans l'équipe n'est à l'aise avec le terminal, confiez ce rituel à la personne qui a installé BASE, ou demandez à votre assistant IA de les lancer pour vous.
+Une fois par mois, ou avant chaque partage important, lancez ces trois commandes. Elles s'exécutent dans un terminal et supposent Node installé (comme lors de l'installation); si personne dans l'équipe n'est à l'aise avec le terminal, confiez ce rituel à celle ou celui qui a installé BASE, ou demandez à votre assistant IA de les lancer pour vous.
 
 ```bash
 base validate --root <dossier>
@@ -73,7 +73,7 @@ base route-test --root <dossier>
 
 Puis vérifiez en équipe:
 
-- les marqueurs `[A VALIDER]`, `[A COMPLETER]`, `[ATTENTION]`, `[DECISION]`. Le rapport signale ceux qui vieillissent: si vos marqueurs restent ouverts pendant des mois, votre validation est devenue décorative;
+- les marqueurs `[A VALIDER]`, `[A COMPLETER]`, `[ATTENTION]`, `[DECISION]`. Le rapport signale ceux qui s'éternisent: des marqueurs laissés ouverts pendant des mois, c'est une validation devenue décorative;
 - les liens cassés;
 - les descriptions manquantes;
 - les données obsolètes;
@@ -82,7 +82,7 @@ Puis vérifiez en équipe:
 
 ## 6. Garder les limites visibles
 
-BASE aide une PME à structurer le travail avec l'IA. Il ne fournit pas à lui seul:
+BASE aide une PME à structurer le travail avec l'IA. À lui seul, il ne fournit pas:
 
 - IAM, SSO ou RBAC;
 - DLP;
@@ -92,7 +92,7 @@ BASE aide une PME à structurer le travail avec l'IA. Il ne fournit pas à lui s
 - gestion centralisée des secrets;
 - garantie d'exactitude des réponses du modèle.
 
-Si ces besoins apparaissent, gardez BASE comme couche de structuration et ajoutez les contrôles techniques autour.
+Si ces besoins se présentent, conservez BASE comme couche de structuration et ajoutez les contrôles techniques tout autour.
 
 ## 7. Règle de décision
 
@@ -104,4 +104,4 @@ Un usage BASE est prêt pour l'équipe quand:
 4. `base validate` passe;
 5. l'équipe sait quoi faire quand l'assistant marque `[A VALIDER]` ou `[ATTENTION]`.
 
-Si l'un de ces points manque, gardez l'usage en expérimentation.
+S'il manque l'un de ces points, gardez l'usage au stade de l'expérimentation.

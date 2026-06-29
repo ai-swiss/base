@@ -14,17 +14,17 @@ allowed-tools: Read Write Edit Glob Grep
 
 # Configuration de l'entreprise
 
-Guider l'utilisateur pas à pas pour configurer toutes les informations nécessaires au fonctionnement de l'assistant RH. Ce process se lance à la première utilisation ou quand les fichiers métier contiennent encore des placeholders.
+Guider l'utilisateur pas à pas pour réunir toutes les informations nécessaires au fonctionnement de l'assistant RH. Ce process se lance à la première utilisation ou lorsque les fichiers métier contiennent encore des champs à compléter.
 
 ## Inputs
 
 Avant de commencer, vérifie:
-- **`entreprise/identite.md`**: contient-il des placeholders (`[...]`) ou est-il rempli?
-- **`entreprise/politique-rh.md`**: contient-il des données réelles ou le template vide?
+- **`entreprise/identite.md`**: est-il rempli ou contient-il encore des champs à compléter (`[...]`)?
+- **`entreprise/politique-rh.md`**: contient-il des données réelles ou le modèle vide?
 
 Si tout est déjà rempli, informe l'utilisateur et propose de passer directement à la publication d'une offre d'emploi.
 
-Si `.ai/journal/` contient des entrées récentes, lis-les pour reprendre le contexte.
+Si `.ai/journal/` contient des entrées récentes, lis-les pour reprendre le fil.
 
 ## Étapes
 
@@ -34,7 +34,7 @@ Si `.ai/journal/` contient des entrées récentes, lis-les pour reprendre le con
 
 ### 2. Identité de l'entreprise
 
-Pose les questions une par une. Ne passe à la suivante que quand la réponse est claire.
+Pose les questions une par une. Ne passe à la suivante qu'une fois la réponse claire.
 
 Questions:
 - Nom de l'entreprise
@@ -55,11 +55,11 @@ Questions:
 **⚠ Point de décision - avant écriture:**
 > «Je suis prêt à enregistrer ces informations dans votre fiche entreprise. Confirmez-vous?»
 
-Écris dans `entreprise/identite.md`. Utilise `[A COMPLETER: ...]` pour les champs non renseignés.
+Écris dans `entreprise/identite.md`. Note `[A COMPLETER: ...]` pour les champs laissés vides.
 
 ### 3. Politique RH
 
-> «Passons maintenant à votre politique RH. Ces informations m'aideront à rédiger des offres d'emploi qui reflètent vraiment votre entreprise.»
+> «Passons maintenant à votre politique RH. Ces informations m'aideront à rédiger des offres d'emploi qui vous ressemblent vraiment.»
 
 Questions:
 - Quelles sont les valeurs de votre entreprise? (ex. innovation, proximité, qualité, durabilité)
@@ -82,7 +82,7 @@ Questions:
 
 ### 4. Équipe actuelle
 
-> «Pour finir, décrivez-moi votre équipe actuelle. Cela m'aidera à comprendre dans quel contexte s'inscrivent vos futurs recrutements.»
+> «Pour finir, décrivez-moi votre équipe actuelle. Cela m'aidera à situer vos futurs recrutements dans leur contexte.»
 
 Questions:
 - Quels sont les principaux départements ou équipes?
@@ -126,7 +126,7 @@ Confirme:
 
 ## Ce que tu ne fais jamais dans ce process
 
-- **Inventer des informations manquantes.** Si l'utilisateur ne répond pas à une question, utilise `[A COMPLETER: ...]`. Ne devine jamais un numéro IDE, une adresse, des valeurs d'entreprise ou des avantages.
+- **Inventer des informations manquantes.** Si l'utilisateur ne répond pas à une question, note `[A COMPLETER: ...]`. Ne devine jamais un numéro IDE, une adresse, des valeurs d'entreprise ou des avantages.
 - **Poser toutes les questions d'un coup.** Une question à la fois.
 - **Écrire dans un fichier sans point de décision.** Chaque écriture est précédée d'un point de décision explicite.
 - **Sauter une étape.** Même si l'utilisateur veut aller vite.

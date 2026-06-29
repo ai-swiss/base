@@ -23,7 +23,7 @@ allowed-tools: Read Write Edit Glob Grep
 
 # Préparer une évaluation
 
-Préparer une évaluation alignée sur une séquence: reprendre les objectifs, construire la grille de critères et le barème, rédiger les tâches et un corrigé proposé. L'assistant prépare le matériel d'évaluation; évaluer les élèves reste un acte de l'enseignant.
+Préparer une évaluation alignée sur une séquence: reprendre les objectifs, construire la grille de critères et le barème, rédiger les tâches et un corrigé proposé. L'assistant prépare le matériel d'évaluation; évaluer les élèves demeure un acte de l'enseignant.
 
 ## Inputs
 
@@ -32,7 +32,7 @@ Demande à l'utilisateur:
 - **Le type d'évaluation**: formative (pour apprendre) ou sommative (pour attester)
 - **La durée et le format**: écrit, oral, travail pratique
 
-Si aucune séquence n'existe pour ce sujet, demande les objectifs visés directement, ou propose de préparer la séquence d'abord.
+Si aucune séquence n'existe pour ce sujet, demande directement les objectifs visés, ou propose de préparer d'abord la séquence.
 
 Lis la compétence `skills/competences/metier-enseignement/SKILL.md` pour l'alignement et le feedback.
 
@@ -50,7 +50,7 @@ Lis la séquence dans `sequences/` et résume:
 
 ### 2. Vérifier l'alignement
 
-Pour chaque objectif évalué, vérifie qu'une activité de la séquence l'a réellement travaillé. Signale tout écart:
+Pour chaque objectif évalué, vérifie qu'une activité de la séquence l'a effectivement travaillé. Signale tout écart:
 
 > «[ATTENTION: l'objectif 3 n'a été travaillé que dans le prolongement pour élèves avancés. L'évaluer pour toute la classe serait inéquitable.] On le garde, on l'adapte, ou on le retire?»
 

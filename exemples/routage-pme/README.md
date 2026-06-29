@@ -8,7 +8,7 @@
 
 Un exemple **centré sur le routage**, distinct des assistants métier complets. Il montre comment BASE
 choisit le bon agent et le bon process face à des demandes réalistes: synonymes, paraphrases,
-demandes ambiguës, hors périmètre et **contre-exemples**.
+demandes ambiguës, demandes hors périmètre et **contre-exemples**.
 
 ## Le piège que cet exemple illustre
 
@@ -22,8 +22,8 @@ Deux agents, cinq process, dont plusieurs sont **volontairement proches**:
 | `support` | `ticket-incident` | «ça ne marche plus», panne, bug | une demande d'amélioration |
 | `support` | `demande-evolution` | «ce serait bien si…», fonctionnalité | une panne |
 
-«Faire une offre» et «le client conteste sa facture» partagent le mot *facture*, mais ne vont pas
-au même process. C'est le rôle de `use_when` (signal positif) et `routing.avoid_when` (signal négatif).
+«Faire une offre» et «le client conteste sa facture» partagent le mot *facture*, mais ne mènent pas
+au même process. C'est tout le rôle de `use_when` (signal positif) et de `routing.avoid_when` (signal négatif).
 
 ## Essayer
 
@@ -51,6 +51,6 @@ Aucune table de routage maintenue à la main: tout est dérivé des fichiers.
 
 ---
 
-BASE est un framework par [AI Swiss](https://a-i.swiss).
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss).
 
 Licence: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)

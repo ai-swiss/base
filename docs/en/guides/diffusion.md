@@ -1,9 +1,9 @@
-<!-- fr-synced: 023d9db022d05afb1c8244a7391313b2479d8335 -->
+<!-- fr-synced: 92d7d776e765caee5465cb8564fada945fdb0613 -->
 # Releasing BASE as open source
 
-Releasing BASE as open source means letting others pick up and adapt a structure of work that stays theirs, without binding themselves to a vendor or a platform. The point is not to show off a finished product: it is to make this foundation reusable and honest about what it does, so anyone can try it, criticize it, and help it grow. This guide gathers what you need to decide, check, and write so that this public release keeps that promise.
+Releasing BASE as open source means letting others pick up and adapt a structure of work that is their own, without depending on a vendor or a platform. The point is not to show off a finished product, but to make this foundation reusable and honest about what it does, so anyone can try it, criticize it, and help it grow. This guide brings together what you need to decide, check, and write so that this release keeps its promise.
 
-BASE presents itself as a local-first framework for structuring human-AI collaboration: readable files, workflows, local controls, and possible extensions. It is deliberately a foundation, not a complete platform.
+BASE presents itself as a local-first framework for structuring human-AI collaboration: readable files, workflows, local controls, and possible extensions. It is, deliberately, a foundation and not a complete platform.
 
 ## Public positioning
 
@@ -13,11 +13,11 @@ Short message:
 
 Long message:
 
-> Models change, interfaces change, vendors change. What must stay yours is the structure of your expertise: your domain files, your workflows, your models, your rules, your decisions, and the traces you need to resume the work. BASE provides an open, readable framework for organizing this structure.
+> Models change, interfaces change, vendors change: tools pass, the context stays. What must stay yours is the structure of your expertise: your domain files, your workflows, your models, your rules, your decisions, and the traces you need to resume the work. Your knowledge and know-how thus become independent of the model that runs them, and value shifts toward what you expect from AI, not toward the model of the moment. BASE provides an open, readable framework for organizing this structure.
 
 Founding message:
 
-> Generative AI is handled differently from conventional software: through language, context, examples, limits, and corrections. It masters verifiable domains, but it has two very real weaknesses: by default, it does not share its memory from one session to the next, and the language that drives it stays under-specified, which is the source of both its flexibility and its fragility. BASE turns this observation into a workable method: write down what matters, make processes explicit, keep human decisions visible, and use AI platforms without surrendering the structure of your work to them.
+> Generative AI behaves differently from classic digital software: through language, context, examples, limits, and corrections. It masters verifiable domains, but it has two very real weaknesses: by default, it does not carry its memory from one session to the next, and the language that drives it stays under-specified, which is the source of both its flexibility and its fragility. BASE turns this observation into a workable method: write down what matters, make processes explicit, keep human decisions visible, and turn to AI platforms without surrendering the structure of your work to them.
 
 What BASE does not claim:
 
@@ -65,7 +65,7 @@ Documentation:
 - `CODE_OF_CONDUCT.md` defines the rules for public participation.
 - `.github/ISSUE_TEMPLATE/` and `.github/PULL_REQUEST_TEMPLATE.md` guide contributions without promising heavyweight community governance.
 - `specs/RELEASE.md` describes the reproducible release checklist.
-- `CHANGELOG.md` makes public changes trackable.
+- `CHANGELOG.md` lets you follow the public changes.
 
 Code and validation:
 
@@ -102,8 +102,8 @@ For a conference or a workshop:
 3. Introduce files as durable memory.
 4. Show the workflows and the competences.
 5. Explain the decision points and the verification debt.
-6. Show the router/broker only after the concrete need: rudimentary but effective, extensible through adapters, it lowers the mental load of finding the right process.
-7. End on sovereignty: the durable capital is not the model, it is the structure of the expertise.
+6. Show the router/broker once the concrete need is established: rudimentary but effective, extensible through adapters, it spares you the effort of finding the right process.
+7. Close on sovereignty: the durable capital is not the model, but the structure of the expertise.
 
 For a non-technical person:
 
@@ -149,6 +149,6 @@ BASE must not assert:
 
 A person should be able to look at BASE and understand three things:
 
-1. They can try it now.
+1. They can try it right now.
 2. They can adapt it to their context.
 3. They can grow with this structure without binding themselves to a single platform.

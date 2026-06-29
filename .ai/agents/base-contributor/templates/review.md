@@ -12,7 +12,7 @@ sensitivity: internal
 # Review template
 
 A review is a dated, immutable assessment of part of BASE at a point in time: an audit, a
-read-of-state, an evaluation. It lives in `.reviews/YYYY-MM-DD_subject.md` (personal,
+reading of state, an evaluation. It lives in `.reviews/YYYY-MM-DD_subject.md` (personal,
 gitignored). A review is trajectory, not truth: it records what someone observed on a date,
 never current behaviour. A durable conclusion is promoted into `specs/` or a `decisions/`
 record; the review keeps only the dated finding.

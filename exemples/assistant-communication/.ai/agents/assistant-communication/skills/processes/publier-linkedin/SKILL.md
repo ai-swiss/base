@@ -94,7 +94,7 @@ Rédige un post complet en respectant:
 - **Appel à l'action**: question, invitation à commenter, ou lien
 - **Hashtags**: 3 à 5 hashtags pertinents
 
-Présente le post avec une mise en forme lisible:
+Présente le post dans une mise en forme claire:
 
 > «Voici le post que je propose:
 >
@@ -122,7 +122,7 @@ Présente le post avec une mise en forme lisible:
 
 ← Reformulation
 
-Itère autant de fois que nécessaire. Chaque modification est présentée en entier pour relecture facile.
+Recommence autant de fois que nécessaire. Chaque version corrigée est présentée en entier, pour une relecture aisée.
 
 ### 6. Finaliser et enregistrer
 

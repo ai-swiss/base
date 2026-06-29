@@ -19,15 +19,15 @@ allowed-tools: Read Write Edit Glob Grep
 
 # Configuration du profil enseignant
 
-Guider l'utilisateur pas à pas pour configurer les informations nécessaires au fonctionnement de l'assistant. Ce process se lance à la première utilisation ou quand `profil/enseignant.md` contient encore des placeholders.
+Guider l'utilisateur pas à pas pour réunir les informations dont l'assistant a besoin pour fonctionner. Ce process se lance à la première utilisation, ou lorsque `profil/enseignant.md` contient encore des champs à compléter.
 
 ## Inputs
 
 Avant de commencer, vérifie:
-- **`profil/enseignant.md`**: contient-il des placeholders (`[A COMPLETER]`) ou est-il rempli?
-- **`classes/`**: contient-il des profils de classe ou seulement le README?
+- **`profil/enseignant.md`**: comporte-t-il encore des champs à compléter (`[A COMPLETER]`), ou est-il rempli?
+- **`classes/`**: contient-il des profils de classe, ou seulement le README?
 
-Si tout est déjà rempli, informe l'utilisateur et propose de passer directement à la préparation d'une séquence.
+Si tout est déjà renseigné, signale-le à l'utilisateur et propose de passer directement à la préparation d'une séquence.
 
 Si `.ai/journal/` contient des entrées récentes, lis-les pour reprendre le contexte.
 
@@ -39,7 +39,7 @@ Si `.ai/journal/` contient des entrées récentes, lis-les pour reprendre le con
 
 ### 2. Profil d'enseignement
 
-Pose les questions une par une. Ne passe à la suivante que quand la réponse est claire.
+Pose les questions une par une. Ne passe à la suivante que lorsque la réponse est claire.
 
 Questions:
 - Degré enseigné (ex. 7e-8e HarmoS, secondaire I, gymnase)
@@ -66,7 +66,7 @@ Pour chaque classe, demande:
 - L'effectif et le niveau général
 - Les besoins de différenciation, formulés en groupes («3-4 élèves ont besoin de consignes simplifiées»)
 
-Si l'utilisateur mentionne un nom d'élève ou un cas identifiable, ne l'enregistre pas et rappelle le principe avec bienveillance.
+Si l'utilisateur mentionne le nom d'un élève ou un cas identifiable, ne l'enregistre pas et rappelle le principe avec bienveillance.
 
 ← Reformulation
 
@@ -87,5 +87,5 @@ Si l'utilisateur mentionne un nom d'élève ou un cas identifiable, ne l'enregis
 
 - **Enregistrer des données nominatives d'élèves.** Les profils de classe sont anonymisés, sans exception.
 - **Inventer une information manquante.** Une réponse absente reste `[A COMPLETER: ...]`.
-- **Poser toutes les questions d'un coup.** Une question à la fois.
-- **Écrire dans un fichier sans point de décision.** Chaque écriture est précédée d'une confirmation explicite.
+- **Poser toutes les questions d'un coup.** Une seule à la fois.
+- **Écrire dans un fichier sans point de décision.** Toute écriture est précédée d'une confirmation explicite.

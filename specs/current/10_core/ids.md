@@ -58,4 +58,4 @@ Proof quality is monotone: the matrix `--ratchet` mode fails a change that raise
 - **ID namespace** (`tools/spec/check-id-namespaces.mjs`): each row-defined ID stays within the `Owns:` namespace its section declares, so a domain never scatters across the central index.
 - **leaf contract** (`tools/spec/check-leaf.mjs`): each chapter declares the namespace it `Owns:` and stays bounded, statusless and routed.
 
-All three run locally (`npm run spec:check`) and in CI, under NFR-CORE-010. See [`les-deux-plans`](../00_overview/les-deux-plans.md) for why the present plane that these IDs anchor must stay statusless.
+All four run locally (`npm run spec:check`) and in CI, under NFR-CORE-010. See [`les-deux-plans`](../00_overview/les-deux-plans.md) for why the present plane that these IDs anchor must stay statusless.

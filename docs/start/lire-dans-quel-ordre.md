@@ -12,13 +12,13 @@ keywords: [lecture, parcours, personnel, pme, entreprise, grande-entreprise, ins
 
 # Par où commencer
 
-Le dépôt peut sembler dense au premier abord, car il réunit trois choses à la fois: un framework utilisable, des exemples métier et une base technique vérifiable. Cette page vous évite de tout lire en vous donnant l'ordre de lecture adapté à votre situation, que vous soyez seul, en PME, en grande entreprise ou dans le secteur public.
+Au premier abord, le dépôt peut sembler dense, car il réunit trois choses à la fois: un cadre utilisable, des exemples métier et une base technique vérifiable. Cette page vous évite de tout lire: elle vous donne l'ordre de lecture adapté à votre situation, que vous soyez seul, en PME, en grande entreprise ou dans le secteur public.
 
-C'est aussi la source de vérité des parcours de lecture. Les autres documents peuvent reprendre une boussole courte, mais celle-ci garde la hiérarchie complète par profil.
+C'est aussi la source de vérité des parcours de lecture. Les autres documents peuvent en reprendre une boussole abrégée, mais celle-ci conserve la hiérarchie complète par profil.
 
 ## Si vous êtes une personne seule
 
-Objectif: essayer vite, comprendre assez, garder vos fichiers lisibles.
+Objectif: essayer vite, comprendre assez, suivre votre propre fil de pensée avec l'IA et garder vos fichiers lisibles.
 
 Lisez dans cet ordre:
 
@@ -41,7 +41,7 @@ Vous pouvez ignorer au début:
 
 À ce niveau, BASE peut rester très simple: un assistant, quelques fichiers Markdown, des décisions humaines explicites.
 
-Si vous êtes perdu, dites simplement «Aide» ou «Je suis perdu». Avec le routage activé, BASE vous accueille (`concierge-base`) au lieu de vous laisser sans suite; sinon chargez `.ai/agents/concierge-base/AGENT.md`.
+Si vous êtes perdu, dites simplement «Aide» ou «Je suis perdu». Avec le routage activé, BASE vous accueille (`concierge-base`) au lieu de vous laisser sans réponse; sinon, chargez `.ai/agents/concierge-base/AGENT.md`.
 
 ## Si vous êtes une PME ou une petite équipe
 
@@ -50,7 +50,7 @@ Objectif: passer d'un usage individuel à une mémoire de travail partagée.
 Lisez dans cet ordre:
 
 1. `README.md` pour l'intuition et les exemples.
-2. `docs/learn/co-penser-avec-lia.md` pour le pourquoi: la vérification, les quatre pertes, la méthode.
+2. `docs/learn/co-penser-avec-lia.md` pour le pourquoi: la souveraineté cognitive, les pertes de contrôle (dont la vérification), la méthode.
 3. `docs/start/quickstart.md` pour le démarrage local et les commandes.
 4. `docs/audiences/kit-demarrage-pme-suisse.md` pour poser les règles d'équipe: données, validation, versioning, entretien.
 5. `docs/audiences/pour-qui.md` pour situer votre niveau d'adoption.
@@ -67,9 +67,9 @@ Lisez dans cet ordre:
 - `tools/` pour valider, indexer, découvrir et entretenir;
 - `base.schema.json` pour stabiliser les métadonnées partagées.
 
-Si vous gérez **plusieurs BASE** (par exemple plusieurs clients), un `base.workspace.json` déclare plusieurs racines: `base route --workspace <fichier>` cherche entre elles et `--root-id <id>` cible une racine précise (chaque lecture/écriture reste confinée à la racine choisie). Voir [Routage, process et ressources](../reference/routage-process-et-ressources.md) et `specs/current/10_core/cli.md`.
+Si vous gérez **plusieurs BASE** (par exemple plusieurs clients), un `base.workspace.json` déclare plusieurs racines: `base route --workspace <fichier>` cherche parmi elles et `--root-id <id>` cible une racine précise (chaque lecture et chaque écriture reste confinée à la racine choisie). Voir [Routage, process et ressources](../reference/routage-process-et-ressources.md) et `specs/current/10_core/cli.md`.
 
-Vous n'avez pas besoin d'une plateforme lourde. Vous avez besoin de conventions claires, d'une validation locale, de descriptions lisibles et d'un entretien régulier.
+Vous n'avez pas besoin d'une plateforme lourde, mais de conventions claires, d'une validation locale, de descriptions lisibles et d'un entretien régulier.
 
 ## Si vous êtes une grande entreprise
 
@@ -77,7 +77,7 @@ Objectif: évaluer BASE comme langage de structuration et socle d'intégration, 
 
 Lisez dans cet ordre:
 
-1. `docs/learn/co-penser-avec-lia.md` pour le *pourquoi* (commun à tous les profils): la vérification, les quatre pertes, la méthode.
+1. `docs/learn/co-penser-avec-lia.md` pour le *pourquoi* (commun à tous les profils): la vérification, les pertes de contrôle, la méthode.
 2. `docs/reference/framework-public.md` pour le modèle public.
 3. `docs/reference/base-et-vos-outils-ia.md` pour comprendre comment BASE coexiste avec vos outils et plateformes IA (et y intégrer un agent planifié), puis `docs/reference/positionnement.md` pour situer BASE catégorie par catégorie dans le paysage des outils de 2026.
 4. `docs/reference/etat-implementation.md` pour distinguer livré, prévu et hors périmètre.
@@ -94,7 +94,7 @@ Lisez dans cet ordre:
 
 À ce niveau, BASE doit être relié aux systèmes de l'organisation: IAM, SSO, RBAC, DLP, SIEM, rétention, classification, revue juridique, gestion des secrets et séparation des environnements.
 
-La bonne lecture est donc:
+Il faut donc le lire ainsi:
 
 ```text
 BASE public = structure lisible + broker local + MCP + tests
@@ -115,7 +115,7 @@ Lisez dans cet ordre:
 6. `mcp/README.md` si l'institution veut connecter BASE à une plateforme IA.
 7. `specs/current/README.md`, `base.schema.json` et `tests/` pour l'audit technique.
 
-À ce niveau, BASE est un composant auditable. La conformité reste dans vos décisions institutionnelles: base légale, registre des traitements, IAM, DLP, archivage, achats, fournisseur de modèle et revue juridique.
+À ce niveau, BASE est un composant auditable. La conformité, elle, relève de vos décisions institutionnelles: base légale, registre des traitements, IAM, DLP, archivage, achats, fournisseur de modèle et revue juridique.
 
 ## Ce que chaque dossier veut dire
 
@@ -153,10 +153,10 @@ Lisez dans cet ordre:
 
 ## Ce qui n'est pas le cœur
 
-`CLAUDE.md` et `.cursor/rules/` existent pour aider des outils précis à charger le bon contexte. Ils ne définissent pas BASE.
+`CLAUDE.md` et `.cursor/rules/` existent pour aider tel ou tel outil à charger le bon contexte. Ils ne définissent pas BASE.
 
-`base.manifest.json` est généré par `base index`. Il facilite la découverte, mais il n'est pas la source de vérité.
+`base.manifest.json` est généré par `base index`. Il facilite la découverte, mais il n'en est pas la source de vérité.
 
-`mcp/` est une intégration. Elle prouve la portabilité, mais vous pouvez utiliser BASE sans serveur MCP.
+`mcp/` est une intégration. Elle atteste la portabilité, mais BASE s'utilise très bien sans serveur MCP.
 
-`tests/` et `tools/` rendent le framework crédible et maintenable. Une personne qui veut seulement essayer un assistant peut les ignorer.
+`tests/` et `tools/` rendent le cadre crédible et maintenable. Qui veut seulement essayer un assistant peut les laisser de côté.

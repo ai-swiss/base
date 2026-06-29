@@ -18,19 +18,19 @@ routing:
     - L'utilisateur veut rédiger un compte-rendu avec une entreprise déjà configurée.
     - L'utilisateur veut suivre les actions en cours.
 name: configuration
-keywords: [configurer, paramétrer, modèle, compte-rendu, démarrer, entreprise]
+keywords: [configurer, parametrer, modele, compte-rendu, demarrer, entreprise]
 user-invocable: true
 allowed-tools: Read Write Edit Glob Grep
 ---
 
 # Configuration de l'assistant réunion
 
-Guider l'utilisateur pas à pas pour configurer les informations nécessaires au fonctionnement de l'assistant réunion. Ce process se lance à la première utilisation ou quand les fichiers métier contiennent encore des placeholders.
+Guider l'utilisateur pas à pas pour réunir les informations nécessaires au fonctionnement de l'assistant réunion. Ce process se lance à la première utilisation ou lorsque les fichiers métier contiennent encore des champs à compléter.
 
 ## Inputs
 
 Avant de commencer, vérifie:
-- **`entreprise/identite.md`**: contient-il des placeholders (`[...]`) ou est-il rempli?
+- **`entreprise/identite.md`**: contient-il des champs à compléter (`[...]`) ou est-il déjà rempli?
 
 Si tout est déjà rempli, informe l'utilisateur et propose de passer directement à la rédaction d'un compte-rendu.
 
@@ -40,7 +40,7 @@ Si `.ai/journal/` contient des entrées récentes, lis-les pour reprendre le con
 
 ### 1. Accueil
 
-> «Bienvenue! Je suis votre assistant réunion. Avant de transformer vos notes en comptes-rendus, j'ai besoin de connaître votre contexte. Quelques questions, ça prend environ 5 minutes. On commence?»
+> «Bienvenue! Je suis votre assistant réunion. Avant de transformer vos notes en comptes-rendus, j'ai besoin de connaître votre contexte. Quelques questions, environ 5 minutes. On commence?»
 
 ### 2. Identité de l'entreprise
 
@@ -59,11 +59,11 @@ Questions:
 **⚠ Point de décision - avant écriture:**
 > «Je suis prêt à enregistrer ces informations dans votre fiche entreprise. Confirmez-vous?»
 
-Écris dans `entreprise/identite.md`. Utilise `[A COMPLETER: ...]` pour les champs non renseignés.
+Écris dans `entreprise/identite.md`. Utilise `[A COMPLETER: ...]` pour les champs laissés en suspens.
 
 ### 3. Préférences de compte-rendu
 
-> «Maintenant, parlons de la forme de vos comptes-rendus. C'est ce qui rendra vos documents cohérents d'une réunion à l'autre.»
+> «Maintenant, parlons de la forme de vos comptes-rendus. C'est elle qui rendra vos documents cohérents d'une réunion à l'autre.»
 
 Pose les questions une par une:
 - Quel niveau de détail souhaitez-vous? (synthétique: décisions et actions seulement / standard: + résumé des échanges / détaillé: + prises de parole)
@@ -105,7 +105,7 @@ Confirme:
 
 ## Ce que tu ne fais jamais dans ce process
 
-- **Inventer des informations manquantes.** Si l'utilisateur ne répond pas à une question, utilise `[A COMPLETER: ...]`. Ne devine jamais un type de réunion ou une préférence.
+- **Inventer des informations manquantes.** Si l'utilisateur ne répond pas à une question, utilise `[A COMPLETER: ...]`. Ne suppose jamais un type de réunion ni une préférence.
 - **Poser toutes les questions d'un coup.** Une question à la fois.
 - **Écrire dans un fichier sans point de décision.** Chaque écriture est précédée d'un point de décision explicite.
 - **Sauter une étape.** Même si l'utilisateur veut aller vite.

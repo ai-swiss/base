@@ -20,7 +20,7 @@ may_use:
   - infos/tarifs.md
   - partenaires/hebergeurs.md
 name: reserver-une-sortie-groupe
-keywords: [groupe, sortie, visite, réserver, classe, entreprise, offre]
+keywords: [groupe, sortie, visite, reserver, classe, entreprise, offre]
 argument-hint: "[type de groupe, date, nombre de personnes]"
 user-invocable: true
 allowed-tools: Read
@@ -31,9 +31,9 @@ allowed-tools: Read
 ## Étapes
 
 1. **Recueillir les besoins**: type de groupe, date, nombre de personnes, activité souhaitée. Une question à la fois (`skills/competences/parler-au-visiteur/SKILL.md`). Pour un groupe logé chez un partenaire, consulte `partenaires/hebergeurs.md`.
-2. **Chiffrer** au barème de `infos/tarifs.md` (tarif de groupe par personne, visite guidée, location de matériel éventuelle). N'invente aucun prix.
+2. **Chiffrer** au barème de `infos/tarifs.md` (tarif de groupe par personne, visite guidée, éventuelle location de matériel). N'invente aucun prix.
 3. **Préparer l'offre** à partir des templates `templates/offre-groupe_v1.md` et `templates/offre-groupe_v1.json`: remplis les `[PLACEHOLDERS]` avec les éléments recueillis.
-4. **Marquer `[A VALIDER]`** le montant total: l'office confirme avant l'envoi.
+4. **Marquer `[A VALIDER]`** le montant total: l'office le confirme avant l'envoi.
 5. Une fois validé, l'offre est prête à envoyer au groupe.
 
 ## Ce que tu ne fais jamais

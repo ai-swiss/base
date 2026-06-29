@@ -1,6 +1,6 @@
 # Candidatures
 
-Ce dossier contient les dossiers de candidature et les comptes-rendus d'entretiens. Il se remplit au fur et à mesure du processus de recrutement.
+Ce dossier rassemble les candidatures et les comptes-rendus d'entretiens. Il se remplit au fil du processus de recrutement.
 
 ## Structure
 

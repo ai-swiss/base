@@ -3,12 +3,12 @@ schema_version: base.resource.v1
 id: docs-tutoriel-praticien-5-donnees-qui-periment
 type: document
 title: Les données qui périment
-description: L'agenda du moment a une date dépassée: base doctor le signale, vous corrigez, le signal s'éteint. Le cycle de vie d'une expertise, vécu.
+description: L'agenda du moment porte une date dépassée: base doctor le signale, vous corrigez, le signal s'éteint. Le cycle de vie d'une expertise, vécu.
 scope: public
 status: active
 sensitivity: public
 license: CC-BY-4.0
-keywords: [praticien, doctor, valid_until, périmé, cycle de vie, veytaux, tourisme]
+keywords: [praticien, doctor, valid_until, perime, cycle de vie, veytaux, tourisme]
 audience: [builder]
 learning_level: intermediate
 ---
@@ -22,14 +22,14 @@ learning_level: intermediate
 ↻ **Rappel**: sans regarder: qu'est-ce qui fait router une demande vers un process? (son use_when et ses examples)
 
 1. Lancez `base doctor --root .`. Repérez le signal sur `infos/agenda.md`.
-2. Ouvrez `infos/agenda.md`: le champ `valid_until` est une date passée (c'est exprès,
+2. Ouvrez `infos/agenda.md`: le champ `valid_until` porte une date passée (c'est exprès,
    pour l'exercice).
 3. Repoussez `valid_until` à une date future (par exemple dans une semaine), enregistrez.
 4. Relancez `base doctor --root .`.
 
 ✅ **Vérifiez**: après correction, `base doctor` ne signale plus `infos/agenda.md` comme périmé (le signal `expired` a disparu).
 
-💡 **Pourquoi ça a marché**: une expertise vieillit. `valid_until` déclare la durée de vie d'une donnée de référence; `base doctor` projette ces dates sur vos fichiers pour repérer ce qui est sur le point de casser, sans rien exécuter, par simple lecture. La maintenance devient visible.
+💡 **Pourquoi ça a marché**: une expertise vieillit. `valid_until` déclare la durée de vie d'une donnée de référence; `base doctor` confronte ces dates à vos fichiers pour repérer ce qui se périme, sans rien exécuter, par simple lecture. La maintenance devient visible.
 
 🔁 **Chez vous**: quelle donnée de votre métier (un tarif, un barème, une règle saisonnière) devrait porter une date de validité?
 

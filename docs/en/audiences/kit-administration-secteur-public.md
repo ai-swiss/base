@@ -1,7 +1,7 @@
-<!-- fr-synced: 4a00a506695e067660b55b061e7c1422eddec1a0 -->
+<!-- fr-synced: fc115a58cfe56657b29adace72da66bbc5ea1310 -->
 # Evaluating and using BASE responsibly in the public sector
 
-Deploying BASE in a public institution puts citizen data, a legal basis, and public procurement on the line: deciding whether and how to do it without taking on needless risk calls for clear bearings. This checklist provides them, in operational terms, and flags the decisions that remain yours (legal counsel, data protection officer, archives, procurement); it is not a substitute for legal advice.
+Deploying BASE in a public institution puts citizen data, a legal basis, and public procurement on the line: deciding whether and how to do it without taking on needless risk calls for clear bearings. This checklist provides those concrete bearings and flags the decisions that remain yours (legal counsel, data protection officer, archives, procurement); it is not a substitute for legal advice.
 
 > **Important.** BASE is a local-first **component**, not a compliance platform. On its own it does not provide IAM, SSO, RBAC, DLP, SIEM, legal archiving, or regulatory retention (see [Security and limits](../trust/securite-et-limites.md)). What it does provide: domain knowledge in files you own, and honest mediation of sensitive actions.
 
@@ -16,13 +16,13 @@ Deploying BASE in a public institution puts citizen data, a legal basis, and pub
 ## 2. Citizen data and data protection
 
 - If personal data is involved, the browser tier alone is not enough: use the CLI or the MCP, which mediate actions and keep traces.
-- Routing stays **100% local** by default (lexical, zero network). Advanced semantic routing sends text to an embeddings provider only if you explicitly enable it, and a local option (Ollama) exists (see [Security of routing data](../trust/securite-donnees-routage.md)).
+- Default routing **makes no network calls** (lexical, no data leaves). Advanced semantic routing sends text to an embeddings provider only if you explicitly enable it, and a local option (Ollama) exists (see [Security of routing data](../trust/securite-donnees-routage.md)).
 
 > **Institutional decision:** an impact assessment (AIPD/DPIA) where required, and the record of processing activities.
 
 ## 3. Model provider policy
 
-- The model (the generative execution) remains **your choice** and lives outside BASE. BASE structures the knowledge the model executes; it ties you to no provider.
+- The model (the generative execution) remains **your choice** and lives outside BASE. BASE structures the knowledge the model executes; it ties you to no provider. Your know-how thus stays independent of the model that runs it: tools come and go, the context stays, and you can switch models without rewriting your base.
 - To stay sovereign, you can run local models (for example via Ollama); BASE imposes no cloud service.
 - **Locality does not settle everything: the host's jurisdiction matters as much as where the model runs.** A host subject to a foreign law (for example the U.S. CLOUD Act) can be compelled even for data stored in Switzerland. See the CLOUD Act section of [`souverainete-et-confiance.md`](../trust/souverainete-et-confiance.md).
 

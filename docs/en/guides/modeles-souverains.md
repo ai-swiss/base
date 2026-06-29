@@ -1,4 +1,4 @@
-<!-- fr-synced: 83854493f3532568c305224ae9af9b9f7fa007a5 -->
+<!-- fr-synced: e14feb9ec2cbf42e7c92fd774fd0bee305b51658 -->
 # Keeping your models sovereign, local or in Switzerland
 
 Using a model with BASE should not mean handing your data to a provider outside your control. If that is your requirement, two concrete paths keep you in charge, fully local or hosted in Switzerland, with a guide for choosing based on the sensitivity of what you handle.
@@ -14,7 +14,7 @@ Neither is mandatory. BASE's default routing is entirely local and requires no m
 
 ## Which model fits
 
-BASE does not run with just any model, and it is worth saying so. A process needs a model that can use tools reliably (read a file, propose one, look up a resource, call a function) without inventing a call or a parameter, follow instructions with multiple constraints, produce structured output when needed, hold the thread across a few exchanges, and stick to the supplied data alone. What matters is not a single lucky run, but consistency over time. Several open models you can run locally clear this bar today, as examples and without aiming to be exhaustive: Qwen (Apache-2.0 licensed) or Google's Gemma family (under its own license), able to call functions and produce structured output, handle well-scoped processes. The landscape moves fast, and the criterion that matters is not the brand but consistency over time: calling tools without inventing a call, following several constraints at once, sticking to the supplied data. The most complex chains remain the advantage of large hosted models. The right choice depends on the process, not a slogan.
+BASE does not run with just any model, and it is worth saying so. A process needs a model that can use tools reliably (read a file, propose one, look up a resource, call a function) without inventing a call or a parameter, follow instructions with multiple constraints, produce structured output when needed, hold the thread across a few exchanges, and stick to the supplied data alone. What matters is not a single lucky run, but steadiness over time. Several open models you can run locally clear this bar today, by way of example: Qwen (Apache-2.0 licensed) or Google's Gemma family (under its own license), able to call functions and produce structured output, hold up well on tightly scoped processes. The landscape moves fast, and the deciding criterion is not the brand but consistency: calling tools without inventing a call, following several constraints at once, sticking to the supplied data. The most complex chains remain the advantage of large hosted models. The right choice depends on the process, not a slogan.
 
 ## Fully local: Ollama
 
@@ -95,13 +95,13 @@ What it does badly:
 - **Following a long process faithfully.** Beyond a hundred or so lines of instructions, a small model drops constraints along the way: it skips steps or forgets rules. Break processes up, or move to a larger model.
 - **Calculating.** VAT, totals, margins: never ask the model for these results. Hand them to a deterministic tool (`base invoke`), which gives the same result on every run.
 
-The `base eval` evaluation makes these limits visible rather than guessed: the judge role, in particular, often needs a stronger model than the one driving the assistant.
+The evaluation (`npm run eval`) makes these limits visible rather than guessed: the judge role, in particular, often needs a stronger model than the one driving the assistant.
 
 ## The configuration tested in this repository
 
 Two local configurations are actually used by the maintainers, as is:
 
-- **`base eval` with Ollama and `qwen3.5:9b-q4_K_M`** for the simulated user and the judge; see [tools/eval/README.md](../../../tools/eval/README.md), including how to strengthen the judge with a larger model.
+- **The evaluation (`npm run eval`) with Ollama and `qwen3.5:9b-q4_K_M`** for the simulated user and the judge; see [tools/eval/README.md](../../../tools/eval/README.md), including how to strengthen the judge with a larger model.
 - **`nomic-embed-text` for local embeddings**: it is the default model of `createOllamaEmbedder()` in the `@ai-swiss/base-ranker-semantic` package, when a project enables the semantic ranker without sending anything off the machine.
 
 In every case, the core stays the same text file you own. The model is a replaceable detail, not the place where your method lives.

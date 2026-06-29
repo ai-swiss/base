@@ -7,7 +7,7 @@ allowed-tools: Read
 
 # Métier: Compte-rendu de réunion
 
-Connaissances métier sur la rédaction de comptes-rendus de réunion clairs, neutres et utiles, pour PME, équipes et indépendants.
+Savoir-faire pour rédiger des comptes-rendus de réunion clairs, neutres et utiles, à destination des PME, des équipes et des indépendants.
 
 ## Anatomie d'un bon compte-rendu
 
@@ -29,12 +29,12 @@ Un compte-rendu utile contient, dans l'ordre:
 - **Fidèle**: il reflète ce qui s'est dit, sans ajout ni omission importante.
 - **Neutre**: il ne juge pas, ne prend pas parti, n'embellit pas.
 - **Concis**: il va à l'essentiel. Un compte-rendu n'est pas une transcription mot à mot.
-- **Actionnable**: on doit pouvoir en sortir en sachant qui fait quoi et pour quand.
+- **Actionnable**: après lecture, chacun sait qui fait quoi, et pour quand.
 - **Traçable**: décisions et actions sont identifiables et retrouvables.
 
 ## Distinguer décision, action et information
 
-C'est le cœur du métier. Trois catégories à ne pas confondre:
+C'est le cœur du métier. Trois catégories qu'il ne faut jamais confondre:
 
 | Catégorie | Définition | Signe distinctif |
 |-----------|------------|------------------|
@@ -44,13 +44,13 @@ C'est le cœur du métier. Trois catégories à ne pas confondre:
 
 ### Règles de classement
 
-- **Une discussion n'est pas une décision.** Tant qu'aucun choix n'est arrêté, c'est une information ou un débat en cours. En cas de doute: `[A VALIDER: était-ce une décision ?]`.
-- **Une intention n'est pas une action.** «Il faudrait peut-être contacter le fournisseur» n'est pas une action tant qu'un responsable n'est pas désigné. Sinon: `[A COMPLETER: responsable ?]`.
-- **Une décision peut générer une action.** «Décision: on lance le projet (action: Paul prépare le planning pour le 15)». On note les deux.
+- **Une discussion n'est pas une décision.** Tant qu'aucun choix n'est arrêté, il s'agit d'une information ou d'un débat en cours. En cas de doute: `[A VALIDER: était-ce une décision ?]`.
+- **Une intention n'est pas une action.** «Il faudrait peut-être contacter le fournisseur» ne devient une action qu'une fois un responsable désigné. Sinon: `[A COMPLETER: responsable ?]`.
+- **Une décision peut donner lieu à une action.** «Décision: on lance le projet (action: Paul prépare le planning pour le 15)». On note les deux.
 
 ## Attribuer et dater les actions
 
-Une action sans responsable ni échéance ne sera pas suivie. Pour chaque action:
+Une action sans responsable ni échéance ne sera jamais suivie. Pour chaque action:
 
 - **Responsable**: une personne nommée, pas «l'équipe» ni «quelqu'un». Si les notes ne le précisent pas: `[A COMPLETER: responsable]`.
 - **Échéance**: une date ou un repère clair («avant la prochaine réunion», «fin du mois»). Si absente: `[A COMPLETER: échéance]`.
@@ -65,10 +65,10 @@ Format recommandé pour le tableau des actions:
 
 ## Neutralité et factualité
 
-Le compte-rendu engage la mémoire collective de l'équipe. Il doit être au-dessus de tout soupçon de partialité.
+Le compte-rendu engage la mémoire collective de l'équipe. Il doit rester au-dessus de tout soupçon de partialité.
 
-- **Ne jamais inventer ce qui a été dit.** On travaille uniquement à partir des notes. Une information absente reste absente (`[A COMPLETER]`), elle n'est pas comblée par une supposition.
-- **Ne pas interpréter les intentions.** On rapporte ce qui a été dit ou décidé, pas ce que les gens «voulaient sûrement dire».
+- **Ne jamais inventer ce qui a été dit.** On travaille uniquement à partir des notes. Une information absente reste absente (`[A COMPLETER]`); aucune supposition ne vient la combler.
+- **Ne pas interpréter les intentions.** On rapporte ce qui a été dit ou décidé, jamais ce que les gens «voulaient sûrement dire».
 - **Ne pas attribuer une prise de position si ce n'est pas nécessaire ou si les notes ne le permettent pas.** En général, un compte-rendu rapporte des décisions collectives, pas le détail de qui a dit quoi, sauf demande explicite (procès-verbal nominatif).
 - **Reformuler pour la clarté, jamais pour orienter.** On simplifie une phrase confuse, on ne change pas son sens.
 - **Signaler les désaccords sans les trancher.** Si un point n'a pas fait consensus, on le note: «Le point [X] reste en discussion.»
@@ -85,7 +85,7 @@ Le compte-rendu engage la mémoire collective de l'équipe. Il doit être au-des
 
 ## Le relevé de décisions
 
-Pour les réunions importantes, un **relevé de décisions** séparé est utile: un document court qui ne reprend que les décisions et les actions, facile à diffuser et à archiver. Il complète le compte-rendu, il ne le remplace pas.
+Pour les réunions importantes, un **relevé de décisions** distinct rend service: un document court, qui ne reprend que les décisions et les actions, facile à diffuser et à archiver. Il complète le compte-rendu, il ne le remplace pas.
 
 ## Erreurs courantes à éviter
 

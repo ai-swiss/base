@@ -1,7 +1,7 @@
-<!-- fr-synced: abf90266159c2550f827a635b37bb2473766dbe6 -->
+<!-- fr-synced: 54ff1dcedc8f67202b43cf270c54a25939d365e1 -->
 # Installing the BASE MCP server
 
-When your AI tool can't read your files directly, or when you want to share an agent beyond your own machine, the MCP server is the way to go: it makes your BASE agents reachable from any compatible platform, with no manual copying of your work. The trade-off is that you expose one folder of your project to a third-party tool, which calls for a few guardrails (see below). The MCP (Model Context Protocol) server connects your BASE agents to compatible platforms: ChatGPT, Claude Desktop, and the AI tools that can speak MCP (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code).
+When your AI tool doesn't read your files directly, or when you want to share an agent beyond your own machine, the MCP (Model Context Protocol) server is what to turn to: it makes your BASE agents reachable from any compatible platform, sparing you from copying your work over by hand. The trade-off is that you expose one folder of your project to a third-party tool, which calls for a few guardrails (see below). It connects your BASE agents to compatible platforms: ChatGPT, Claude Desktop, and the AI tools that can converse over MCP (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code).
 
 ## Prerequisites
 
@@ -22,7 +22,7 @@ npm run build
 npm start -- --root /path/to/your/project
 ```
 
-Without `--root`, the server detects the nearest BASE root from its launch directory. For lasting use, prefer an explicit root.
+Without `--root`, the server detects the nearest BASE root from its launch directory. For lasting use, it's better to name an explicit root.
 
 ## 3. Connect your platform
 
@@ -41,9 +41,9 @@ In `claude_desktop_config.json`:
 }
 ```
 
-The configuration is identical in the other AI tools that can speak MCP (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code): carry the same block over into their MCP settings.
+The configuration is the same in the other AI tools that can converse over MCP (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code): carry the same block over into their MCP settings.
 
-Consumer MCP-compatible tools, such as ChatGPT (via its developer mode), can also connect to this local MCP server. Enabling it, along with whatever conditions apply at the time, is done inside the tool, following its official documentation: BASE neither makes it a guided journey nor depends on it.
+Consumer MCP-compatible tools, such as ChatGPT (via its developer mode), can likewise connect to this local MCP server. Enabling it, along with whatever conditions apply at the time, is a matter for the tool and its official documentation: BASE neither makes it a guided journey nor depends on it.
 
 ### First request
 
@@ -57,8 +57,8 @@ then "Load my assistant-devis agent" and finally "Hello, I'd like to set up my b
 
 Two guardrails are active by default:
 
-- **Read-only over HTTP.** On the HTTP transport, the write and execution tools are not registered: the surface is therefore, verifiably, read-only. `--read-write` widens it explicitly, to be reserved for authenticated deployments. Over `stdio` (local use), the broker's full surface is available, mediated writes included.
-- **Network exposure refused without authentication.** Binding a non-loopback interface (`--host 0.0.0.0`, a LAN IP) without authentication is refused at startup. If you accept the risk (trusted network, controlled tunnel), `mcp/README.md` documents the explicit escape hatch `BASE_MCP_ALLOW_INSECURE_REMOTE=1`. Set `BASE_MCP_BEARER_TOKEN` to require a bearer token, the recommended option for a team:
+- **Read-only over HTTP.** On the HTTP transport, the write and execution tools are not registered: the surface is therefore, in a way you can verify, read-only. `--read-write` widens it explicitly, to be reserved for authenticated deployments. Over `stdio` (local use), the broker's full surface is available, mediated writes included.
+- **Network exposure refused without authentication.** Binding a non-loopback interface (`--host 0.0.0.0`, a LAN IP) without authentication is refused at the very startup. If you accept the risk for yourself (trusted network, controlled tunnel), `mcp/README.md` documents the explicit escape hatch `BASE_MCP_ALLOW_INSECURE_REMOTE=1`. Set `BASE_MCP_BEARER_TOKEN` to require a bearer token, the recommended option for a team:
 
 ```bash
 BASE_MCP_BEARER_TOKEN=a-long-random-secret npm start -- --transport http --host 0.0.0.0 --root /path/to/your/project
@@ -66,7 +66,7 @@ BASE_MCP_BEARER_TOKEN=a-long-random-secret npm start -- --transport http --host 
 
 For custom authentication (OAuth, mTLS), supply an `AuthProvider` via `base.config.mjs`, or place the server behind an authenticated reverse proxy.
 
-Read-only access is still sensitive: the read tools expose the resources and files confined to the project. Don't expose a folder over MCP if it contains secrets or data outside the scope of the connected client.
+Read-only access is no harmless thing all the same: the read tools open access to the resources and files confined to the project. Don't expose a folder over MCP if it holds secrets or data outside the scope of the connected client.
 
 ## Basic troubleshooting
 
@@ -79,7 +79,7 @@ Read-only access is still sensitive: the read tools expose the resources and fil
 
 ## Going further
 
-[mcp/README.md](../../../mcp/README.md) details the exposed tools (`load_agent`, `route_request`, `propose_change`, etc.), the multi-root mode (`--workspace`), team deployment behind a reverse proxy, and the limits: MCP replaces neither IAM, nor DLP, nor archiving.
+[mcp/README.md](../../../mcp/README.md) details the exposed tools (`load_agent`, `route_request`, `propose_change`, etc.), the multi-root mode (`--workspace`), team deployment behind a reverse proxy, as well as the limits of the setup: MCP replaces neither IAM, nor DLP, nor archiving.
 
 ---
 

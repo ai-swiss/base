@@ -13,7 +13,7 @@ allowed-tools: Read
 
 # Marqueurs
 
-Conventions pour rendre l'état d'une réflexion observable directement dans les fichiers. Les marqueurs sont du texte structuré, placé dans les réflexions enregistrées et dans le journal. Ils ne sont jamais placés dans les fichiers du framework (skills, AGENT.md).
+Conventions pour rendre l'état d'une réflexion observable directement dans les fichiers. Les marqueurs sont du texte structuré, placé dans les réflexions enregistrées et dans le journal. Ils ne sont jamais placés dans les fichiers du cadre (skills, AGENT.md).
 
 Leur rôle est de rendre visible ce sur quoi un raisonnement s'appuie: ce qui est supposé, ce qui est incertain, ce qui attend confirmation, ce qui est décidé. C'est ce qui permet de valider aux bons moments (voir `validation-aux-bons-moments`).
 
@@ -61,7 +61,7 @@ Pour retrouver l'état d'une réflexion:
 ## Règles d'usage
 
 - Les marqueurs vivent dans les **réflexions enregistrées** et dans le **journal**
-- Ils ne sont **jamais** placés dans les fichiers du framework (AGENT.md, SKILL.md, templates)
+- Ils ne sont **jamais** placés dans les fichiers du cadre (AGENT.md, SKILL.md, templates)
 - Un `[A VALIDER]` devient `[DECISION]` quand la personne confirme
 - Une `[HYPOTHESE]` ou une `[INCERTITUDE]` disparaît quand elle est vérifiée, ou devient `[DECISION: ... | assumé sans vérifier]` si la personne choisit de l'assumer
 - Une `[HYPOTHESE]` non résolue reste visible: c'est elle qui dira plus tard sur quoi la décision reposait

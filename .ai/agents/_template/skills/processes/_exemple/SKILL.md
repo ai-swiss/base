@@ -39,8 +39,8 @@ requires:
     purpose: expliquer pourquoi le process en a besoin
 ---
 
-Le routeur choisit le process. Les compétences, templates, tools et données sont ensuite des ressources
-référencées par le process, pas des routes primaires.
+Le routeur choisit le process. Les compétences, templates, tools et données ne sont alors que des ressources
+référencées par le process, et non des routes primaires.
 -->
 
 # [Nom du process]
@@ -54,15 +54,15 @@ Demande à l'utilisateur:
 - **[Input 2]**: [pourquoi c'est nécessaire]
 
 Avant de commencer, vérifie:
-- [Condition préalable, ex. fichier X doit exister et ne pas contenir de placeholders]
+- [Condition préalable, ex. le fichier X doit exister et ne contenir aucun placeholder]
 
-Si `.ai/journal/` contient des entrées récentes liées à ce process, lis-les pour reprendre le contexte.
+Si `.ai/journal/` contient des entrées récentes liées à ce process, lis-les pour reprendre le fil.
 
 ## Étapes
 
 ### 1. [Nom de l'étape: collecte d'information]
 
-[Ce que l'agent fait à cette étape. Inclure un exemple de ce qu'il dit:]
+[Ce que fait l'agent à cette étape. Donner un exemple de ce qu'il dit:]
 
 > «[Exemple de message à l'utilisateur]»
 
@@ -74,7 +74,7 @@ Si `.ai/journal/` contient des entrées récentes liées à ce process, lis-les 
 
 ### 2. [Nom de l'étape: proposition]
 
-[Ce que l'agent fait.]
+[Ce que fait l'agent.]
 
 > «[Exemple de message]»
 
@@ -108,10 +108,10 @@ Si `.ai/journal/` contient des entrées récentes liées à ce process, lis-les 
 
 <!--
 NOTES POUR L'AUTEUR DU PROCESS:
-- Distinguez reformulation (léger, vérifie la compréhension) et point de décision (avant action irréversible)
+- Distinguez la reformulation (légère, qui vérifie la compréhension) du point de décision (avant une action irréversible)
 - Ne diluez pas les points de décision: réservez-les aux moments qui comptent
-- L'agent reformule souvent, mais ne demande un point de décision qu'avant d'écrire
+- L'agent reformule souvent, mais ne pose un point de décision qu'avant d'écrire
 - Chaque process se termine par une étape Journal
-- Référencez les compétences et templates par chemin relatif
-- 3 à 7 étapes maximum; si c'est plus, découpez en plusieurs processes
+- Référencez les compétences et templates par leur chemin relatif
+- 3 à 7 étapes au maximum; au-delà, découpez en plusieurs processes
 -->

@@ -1,10 +1,10 @@
 # Mes réflexions
 
-C'est ici que vivent vos réflexions structurées: décisions clarifiées, questions explorées, notes de décision.
+Vos réflexions structurées sont rassemblées ici: décisions clarifiées, questions explorées, notes de décision.
 
-Chaque fichier garde visibles les hypothèses et incertitudes sur lesquelles le raisonnement s'appuie (marqueurs `[HYPOTHESE]`, `[INCERTITUDE]`, `[A VALIDER]`, `[DECISION]`). Vous pouvez ainsi reprendre une réflexion plus tard et voir exactement où elle en était, et sur quoi elle reposait.
+Chaque fichier garde visibles les hypothèses et les incertitudes sur lesquelles le raisonnement repose (marqueurs `[HYPOTHESE]`, `[INCERTITUDE]`, `[A VALIDER]`, `[DECISION]`). Vous pouvez ainsi reprendre une réflexion plus tard et retrouver exactement où elle en était, et sur quoi elle s'appuyait.
 
-Ces fichiers sont à vous. Vous les organisez comme vous voulez, et rien n'en sort.
+Ces fichiers sont à vous. Vous les organisez à votre guise, et rien n'en sort.
 
 Exemples de nommage:
 - `2026-06-09_changement-de-poste.md`

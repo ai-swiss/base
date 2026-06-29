@@ -1,9 +1,9 @@
-<!-- fr-synced: c6096e34c71c7fef3d328fad467da4dc9d9e5ebb -->
+<!-- fr-synced: c9c08573f5322e95ae14299aec9865d7bb1d3877 -->
 # Finding your way to use BASE
 
 Using AI without losing control of your context, your decisions, and your working memory: that is the challenge, whether you are a single person or an organization. Depending on your situation (a single person, a start-up, an SME, a large enterprise), you will find here what BASE brings you concretely and where to start.
 
-The common thread across these four situations is simple: AI does not spontaneously know your situation. It can produce fast, but it does not know on its own what is true for you, what is sensitive, what must be checked, or how your work should be done.
+These four situations share a common thread: AI does not spontaneously know yours. It produces fast, but on its own it has no idea what is true for you, what is sensitive, what must be checked, and how your work should be done.
 
 BASE gives that context a shape.
 
@@ -15,7 +15,7 @@ The deeper question is: what structure do you give to the collaboration?
 
 Generative AI does not fit naturally into the usual categories of digital software. You can frame it with screens, buttons, agents, and permissions, but its real use also runs through language, context, examples, criteria, corrections, and work habits. It produces plausible behavior, not a guarantee. It often gives the impression of understanding the situation, but it does not know your local reality until you have structured it.
 
-BASE therefore proposes to treat AI for what it is. It genuinely masters domains you can verify, but it has two structural flaws. First, it does not share your memory by default: it restarts without your ground until you give it to it. Second, it relies on language, which remains underspecified: you think you have said everything, and often an implicit criterion is missing. These two traits are at once its strength and its weakness, depending on whether or not you structure what you entrust to it.
+BASE therefore proposes to treat AI for what it is: a system that genuinely masters domains you can verify, but that suffers from two structural flaws. First, it does not share your memory by default: it restarts without your ground until you give it to it. Second, it relies on language, which remains underspecified: you think you have said everything, and often an implicit criterion is missing. These two traits are at once its strength and its weakness, depending on whether or not you structure what you entrust to it.
 
 - What knowledge must be available?
 - What processes must be followed?
@@ -23,7 +23,7 @@ BASE therefore proposes to treat AI for what it is. It genuinely masters domains
 - What actions can be proposed by the AI, but validated by a human?
 - What must be traced so you can resume, correct, and improve?
 
-Without this structure, AI stays brilliant but amnesiac. It can help on occasion, then forces you to repeat, verify, correct, and rebuild the context every time.
+Without this structure, AI stays brilliant but amnesiac. It helps on occasion, then forces you to repeat, verify, correct, and rebuild the context every time.
 
 ## For a person in their private life
 
@@ -36,12 +36,12 @@ What BASE brings:
 - a local assistant you can understand;
 - readable files that you keep;
 - simple workflows for your recurring tasks;
-- markers, reference points that a tool can find again to flag what is pending;
+- simple markers that flag what is still pending and that the AI or a script can find again;
 - a method for deciding when to use AI and when not to use it.
 
 Point of attention:
 
-Your personal data stays personal data. BASE structures your files locally, but the AI tool you use may process the content of the conversation under its own terms. For highly sensitive information, use a suitable environment or keep the AI out of the loop. Delegate without disconnecting: keep enough grip on what the AI produces to be able to judge it.
+BASE organizes readable files on your machine, but what you send into a conversation is processed by the AI tool under its own terms. For highly sensitive information, choose a suitable environment or keep the AI at arm's length. Delegate without disconnecting: keep enough grip on what the AI produces to be able to judge it.
 
 ## For a start-up
 
@@ -55,11 +55,11 @@ What BASE brings:
 - consistent document templates;
 - a team memory before documentation becomes heavy;
 - a way to distinguish draft, proposal, decision, and action;
-- a portable base when tools change.
+- a portable base when tools change: tools come and go, the context stays.
 
 Point of attention:
 
-Speed must not replace verification. BASE makes practices faster because they are better structured, not because the AI automatically becomes reliable.
+Speed must not replace verification. BASE makes practices faster because they are better structured, not because the AI would somehow become reliable on its own.
 
 ## For an SME
 
@@ -90,7 +90,7 @@ BASE can serve as a structuring language: resources, sources, connectors, polici
 What BASE brings:
 
 - a stable conceptual model for describing knowledge and workflows;
-- a clear separation between know-how and knowledge, first for security: instructions execute, content does not, which limits the risk of injection, and which then distinguishes the human text, the machine contract, and the technical application;
+- a clear separation between know-how and knowledge, first for security: instructions execute, content does not, which limits the risk of injection; it then distinguishes the human text, the machine contract, and the technical application;
 - a path toward governed connectors, policies, and traces;
 - a way to stay portable across harnesses and models;
 - a basis for discussion across business lines, IT, security, compliance, and data.
@@ -103,7 +103,7 @@ Public BASE is not a compliance platform. For enterprise use, you have to add IA
 
 A society that adopts AI solely through closed interfaces, proprietary agents, and scattered prompts risks losing control of its processes. It produces faster, but does not always know what guided the production, what was verified, what is reusable, or what remains under human responsibility.
 
-Beyond the technical side, the risk is also cognitive and organizational. If every person has to keep mental track of which agent to use, which instructions were placed in which interface, which permissions were granted, and which context was forgotten, AI increases the mental load instead of reducing it. This is where a router, even a rudimentary one but effective and extensible through adapters, helps: it takes the burden of looking for the right process off the user. Real progress consists in structuring the relationship: writing down what the system must know, bounding what it can do, and keeping the important decisions visible. Two requirements run through all of this over time: keeping enough intuition to remain able to verify, and keeping sovereignty over the setup that carries out the work.
+Beyond the technical side, the risk is also cognitive and organizational. If every person has to remember which agent to use, which instructions were placed in which interface, which permissions were granted, and which context was forgotten, AI weighs the mental load down instead of lightening it. This is where a router, even a simple one, helps: it spares the user the trouble of hunting for the right process. Real progress consists in structuring the relationship: writing down what the system must know, bounding what it can do, and keeping the important decisions visible. Two requirements run through all of this over time: keeping enough intuition to remain able to verify, and keeping sovereignty over the setup that carries out the work.
 
 BASE defends another trajectory:
 
@@ -114,7 +114,7 @@ BASE defends another trajectory:
 - preserve the portability of the working context;
 - let people and organizations progress without depending on a single platform.
 
-This ambition stays modest in its promises and strong in its method. BASE does not make AI infallible; it makes collaboration with AI more structured, more verifiable, and more durable.
+This ambition stays modest in its promises and demanding in its method. BASE does not make AI infallible; it makes collaboration with AI more structured, more verifiable, and more durable.
 
 ## Where to start
 
