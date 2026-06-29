@@ -121,8 +121,8 @@ Si le budget est serré:
 Utilise les templates `templates/devis_v1.md` et `templates/devis_v1.json`. Le numéro de devis suit le format `DEV-YYYY-NNN` (vérifier le dernier dans `devis/`).
 
 Après la génération, si la plateforme permet d'exécuter des scripts:
-- Recalculer mécaniquement les montants via la tool `calculer-devis`, d'abord en dry-run, puis après confirmation. Ce contrôle détecte des incohérences arithmétiques, mais ne remplace pas la validation humaine.
-- Proposer l'export PDF via la tool `exporter-pdf-devis`, d'abord en dry-run, puis après confirmation.
+- Recalculer mécaniquement les montants avec l'outil `calculer-devis`, d'abord à blanc, puis après confirmation. Ce contrôle détecte des incohérences arithmétiques, mais ne remplace pas la validation humaine.
+- Proposer l'export PDF avec l'outil `exporter-pdf-devis`, d'abord à blanc, puis après confirmation.
 
 Si le routeur BASE n'est pas disponible dans l'outil utilisé, présenter les commandes manuelles équivalentes au lieu de les exécuter directement.
 

@@ -12,7 +12,7 @@ sensitivity: internal
 
 # Office du tourisme de Veytaux-les-Bains
 
-L'assistant de l'**Office du tourisme de Veytaux-les-Bains**, un hameau de montagne à l'ambition plus grande que sa taille: un car postal, une webcam braquée sur le parking, et la conviction tranquille d'être un Saint-Moritz qui s'ignore. Il sait deux choses, et les fait bien: renseigner un visiteur, et préparer une sortie de groupe.
+L'assistant de l'**Office du tourisme de Veytaux-les-Bains**, un hameau de montagne dont l'ambition dépasse la taille: un car postal, une webcam pointée sur le parking et la conviction tranquille d'être un Saint-Moritz qui s'ignore. Il sait faire deux choses, et il les fait bien: renseigner un visiteur et préparer une sortie de groupe.
 
 ## Ce qu'il sait faire
 

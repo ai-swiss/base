@@ -1,9 +1,9 @@
-<!-- fr-synced: 8c55638acab6c5fbe9d3178a6e80b79985905dce -->
+<!-- fr-synced: 3ba01f030419d4bea38396de878f9084d136180e -->
 # BASE markers and when to place them
 
 A marker placed badly, or understood differently by the human, the agent, and the tooling, loses track of the real state of the work. To prevent that, the vocabulary is defined once, here: which markers exist, what each one means, and when to place it. A marker is a searchable text cue, written in brackets inside a document, that makes that state visible without leaving the file. It serves as a shared reference for anyone writing or reviewing in BASE, as well as for the agent assisting them.
 
-A marker is handled by text search (searchable, so traceable and scriptable), not by eye. That is exactly the point: a marker is a cue you find again through a standard algorithmic method (list the marked documents and process them one by one), instead of relying on a fuzzy semantic search that has to absorb everything by sheer volume. BASE recognizes a **closed** set of them, split across two levels that do not mix:
+A marker is handled by text search (searchable, so traceable and scriptable), not by eye. That is the whole point: you find it again through a simple algorithmic method, list the marked documents and work through them one by one, rather than relying on a fuzzy semantic search forced to sift through everything. BASE recognizes a **closed** set of them, split across two levels that do not mix:
 
 1. **The domain markers**, in user documents (quotes, client sheets, reports, the journal). They make the state of the work visible and traceable directly in the file.
 2. **The specification-plan markers**, in the spec and the code. They flag a zone of acknowledged uncertainty or a code change declared without a spec change.
@@ -12,14 +12,14 @@ This page is the **single source** of that vocabulary. The scanner (`tools/core/
 
 ## A. Domain markers
 
-Four markers, and only four, live in user documents. Each corresponds to a phase of the human-AI co-thinking loop (Frame, Delegate, Evaluate, Adjust). They are searched by `base markers` (and the MCP tool `list_markers`), and **forbidden** in framework and spec files.
+Four markers, and only four, live in user documents. Each answers to a phase of the human-AI co-thinking loop (Frame, Delegate, Evaluate, Adjust). You find them with `base markers` (and the MCP tool `list_markers`); they are **forbidden** in framework and spec files.
 
 For each marker: its meaning, when to place it, and who closes it.
 
 ### `[A COMPLETER: champ]`
 
 - **Meaning.** A piece of information needed to move forward is missing.
-- **When to use it.** Frame phase: while writing, when an indispensable piece of data is not yet known (for example an IDE number, an email, an amount).
+- **When to use it.** Frame phase: while writing, when an indispensable piece of data is not yet known (for example an IDE number, an email address, an amount).
 - **Who closes it.** It disappears once the information is supplied, by the agent or by the user.
 
 ### `[A VALIDER: description]`
@@ -36,8 +36,8 @@ For each marker: its meaning, when to place it, and who closes it.
 
 ### `[DECISION: choix | raison]`
 
-- **Meaning.** A choice has been confirmed by the user, recorded for traceability.
-- **When to use it.** Adjust phase: to lock in a validated choice and keep the reason it was made.
+- **Meaning.** The user has confirmed a choice, recorded for traceability.
+- **When to use it.** Adjust phase: to lock in a validated choice and keep the reason that drove it.
 - **Who closes it.** Nothing. A `[DECISION]` is a durable record of the choice, which stays in the document as history, not an open item to handle.
 - **Enriched form (high stakes).** When the choice has significant consequences (a large amount, a firm commitment, data that is hard to correct), you document the alternative ruled out, the level of confidence, and the cost of reversing course, for example: `[DECISION: Arche florale à 1100 CHF | Pivoines plus coûteuses | Alternative: roses standard 850 CHF | Confiance: haute | Réversibilité: faible (devis à refaire)]`. Suggested vocabulary, read by human and agent alike (it is not a field parsed by the scanner): **Confiance: haute | moyenne | basse**, **Réversibilité: facile | moyenne | difficile**.
 - **Escalation rule.** An agent about to lock in a `[DECISION]` at **low confidence** *or* whose reversal would be **hard** does not decide alone: it places an `[A VALIDER]` and lets the human decide. We automate what is certain and easily reversible; we escalate the rest. This is a convention of judgment, not an imposed syntax.
@@ -71,7 +71,7 @@ Two markers live in the technical plan (the spec and the code), never in user do
 - **Where it applies.** In the commit message or the body of the pull request, read by the **spec-sync** check (`tools/spec/spec-sync-check.mjs`).
 - **Why.** The spec-sync check guarantees that the truth does not lag behind the trajectory: a runtime source-code change must touch `specs/` in the same change, **or** declare `[SPEC-NEUTRAL: reason]`. It is the check's **safety valve**, not a silent shortcut: the declaration is an explicit review point, and reviewers verify that the change really has no effect on behavior. The reason in brackets is mandatory.
 
-These two markers belong to the spec's discipline (NFR-CORE-010), on the same footing as the regenerated requirements-to-tests matrix and the immutability of identifiers. They have no business in a quote or a client sheet, and domain markers have no business in a spec chapter.
+These two markers belong to the spec's discipline (NFR-CORE-010), on the same footing as the regenerated requirements-to-tests matrix and the immutability of identifiers. They have no place in a quote or a client sheet, any more than domain markers do in a spec chapter.
 
 ## Never (hard rules)
 

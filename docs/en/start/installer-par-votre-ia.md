@@ -1,11 +1,11 @@
-<!-- fr-synced: 8b18cba1be46653b92d1a568c7aef18fc79e5ec6 -->
+<!-- fr-synced: caa5f6a1128bc0a47fb8735783e48efd5017edad -->
 # Have your AI install BASE
 
-Installing BASE can be your AI's job, not yours: you walk away with a ready-to-use
-workspace without having typed a single command, provided you have a tool that can run those
-commands for you and that you can review each step before it's applied. In practice, you paste a
+Installing BASE can fall to your AI rather than to you: you walk away with a ready-to-use
+workspace without having typed a single command, as long as your tool knows how to run those
+commands on your behalf and lets you review each step before it takes effect. In practice, you paste a
 block into an AI tool that can run commands (for example GitHub Copilot, Antigravity, Claude Code
-or Cowork, OpenCode, Kilo Code), it does the installation for you and tells you when your
+or Cowork, OpenCode, Kilo Code): it carries out the installation for you, then lets you know when your
 workspace is ready.
 
 ## Before you paste the block
@@ -14,10 +14,10 @@ workspace is ready.
    `mon-assistant`.
 2. Open that folder in your AI tool that can read your files (for example GitHub
    Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code): depending on the tool, this
-   is a *File → Open Folder*, or a `cd mon-assistant` followed by launching the tool in that
+   will be a *File → Open Folder*, or a `cd mon-assistant` followed by launching the tool in that
    folder.
-3. Open the chat in **agent mode** (the one that can run commands): depending on the tool,
-   this is an *Agent* mode to enable in the chat panel, or the default mode.
+3. Open the chat in **agent mode** (the one that knows how to run commands): depending on the tool,
+   this is an *Agent* mode to enable in the chat panel, or simply the default mode.
 4. Paste the block below and send it.
 
 ## The block to paste
@@ -56,15 +56,15 @@ Your folder now contains an agent, its configuration, and the files your tool
 reads to become the **router** for your domain (depending on the tool, a `CLAUDE.md`, an
 `AGENTS.md` or an equivalent rules file in the tool's folder). Talk to it
 normally: it directs each request to the right process and follows it, without you having to
-figure out which one to use.
+work out which one to pick.
 
 - **Convert your existing documents**: say "importer mes procédures existantes". Each
-  conversion is offered to you as a diff; nothing is written without you.
+  conversion is submitted to you as a diff; nothing is written without your approval.
 - **The Studio**: to browse, edit and evaluate your assistants in an interface,
   `node <BASE_DIR>/tools/base.mjs studio --root .` opens BASE Studio.
 - **Keep the framework up to date**: `node <BASE_DIR>/tools/base.mjs update`.
 - **Where BASE lives**: `node <BASE_DIR>/tools/base.mjs whereis` (the location is also noted
   in `~/.config/base/config.json`, editable by hand).
 
-Prefer to do everything yourself? See [Get BASE](obtenir-base.md) and
+Prefer to do it all with your own hands? See [Get BASE](obtenir-base.md) and
 [Install a workspace](installer.md).

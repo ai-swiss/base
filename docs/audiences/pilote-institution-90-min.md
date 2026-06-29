@@ -13,9 +13,9 @@ keywords: [secteur-public, pilote, donnees-non-personnelles, evaluation, routage
 
 # Pilote en institution, 90 minutes, données non personnelles
 
-Avant d'engager une institution sur un outil d'IA, vous voulez juger sur pièces, sans rien risquer: ce pilote vous laisse voir BASE de vos propres yeux, **sans aucune donnée personnelle de citoyen**, et décider en connaissance de cause s'il faut aller plus loin. Concrètement, c'est un **pilote borné dans le temps** (environ 90 minutes) qu'une administration peut mener sur des commandes réelles: non pas mettre un service en production, mais voir ce que BASE fait, ce qu'il refuse de faire sans vous et ce qui reste local. Cela suppose seulement de travailler sur des procédures internes non personnelles.
+Avant d'engager une institution sur un outil d'IA, vous voulez juger sur pièces, sans rien risquer: ce pilote vous laisse voir BASE de vos propres yeux, **sans aucune donnée personnelle de citoyen**, et décider en connaissance de cause s'il faut aller plus loin. C'est un **pilote borné dans le temps** (environ 90 minutes) qu'une administration peut mener sur des commandes réelles. Il ne s'agit pas de mettre un service en production, mais de voir ce que BASE fait, ce qu'il refuse de faire sans vous et ce qui reste local. Une seule condition: travailler sur des procédures internes non personnelles.
 
-> **Note.** Cette page est **informative**, pas un avis juridique ni de conformité. Elle ne remplace ni votre analyse d'impact (AIPD/DPIA) ni votre politique de sécurité. Un pilote, même réussi, **n'établit pas** la conformité d'un futur traitement réel: il vous donne de quoi décider, en connaissance de cause, s'il faut aller plus loin.
+> **Note.** Cette page est **informative**: elle ne constitue ni un avis juridique ni un avis de conformité. Elle ne remplace ni votre analyse d'impact (AIPD/DPIA) ni votre politique de sécurité. Un pilote, même réussi, **n'établit pas** la conformité d'un futur traitement réel: il vous donne de quoi décider, en connaissance de cause, s'il faut aller plus loin.
 
 ## Ce que ce pilote établit, et ce qu'il n'établit pas
 
@@ -36,7 +36,7 @@ Avant d'engager une institution sur un outil d'IA, vous voulez juger sur pièces
 
 Tout au long du pilote, distinguez deux choses:
 
-- un **mécanisme** est appliqué par le médiateur (le broker): il a lieu que le modèle «veuille» ou non. Exemples: confinement des chemins et refus des liens symboliques qui sortent du périmètre (`tools/core/confine.mjs`), écritures **médiées et atomiques** après validation, tools en **dry-run par défaut**, contrôle d'égress **avant** l'appel à un modèle distant.
+- un **mécanisme** est appliqué par le médiateur (le broker): il s'exécute que le modèle «veuille» ou non. Exemples: confinement des chemins et refus des liens symboliques qui sortent du périmètre (`tools/core/confine.mjs`), écritures **médiées et atomiques** après validation, tools en **dry-run par défaut**, contrôle d'égress **avant** l'appel à un modèle distant.
 - une **consigne** est une instruction que le modèle suit (ou non): un ton, un format, un rappel de prudence.
 
 Quand vous demandez «est-ce garanti?», la bonne réponse dépend toujours de ce mot: **mécanisme** (oui, appliqué) ou **consigne** (suivie, non garantie).
@@ -49,7 +49,7 @@ Avant toute commande, posez la règle du pilote, par écrit, pour l'équipe:
 - On travaille uniquement sur des **modèles et des procédures internes** non personnelles: un gabarit de lettre type, une procédure d'accueil, une checklist interne, une note de cadrage.
 - Si un document candidat contient le moindre élément personnel, il est **hors pilote**.
 
-Cette règle est une **consigne d'organisation**, pas un mécanisme: BASE ne sait pas, à votre place, qu'un texte contient des données personnelles. C'est à vous de filtrer en amont. BASE aide ensuite à garder la frontière visible (métadonnée `sensitivity`, contrôle d'égress), mais la décision d'entrée des contenus vous appartient.
+Cette règle est une **consigne d'organisation**, pas un mécanisme: BASE ne sait pas, à votre place, qu'un texte contient des données personnelles. Le tri en amont vous revient. BASE aide ensuite à garder la frontière visible (métadonnée `sensitivity`, contrôle d'égress), mais la décision de faire entrer un contenu vous appartient.
 
 ## Phase 1: voir la forme d'un assistant (15 min)
 
@@ -63,7 +63,7 @@ Ouvrez l'exemple de l'office du tourisme de Veytaux pour voir, sans rien install
   node .ai/base.mjs route "Quelles activités à faire cet après-midi ?" --root .
   ```
 
-Objectif de la phase: reconnaître la **forme** (agent, process, données, template) que vous allez reproduire avec vos propres procédures internes. L'office de Veytaux est volontairement fictif et sans donnée personnelle.
+Objectif de la phase: reconnaître la **forme** (agent, process, données, template) que vous reproduirez avec vos propres procédures internes. L'office de Veytaux est volontairement fictif et dépourvu de toute donnée personnelle.
 
 ## Phase 2: partir d'un starter et importer 1 à 2 procédures internes non personnelles (40 min)
 
@@ -77,13 +77,13 @@ Copiez un dossier de départ, puis faites entrer une ou deux de vos procédures 
    node .ai/base.mjs propose <chemin-cible> --from <votre-fichier> --root .
    ```
 
-   La proposition vous montre le changement. **Tant que vous ne validez pas, aucun fichier n'est écrit.** Quand le diff vous convient, vous confirmez l'écriture médiée et atomique:
+   La proposition vous montre le changement. **Tant que vous ne validez pas, aucun fichier n'est écrit.** Lorsque le diff vous convient, vous confirmez l'écriture médiée et atomique:
 
    ```
    node .ai/base.mjs commit <id-du-changement> --root . --confirmed
    ```
 
-Ce que vous observez ici est un **mécanisme**: l'import passe par une étape de proposition, l'écriture est différée jusqu'à votre accord, puis appliquée de façon atomique. Les opérations médiées sont consignées localement dans le journal `.ai/trace` (opération, ressource, statut, durée), sans contenu métier par défaut.
+Ce que vous observez ici est un **mécanisme**: l'import passe par une étape de proposition, l'écriture attend votre accord, puis s'applique de façon atomique. Les opérations médiées sont consignées localement dans le journal `.ai/trace` (opération, ressource, statut, durée), sans contenu métier par défaut.
 
 ## Phase 3: prouver que ça marche, valider et router (15 min)
 
@@ -103,9 +103,9 @@ Vérifiez la cohérence du corpus, puis routez deux ou trois demandes réalistes
   node .ai/base.mjs route "rediger une lettre type d'accuse de reception" --root .
   ```
 
-  Notez deux comportements possibles, tous deux **mécanismes**:
+  Observez deux comportements possibles, tous deux **mécanismes**:
   - le routeur propose l'agent et le process pertinents, **en local** (lexical, zéro réseau par défaut);
-  - ou il **s'abstient** (hors périmètre, ambigu, clarification nécessaire) plutôt que de donner une fausse certitude. L'abstention est un résultat **voulu**, pas un échec.
+  - ou il **s'abstient** (hors périmètre, ambigu, clarification nécessaire) plutôt que de donner une fausse certitude. L'abstention est un résultat **voulu**, non un échec.
 
 > Pour aller plus loin, le dépôt fournit un jeu de routes attendues rejouables (`route-test`). Le contrat de tests est documenté dans [`specs/TESTING.md`](../../specs/TESTING.md).
 
@@ -113,9 +113,9 @@ Vérifiez la cohérence du corpus, puis routez deux ou trois demandes réalistes
 
 Faites le point, explicitement, sur la frontière des données.
 
-- **Reste local sans aucun appel modèle:** le routage par défaut (lexical), `base validate`, l'import par diff, le journal `.ai/trace`. Le ranking sémantique avancé n'envoie du texte à un fournisseur d'embeddings **que si vous l'activez**, et une option locale (Ollama) existe (voir [Sécurité des données de routage](../trust/securite-donnees-routage.md)).
-- **Ce qu'un appel à un modèle enverrait:** dès qu'un assistant fait appel à un modèle génératif, le contexte projeté part vers ce modèle. C'est **votre choix** de fournisseur et il vit **hors de BASE**.
-- **Le garde-fou de BASE:** le contrôle d'**égress** vérifie, **avant** l'appel, qu'une ressource confidentielle ou une racine déclarée local-only **n'est pas** envoyée à un modèle distant. C'est un **mécanisme**, pas une consigne. Le MCP est en lecture seule par défaut (option jeton porteur), le Studio est en boucle locale uniquement, et le stockage des réglages garde des **noms** de variables d'environnement, pas des clés d'API en clair.
+- **Reste local, sans aucun appel modèle:** le routage par défaut (lexical), `base validate`, l'import par diff, le journal `.ai/trace`. Le ranking sémantique avancé n'envoie du texte à un fournisseur d'embeddings **que si vous l'activez**, et une option locale (Ollama) existe (voir [Sécurité des données de routage](../trust/securite-donnees-routage.md)).
+- **Ce qu'un appel à un modèle enverrait:** dès qu'un assistant sollicite un modèle génératif, le contexte projeté part vers ce modèle. Le choix du fournisseur est **le vôtre**, et il vit **hors de BASE**.
+- **Le garde-fou de BASE:** le contrôle d'**égress** vérifie, **avant** l'appel, qu'une ressource confidentielle ou une racine déclarée local-only **n'est pas** envoyée à un modèle distant. C'est un **mécanisme**, non une consigne. Le MCP est en lecture seule par défaut (option jeton porteur), le Studio fonctionne en boucle locale uniquement, et le stockage des réglages conserve des **noms** de variables d'environnement, jamais des clés d'API en clair.
 
 Pour comprendre cette frontière en détail, lisez la page de référence: [Périmètres et gouvernance d'égress](../tutoriel/equipe-2-perimetres-et-egress.md), complétée par [Protection des données](../trust/protection-des-donnees.md).
 
@@ -131,7 +131,7 @@ Pour comprendre cette frontière en détail, lisez la page de référence: [Pér
 
 ## Avant toute donnée réelle: l'AIPD/DPIA
 
-Ce pilote s'arrête **avant** la moindre donnée personnelle réelle. Pour franchir cette étape, votre institution doit conduire son analyse d'impact (AIPD/DPIA) et tenir son registre des traitements. BASE fournit un **squelette réutilisable** à compléter, le [Modèle d'analyse d'impact DPIA](dpia-modele.md), mais il **ne réalise pas** l'analyse à votre place et ne constitue pas un avis juridique. Le cadrage institutionnel (classification, base légale, fournisseur de modèle autorisé, rétention) est détaillé, côté décisions, dans le [Kit administration et secteur public](kit-administration-secteur-public.md) et la page [Protection des données](../trust/protection-des-donnees.md).
+Ce pilote s'arrête **avant** la moindre donnée personnelle réelle. Pour franchir cette étape, votre institution doit conduire son analyse d'impact (AIPD/DPIA) et tenir son registre des traitements. BASE fournit un **squelette réutilisable** à compléter, le [Modèle d'analyse d'impact DPIA](dpia-modele.md); il **ne réalise pas** l'analyse à votre place et ne constitue pas un avis juridique. Le cadrage institutionnel (classification, base légale, fournisseur de modèle autorisé, rétention) est détaillé, côté décisions, dans le [Kit administration et secteur public](kit-administration-secteur-public.md) et la page [Protection des données](../trust/protection-des-donnees.md).
 
 Rappel: cette page est informative. La responsabilité de l'AIPD/DPIA et de la politique de sécurité reste celle de votre institution.
 

@@ -24,7 +24,7 @@ allowed-tools: Read Write Edit Glob Grep
 
 # Améliorer un agent
 
-Enrichir ou modifier un agent existant: ajouter des workflows, des connaissances, corriger des comportements, ajuster la structure.
+Enrichir ou modifier un agent existant: lui ajouter des workflows, des connaissances, corriger ses comportements, ajuster sa structure.
 
 ## Inputs
 
@@ -36,7 +36,7 @@ Demande à l'utilisateur:
 
 ### 1. Comprendre l'agent existant
 
-Lis l'AGENT.md de l'agent ciblé. Résume à l'utilisateur:
+Lis l'AGENT.md de l'agent visé, puis résume-le à l'utilisateur:
 
 > «Voici ce que fait actuellement votre assistant [nom]:
 > - **Rôle:** [description]
@@ -87,11 +87,11 @@ Attendre la validation explicite.
 
 Pour chaque modification validée:
 - Crée les nouveaux SKILL.md dans `skills/processes/` ou `skills/competences/`
-- Si c'est une modification d'un fichier existant, crée une nouvelle version plutôt que de modifier l'existant
+- S'il s'agit de modifier un fichier existant, crée une nouvelle version plutôt que d'écraser l'ancienne
 - Mets à jour la table de routage et l'inventaire dans AGENT.md (point unique)
-- Mets à jour la configuration outil si nécessaire (copie les nouveaux skills au bon endroit)
+- Mets à jour la configuration outil au besoin (copie les nouveaux skills au bon endroit)
 
-Montre un résumé de chaque changement.
+Présente ensuite un résumé de chaque changement.
 
 ### 5. Tester
 
@@ -106,6 +106,6 @@ Montre un résumé de chaque changement.
 ## Ce que tu ne fais jamais dans ce process
 
 - **Modifier sans comprendre l'existant.** Toujours lire l'AGENT.md et les skills actuels.
-- **Écraser une version existante.** Créer une nouvelle version plutôt que modifier l'originale.
+- **Écraser une version existante.** Créer une nouvelle version plutôt que de toucher à l'originale.
 - **Ajouter de la complexité inutile.** Résoudre le problème décrit, pas un problème imaginé.
 - **Modifier sans point de décision.** Toute modification est proposée, validée, puis implémentée.

@@ -1,7 +1,7 @@
-<!-- fr-synced: f200c870de137be95c460c0c0e956759955a4776 -->
+<!-- fr-synced: c7971e811c403dd1c1b6c9575267c0538e4ef3a2 -->
 # Knowing when to turn on the local index (benchmarks)
 
-If you run a BASE repository and you're unsure whether to turn on the local index, this page gives you reproducible numbers to make the call. You'll see how many documents it takes before the in-memory scan no longer suffices, what the index brings at that point, and what it costs.
+If you run a BASE repository and you're unsure whether to turn on the local index, this page gives you reproducible numbers to make the call. You'll read how many documents it takes before the in-memory scan stops being enough, what the index brings from then on, and what it costs.
 
 ## Reproducing
 
@@ -11,7 +11,7 @@ node packages/base-index-local/bin/base-index-local.mjs bench --sizes 100,1000,1
 npm run bench:index
 ```
 
-Synthetic corpus (agents + processes, 20 processes per agent), median of 20 queries per size. Cold build; search measured cold (vocabulary scanned on every query) and warm (vocabulary cached on the index object).
+Synthetic corpus (agents + processes, 20 processes per agent), median of 20 queries per size. Cold build; search measured cold (the vocabulary is swept on every query) and warm (the vocabulary stays cached on the index object).
 
 ## Results (portable, Node 24)
 
@@ -22,14 +22,14 @@ Synthetic corpus (agents + processes, 20 processes per agent), median of 20 quer
 | 10,500 | 83 ms | 0.65 ms | 0.13 ms |
 | 52,500 | 394 ms | 5.3 ms | 0.9 ms |
 
-The numbers vary from machine to machine: rerun `bench` to measure your own. No aggressive threshold is enforced in CI: a *smoke* test only checks that the report is produced, not that it hits a brittle number.
+The numbers vary from one machine to the next: rerun `bench` to measure your own. No strict threshold is enforced in CI: a *smoke* test only checks that the report is produced, not that it hits a brittle number.
 
 ## Reading the numbers
 
-- **Up to a few thousand documents**, the core's in-memory scan is already instant: the index brings nothing observable. Don't turn it on.
-- **At 10,000 to 50,000**, the build stays under a second and warm search under a millisecond: the index makes comfortable what a repeated scan would make costly.
-- **Beyond that**, see [Understanding scale](../learn/comprendre-echelle.md): an external engine becomes legitimate, behind the same candidates -> decision shape.
+- **Up to a few thousand documents**, the core's in-memory scan is already instant: the index brings nothing you'd notice. Don't turn it on.
+- **From 10,000 to 50,000**, the build stays under a second and warm search under a millisecond: the index makes comfortable what a repeated scan would make costly.
+- **Beyond that**, see [Understanding scale](../learn/comprendre-echelle.md): an external engine becomes legitimate, behind the same candidates -> decision logic.
 
 ## With and without embeddings
 
-The numbers above are **lexical** (zero dependencies). Precomputed embeddings add a cost to the build (one provider call per document, grouped into batches) and one vector stored per document; at query time, only the query is embedded. This part runs at usage time and depends on the model or provider; it does not enter the index's deterministic freshness gate.
+The numbers above are **lexical** (no dependencies whatsoever). Precomputed embeddings add a cost to the build (one provider call per document, processed in batches) and one vector stored per document; at query time, only the query's embeddings are computed. This part runs at usage time and depends on the model or provider; it does not enter the index's deterministic freshness gate.

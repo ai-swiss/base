@@ -1,4 +1,4 @@
-<!-- fr-synced: 3a97e156b3f1d0e2d354f8762cf273c113dba15a -->
+<!-- fr-synced: b0a7eb3c476a78dc0ff0851c55e2f37010509f6c -->
 # Making the case for BASE: sovereignty, trust, compliance
 
 Adopting BASE often means winning someone over first: a client worried about their data, an IT department, a compliance officer. Here, in one place, is what you need to defend that choice without dodging the hard questions: data sovereignty, data protection, security, license, and governance. Written for any organization evaluating BASE, from the freelancer to the institution, this page points to the reference documents rather than replacing them.
@@ -7,13 +7,13 @@ Adopting BASE often means winning someone over first: a client worried about the
 
 BASE is a **local-first** and **open** framework for structuring work with AI: your knowledge stays in text files you own, and you decide explicitly what leaves, if anything, for an AI tool.
 
-BASE's sovereignty rests on its architecture, not on a label. Local-first, the tool runs on your machine and keeps the knowledge in text files you own: as long as no remote provider is connected, nothing leaves the machine, and there is no server to compel. Three points need clarifying, though. A local model is not a Swiss model: locality says where it runs, not where it comes from. And a Swiss model is not thereby confidential if it is hosted on infrastructure under foreign control: the US CLOUD Act reaches data "wherever it is stored", and even a Swiss provider remains compellable under Swiss law. What leaves therefore depends on your configuration and on the contract: data residency, use for training, subprocessors, jurisdiction. The framework and the expertise are sovereign; the model remains your external choice, to be verified.
+BASE's sovereignty rests on its architecture, not on a label. Local-first, the framework runs on your machine and keeps the knowledge in text files you own: as long as no remote provider is connected, nothing leaves the machine, and there is no server to compel. Two points need clarifying, though. A local model is not a Swiss model: locality says where it runs, not where it comes from. And a Swiss model is not thereby confidential if it is hosted on infrastructure under foreign control: the US CLOUD Act reaches data "wherever it is stored". Symmetrically, a Swiss provider too remains compellable, but under Swiss law: no jurisdiction offers absolute confidentiality. What leaves therefore depends on your configuration and on the contract: data residency, use for training, subprocessors, jurisdiction. The framework and the expertise are sovereign; the model remains your external choice, to be verified.
 
 Beyond this hosting sovereignty, the one that decides over the long run is **cognitive sovereignty**: owning how your way of thinking is articulated with AI, in readable, portable text that you can review, correct, and take with you. That is the layer BASE keeps on your side, whatever the model. See [Co-thinking with AI](../learn/co-penser-avec-lia.md).
 
 ## Data sovereignty
 
-- The core of BASE is **local**: it makes **no network calls by default**. The default routing is 100% local (lexical, zero network).
+- The core of BASE is **local**: it makes **no network calls by default**, and the default routing is lexical (zero network).
 - A feature that would send data out (advanced semantic routing, an embeddings provider, an external API) is **off by default** and only activates through an explicit choice, with a documented local option (Ollama).
 - Your files stay portable (Markdown): you can switch AI tools without losing your structure.
 

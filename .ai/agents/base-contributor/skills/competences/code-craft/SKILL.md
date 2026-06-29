@@ -16,12 +16,12 @@ allowed-tools: Read
 This skill applies whenever code is written, modified, or reviewed, in any language, in any
 repo. It complements `../code-planning/SKILL.md` (which covers the plan); this one covers the act of
 coding. The standard: the world's pickiest reviewer reads the diff
-and finds **nothing unjustifiable**. Not "nothing wrong": nothing that cannot be explained in
-one sentence, why it is there, in that form, in that place.
+and finds **nothing unjustifiable**. Not "nothing wrong", but nothing that cannot be explained in
+one sentence: why it is there, in that form, in that place.
 
-The conviction underneath it all: code is read a hundred times more often than it is written,
+The conviction beneath it all: code is read a hundred times more often than it is written,
 and debt always starts with a few lines nobody really looked at. Mastery is not using
-patterns; it is that everything present has earned its place, and everything else is absent.
+patterns; it is that everything present has earned its place, and everything else is gone.
 
 ---
 
@@ -37,13 +37,13 @@ patterns; it is that everything present has earned its place, and everything els
   pass." Without a verifiable criterion you are not coding, you are hoping.
 - **Work the smallest correct scope.** Nothing beyond the request: no unrequested
   configurability, no error handling for impossible scenarios, no field "for later." If 200
-  lines could be 50, rewrite.
+  lines could be 50, write the 50.
 
 ## 2. The law of abstractions: each one earns its place or does not exist
 
 This is the heart of the highest bar. An abstraction (function, type, interface, layer,
-parameter, module) costs four times: to understand, to name, to maintain, and to work around
-the day it turns out wrong. It exists only if it pays that back.
+parameter, module) costs four times over: to understand, to name, to maintain, and to work
+around the day it turns out wrong. It exists only if it pays that back.
 
 - **An abstraction is justified by a real consumer**, never by an imagined future. Rule of
   three: generalize at the third occurrence, not before. At the second, duplicate and note
@@ -57,7 +57,7 @@ the day it turns out wrong. It exists only if it pays that back.
   parameter nobody passes; a boolean that switches behavior (= two functions); a name with
   "And" (= two things); catch-all `Manager`, `Helper`, `Utils`, `Service` (= the domain was
   never named).
-- **The extension point is a new function, not one more parameter.** When a need forces a
+- **The extension point is a new function, not one more parameter.** When a need pushes a
   signature to grow, it is usually a second function asking to be born.
 - **"Make the change easy, then make the easy change"** (Beck). If the code resists the
   modification, refactor first, in a separate commit, tests green before and after, then
@@ -75,7 +75,7 @@ The detail lives in the doctrine of `../code-planning/SKILL.md` §3; the essence
   state is the prime suspect in every bug.
 - **Parse once, type forever.** A text format crosses a single boundary that turns it into
   typed data. Validate at the system's borders (user input, external APIs); trust the
-  inside: re-checking what the type already guarantees is noise that hides the real checks.
+  inside, because re-checking what the type already guarantees is noise that hides the real checks.
 - **Errors are data.** An expected failure becomes a typed value the caller handles; an
   impossible error is not caught, it must make noise. Never a swallowing `catch`, never a
   silent fallback, never an unannounced cap or truncation.
@@ -94,7 +94,7 @@ The detail lives in the doctrine of `../code-planning/SKILL.md` §3; the essence
 - **Scout rule, but in the open**: an inconsistency found in passing (misleading name, old
   dead code, false doc, cosmetics) gets fixed, never "later", but the fix is declared
   (dedicated commit or note) and stays separable from the main change. Repairing silently is
-  almost as bad as not repairing: the review must be able to judge each intention in
+  almost as bad as not repairing, because the review must be able to judge each intention in
   isolation.
 - **No cohabitation.** Whatever a change replaces dies in the same change. The old path
   "kept just in case" is debt wearing a disguise.
@@ -146,7 +146,7 @@ This is the review that does not depend on a reviewer's talent: it is institutio
 - **The rewriter's enthusiasm**: rewriting a healthy module because you would have done it
   differently. The replacement cost includes every already-fixed bug the rewrite
   reintroduces.
-- **Cosmetic completeness**: producing a lot to look thorough. Density is politeness: every
+- **Cosmetic completeness**: producing a lot to look thorough. Density is politeness, so every
   line, of code as of doc, must deserve its reading.
 - **The lying green**: tests that pass because they test nothing (no discriminating
   assertion, doubles that short-circuit the logic under test). Checking that a test can fail

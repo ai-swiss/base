@@ -43,10 +43,10 @@ Cet exemple est un point de départ. Pour créer un assistant totalement différ
 
 ## Avertissement
 
-Cet exemple est **illustratif**. Son objectif principal est de démontrer les possibilités d'interaction humain-IA à travers un assistant structuré. Les données métier (entreprise fictive, charte éditoriale, audiences) ne constituent pas des conseils professionnels en communication. Avant toute utilisation réelle, remplacez l'ensemble des données par les vôtres.
+Cet exemple est **illustratif**. Il vise d'abord à montrer ce que permet l'interaction entre l'humain et l'IA dans un assistant structuré. Les données métier (entreprise fictive, charte éditoriale, audiences) ne constituent pas des conseils professionnels en communication. Avant toute utilisation réelle, remplacez l'ensemble des données par les vôtres.
 
 ---
 
-BASE est un framework par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
 
 Licence: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)

@@ -17,8 +17,8 @@ learning_level: beginner
 
 *⏱ ~10 min · module 2/3, parcours Découverte*
 
-**Vous allez**: constater que l'assistant suit vos fichiers, pas une mémoire cachée, prouvé par le ✅ ci-dessous.
-**Il vous faut**: le module 1 terminé, l'office du tourisme de Veytaux ouvert dans votre outil.
+**Vous allez**: vérifier que l'assistant suit vos fichiers, et non une mémoire cachée, prouvé par le ✅ ci-dessous.
+**Il vous faut**: le module 1 terminé et l'office du tourisme de Veytaux ouvert dans votre outil.
 ↻ **Rappel**: sans regarder, à quoi sert le routage? (à choisir la bonne tâche selon l'intention)
 
 1. Ouvrez `infos/tarifs.md`. Changez le prix de la **Visite guidée du vieux village** de 12 à 14 CHF.
@@ -28,10 +28,10 @@ learning_level: beginner
 
 ✅ **Vérifiez**: l'assistant annonce 14 CHF (le nouveau prix), pas 12. S'il dit encore 12, voir les pannes.
 
-💡 **Pourquoi ça a marché**: l'assistant n'a pas de base de données ni de mémoire cachée, il LIT vos fichiers Markdown à chaque tâche. Modifiez le fichier et son comportement suit. La nouvelle conversation force une relecture; dans l'ancienne, il pouvait garder l'ancien prix en tête.
+💡 **Pourquoi ça a marché**: l'assistant n'a ni base de données ni mémoire cachée; il LIT vos fichiers Markdown à chaque tâche. Changez le fichier, son comportement change avec lui. La nouvelle conversation l'oblige à relire; dans l'ancienne, il pouvait conserver l'ancien prix en tête.
 
-🔁 **Chez vous**: quel chiffre, règle ou information change régulièrement dans votre métier et devrait vivre dans UN fichier qu'on met à jour?
+🔁 **Chez vous**: quel chiffre, quelle règle ou quelle information change souvent dans votre métier et mériterait de tenir dans UN fichier que l'on met à jour?
 
-→ **Et maintenant**: [Module 3: votre dossier](decouverte-3-votre-dossier.md): vous quittez l'office du tourisme de Veytaux pour votre propre espace.
+→ **Et maintenant**: [Module 3: votre dossier](decouverte-3-votre-dossier.md). Vous quittez l'office du tourisme de Veytaux pour votre propre espace.
 
-🆘 **Pannes courantes**: *Il dit encore 12 CHF*: (a) le fichier n'a pas été enregistré; (b) vous êtes resté dans la même conversation: ouvrez-en une nouvelle. *Vous ne trouvez pas tarifs.md*: il est dans le sous-dossier `infos/`.
+🆘 **Pannes courantes**: *Il dit encore 12 CHF*: (a) le fichier n'a pas été enregistré; (b) vous êtes resté dans la même conversation, ouvrez-en une nouvelle. *Vous ne trouvez pas tarifs.md*: il se trouve dans le sous-dossier `infos/`.

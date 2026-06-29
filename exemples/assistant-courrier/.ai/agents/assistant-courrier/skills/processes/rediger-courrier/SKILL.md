@@ -18,7 +18,7 @@ routing:
     - Répondre à un message déjà reçu.
     - Paramétrage initial de l'entreprise.
 name: rediger-courrier
-keywords: [rédiger, écrire, courrier, lettre, email, relance, confirmation, remerciement, demande]
+keywords: [rediger, ecrire, courrier, lettre, email, relance, confirmation, remerciement, demande]
 argument-hint: "[destinataire et objet du courrier]"
 user-invocable: true
 allowed-tools: Read Write Edit Glob Grep
@@ -57,7 +57,7 @@ Lis la demande et reformule-la en termes clairs:
 > Est-ce correct? Y a-t-il des précisions à ajouter?»
 
 Clarifie si nécessaire:
-- Y a-t-il une date, un montant, un délai ou un engagement à mentionner? Demande-les précisément - ne les invente jamais.
+- Y a-t-il une date, un montant, un délai ou un engagement à mentionner? Demande-les précisément, ne les invente jamais.
 - Y a-t-il un historique avec ce destinataire (courrier précédent, dossier en cours)?
 - Y a-t-il des éléments à ne surtout pas mentionner?
 
@@ -139,7 +139,7 @@ Itère autant de fois que nécessaire. Chaque modification est présentée en en
 
 ### 6. Finaliser et enregistrer
 
-**⚠ Point de décision - avant écriture:**
+**⚠ Point de décision, avant écriture:**
 > «Je suis prêt à enregistrer le courrier validé dans `courriers/[nom-fichier].md`. Confirmez-vous?»
 
 Enregistre le courrier validé dans `courriers/YYYY-MM-DD_destinataire_objet.md` en utilisant le template `templates/courrier_v1.md` (lettre) ou `templates/email_v1.md` (email).

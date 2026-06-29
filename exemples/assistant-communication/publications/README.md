@@ -1,6 +1,6 @@
 # Publications
 
-Ce dossier rassemble les contenus rédigés par l'assistant. Chaque publication est un fichier markdown dont le nom indique la date et le type.
+Ce dossier rassemble les contenus rédigés par l'assistant. Chaque publication est un fichier markdown dont le nom précise la date et le type.
 
 ## Convention de nommage
 
@@ -20,4 +20,4 @@ YYYY-MM-DD_type_sujet.md
 
 ## Organisation
 
-Les publications sont classées par date de création. Pour retrouver une publication, consultez le nom du fichier ou demandez à l'assistant de lister l'historique.
+Les publications sont classées par date de création. Pour en retrouver une, lisez le nom du fichier ou demandez à l'assistant de lister l'historique.

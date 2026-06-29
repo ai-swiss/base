@@ -14,11 +14,11 @@ keywords: [installer, claude code, cli, terminal, anthropic, npm, demarrer]
 
 # Installer Claude Code
 
-Au bout de cette page, vous aurez un assistant qui lit et modifie vos fichiers sous votre contrôle, prêt à travailler sur vos vrais documents: BASE cesse d'être un texte qu'on lit pour devenir un outil qui agit. Cela suppose d'être à l'aise dans un terminal et de disposer d'un compte Anthropic. En quelques minutes, vous installez Claude Code, vous le lancez dans un exemple BASE et vous faites une première demande; vous saurez aussi quoi faire en cas de blocage.
+À la fin de cette page, vous disposerez d'un assistant qui lit et modifie vos fichiers sous votre contrôle, prêt à travailler sur vos vrais documents: BASE cesse alors d'être un texte qu'on lit pour devenir un cadre qui agit. Il faut pour cela être à l'aise dans un terminal et posséder un compte Anthropic. En quelques minutes, vous installez Claude Code, vous le lancez dans un exemple BASE et vous faites une première demande; vous saurez aussi comment réagir en cas de blocage.
 
-Claude Code, l'agent IA d'Anthropic en ligne de commande, n'est qu'une porte d'entrée parmi d'autres: la plupart des outils IA capables de lire et modifier vos fichiers conviennent (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code). Cette page documente Claude Code; pour les autres, reportez-vous à leur installateur.
+Claude Code, l'agent IA d'Anthropic en ligne de commande, n'est qu'une porte d'entrée parmi d'autres: la plupart des outils IA capables de lire et de modifier vos fichiers font l'affaire (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code). Cette page décrit Claude Code; pour les autres, reportez-vous à leur installateur.
 
-Il vous faut un compte Anthropic (abonnement Claude ou accès API). Aucune autre dépendance n'est requise avec l'installateur natif.
+Il vous faut un compte Anthropic (abonnement Claude ou accès API). L'installateur natif ne réclame aucune autre dépendance.
 
 ## 1. Installer Claude Code
 
@@ -34,9 +34,9 @@ curl -fsSL https://claude.ai/install.sh | bash
 irm https://claude.ai/install.ps1 | iex
 ```
 
-Si vous avez déjà Node 18 ou plus, `npm install -g @anthropic-ai/claude-code` fonctionne aussi. Les commandes exactes peuvent évoluer: en cas de doute, suivez la [documentation officielle](https://code.claude.com/docs).
+Si vous disposez déjà de Node 18 ou d'une version plus récente, `npm install -g @anthropic-ai/claude-code` convient également. Les commandes exactes peuvent évoluer: dans le doute, fiez-vous à la [documentation officielle](https://code.claude.com/docs).
 
-Vérifiez avec `claude --version`. Au premier lancement, `claude` vous demande de vous connecter à votre compte.
+Vérifiez avec `claude --version`. Au premier lancement, `claude` vous invite à vous connecter à votre compte.
 
 ## 2. Lancer `claude` dans un exemple
 
@@ -44,9 +44,9 @@ Vérifiez avec `claude --version`. Au premier lancement, `claude` vous demande d
 2. Ouvrez un terminal dans ce dossier
 3. Lancez `claude`
 
-Le fichier `CLAUDE.md` à la racine de l'exemple donne le contexte de départ à Claude Code via `@import`: l'agent est chargé sans autre configuration.
+Le fichier `CLAUDE.md` placé à la racine de l'exemple fournit à Claude Code son contexte de départ via `@import`: l'agent se charge sans autre configuration.
 
-Pas encore le dépôt? Voir [Obtenir BASE](obtenir-base.md).
+Vous n'avez pas encore le dépôt? Voir [Obtenir BASE](obtenir-base.md).
 
 ## 3. Première demande
 
@@ -54,18 +54,18 @@ Tapez:
 
 > «Bonjour, je voudrais configurer mon activité»
 
-L'assistant vous guide, propose des fichiers et attend votre validation pour les décisions importantes. La suite du parcours (premier devis, marqueurs `[A VALIDER]`) est dans le [démarrage express](quickstart.md).
+L'assistant vous guide, propose des fichiers et attend votre validation pour les décisions importantes. La suite du parcours (premier devis, marqueurs `[A VALIDER]`) figure dans le [démarrage express](quickstart.md).
 
 ## Dépannage de base
 
 | Symptôme | Piste |
 | --- | --- |
-| `claude: command not found` | Fermer et rouvrir le terminal; sinon ajouter le chemin indiqué par l'installateur à votre PATH |
+| `claude: command not found` | Fermer puis rouvrir le terminal; sinon, ajouter à votre PATH le chemin indiqué par l'installateur |
 | Problème de connexion au compte | Lancer `claude`, puis taper `/login` |
-| L'agent ne se charge pas | Vérifier que `claude` est lancé dans le dossier de l'exemple, celui qui contient `CLAUDE.md` (`pwd` pour contrôler) |
+| L'agent ne se charge pas | Vérifier que `claude` tourne bien dans le dossier de l'exemple, celui qui contient `CLAUDE.md` (`pwd` pour s'en assurer) |
 | Besoin d'aide dans la session | Taper `/help` |
-| Blocage sur une étape technique | Demander à Claude Code lui-même: «J'ai cette erreur: [coller l'erreur]. Que se passe-t-il?» Précisez votre niveau si besoin. |
+| Blocage sur une étape technique | Interroger Claude Code lui-même: «J'ai cette erreur: [coller l'erreur]. Que se passe-t-il?» Précisez votre niveau au besoin. |
 
 ---
 
-BASE est un framework par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).

@@ -1,7 +1,7 @@
-<!-- fr-synced: 00bf174c6f95a30df6d63ad672c4ffb9ffd502a3 -->
+<!-- fr-synced: 5322e7e2e90aff3784cfd8ce29b4014c9b726cce -->
 # Set up an AI workspace
 
-Setting up a local workspace means keeping your agents and your context in your own folder, under your control, rather than inside a web platform. It means choosing a tool and spending a few minutes on it. This page points you to the guide that fits your situation; each guide is short and self-contained. BASE works with most AI tools that can read your Markdown files.
+Setting up a local workspace means keeping your agents and your context in your own folder, under your control, rather than inside a web platform. To do so, you choose a tool and spend a few minutes on it. This page points you to the guide that fits your situation; each one is short and stands on its own. BASE works with most AI tools that can read your Markdown files.
 
 ## Your situation, your page
 
@@ -15,19 +15,19 @@ Setting up a local workspace means keeping your agents and your context in your 
 | You want to see, evaluate, and tend to your BASE | `base studio --root mon-dossier` (the graphical Studio) |
 | You don't have the repository yet | [Get BASE](obtenir-base.md) |
 
-Most AI tools that can read your files also work (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code): tell them "Read `.ai/agents/[nom-agent]/AGENT.md` and follow its instructions." Some tools discover skills in `SKILL.md` format natively; otherwise, the agent loads skills on demand by reading them as Markdown files.
+Most AI tools that can read your files are a good fit too (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code): tell them "Read `.ai/agents/[nom-agent]/AGENT.md` and follow its instructions." Some recognize skills in `SKILL.md` format natively; otherwise, the agent loads them on demand, reading them as plain Markdown files.
 
 ## Common prerequisites
 
-- **An AI tool that can read your files** (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code): nothing beyond the tool itself.
+- **An AI tool that can read your files** (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code): the tool itself is enough.
 - **BASE CLI or MCP server**: Node 18 or higher. This is the core's only dependency.
 - **BASE Studio**: nothing else. `base studio` installs its dependencies on first launch and opens your browser.
 
-> **Your AI tool is the experience; Studio is the workshop.** Day-to-day work happens in your files, with your usual tool; Studio is for building, evaluating, and tending to what they contain.
+> **Your AI tool is the experience; Studio is the workshop.** Day to day, you work in your files, with your usual tool; Studio is for building, evaluating, and tending to what they contain.
 
 ## Why a local workspace?
 
-Your files, your instructions, and your context persist in your own folder, under your control, instead of living in a web platform. Depending on the tool you choose, the content sent to the model may still pass through the AI provider; check the applicable terms before using sensitive data.
+Your files, your instructions, and your context stay in your own folder, under your control, instead of residing on a web platform. Depending on the tool you choose, the content sent to the model may still pass through the AI provider; check the applicable terms before entrusting it with sensitive data.
 
 ## What's next?
 

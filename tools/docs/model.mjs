@@ -13,6 +13,7 @@ const SKIP_DIRS = new Set([
   ".git",
   ".plans",
   ".temp",
+  ".admin",
   ".base-docs",
   ".astro",
   ".vite",

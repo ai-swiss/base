@@ -8,7 +8,7 @@ scope: team
 status: active
 sensitivity: internal
 valid_until: 2026-01-20
-keywords: [agenda, événement, festival, sortie, programme]
+keywords: [agenda, evenement, festival, sortie, programme]
 ---
 # L'agenda du moment à Veytaux-les-Bains
 

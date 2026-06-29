@@ -25,9 +25,9 @@ core/frontmatter  core/        core/        core/            mcp/src/auth.ts
                   .mjs         .mjs
 ```
 
-- **Broker** = the single place guarantees live (the "Broker = guarantees" plane). Stateless; every function takes `root` and is pure w.r.t. the filesystem at that root.
-- **Broker operations** (full set): `inventory · validate · search · route · open · access · invoke · propose · commit · promote · build · markers · index · trace · maintain`. Reads/searches consult **ports**; **route** chooses an agent→process (`routing.md`); writes go through **propose→commit** (`writes.md`); `build` emits **derived projections** (`build.md`). The five ports are the extension points; these are the operations that use them.
-- **Ranker scores, Router chooses, Broker enforces** — three distinct responsibilities that must never collapse into one abstraction. The Ranker assigns an explainable score to a resource; the Router (`routeRequest`, `routing.md`) decides whether a route is usable, ambiguous, in need of clarification, or out of scope; the Broker enforces confinement, policy and trace. The Router is an *operation* that reuses the Ranker port — **not a sixth port**.
+- **Broker** = the single place guarantees live (the "Broker = guarantees" plane). Stateless; every function takes `root` and is pure with respect to the filesystem at that root.
+- **Broker operations** (full set): `inventory · validate · search · route · open · access · invoke · propose · commit · promote · build · markers · index · trace · maintain`. Reads and searches consult **ports**; **route** chooses an agent→process (`routing.md`); writes go through **propose→commit** (`writes.md`); `build` emits **derived projections** (`build.md`). The five ports are the extension points; these are the operations that use them.
+- **Ranker scores, Router chooses, Broker enforces:** three distinct responsibilities that must never collapse into one abstraction. The Ranker assigns an explainable score to a resource; the Router (`routeRequest`, `routing.md`) decides whether a route is usable, ambiguous, in need of clarification, or out of scope; the Broker enforces confinement, policy and trace. The Router is an *operation* that reuses the Ranker port, **not a sixth port**.
 - **CLI** and **MCP** are thin adapters over the broker. The MCP additionally owns its own concern (`AuthProvider`), since networking is MCP-only.
 
 ## 2. Resource record (normative shape)
@@ -58,11 +58,11 @@ Every port receives a **resource record** produced by `inventoryResources` (FR-C
 }
 ```
 
-Field domains are defined by the canonical `base.schema.json` (`base.resource.v1`) at the repo root - the `30_schemas/` chapter links it rather than copying it.
+Field domains are defined by the canonical `base.schema.json` (`base.resource.v1`) at the repo root; the `30_schemas/` chapter links it rather than copying it.
 
 ## 3. The five ports
 
-A **port** is a plain function signature (Strategy as a function — no class hierarchy). The core ships one **default adapter** per port; integrators add more via `base.config.json` descriptors or trusted `base.config.mjs` adapters. Full contracts live in the per-port chapters; summary:
+A **port** is a plain function signature (Strategy as a function, no class hierarchy). The core ships one **default adapter** per port; integrators add more via `base.config.json` descriptors or trusted `base.config.mjs` adapters. Full contracts live in the per-port chapters; summary:
 
 | Port | Signature | Default adapter | Chapter |
 |---|---|---|---|
@@ -72,7 +72,7 @@ A **port** is a plain function signature (Strategy as a function — no class hi
 | `PolicyEnforcer` | `(resource, action, ctx) → {decision, reason, grant?}` | `advisoryPolicy` | `policy.md` |
 | `AuthProvider` (MCP) | `authenticate(req) → {ok, principal?}` | `NoAuth` | `mcp.md` |
 
-**Dogfooding rule (NFR / principle):** the default adapter is always the **first element** of its pipeline — no special-casing. `[coreSchemaValidator, ...config.validators]`, `[lexicalRanker, ...config.rankers]`.
+**Dogfooding rule (NFR / principle):** the default adapter is always the **first element** of its pipeline, with no special-casing. `[coreSchemaValidator, ...config.validators]`, `[lexicalRanker, ...config.rankers]`.
 
 ### The `ctx` object (passed to Validator / Ranker / PolicyEnforcer)
 A small, explicit context. Minimum fields the core sets:
@@ -89,7 +89,7 @@ ctx = {
   config: ResolvedConfig   // the resolved adapters (so ports can see siblings if needed)
 }
 ```
-Ports must tolerate missing optional fields. The set is intentionally minimal; it is extended only when a concrete adapter need is proven. Because `ctx` is an object, adding a field is additive and never breaks an existing adapter.
+Ports must tolerate missing optional fields. The set is intentionally minimal; it is extended only when a concrete adapter need is proven. Because `ctx` is an object, adding a field never breaks an existing adapter.
 
 ## 4. Config resolver & injection contract (AD-CONFIG-001)
 
@@ -127,7 +127,7 @@ export async function searchResources(root, query, { limit = 10, config } = {}) 
 
 ## 5. Façade & file layout (AD-CORE-002)
 
-`base-core.mjs` **remains the façade** and keeps exporting every name currently imported elsewhere — at minimum:
+`base-core.mjs` **remains the façade** and keeps exporting every name currently imported elsewhere, at minimum:
 
 `confineToRoot, pathExists, walkResourceFiles, parseFrontmatter, inventoryResources, buildManifest, writeManifest, openResource, accessResource, invokeTool, validateBase, canAccessResource, searchResources, routeRequest, runRouteTests, deriveRoutingSignals, decideRoute, buildRoutingRegistry, createMaintenanceReport, recordEvent, summarizeTrace, proposeChange, commitChange, promoteResource, listMarkers, formatMarkers, formatRouteResult, formatRouteTestResult, buildArtifacts, writeArtifacts, formatValidationResult, formatSearchResults, formatMaintenanceReport, formatTraceSummary, SCHEMA_VERSION, MANIFEST_FILENAME, TRACE_DIR, CHANGES_DIR, ROUTE_TESTS_FILENAME, ROUTING_DEFAULTS`
 
@@ -152,7 +152,7 @@ mcp/src/
   base-core-adapter.ts     # bridges MCP → broker (unchanged import path)
 ```
 
-**Verification that the façade holds:** `cd mcp && npm run build` (tsc) + `npm test` must stay green after each extraction — they exercise the imported names.
+**Verification that the façade holds:** `cd mcp && npm run build` (tsc) + `npm test` must stay green after each extraction; they exercise the imported names.
 
 ## 6. Call flow (example: `base discover "devis"`)
 

@@ -1,7 +1,7 @@
-<!-- fr-synced: a5aee6f04a1af3c7e131f033545cd33018f40750 -->
+<!-- fr-synced: 810db5f3b990f3cf72426bc4b61d82d4a4be400d -->
 # Install Cursor for your BASE agents
 
-To put your BASE agents to work, you need a workstation where the AI reads your files, writes files, and runs commands under your control: this page sets one up with Cursor, ready to go. By the end, you will have opened an example, made your first request, and you will know what to do if something gets stuck. This means installing software and creating an account with the vendor. Cursor is just one entry point: other AI tools that can read your files work too (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code); pick the one that suits you.
+To put your BASE agents to work, you need a workstation where the AI reads your files, writes files, and runs commands under your control: this page sets one up with Cursor, ready to go. By the end, you will have opened an example, made your first request, and you will know how to respond if something stalls. This calls for installing software and creating an account with the vendor. Cursor is just one entry point: other AI tools that can read your files work just as well (GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code, for instance); go with the one that suits you.
 
 Cursor is an AI workspace with a graphical interface.
 
@@ -27,7 +27,7 @@ Cursor is an AI workspace with a graphical interface.
 2. Go to **General**, **Privacy** section
 3. Select **Privacy Mode**
 
-This setting aims to limit the use of your data for training models, subject to the tool's terms, which you should verify yourself. It offers partial protection: for personal, customer, or regulated data, have the usage cleared by a legal or security review.
+This setting aims to restrict the use of your data for training models, subject to the tool's terms, which it falls to you to verify. The protection remains partial: for personal, customer, or regulated data, have the usage cleared by a legal or security review.
 
 ## 3. Open a BASE example
 
@@ -47,7 +47,7 @@ The assistant guides you, proposes files, and waits for your approval on the imp
 
 ## 5. Read your PDF, Word, and Excel files (optional)
 
-The AI reads text natively (Markdown, TXT, code). PDF, Word, and Excel are binary formats that require a tool. The **Office Viewer** extension (Extensions panel, `Cmd/Ctrl + Shift + X`) already lets you view them in Cursor. To have the AI read them, two options that can coexist:
+The AI reads text natively (Markdown, TXT, code). PDF, Word, and Excel are binary formats that call for a dedicated tool. The **Office Viewer** extension (Extensions panel, `Cmd/Ctrl + Shift + X`) already lets you view them in Cursor. To have the AI read them, two options, which can coexist:
 
 **Option A, convert to Markdown with [Docling](https://docling-project.github.io/docling/)** (reference documents, frequent use):
 
@@ -56,7 +56,7 @@ pip install docling   # or: uv tool install docling
 docling --to md --output "/chemin/sortie/" "/chemin/document.pdf"
 ```
 
-The generated `.md` file keeps headings and tables. To automate it, add the command as an example in `Cursor Settings > General > Rules and Commands`, then simply say "Convert this file [path]".
+The generated `.md` file keeps headings and tables. To automate the step, add the command as an example in `Cursor Settings > General > Rules and Commands`, then say "Convert this file [path]".
 
 **Option B, the [Document Loader](https://awslabs.github.io/mcp/servers/document-loader-mcp-server) MCP server** (one-off reading, on-the-fly extraction):
 
@@ -75,8 +75,8 @@ The generated `.md` file keeps headings and tables. To automate it, add the comm
 }
 ```
 
-3. Enable only `read_document`. The `read_image` tool interferes with the LLMs' native image reading.
-4. Test it: "Read this PDF [path] and summarize it." On macOS, if `uvx` isn't found, give its full path (`/usr/local/bin/uvx` or `~/.local/bin/uvx`).
+3. Enable only `read_document`. The `read_image` tool disrupts the LLMs' native image reading.
+4. Test it: "Read this PDF [path] and summarize it." On macOS, if `uvx` remains unfound, give its full path (`/usr/local/bin/uvx` or `~/.local/bin/uvx`).
 
 ## Basic troubleshooting
 
@@ -87,11 +87,11 @@ The generated `.md` file keeps headings and tables. To automate it, add the comm
 | A PDF stays unreadable | Go back to option A or B above |
 | Stuck on a technical step | Ask the AI itself: "I'm getting this error: [paste the error]. What's going on?" State your level if needed. |
 
-Chat tips: `Cmd/Ctrl + V` pastes a URL as context (if the AI has web access); `Cmd/Ctrl + Shift + V` pastes the URL's text content, useful when the site blocks bots.
+Chat tips: `Cmd/Ctrl + V` pastes a URL as context (if the AI has web access); `Cmd/Ctrl + Shift + V` pastes the URL's text content, handy when the site blocks bots.
 
-To check the install: drag a `.md` file into the chat and ask for a summary, then "Create a file test.md with Hello", then "List my files with the ls command in a terminal". If all of that works, the AI can see, read, write, and run. Full reference: [docs.cursor.com](https://docs.cursor.com).
+To check the install: drag a `.md` file into the chat and ask for a summary, then "Create a file test.md with Hello", then "List my files with the ls command in a terminal". If all of that goes through, the AI can see, read, write, and run. Full reference: [docs.cursor.com](https://docs.cursor.com).
 
-Cursor excels at iterative work on files. For deep web research (Deep Research, Perplexity), image generation (Midjourney, Ideogram), or video generation (Veo, Runway), use specialized tools.
+Cursor excels at iterative work on files. For deep web research (Deep Research, Perplexity), image generation (Midjourney, Ideogram), or video generation (Veo, Runway), turn to specialized tools.
 
 ---
 

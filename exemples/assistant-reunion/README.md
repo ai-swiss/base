@@ -6,9 +6,9 @@
 2. Dites, mot pour mot: **«Bonjour, je voudrais configurer mon activité»**
 3. Vous devriez voir: l'assistant vous pose une question à la fois (nom de l'entreprise, activité, types de réunions, niveau de détail) puis propose de remplir entreprise/identite.md, qui contient encore des champs à personnaliser. Rien n'est écrit ni envoyé sans vous.
 
-Un assistant IA qui transforme vos notes de réunion en comptes-rendus structurés et suit les décisions et les actions.
+Un assistant IA qui transforme vos notes de réunion en comptes-rendus structurés et garde la trace des décisions et des actions.
 
-L'assistant vous guide pour configurer votre contexte et votre modèle de compte-rendu, puis transforme vos notes en documents clairs et suit ce qui reste à faire.
+Il vous guide d'abord pour préciser votre contexte et votre modèle de compte-rendu, puis met vos notes en forme et tient à jour ce qui reste à faire.
 
 ## Ce que fait cet agent
 
@@ -37,7 +37,7 @@ assistant-reunion/
 
 ## Garde-fous
 
-Cet assistant est conçu pour ne pas inventer ce qui a été dit: une information absente reste marquée à compléter. Il travaille uniquement à partir de vos notes: une information absente reste marquée à compléter, elle n'est pas comblée par une supposition. Il distingue rigoureusement **décision**, **action** et **information**, et n'attribue ni responsable ni échéance sans certitude. Il reste **neutre et factuel**: il structure, vous validez.
+Cet assistant ne réinvente pas ce qui a été dit. Il travaille à partir de vos seules notes: une information absente reste marquée à compléter, jamais comblée par une supposition. Il distingue avec soin **décision**, **action** et **information**, et n'attribue ni responsable ni échéance sans certitude. Il demeure **neutre et factuel**: il structure, vous validez.
 
 ## Adapter à votre usage
 
@@ -49,6 +49,6 @@ Cet exemple est **illustratif**. Son objectif principal est de démontrer les po
 
 ---
 
-BASE est un framework par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
 
 Licence: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)

@@ -11,7 +11,7 @@ Connaissances métier sur la préparation de séquences et d'évaluations, adapt
 
 ## Alignement objectifs-activités-évaluation
 
-Le cœur d'une bonne préparation: ce qui est évalué a été enseigné, et ce qui est enseigné sert un objectif explicite.
+Le cœur d'une bonne préparation tient en une phrase: ce qui est évalué a été enseigné, et ce qui est enseigné sert un objectif explicite.
 
 | Élément | Question de contrôle |
 |---------|----------------------|
@@ -56,7 +56,7 @@ La différenciation se planifie à partir du profil de classe anonymisé (groupe
 
 ## Charge cognitive
 
-La mémoire de travail des élèves est limitée. Une séquence efficace la ménage:
+La mémoire de travail des élèves est limitée. Une séquence efficace la ménage par quelques réflexes:
 
 - **Une notion nouvelle à la fois**: ne pas introduire un nouveau concept et un nouveau format de travail dans la même activité
 - **Exemples résolus d'abord**: montrer un exemple travaillé complet avant de faire produire, surtout en début d'apprentissage

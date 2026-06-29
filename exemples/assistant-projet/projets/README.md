@@ -1,6 +1,6 @@
 # Projets
 
-Ce dossier contient vos projets actifs. Il se remplit au fur et à mesure: l'assistant y crée un sous-dossier par projet.
+Ce dossier contient vos projets actifs. Il se remplit au fil du temps: l'assistant y crée un sous-dossier par projet.
 
 ## Structure
 

@@ -12,52 +12,52 @@ keywords: [routage, semantique, quickstart, embeddings, ollama, openai, provider
 
 # Mettre en place le routage sémantique, du zéro config aux embeddings réels
 
-Dès que vous installez BASE, les demandes doivent atteindre le bon agent et le bon process sans config
-initiale, puis gagner en qualité quand le besoin se présente: c'est ce que vous réglez ici. BASE route
-une demande, ou s'abstient honnêtement quand rien ne convient.
+Dès l'installation de BASE, les demandes doivent atteindre le bon agent et le bon process sans
+configuration initiale, puis gagner en qualité le jour où le besoin s'en fait sentir: c'est ce que
+vous réglez ici. BASE route une demande, ou s'abstient honnêtement quand rien ne convient.
 
-BASE route de **deux façons, choisies par la configuration**. La **Voie 1** est le défaut: l'assistant
-lit l'index généré et choisit, avec un plancher déterministe par mots-clés en filet hors-ligne. La
-**Voie 2** est optionnelle, pour les grands catalogues: des embeddings retrouvent quelques candidats et
-un petit modèle local les raffine (il choisit, ou demande une précision); voir
-[Voie 2, le routage par embeddings](voie-2-routage-embeddings.md). Cette page-ci détaille la Voie 1 et,
-en son sein, la **qualité du classement** des candidats: un ranker classe, mais c'est le routeur qui
-décide. Vous passerez par trois chemins, du plus simple au plus robuste; commencez par le premier,
-n'allez plus loin que si vous en avez besoin.
+BASE route de **deux façons, que fixe la configuration**. La **Voie 1** s'applique par défaut: l'assistant
+lit l'index généré et choisit, un plancher déterministe par mots-clés lui servant de filet hors-ligne.
+La **Voie 2** est facultative, pensée pour les grands catalogues: des embeddings retrouvent quelques
+candidats, qu'un petit modèle local affine (il choisit, ou demande une précision); voir
+[Voie 2, le routage par embeddings](voie-2-routage-embeddings.md). La présente page détaille la Voie 1
+et, en son sein, la **qualité du classement** des candidats: un ranker classe, mais c'est le routeur
+qui décide. Vous suivrez trois chemins, du plus simple au plus robuste; commencez par le premier,
+et n'allez plus loin que si le besoin l'exige.
 
-Le routage BASE choisit le workflow primaire, pas toutes les ressources possibles. La chaîne complète
+Le routage BASE choisit le workflow primaire, non toutes les ressources possibles. La chaîne complète
 est la suivante: choisir un agent, router vers un process, puis ouvrir les compétences, tools, templates,
 documents ou données dont ce process a besoin. Pour la doctrine complète, voir
 [`docs/reference/routage-process-et-ressources.md`](../reference/routage-process-et-ressources.md).
 
 ## Atteindre le bon agent (le plus simple d'abord)
 
-Avant la *qualité* du classement (les «chemins» ci-dessous), voici comment l'assistant arrive sur
-le bon agent, du plus simple au plus automatique:
+Avant la *qualité* du classement (les «chemins» ci-dessous), voici comment l'assistant parvient au
+bon agent, du plus simple au plus automatique:
 
 - **Manuel, zéro outil.** Si vous savez quel agent vous voulez, pointez directement son `AGENT.md`:
   c'est le seul fichier à charger. «Lis `exemples/assistant-devis/.ai/agents/assistant-devis/AGENT.md`»
-  suffit (chemin relatif au dépôt; dans un projet d'assistant, c'est simplement `.ai/agents/<agent>/AGENT.md`).
+  suffit (chemin relatif au dépôt; dans un projet d'assistant, ce n'est rien d'autre que `.ai/agents/<agent>/AGENT.md`).
   Aucun routage, aucune installation.
 - **CLI.** `base route "<demande>" --root <projet>` choisit l'agent → process de façon déterministe, et s'abstient
-  honnêtement si rien ne convient. Le même routeur, par le terminal.
+  honnêtement si rien ne convient. Le même routeur, au terminal.
 - **MCP.** L'outil `route_request` expose ce même routeur à un outil IA capable de lire vos fichiers
   (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code).
   Pour le brancher, suivez le process `activer-routage`.
 
-Le routage (CLI/MCP), déterministe par défaut, sert surtout quand plusieurs process ou agents peuvent
-répondre, ou quand vous voulez des garanties (abstention testée, fixtures). Il épargne à l'utilisateur la
-peine de chercher le bon process. Dès qu'un ranker à embeddings entre en jeu, le classement dépend du
-fournisseur choisi; les statuts et les fixtures, eux, ne changent pas. Pour un seul assistant simple,
-le chargement manuel suffit.
+Le routage (CLI/MCP), déterministe par défaut, sert surtout lorsque plusieurs process ou agents
+peuvent répondre, ou lorsque vous voulez des garanties (abstention testée, fixtures). Il épargne à
+l'utilisateur la peine de chercher le bon process. Sitôt qu'un ranker à embeddings entre en jeu, le
+classement dépend du fournisseur choisi; les statuts et les fixtures, eux, ne changent pas. Pour un
+seul assistant simple, le chargement manuel suffit.
 
-Les trois «chemins» ci-dessous traitent une question différente: la qualité du classement des
-candidats au sein de la Voie 1, du lexical zéro-config aux embeddings réels. (À ne pas confondre avec la
-Voie 2, qui est une autre voie de routage, pas un ranker.)
+Les trois «chemins» ci-dessous traitent une autre question: la qualité du classement des candidats
+au sein de la Voie 1, du lexical zéro-config aux embeddings réels. (À ne pas confondre avec la Voie 2,
+qui est une autre voie de routage, et non un ranker.)
 
 ## Chemin 1: zéro configuration
 
-Écrivez des agents et des process en Markdown, avec un `use_when` par process. BASE route avec son
+Écrivez des agents et des process en Markdown, avec un `use_when` par process. BASE route grâce à son
 cœur zéro-dépendance: lexical + `semanticHybridRanker` (token overlap, alias par sous-ensemble de
 tokens, similarité floue), abstention structurée, fixtures de routage, MCP.
 
@@ -71,7 +71,7 @@ Idéal pour une personne seule, une petite équipe, une démo, un premier déplo
 
 ### Renforcer sans dépendance: `semanticHybrid`
 
-Dans `base.config.json`, déclarez des alias (synonymes métier), toujours zéro dépendance:
+Dans `base.config.json`, déclarez des alias (synonymes métier), toujours sans la moindre dépendance:
 
 ```json
 {
@@ -81,22 +81,22 @@ Dans `base.config.json`, déclarez des alias (synonymes métier), toujours zéro
 }
 ```
 
-La règle est simple: utilisez `base.config.json` pour les options déclaratives (`semanticHybrid`, seuils,
-validateurs), et `base.config.mjs` quand vous devez importer du code, par exemple un fournisseur
-d'embeddings. Si les deux existent, BASE préfère le JSON déclaratif; gardez donc un seul format par
-projet quand vous activez des embeddings réels.
+La règle est simple: réservez `base.config.json` aux options déclaratives (`semanticHybrid`, seuils,
+validateurs), et `base.config.mjs` aux cas où vous devez importer du code, par exemple un fournisseur
+d'embeddings. Si les deux coexistent, BASE préfère le JSON déclaratif; ne gardez donc qu'un seul format
+par projet dès lors que vous activez des embeddings réels.
 
 ## Chemin 2: embeddings réels
 
 Installez `@ai-swiss/base-ranker-semantic`, choisissez un fournisseur, ajoutez un ranker dans
-`base.config.mjs` (config exécutable, car un ranker est du code). Le cœur ne gagne aucune dépendance
-modèle ou cloud.
+`base.config.mjs` (config exécutable, car un ranker est du code). Le cœur, lui, ne gagne aucune
+dépendance modèle ou cloud.
 
 ```bash
 npm install @ai-swiss/base-ranker-semantic
 ```
 
-Dans le monorepo BASE, pour contribuer localement, le package vit dans
+Dans le monorepo BASE, pour contribuer en local, le package vit dans
 `packages/base-ranker-semantic/`.
 
 ```js
@@ -131,22 +131,22 @@ export default {
 };
 ```
 
-Le package est robuste par défaut sur les appels provider: il gère les timeouts, l'`AbortSignal`, des
-retries bornés (transitoires seulement) et des erreurs typées. Pour coalescer beaucoup d'appels
-concurrents, enveloppez le provider avec `createBatchingEmbedder`. Détails:
+Le package est robuste par défaut face aux appels provider: il gère les timeouts, l'`AbortSignal`, des
+retries bornés (transitoires seulement) et des erreurs typées. Pour regrouper de nombreux appels
+concurrents, enveloppez le provider dans `createBatchingEmbedder`. Détails:
 [`packages/base-ranker-semantic/README.md`](../../packages/base-ranker-semantic/README.md) et
 [la page provider](choisir-provider-embeddings.md).
 
 ## Chemin 3: index local optionnel
 
-Quand le corpus devient grand, dérivez un index local supprimable avec `@ai-swiss/base-index-local`.
+Quand le corpus s'étoffe, dérivez un index local supprimable avec `@ai-swiss/base-index-local`.
 Le modèle utilisateur reste le même, sans catalogue à tenir à la main, et les statuts de routage par
 défaut ne bougent pas. Voir [Comprendre l'échelle](../learn/comprendre-echelle.md).
 
 ## Lancer les fixtures
 
 `.ai/routing/route-tests.json` liste des demandes et la route attendue (statut, agent, process). C'est
-un test de régression, pas une mesure de performance académique:
+un test de régression, non une mesure de performance académique:
 
 ```bash
 node tools/base.mjs route-test --root <projet>          # sortie lisible, exit ≠ 0 si une route casse

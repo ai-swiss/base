@@ -18,7 +18,7 @@ routing:
     - Suivre ou relancer des actions déjà consignées lors de séances passées.
     - Paramétrage initial de l'entreprise.
 name: compte-rendu
-keywords: [compte-rendu, CR, procès-verbal, PV, notes, réunion, synthèse, mettre au propre]
+keywords: [compte-rendu, CR, proces-verbal, PV, notes, reunion, synthese, mettre au propre]
 argument-hint: "[notes de la réunion ou sujet]"
 user-invocable: true
 allowed-tools: Read Write Edit Glob Grep
@@ -91,7 +91,7 @@ Présente le classement par sujet:
 > Est-ce fidèle à ce qui s'est dit?»
 
 Règles strictes:
-- **Ne jamais transformer une discussion en décision** si les notes ne montrent pas un choix arrêté. En cas de doute, c'est une information, ou `[A VALIDER: était-ce une décision ?]`.
+- **Ne jamais transformer une discussion en décision** si les notes ne montrent pas un choix arrêté. En cas de doute, c'est une information, ou `[A VALIDER: était-ce une décision?]`.
 - **Ne jamais attribuer une action sans certitude.** Si le responsable n'est pas clair, `[A COMPLETER: responsable]`. Si l'échéance n'est pas claire, `[A COMPLETER: échéance]`.
 - **Rester neutre.** On reformule pour la clarté, jamais pour juger ou embellir.
 

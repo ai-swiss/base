@@ -26,11 +26,11 @@ allowed-tools: Read, Write
 # Decision sheet
 
 When several choices are open, a sheet beats a chat thread: the human rates each point, comments,
-and exports the lot back in one pass. The human decides; the sheet structures the decision.
+and exports them all in one pass. The human decides; the sheet structures the decision.
 
 ## Steps
 
-1. **List the real decisions.** One card per point. Each card: the context, **your recommendation**
+1. **List the real decisions.** One card per point. Each card carries the context, **your recommendation**
    (lead with it), and where relevant your prior reading. Do not pad with already-settled items.
 2. **Build from the template.** Copy the agent's template at
    `.ai/agents/base-contributor/templates/decision-sheet.html` to `.temp/YYYY-MM-DD_subject/<name>.html`.
@@ -38,8 +38,8 @@ and exports the lot back in one pass. The human decides; the sheet structures th
    `reco`, `recoSummary`, `scaleLabel`).
 3. **Keep it clean.** No reference to any external framework or banned phrasing; AI Swiss styling
    is already in the template. `.temp/` is gitignored, so the sheet stays scratch.
-4. **Open it for the human** and wait. The sheet auto-saves to the browser; the export is a
-   Markdown the human hands back.
+4. **Open it for the human** and wait. The sheet auto-saves to the browser, and the export is a
+   Markdown file the human hands back.
 5. **Act on the export.** Apply where they agree, follow their comments where they nuance, keep
    your recommendation where they did not answer (and say so). Durable choices graduate to an
    `open-change` record.

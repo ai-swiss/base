@@ -21,7 +21,7 @@ may_use:
   - infos/acces-et-horaires.md
   - infos/tarifs.md
 name: renseigner-un-visiteur
-keywords: [activités, visiter, que-faire, horaires, événement, agenda, renseignement]
+keywords: [activites, visiter, que-faire, horaires, evenement, agenda, renseignement]
 argument-hint: "[ce que le visiteur veut savoir]"
 user-invocable: true
 allowed-tools: Read
@@ -33,7 +33,7 @@ allowed-tools: Read
 
 1. **Comprendre la question**: activité, horaire, événement ou accès. Une question à la fois (`skills/competences/parler-au-visiteur/SKILL.md`).
 2. **Chercher dans les fiches**: l'agenda (`infos/agenda.md`), les accès et horaires (`infos/acces-et-horaires.md`), les tarifs (`infos/tarifs.md`). Cite la fiche d'où vient l'information.
-3. **Vérifier la fraîcheur**: pour un événement, regarde la date de validité de l'agenda. Si elle est passée, dis-le plutôt que d'annoncer un événement périmé.
+3. **Vérifier la fraîcheur**: pour un événement, regarde la date de validité de l'agenda. Si elle est dépassée, dis-le plutôt que d'annoncer un événement périmé.
 4. **Répondre clairement**, sans inventer. Si l'information manque, dis-le et propose de la chercher.
 5. Si le visiteur veut **réserver ou organiser** quelque chose, passe à `reserver-une-sortie-groupe`.
 

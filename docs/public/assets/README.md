@@ -1,13 +1,12 @@
 # Visuels officiels de BASE à télécharger
 
-Cette page rassemble les visuels officiels de BASE, prêts à l'emploi et libres de droits sous licence ouverte. Journalistes, partenaires et auteurs y trouvent le logo et le schéma d'architecture pour illustrer un article, une présentation ou une publication sans avoir à les recréer.
+Cette page rassemble les visuels officiels de BASE, prêts à l'emploi et placés sous licence ouverte. Journalistes, partenaires et auteurs y trouvent le schéma de structure pour illustrer un article, une présentation ou une publication, sans avoir à le redessiner.
 
 ## Contenu
 
 | Fichier | Description |
 | --- | --- |
-| `logo-base.svg` | Wordmark BASE avec sa signature, typographie système, fond transparent |
-| `architecture-base.svg` | Schéma de l'architecture en trois couches: adaptateurs (CLI, MCP), broker et ports, fichiers Markdown |
+| `structure-base.svg` | Schéma d'ensemble de BASE: vos outils d'IA, les surfaces (CLI, serveur MCP, Studio, UI de documentation), le cœur (le broker) qui applique les garanties, les points d'extension, et vos fichiers Markdown comme source de vérité |
 
 ## Licence et attribution
 
@@ -15,4 +14,4 @@ Ces visuels sont publiés sous licence [CC BY 4.0](https://creativecommons.org/l
 
 ## Autres formats
 
-Besoin d'un PNG haute résolution, d'une déclinaison sombre ou d'un autre cadrage? Demandez-le via [a-i.swiss](https://a-i.swiss), en précisant le média et le format attendu.
+Besoin d'un PNG haute résolution, d'une déclinaison sombre ou d'un autre cadrage? Faites-en la demande sur [a-i.swiss](https://a-i.swiss), en précisant le média et le format attendus.

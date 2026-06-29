@@ -1,4 +1,4 @@
-<!-- fr-synced: 045e3c1fd0c55ba0929c1da08728f3f86d4dc6b0 -->
+<!-- fr-synced: ebb18efd717e4e9588414f516da4dfe181ad5990 -->
 # Adoption in an organization
 
 AI does not get installed in an organization the way software does: by decree, all at once, for everyone. An organization can check every technical box and end up, six months later, with nothing but a handful of isolated uses that nobody shares. Adoption that lasts rests on two movements running in opposite directions, and on their meeting. From the bottom, people take ownership of the dialogue with AI and structure their work in their own way. From the top, the organization makes available, AI-assisted, the few flows that block everyone. The first engine surfaces what works; the second pushes down what is common.
@@ -9,7 +9,7 @@ Adoption reads on three tiers: the person who takes ownership, the team that pro
 
 Faced with AI, many organizations take the opposite extreme: a large central platform, a fleet of licenses deployed from above, a catalog of mandated tools, productivity dashboards, a unit that steers everything. It is reassuring, sometimes quick to pay off, and it produces real gains. The price shows up later: the method ends up locked inside the platform and the vendor, and the way of working with AI gets treated as something to industrialize at the center, not as something each person understands and owns. The day the tool changes, or the contract, or the vendor, what remains is dashboards and little transferable expertise.
 
-BASE takes the other path, and that is the whole point of this page: grow adoption from the people up, keep the know-how in files you own, industrialize from the top only the little that deserves it. The two do not always exclude each other, but they do not house value in the same place: in the platform on one side, in the owned articulation on the other.
+BASE takes the other path, and that is the whole point of this page: grow adoption from the people up, keep the know-how in files you own, industrialize from the top only the little that deserves it. The two do not always exclude each other, but they do not house value in the same place: in the platform on one side, in the owned articulation on the other. Two assets compound, context and tools, and the know-how laid down in files stays independent of the model that runs it: switching vendors becomes a matter of configuration again, not a migration. The risk is binding everything into a box you do not own.
 
 ## IT's role: access, layer, and tools
 

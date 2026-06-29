@@ -6,7 +6,7 @@
 2. Dites, mot pour mot: **«Aide-moi à clarifier une décision que j'hésite à prendre»**
 3. Vous devriez voir: l'assistant reformule votre décision pour la cadrer, vous demande s'il a bien compris et s'il y a une échéance, puis attend votre validation avant de passer aux critères. Rien n'est écrit ni envoyé sans vous.
 
-Un compagnon de réflexion personnel et privé. Il vous aide à clarifier une décision, explorer une question, ou mettre de l'ordre dans vos notes, sur votre machine, pour vous seul. Personne d'autre ne lit, personne ne surveille.
+Un compagnon de réflexion personnel et privé. Il vous aide à clarifier une décision, à explorer une question ou à mettre de l'ordre dans vos notes, sur votre machine et pour vous seul. Personne d'autre ne lit, personne ne surveille.
 
 ## Ce que fait cet agent
 
@@ -20,7 +20,7 @@ Un compagnon de réflexion personnel et privé. Il vous aide à clarifier une d�
 
 ## Pourquoi cet exemple existe
 
-C'est l'exemple le plus personnel de BASE: un public d'une seule personne. Il montre l'idée au cœur de l'approche: **la structure décide où la validation est possible, et la validation décide de la qualité, quelle que soit l'intelligence du modèle.** Un assistant qui produit un bloc déjà conclu invite à signer sans lire. En découpant la réflexion, il ménage au contraire les moments où vous voyez encore une erreur à temps.
+C'est l'exemple le plus personnel de BASE: un public d'une seule personne. Il montre l'idée au cœur de l'approche: **la structure décide où la validation est possible, et la validation décide de la qualité, quelle que soit l'intelligence du modèle.** Un assistant qui livre un bloc déjà conclu pousse à signer sans lire. En découpant la réflexion, il ménage au contraire les moments où vous pouvez encore corriger une erreur à temps.
 
 Ce principe vaut pour tous les usages: il protège le devis d'une PME, la décision d'une administration, et ici, votre propre réflexion.
 
@@ -53,6 +53,6 @@ Cet exemple est **illustratif**. Son objectif est de démontrer une interaction 
 
 ---
 
-BASE est un framework par [AI Swiss](https://a-i.swiss).
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss).
 
 Licence: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)

@@ -22,7 +22,7 @@ Two different problems, kept apart:
 - **Routing** decides *which agent and process* a request follows. A control-flow decision over a
   **small, closed** set of candidates derived from the files. Must be explainable and able to abstain.
 - **Retrieval** finds the *context* once the route is chosen (competences, documents, data). A
-  context decision over a potentially huge set; may use search, BM25, embeddings.
+  context decision over a potentially huge set; it may use search, BM25, embeddings.
 
 The Router never free-searches the whole repository. It chooses among structured candidates.
 
@@ -63,7 +63,7 @@ The Router does **not** introduce a second ranking system. It enriches each cand
 contract used by discovery. It passes `ctx.mode = "route"` for custom adapters, but the built-in
 distinction is deliberately simpler: `route_text` is present for routing candidates and absent for
 plain discovery. `route_text` is the highest-signal field in the ranker (reason `route:<term>`) and is
-inert for resources that don't carry it — so general discovery is unchanged. A project that wants
+inert for resources that don't carry it, so general discovery is unchanged. A project that wants
 stronger routing composes `semanticHybridRanker` (see `ranker.md`); the Router still applies the
 structural rules on top.
 
@@ -81,7 +81,7 @@ inventoried, but they are not returned as closed-list route candidates because t
 `agent → process` invariant. Aggregated per agent (an agent's score = the best of its own card and its
 processes): an agent is a strong candidate if *either* its card text or one of its processes matches well,
 so a request that names the agent's domain surfaces it even before a specific process is clear. This is
-deliberate — do not "simplify" it to process-only or card-only scoring; the `competing_intents` check
+deliberate; do not "simplify" it to process-only or card-only scoring. The `competing_intents` check
 below relies on this best-of aggregation to compare whole agents fairly.
 
 | status | when | reason_code |

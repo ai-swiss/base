@@ -1,11 +1,11 @@
-<!-- fr-synced: d332ff79966a2d823d994afb8072e48f7fffaa2e -->
+<!-- fr-synced: 27046fac15b56463425b5876dfec8d76adb86f82 -->
 # Press Kit
 
 Producing text takes almost no effort anymore; staying in control of what you publish takes as much as ever. BASE, an open source, local-first framework backed by AI Swiss, structures that control. This kit gathers the stable public materials; quotes, visuals, and demonstrations not present in this repository can be requested from AI Swiss.
 
 ## In one sentence
 
-BASE (Build Assistants with a Structure of Expertise) is an **open source, local-first** framework for creating domain AI assistants whose knowledge lives in files you own, portable across tools, and that keep the human **able to verify**.
+BASE (Build Assistants with a Structure of Expertise) is an **open source, local-first** framework for structuring your knowledge and know-how in files you own, portable across tools, for AI assistants serving an individual or an organization alike, and that keep the human **able to verify**.
 
 ## The problem
 
@@ -15,7 +15,7 @@ Generative AI has made production almost effortless. Verification, by contrast, 
 
 - Domain knowledge in **Markdown** that you own, independent of the model and portable across tools (Claude, ChatGPT, Cursor via MCP, and whatever tool comes next); BASE favors none of them.
 - An **honest** distinction between a *consigne* (followed by the model) and a mechanism (actually enforced when the action goes through the broker, the CLI, or the MCP).
-- Decision points before sensitive writes and actions (the proposal is shown, then validated).
+- Decision points before any sensitive write or action: the proposal is shown, then validated.
 - A **zero-dependency** core (Node 18 or higher), inspectable, with reproducible specs and tests.
 
 ## What BASE is not
@@ -26,7 +26,7 @@ Generative AI has made production almost effortless. Verification, by contrast, 
 
 ## Origin and governance
 
-BASE was **created by Charles-Edouard Bardyn** (Chief Scientific Officer, VP, and cofounder of **[AI Swiss](https://a-i.swiss)**, an independent Swiss nonprofit association) and is today **maintained by a lead maintainer** under the stewardship of AI Swiss, open to contribution and co-maintenance. [Innovaud](https://innovaud.ch), the innovation promotion agency of the canton of Vaud, is a project partner and helped seed the domain examples for SMEs. BASE is an **open commons**: its dual license (Apache-2.0 / CC BY 4.0) lets anyone fork, adapt, and reuse it. It is designed as a starting point for many projects, not as a closed platform.
+BASE was **created by Charles-Edouard Bardyn** (Chief Scientific Officer, VP, and cofounder of **[AI Swiss](https://a-i.swiss)**, an independent Swiss nonprofit association) and is today **maintained by a lead maintainer** under the stewardship of AI Swiss, and remains open to contribution and co-maintenance. [Innovaud](https://innovaud.ch), the innovation promotion agency of the canton of Vaud, is a project partner and helped seed the domain examples for SMEs. BASE is an **open commons**: its dual license (Apache-2.0 / CC BY 4.0) lets anyone fork, adapt, and reuse it. It is designed as a starting point for many projects, not as a closed platform.
 
 ## License and availability
 

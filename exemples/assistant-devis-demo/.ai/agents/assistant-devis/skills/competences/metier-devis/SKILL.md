@@ -7,7 +7,7 @@ allowed-tools: Read
 
 # Métier: Devis en Suisse
 
-Connaissances métier sur la création de devis professionnels en contexte suisse.
+Connaissances métier pour établir des devis professionnels dans le contexte suisse.
 
 ## Structure d'un devis
 
@@ -73,7 +73,7 @@ Pour attribuer un numéro de devis:
 
 Les devis contiennent des données personnelles. En vertu de la LPD:
 - Ne collecter que les informations nécessaires
-- Les données clients sont stockées dans les fichiers locaux. Les contenus échangés pendant la conversation sont transmis au fournisseur IA utilisé
+- Les données clients sont conservées dans des fichiers locaux. Les échanges de la conversation sont transmis au fournisseur d'IA utilisé
 - En cas de demande, le client peut exiger la suppression de ses données
 
 ## Bonnes pratiques

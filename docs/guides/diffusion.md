@@ -12,9 +12,9 @@ keywords: [diffusion, open-source, publication, release, licence, attribution, r
 
 # Publier BASE en open source
 
-Publier BASE en open source, c'est permettre à d'autres de reprendre et d'adapter une structure de travail qui leur reste, sans se lier à un fournisseur ni à une plateforme. L'enjeu n'est pas de montrer un produit fini: c'est de rendre ce socle réutilisable et honnête sur ce qu'il fait, pour que chacun puisse l'essayer, le critiquer et le faire grandir. Ce guide rassemble ce qu'il faut décider, vérifier et écrire pour que cette sortie publique tienne cette promesse.
+Publier BASE en open source, c'est permettre à d'autres de reprendre et d'adapter une structure de travail qui leur appartient, sans dépendre d'un fournisseur ni d'une plateforme. L'enjeu n'est pas de montrer un produit fini, mais de rendre ce socle réutilisable et honnête sur ce qu'il fait, pour que chacun puisse l'essayer, le critiquer et le faire grandir. Ce guide rassemble ce qu'il faut décider, vérifier et rédiger pour que cette publication tienne sa promesse.
 
-BASE se présente comme un cadre local-first pour structurer la collaboration humain-IA: des fichiers lisibles, des workflows, des contrôles locaux et des extensions possibles. C'est volontairement un socle, pas une plateforme complète.
+BASE se présente comme un cadre local-first pour structurer la collaboration humain-IA: des fichiers lisibles, des workflows, des contrôles locaux et des extensions possibles. C'est, délibérément, un socle et non une plateforme complète.
 
 ## Positionnement public
 
@@ -24,17 +24,17 @@ Message court:
 
 Message long:
 
-> Les modèles changent, les interfaces changent, les fournisseurs changent. Ce qui doit rester à vous, c'est la structure de votre expertise: vos fichiers métier, vos workflows, vos modèles, vos règles, vos décisions et les traces utiles pour reprendre le travail. BASE fournit un cadre ouvert et lisible pour organiser cette structure.
+> Les modèles changent, les interfaces changent, les fournisseurs changent: les outils passent, le contexte demeure. Ce qui doit rester vôtre, c'est la structure de votre expertise: vos fichiers métier, vos workflows, vos modèles, vos règles, vos décisions et les traces utiles pour reprendre le travail. Votre savoir et votre savoir-faire deviennent ainsi indépendants du modèle qui les exécute, et la valeur se déplace vers ce que vous attendez de l'IA, non vers le modèle du moment. BASE fournit un cadre ouvert et lisible pour organiser cette structure.
 
 Message fondateur:
 
-> L'IA générative se manipule autrement qu'un logiciel classique: par le langage, le contexte, les exemples, les limites et les corrections. Elle maîtrise des domaines vérifiables, mais elle a deux faiblesses bien réelles: par défaut, elle ne partage pas sa mémoire d'une session à l'autre, et le langage qui la pilote reste sous-spécifié, ce qui fait à la fois sa souplesse et sa fragilité. BASE transforme ce constat en méthode praticable: écrire ce qui compte, expliciter les processus, garder les décisions humaines visibles, et utiliser les plateformes IA sans leur abandonner la structure de votre travail.
+> L'IA générative se conduit autrement qu'un logiciel numérique classique: par le langage, le contexte, les exemples, les limites et les corrections. Elle maîtrise des domaines vérifiables, mais elle a deux faiblesses bien réelles: par défaut, elle ne conserve pas sa mémoire d'une session à l'autre, et le langage qui la pilote reste sous-spécifié, ce qui fait à la fois sa souplesse et sa fragilité. BASE transforme ce constat en méthode praticable: écrire ce qui compte, expliciter les processus, garder les décisions humaines visibles et recourir aux plateformes IA sans leur abandonner la structure de votre travail.
 
 Ce que BASE ne dit pas:
 
 - que l'IA devient fiable automatiquement;
 - que les permissions sont garanties hors des outils médiés;
-- que le cœur public remplace la gouvernance enterprise;
+- que le cœur public remplace la gouvernance d'entreprise;
 - qu'une interface ou un modèle précis est indispensable;
 - que l'IA possède une conscience, une intention ou une compréhension garantie;
 - que tout doit être automatisé.
@@ -56,7 +56,7 @@ Documentation:
 - `docs/start/obtenir-base.md` explique ZIP, clone Git, copie d'exemple et pack navigateur.
 - `docs/start/demo-60-secondes.md` permet de voir un résultat concret avant de lire l'architecture.
 - `docs/start/quickstart.md` permet un premier essai sans connaissance technique.
-- `docs/tutoriel/index.md` accompagne une personne pas à pas, étape par étape.
+- `docs/tutoriel/index.md` accompagne une personne pas à pas.
 - `docs/audiences/pour-qui.md` parle aux publics principaux.
 - `docs/audiences/kit-demarrage-pme-suisse.md` donne les règles minimales pour une petite équipe: données, validation, versioning, entretien.
 - `docs/audiences/kit-enterprise.md` cadre la configuration stricte et les modes de déploiement.
@@ -74,9 +74,9 @@ Documentation:
 - `mcp/README.md` explique l'adapter MCP sans le confondre avec le broker.
 - `SECURITY.md` explique comment signaler un problème.
 - `CODE_OF_CONDUCT.md` définit les règles de participation publique.
-- `.github/ISSUE_TEMPLATE/` et `.github/PULL_REQUEST_TEMPLATE.md` guident les contributions sans promettre une gouvernance communautaire lourde.
+- `.github/ISSUE_TEMPLATE/` et `.github/PULL_REQUEST_TEMPLATE.md` guident les contributions sans promettre de gouvernance communautaire lourde.
 - `specs/RELEASE.md` décrit la checklist de publication reproductible.
-- `CHANGELOG.md` rend les changements publics suivables.
+- `CHANGELOG.md` permet de suivre les changements publics.
 
 Code et validation:
 
@@ -113,8 +113,8 @@ Pour une conférence ou un atelier:
 3. Introduire les fichiers comme mémoire durable.
 4. Montrer les workflows et les compétences.
 5. Expliquer les points de décision et la dette de vérification.
-6. Montrer le routeur/broker seulement après le besoin concret: rudimentaire mais efficace, extensible par adaptateurs, il réduit la charge mentale de chercher le bon processus.
-7. Finir sur la souveraineté: le capital durable n'est pas le modèle, c'est la structure de l'expertise.
+6. Montrer le routeur/broker une fois le besoin concret établi: rudimentaire mais efficace, extensible par adaptateurs, il épargne l'effort de chercher le bon processus.
+7. Conclure sur la souveraineté: le capital durable n'est pas le modèle, mais la structure de l'expertise.
 
 Pour une personne non technique:
 
@@ -133,7 +133,7 @@ Pour une organisation:
 
 - présenter BASE comme un socle de structuration;
 - expliciter ce qui doit être ajouté autour: identité, droits, audit, DLP, rétention;
-- pour une PME, commencer par le kit de démarrage plutôt que par l'architecture enterprise;
+- pour une PME, commencer par le kit de démarrage plutôt que par l'architecture d'entreprise;
 - insister sur la portabilité des ressources et sur la séparation entre YAML sémantique et détails techniques.
 
 ## Ton à maintenir
@@ -146,7 +146,7 @@ BASE peut affirmer:
 - que la vérification ne disparaît pas;
 - que les fichiers lisibles rendent le contexte portable;
 - que les mécanismes sont plus fiables que les consignes seules;
-- que le framework public est utile sans prétendre remplacer une plateforme enterprise.
+- que le cadre public est utile sans prétendre remplacer une plateforme d'entreprise.
 
 BASE ne doit pas affirmer:
 
@@ -158,8 +158,8 @@ BASE ne doit pas affirmer:
 
 ## Critère final
 
-Une personne doit pouvoir regarder BASE et comprendre trois choses:
+Une personne doit pouvoir regarder BASE et en comprendre trois choses:
 
-1. Elle peut l'essayer maintenant.
+1. Elle peut l'essayer dès maintenant.
 2. Elle peut l'adapter à son contexte.
 3. Elle peut grandir avec cette structure sans se lier à une seule plateforme.

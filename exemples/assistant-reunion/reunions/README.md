@@ -22,4 +22,4 @@ YYYY-MM-DD_releve-actions.md
 
 ## Organisation
 
-Les documents sont classés par date. Pour retrouver un compte-rendu ou suivre les actions ouvertes, consultez le nom des fichiers. Vous pouvez aussi demander à l'assistant de lister l'historique ou de faire le point sur les actions.
+Les documents sont classés par date. Pour retrouver un compte-rendu ou suivre les actions ouvertes, parcourez les noms de fichiers. Vous pouvez aussi demander à l'assistant de lister l'historique ou de faire le point sur les actions.

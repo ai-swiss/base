@@ -22,7 +22,7 @@ routing:
 
 # Ticket incident
 
-Ouvrir et qualifier un incident pour qu'il soit traité vite et bien.
+Ouvrir et qualifier un incident pour qu'il soit traité rapidement et correctement.
 
 ## Étapes
 

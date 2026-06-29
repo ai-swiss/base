@@ -43,7 +43,7 @@ Start at `00_overview/vision.md` for the *why* and the scope boundary, then `10_
 
 ## Conventions used in these chapters
 
-- **Statusless truth.** Every chapter states **present behaviour** — what the software does now, statuslessly. Planned-but-unbuilt work lives in `CHANGELOG.md` and `.plans/`, never in a chapter; a genuine unknown is flagged inline `[NEEDS CLARIFICATION: reason]`.
+- **Statusless truth.** Every chapter states **present behaviour**, what the software does now, statuslessly. Planned-but-unbuilt work lives in `CHANGELOG.md` and `.plans/`, never in a chapter; a genuine unknown is flagged inline `[NEEDS CLARIFICATION: reason]`.
 - **Normative code.** "Matches `functionName`" means that function's source is authoritative for the detail. Functions are named, not line-numbered (line numbers drift).
 - **Proof by ID.** Every `UR/FR/NFR/RC` carries its proof in `10_core/requirements-matrix.md`, regenerated from the test suites; `AD` records a decision instead (see `10_core/ids.md`). Spec discipline is itself gate-enforced (NFR-CORE-010).
 
@@ -64,5 +64,5 @@ node tools/base.mjs route-test --root exemples/routage-pme   # → routing examp
 cd mcp && npm ci && npm run build && npm test   # → tsc clean, tests green
 ```
 
-For the full test architecture — every layer (static types, unit/contract, Studio component + hook,
-end-to-end + accessibility), what each proves, and how to run it — see [`../TESTING.md`](../TESTING.md).
+To learn the full test architecture (every layer: static types, unit/contract, Studio component + hook,
+end-to-end + accessibility), what each proves, and how to run it, see [`../TESTING.md`](../TESTING.md).

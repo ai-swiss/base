@@ -7,13 +7,13 @@ allowed-tools: Read
 
 # Métier: Ressources humaines en Suisse
 
-Connaissances métier sur le recrutement et la gestion RH en contexte suisse, adaptées aux PME.
+Connaissances métier sur le recrutement et la gestion des ressources humaines en Suisse, pensées pour les PME.
 
 ## Droit du travail suisse: essentiels
 
 ### Code des obligations (CO)
 
-Le contrat de travail est régi par les articles 319 à 362 du CO. Points clés:
+Le contrat de travail est régi par les articles 319 à 362 du CO. Les points essentiels:
 
 - **Période d'essai**: 1 mois par défaut (art. 335b CO). Peut être prolongée jusqu'à 3 mois par accord écrit. Pendant cette période, le délai de résiliation est de 7 jours.
 - **Délais de congé** (après la période d'essai):
@@ -91,7 +91,7 @@ Autres assurances:
 
 ### Entretien structuré
 
-Un entretien structuré est plus fiable et plus équitable qu'un entretien libre:
+Un entretien structuré se révèle plus fiable et plus équitable qu'un entretien libre:
 - Mêmes questions pour tous les candidats du même poste
 - Critères d'évaluation définis à l'avance
 - Grille de notation objective (1 à 5)
@@ -153,7 +153,7 @@ En Suisse, les questions suivantes sont considérées comme illicites sauf si el
 
 ## Protection des données (LPD)
 
-Le processus de recrutement implique des données personnelles sensibles. En vertu de la Loi sur la protection des données (LPD):
+Le recrutement met en jeu des données personnelles sensibles. En vertu de la Loi sur la protection des données (LPD):
 - Ne collecter que les données pertinentes pour le poste
 - Informer les candidats de l'utilisation de leurs données
 - Conserver les dossiers de candidature uniquement pendant la durée du processus de recrutement

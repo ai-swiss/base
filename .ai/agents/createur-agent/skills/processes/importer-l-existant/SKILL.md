@@ -21,9 +21,9 @@ routing:
 
 # Importer l'existant
 
-Personne ne part d'une page blanche: le savoir-faire est déjà dans des documents. Ce process
-explore ce que l'utilisateur pointe et PROPOSE des conversions en ressources BASE: chaque
-écriture passe par le gate propose → commit, l'humain valide chaque diff.
+Personne ne part d'une page blanche: le savoir-faire est déjà consigné quelque part. Ce process
+examine ce que l'utilisateur lui montre et PROPOSE des conversions en ressources BASE: chaque
+écriture passe par le gate propose → commit, et l'humain valide chaque diff.
 
 ## Inputs
 
@@ -35,7 +35,7 @@ Demande à l'utilisateur:
 
 ### 1. Explorer le matériau
 
-Lis chaque source (`open_resource`, ou `discover_resources` si les chemins sont flous). Classe
+Lis chaque source (`open_resource`, ou `discover_resources` si les chemins restent flous). Range
 mentalement chaque contenu:
 - **Se suit** (étapes, checklist, procédure) → futur `process`
 - **S'apprend** (règles, conventions, savoir) → future `competence` ou `document`
@@ -44,19 +44,24 @@ mentalement chaque contenu:
 
 ### 2. Proposer la carte d'import
 
-Présente un tableau source → ressource cible (type, id, chemin) et fais valider la découpe AVANT
-de convertir quoi que ce soit.
+Présente la découpe source → ressource cible (type, id, chemin) et fais-la valider AVANT de convertir
+quoi que ce soit. Dès qu'il y a plus de trois ressources ou plusieurs arbitrages, présente-la sous forme de
+**fiche de décision** (process `fiche-de-decision`) plutôt qu'en simple tableau: une carte par conversion
+candidate, ta recommandation en tête, et les vraies options (process ou compétence, un agent ou deux,
+scope personnel ou équipe). Garde de la souplesse: accompagne une migration **progressive** vers une structure
+exploitable par l'IA, et laisse un point ouvert «voyez-vous d'autres choses utiles à ajouter?» pour que
+la personne enrichisse la proposition, au lieu de se borner à l'accepter ou la refuser.
 
 ### 3. Convertir, une ressource à la fois
 
 Pour chaque ressource validée, rédige le fichier complet (frontmatter `base.resource.v1`: id,
-type, title, description, `use_when` digne du routeur) et propose-le via `propose_change`.
+type, title, description, et un `use_when` digne du routeur), puis propose-le via `propose_change`.
 **N'appelle jamais `commit_change` toi-même**: l'humain valide chaque diff.
 
 ### 4. Vérifier la santé après import
 
-Recommande `base doctor`: il relèvera les liens cassés par la copie et les ressources orphelines,
-c'est le filet après toute migration.
+Recommande `base doctor`: il signalera les liens cassés par la copie et les ressources orphelines.
+C'est le filet de sécurité après toute migration.
 
 ## Ce que tu ne fais jamais dans ce process
 

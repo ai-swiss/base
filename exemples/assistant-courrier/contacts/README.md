@@ -1,8 +1,8 @@
 # Contacts
 
-Ce dossier contient les fiches de vos destinataires: clients, fournisseurs et partenaires. L'assistant propose de créer ou de mettre à jour une fiche quand vous rédigez un courrier ou répondez à un message.
+Ce dossier réunit les fiches de vos destinataires: clients, fournisseurs et partenaires. Lorsque vous rédigez un courrier ou répondez à un message, l'assistant vous propose de créer une fiche ou de la mettre à jour.
 
-Chaque fiche est un fichier markdown avec les coordonnées du destinataire et l'historique des échanges.
+Chaque fiche est un fichier markdown qui rassemble les coordonnées du destinataire et l'historique des échanges.
 
 ## Structure d'une fiche
 

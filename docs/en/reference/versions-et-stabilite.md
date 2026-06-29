@@ -1,4 +1,4 @@
-<!-- fr-synced: 6542bdf34420104d7e76c1b61c41528360c5f58e -->
+<!-- fr-synced: f68d9ca2ef41854756ba05f4b1397523252d3e5e -->
 # Updating BASE without breaking your work
 
 This page is for the people who build on BASE: a freelancer, a small business, a school, or a public agency. It says what version 1.x guarantees and what may still change, so you can adopt BASE and update it without fear that a new release will break what you have built.
@@ -27,7 +27,7 @@ This is the **NFR-CORE-002** commitment, the "no breakage" promise: what already
 
 - The **content** of derived projections (the details of a manifest, of a registry): these are regenerable projections, never a source of truth.
 - The **ranking** of a router, since a better ranker can change the order of the candidates; the routing *contract* (statuses, abstention) stays stable.
-- The optional **companion packages** follow their own versioning: `@ai-swiss/base-ranker-semantic` (embeddings), `@ai-swiss/base-index-local` (index at scale), `@ai-swiss/base-llm` (the LLM port, behind Studio and evaluation), and `@ai-swiss/base-eval` (evaluation). The core **requires none** of them: they are optional peers, installed only if you use the feature in question, and they add no third-party dependency to the core.
+- The optional **companion packages** follow their own versioning: `@ai-swiss/base-ranker-semantic` (embeddings), `@ai-swiss/base-index-local` (index at scale), `@ai-swiss/base-llm` (the LLM port, which Studio and evaluation rely on), and `@ai-swiss/base-eval` (the evaluation engine). The core **requires none** of them: they are optional peers, installed only when you use the feature in question, and they add no third-party dependency to the core.
 - The **examples** and the documentation may grow without notice.
 
 ## Runtime compatibility

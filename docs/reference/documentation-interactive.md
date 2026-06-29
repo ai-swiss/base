@@ -12,9 +12,9 @@ keywords: [documentation, astro, starlight, local, deploy, public, validation, p
 
 # Générer et publier un site de documentation depuis vos fichiers canoniques
 
-Consulter ou publier la documentation de son BASE sans jamais la recopier ailleurs: BASE génère un site, local ou public, directement à partir du dépôt. Les fichiers Markdown, JSON et specs restent les sources de vérité, et le site n'en est qu'une projection interactive (navigation par sections, parcours d'apprentissage, explorateur, carte du système, laboratoire de routage, qualité et pages de ressources). Cela sert qui veut une vue navigable du corpus sans entretenir une seconde documentation qui dérive.
+Consulter ou publier la documentation de son BASE sans jamais la recopier ailleurs: BASE engendre un site, local ou public, directement à partir du dépôt. Les fichiers Markdown, JSON et spécifications demeurent les sources de vérité, et le site n'en est qu'une projection interactive (navigation par sections, parcours d'apprentissage, explorateur, carte du système, laboratoire de routage, qualité et pages de ressources). Il rend service à qui veut une vue navigable du corpus sans entretenir une seconde documentation, vouée à diverger de la première.
 
-L'interface du site est bilingue, français par défaut avec une bascule vers l'anglais. La version française de chaque page fait foi; voir [Langues](langues.md). Le contenu garde la langue de sa source, conformément aux [langues de BASE](langues.md). La navigation latérale est générée depuis `navigation.json`, la projection de navigation du modèle documentaire: aucune liste de pages n'est maintenue à la main.
+L'interface du site est bilingue: français par défaut, avec une bascule vers l'anglais. La version française de chaque page fait foi; voir [Langues](langues.md). Chaque contenu conserve la langue de sa source, conformément aux [langues de BASE](langues.md). La navigation latérale est engendrée depuis `navigation.json`, la projection de navigation du modèle documentaire: aucune liste de pages n'est tenue à la main.
 
 ## Voir en local
 
@@ -24,7 +24,7 @@ Depuis la racine du dépôt:
 npm run docs:serve
 ```
 
-La commande génère d'abord le modèle documentaire, puis lance le site Astro/Starlight en local.
+La commande engendre d'abord le modèle documentaire, puis lance le site Astro/Starlight en local.
 
 ## Construire un site statique
 
@@ -46,7 +46,7 @@ Pour choisir explicitement le dossier déployable:
 node tools/base.mjs docs build --public --out public-site
 ```
 
-Le dossier obtenu contient un site statique. Vous pouvez le servir avec la plupart des hébergeurs compatibles HTML statique.
+Le dossier obtenu contient un site statique. Vous pouvez le servir depuis la plupart des hébergeurs compatibles avec le HTML statique.
 
 ## Valider avant publication
 
@@ -54,12 +54,12 @@ Le dossier obtenu contient un site statique. Vous pouvez le servir avec la plupa
 node tools/base.mjs docs validate
 ```
 
-La validation vérifie les invariants du modèle, notamment l'exclusion de `.plans/` et `.temp/`, la séparation public/interne et les liens locaux.
+La validation contrôle les invariants du modèle, notamment l'exclusion de `.plans/` et `.temp/`, la séparation entre public et interne, et l'intégrité des liens locaux.
 
 ## Ce que le site montre
 
 - la navigation latérale: les sections du corpus (démarrer, comprendre, guides, profils, confiance, exemples, référence), projetées depuis le modèle;
-- les pages de ressources: rendu des sources canoniques, contenu d'abord, métadonnées et rétroliens dans un panneau repliable; les liens internes du Markdown sont réécrits vers les pages du site;
+- les pages de ressources: le rendu des sources canoniques, le contenu d'abord, puis métadonnées et rétroliens dans un panneau repliable; les liens internes du Markdown sont réécrits vers les pages du site;
 - `Parcours guidés`: parcours de lecture selon le besoin;
 - `Concepts`: explication visuelle de route -> process -> validation -> écriture;
 - `Exemples guidés`: visite pas à pas des exemples copiables;
@@ -68,8 +68,8 @@ La validation vérifie les invariants du modèle, notamment l'exclusion de `.pla
 - `Laboratoire de routage`: fixtures de routage avec demandes et attentes;
 - `Preuves`: promesses reliées aux mécanismes, tests et limites;
 - `Qualité`: erreurs, avertissements et politique d'inclusion;
-- la recherche plein texte (Pagefind), construite au build statique.
+- la recherche plein texte (Pagefind), construite lors de la génération statique.
 
 ## Discipline de maintenance
 
-N'écrivez pas directement dans le site une prose qui décrit BASE. Placez-la dans le fichier canonique approprié, puis laissez le modèle la projeter. Les pages du site doivent rester des adaptateurs, pas une seconde documentation.
+N'écrivez jamais directement dans le site une prose qui décrit BASE. Confiez-la au fichier canonique approprié, puis laissez le modèle la projeter. Les pages du site doivent rester des adaptateurs, et non une seconde documentation.

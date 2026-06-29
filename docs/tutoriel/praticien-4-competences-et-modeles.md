@@ -8,7 +8,7 @@ scope: public
 status: active
 sensitivity: public
 license: CC-BY-4.0
-keywords: [praticien, compétence, template, modèle, génération, document, may_use, veytaux, tourisme]
+keywords: [praticien, competence, template, modele, generation, document, may_use, veytaux, tourisme]
 audience: [builder]
 learning_level: intermediate
 ---
@@ -21,13 +21,13 @@ learning_level: intermediate
 **Il vous faut**: les modules 1-3 terminés, votre dossier `~/mon-office-tourisme`.
 ↻ **Rappel**: sans regarder: qu'est-ce qu'un process? (un frontmatter que le routeur lit + un corps que le modèle suit)
 
-Un process dit QUOI faire. Mais deux briques de plus séparent le simple routage d'une demande
-de la production d'**un vrai livrable**, et c'est ce qui manque à la plupart des assistants.
+Un process dit QUOI faire. Mais deux briques supplémentaires séparent le simple routage d'une demande
+de la production d'**un vrai livrable**, et c'est précisément ce qui manque à la plupart des assistants.
 
 - une **compétence** (`type: competence`): un savoir-faire réutilisable (ton, règles, conventions)
-  qu'un process **consulte**. On la cite dans plusieurs process plutôt que de se répéter.
-- un **modèle / template** (`type: template`): un document à trous qu'on **remplit** plutôt que de
-  le suivre. C'est ce qui produit une offre, un courrier, un compte rendu.
+  qu'un process **consulte**. On la cite dans plusieurs process au lieu de la répéter partout.
+- un **modèle / template** (`type: template`): un document à trous qu'on **remplit**, au lieu de
+  le suivre. C'est lui qui produit une offre, un courrier, un compte rendu.
 
 1. **Une compétence.** Créez `.ai/agents/mon-office-tourisme/skills/competences/parler-au-visiteur/SKILL.md`:
 
@@ -54,7 +54,7 @@ de la production d'**un vrai livrable**, et c'est ce qui manque à la plupart de
    ```
 
 2. **Un modèle.** Créez `.ai/agents/mon-office-tourisme/templates/offre-groupe_v1.md`. Un template porte des
-   `[PLACEHOLDERS]` à remplir et un `[A VALIDER]` là où un humain doit trancher:
+   `[PLACEHOLDERS]` à remplir et un `[A VALIDER]` aux endroits où un humain doit trancher:
 
    ```
    ---
@@ -111,7 +111,7 @@ de la production d'**un vrai livrable**, et c'est ce qui manque à la plupart de
 
 4. **Générez le document.** Dans votre outil IA, sur `~/mon-office-tourisme`, demandez:
    *«prépare une offre pour une sortie de groupe de 30 personnes»*. L'assistant route vers
-   `reserver-une-sortie-groupe`, suit la compétence (ton, une question à la fois), **remplit le modèle**, et laisse
+   `reserver-une-sortie-groupe`, applique la compétence (ton, une question à la fois), **remplit le modèle** et laisse
    `[A VALIDER]` sur le total. Comme en Découverte: il propose, rien n'est écrit sans vous.
 
 ```routage-fixture
@@ -120,10 +120,10 @@ Organiser une sortie pour notre groupe de 30 personnes
 
 ✅ **Vérifiez**: `base validate --root .` passe (compétence, modèle et process sont des ressources valides); `base route "Organiser une sortie pour notre groupe de 30 personnes" --root .` route vers `reserver-une-sortie-groupe`; et l'offre générée a ses `[PLACEHOLDERS]` remplis avec un `[A VALIDER]` sur le montant.
 
-💡 **Pourquoi ça a marché**: un process orchestre, une **compétence** factorise un savoir-faire réutilisable, un **modèle** porte la forme du livrable. Le routeur ne lit que le frontmatter (use_when, examples); le corps, lui, pointe vers la compétence et le modèle, que le modèle de langage applique ensuite. Le `[A VALIDER]` dans le modèle demande qu'un humain tranche le chiffre: la consigne est que la génération s'arrête plutôt que de décider à votre place.
+💡 **Pourquoi ça a marché**: un process orchestre, une **compétence** factorise un savoir-faire réutilisable, un **modèle** porte la forme du livrable. Le routeur ne lit que le frontmatter (use_when, examples); le corps, lui, renvoie à la compétence et au modèle, que le modèle de langage applique ensuite. Le `[A VALIDER]` inscrit dans le modèle réclame qu'un humain tranche le chiffre: la consigne veut que la génération s'arrête au lieu de décider à votre place.
 
-🔁 **Chez vous**: quel document répétitif de votre métier (devis, courrier-type, compte rendu) gagnerait à devenir un modèle à trous? Quel savoir-faire (un ton, des règles) mérite une compétence réutilisable?
+🔁 **Chez vous**: quel document répétitif de votre métier (devis, courrier-type, compte rendu) gagnerait à devenir un modèle à trous? Quel savoir-faire (un ton, quelques règles) mériterait une compétence réutilisable?
 
 → **Et maintenant**: [Module 5: les données qui périment](praticien-5-donnees-qui-periment.md): le cycle de vie d'une expertise.
 
-🆘 **Pannes courantes**: *`base route` ne trouve pas `reserver-une-sortie-groupe`*: rapprochez vos `routing.examples` d'une vraie demande de sortie de groupe. *L'assistant invente un total au lieu de `[A VALIDER]`*: l'étape 3 doit l'exiger explicitement, et le modèle doit porter le marqueur. *validate échoue*: un template n'a ni `name` ni `user-invocable`; une compétence, si (gardez la forme des squelettes).
+🆘 **Pannes courantes**: *`base route` ne trouve pas `reserver-une-sortie-groupe`*: rapprochez vos `routing.examples` d'une vraie demande de sortie de groupe. *L'assistant invente un total au lieu de laisser `[A VALIDER]`*: l'étape 3 doit l'exiger explicitement, et le modèle doit porter le marqueur. *validate échoue*: un template n'a ni `name` ni `user-invocable`; une compétence, si (gardez la forme des squelettes).

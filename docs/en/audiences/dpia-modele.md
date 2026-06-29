@@ -1,4 +1,4 @@
-<!-- fr-synced: ffa337024debda686c2369c8cf42343d3ce4f15b -->
+<!-- fr-synced: 04f70bc61e7471c3fce124f16abe70a03bc8b793 -->
 # Impact assessment template (DPIA)
 
 Before you put an assistant in your teams' hands, you need to be able to justify what it does with the data, to your institution and to your data protection officer (DPO). This skeleton gives you a defensible outline for that assessment, and draws a clean line between what BASE guarantees technically and what remains your responsibility: you know exactly what you are committing to.
@@ -32,7 +32,7 @@ BASE itself stores only what you put into it:
 - the **resource files** you deposit (the domain knowledge, in Markdown);
 - a **local trace log** (`.ai/trace`) that records mediated operations: operation, resource, status, duration, with no business content by default.
 
-Default routing is **100% local** (lexical, zero network). Advanced semantic routing sends text to an embeddings provider only if you explicitly enable it, and a local option exists (see [Routing data security](../trust/securite-donnees-routage.md)).
+Default routing **makes no network calls** (lexical). Advanced semantic routing sends text to an embeddings provider only if you explicitly enable it, and a local option exists (see [Routing data security](../trust/securite-donnees-routage.md)).
 
 To fill in for your processing:
 
@@ -61,6 +61,8 @@ Determining the legal basis is the responsibility of your institution and its DP
 By default, everything stays local. The point to analyze first is **egress**: the call to the remote model, if it happens. See the tutorial [Perimeters and egress governance](../tutoriel/equipe-2-perimetres-et-egress.md).
 
 Mechanism enforced by BASE: a resource marked `confidential: true`, or an entire root marked `egress: local-only`, **is not sent to a remote model**. The check happens **before** the call, so the data does not leave the machine; the refusal is shown, never silent. This is a mechanism, not a *consigne*.
+
+Scope to frame in your assessment: this control applies to BASE's own model-calling surfaces (chat, evaluation, MCP read), not as a network firewall around your machine. The default policy is permissive (`egress: any`): nothing is withheld until you mark a resource `confidential: true` or a root `egress: local-only`. BASE cannot stop a human, or another tool reading the files directly on disk, from sending that data elsewhere. The mechanism guarantees BASE's behavior, not your whole environment's.
 
 Caveat: the local/remote determination relies on the declared or deduced provider locality (`tools/core/model-settings.mjs`), which a misconfigured proxy placed in front of a remote service could misrepresent; it is therefore an honest control, not an absolute proof.
 

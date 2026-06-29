@@ -66,4 +66,4 @@ does not exist. Uncited requirements are listed as gaps rather than hidden.
 - **Accessibility is gated.** The axe audit fails the build on serious/critical WCAG violations; the
   report still lists everything for review.
 - **Honest gates.** Thresholds reflect what is achieved with a small margin, not aspirational round
-  numbers — a passing gate is a true signal.
+  numbers, so a passing gate is a true signal.

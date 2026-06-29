@@ -1,4 +1,4 @@
-<!-- fr-synced: ac21a2cfb1ddcfe5d96cca067536017390d371c8 -->
+<!-- fr-synced: 4ba4a816b5a1c819f5f956ea34351ad5d4364f1a -->
 # The field: a friction comes up
 
 *⏱ ~10 min · module 8/9, Practitioner track*
@@ -9,7 +9,7 @@
 
 The Field stack starts empty. We simulate a report.
 
-First, a quick word of context: the **Field stack** gathers frictions (a real use that got stuck); the **gate** is the golden rule: nothing is written without a proposal (a diff) that you validate.
+A few words of context first: the **Field stack** gathers frictions (a real use that ran aground); the **gate** is the golden rule: nothing gets written without a proposal (a diff) that you approve.
 
 1. Create `.ai/feedback/2026-01-10_agenda-perime.md` in the tourist office with this content:
 
@@ -34,6 +34,6 @@ The process should check the validity date before announcing an event from the a
 
 🔁 **At home**: when your assistant gets it wrong, who will note the friction, and where? (that is your improvement loop)
 
-→ **And now**: [Module 9: migrate your content](praticien-9-migrer.md): the moment the exercise becomes YOUR tool.
+→ **And now**: [Module 9: migrate your content](praticien-9-migrer.md): the moment the exercise becomes YOUR base.
 
 🆘 **Common breakdowns**: *The friction does not appear*: check the `.ai/feedback/` folder and the frontmatter (status: open). *No diff on resolution*: the resolution always goes through a proposal; review before you validate.

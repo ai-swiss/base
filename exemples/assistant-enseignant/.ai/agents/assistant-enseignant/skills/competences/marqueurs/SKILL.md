@@ -13,7 +13,7 @@ allowed-tools: Read
 
 # Marqueurs
 
-Conventions pour rendre l'état du travail observable directement dans les fichiers. Les marqueurs sont du texte structuré, placé dans les documents générés (devis, fiches clients, rapports) et dans le journal. Ils ne sont jamais placés dans les fichiers du framework (skills, AGENT.md).
+Conventions pour rendre l'état du travail observable directement dans les fichiers. Les marqueurs sont du texte structuré, placé dans les documents générés (devis, fiches clients, rapports) et dans le journal. Ils ne sont jamais placés dans les fichiers du cadre (skills, AGENT.md).
 
 Chaque marqueur correspond à une phase de la boucle de co-pensée (Cadrer → Confier → Évaluer → Ajuster).
 
@@ -80,12 +80,12 @@ Au début d'une session de travail, signale brièvement l'état ouvert pour que 
 
 > «Depuis la dernière fois: 2 `[A VALIDER]`, 1 `[DECISION]` enregistrée. On reprend le devis Dupont?»
 
-Si l'environnement expose la commande `base markers` (ou l'outil MCP `list_markers`), utilise-la: elle renvoie une liste fiable et typée (chemin + ligne), en ignorant les fichiers du framework. Sinon, parcours les documents métier. Reste bref: une ou deux lignes, jamais un rapport complet.
+Si l'environnement expose la commande `base markers` (ou l'outil MCP `list_markers`), utilise-la: elle renvoie une liste fiable et typée (chemin + ligne), en ignorant les fichiers du cadre. Sinon, parcours les documents métier. Reste bref: une ou deux lignes, jamais un rapport complet.
 
 ## Règles d'usage
 
 - Les marqueurs vivent dans les **documents générés** (devis, fiches clients, rapports) et dans le **journal**
-- Ils ne sont **jamais** placés dans les fichiers du framework (AGENT.md, SKILL.md, templates)
+- Ils ne sont **jamais** placés dans les fichiers du cadre (AGENT.md, SKILL.md, templates)
 - Un marqueur `[A VALIDER]` devient `[DECISION]` quand l'utilisateur confirme
 - Un marqueur `[A COMPLETER]` disparaît quand l'information est fournie
 - Un marqueur `[ATTENTION]` reste tant que le risque n'a pas été traité

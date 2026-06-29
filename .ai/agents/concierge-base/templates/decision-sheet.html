@@ -73,7 +73,7 @@ function render(){
   prog();
 }
 function md(){
-  let m="# "+document.title+" : mes réponses\n\n> Pour Claude : mes choix et commentaires. Applique là où je suis d'accord, suis mes commentaires sinon, garde ta reco là où je n'ai pas répondu.\n\n";
+  let m="# "+document.title+" : mes réponses\n\n> Pour Claude : voici mes choix. Propose chaque changement en diff (jamais de commit direct) là où je suis d'accord, suis mes commentaires là où je nuance, garde ta recommandation, en le disant, là où je n'ai pas répondu.\n\n";
   for(const p of POINTS){const c=get(p.id);const l=c.score>0?c.score+"/5 ("+SCALE[c.score]+")":"— non répondu";
     m+="### "+p.id+" — "+p.title+"\n- Ma reco : "+p.recoSummary+"\n- Ton choix : "+l+"\n- Commentaire : "+((c.comment||"").trim()||"—")+"\n\n";}
   return m;

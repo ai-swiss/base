@@ -941,7 +941,7 @@ describe("specification v0 contract", () => {
     const readingOrder = await fs.readFile(path.resolve("docs/start/lire-dans-quel-ordre.md"), "utf8");
     const framework = await fs.readFile(path.resolve("docs/reference/framework-public.md"), "utf8");
     const claude = await fs.readFile(path.resolve("CLAUDE.md"), "utf8");
-    const license = await fs.readFile(path.resolve("LICENSE"), "utf8");
+    const license = await fs.readFile(path.resolve("LICENSING.md"), "utf8"); // the dual-license explainer (root LICENSE is now pure Apache-2.0 so GitHub detects it)
     const security = await fs.readFile(path.resolve("SECURITY.md"), "utf8");
     const securityLimits = await fs.readFile(path.resolve("docs/trust/securite-et-limites.md"), "utf8");
     const licenseDoc = await fs.readFile(path.resolve("docs/trust/licence.md"), "utf8");
@@ -963,8 +963,8 @@ describe("specification v0 contract", () => {
     assert.match(framework, /Trois couches à ne pas confondre/);
     assert.match(claude, /point d'entrée pour Claude Code/);
     assert.match(readme, /Pourquoi BASE existe/);
-    assert.match(readme, /Ignorez au début/);
-    assert.match(readme, /code sous Apache-2\.0/);
+    assert.match(readme, /délibérément minimale/);
+    assert.match(readme, /Apache-2\.0/);
     assert.match(diffusion, /double licence/);
     assert.match(license, /Apache License 2\.0/);
     assert.match(license, /Creative Commons Attribution 4\.0/);
@@ -1005,7 +1005,7 @@ describe("specification v0 contract", () => {
     assert.match(pratiques, /Gardez une intuition suffisante pour vérifier/);
     assert.match(pratiques, /Gardez la souveraineté sur votre dispositif/);
     assert.match(pratiques, /seize principes/);
-    assert.match(readme, /quatre pertes de contrôle/); // the README frames control-retention as the four losses to avoid (souveraineté, compréhension, durée, vérification)
+    assert.match(readme, /pertes de contrôle/); // the README frames control-retention as the losses to avoid (souveraineté, compréhension, durée, vérification, among others)
     assert.match(comprendre, /Déléguer la granularité ne doit pas faire perdre la capacité de juger/);
     assert.equal(readme.includes("14 principes"), false, "README must not keep the stale principle count");
   });

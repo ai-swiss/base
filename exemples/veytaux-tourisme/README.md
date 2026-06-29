@@ -4,9 +4,9 @@
 
 1. Ouvrez **ce dossier** (pas la racine du dépôt) dans Claude Code ou Cursor.
 2. Dites, mot pour mot: **«Quelles activités à faire cet après-midi?»**
-3. Vous devriez voir ceci: l'assistant cherche dans l'agenda et les fiches infos, cite sa source et signale un événement périmé au lieu de l'annoncer. Rien n'est réservé ni envoyé sans vous.
+3. Voici ce que vous devriez voir: l'assistant cherche dans l'agenda et les fiches infos, cite sa source et signale un événement périmé plutôt que de l'annoncer. Rien n'est réservé ni envoyé sans vous.
 
-Un assistant complet pour l'office du tourisme d'un hameau de montagne imaginaire, **Veytaux-les-Bains**, dont l'ambition dépasse largement la taille: un car postal, une webcam sur le parking et le rêve tranquille de devenir Saint-Moritz. Il sait deux choses et les fait bien: renseigner un visiteur, préparer une sortie de groupe. Il sert de fil rouge au tutoriel «Apprendre en faisant» de la documentation BASE, mais il fonctionne tel quel.
+Un assistant complet pour l'office du tourisme d'un hameau de montagne imaginaire, **Veytaux-les-Bains**, dont l'ambition dépasse de loin la taille: un car postal, une webcam sur le parking et le rêve tranquille de devenir Saint-Moritz. Il sait deux choses et les fait bien: renseigner un visiteur, préparer une sortie de groupe. Il sert de fil rouge au tutoriel «Apprendre en faisant» de la documentation BASE, mais il fonctionne tel quel.
 
 ## Démarrer
 
@@ -23,12 +23,12 @@ Un assistant complet pour l'office du tourisme d'un hameau de montagne imaginair
 
 ## Le palier honnête
 
-Ouvert tel quel, c'est le **modèle** qui route en suivant les consignes projetées. Pour le routage déterministe et les écritures validées, passez à la CLI ou au MCP: voir la documentation de démarrage de BASE («Faites installer BASE par votre IA»).
+Ouvert tel quel, c'est le **modèle** qui route, en suivant les consignes projetées. Pour un routage déterministe et des écritures validées, passez à la CLI ou au MCP: voir la documentation de démarrage de BASE («Faites installer BASE par votre IA»).
 
 > Données et contenus illustratifs: Veytaux-les-Bains n'existe pas (encore).
 
 ---
 
-BASE est un framework par [AI Swiss](https://a-i.swiss).
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss).
 
 Licence: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)

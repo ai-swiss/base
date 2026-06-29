@@ -1,7 +1,7 @@
-<!-- fr-synced: 36c0c73d58c62decee49a18db64187d87a227d13 -->
+<!-- fr-synced: 11ba0693ef2726c3ed4e355f4dd2dbd5542c82b8 -->
 # Security and limits
 
-Before you trust BASE with data or actions, you need to know what the local core actually protects and what you still have to add for your context: trust it too much and you expose what you assumed was covered. Whether you are deciding for yourself or for a public administration, here is the boundary. BASE improves your control over human-AI collaboration, but it does not turn a general-purpose AI tool into an enterprise-grade security environment.
+Before you trust BASE with data or actions, know what the local core actually protects and what you still have to add for your context: rely on it too much and you leave exposed what you believed was protected. Whether you are deciding for yourself or for a public administration, here is where the boundary runs. BASE strengthens your control over working with AI, but it does not raise a general-purpose AI tool to the security level of a large organization.
 
 ## Core principle
 
@@ -14,11 +14,11 @@ In public BASE, those mechanisms are:
 - the MCP server when it delegates to the broker;
 - a future controlled connector.
 
-If an agent has direct access to the shell, the filesystem, or an external API without going through BASE, the YAML metadata remains useful as a guide and an audit signal, but it does not mechanically block the action.
+If an agent has direct access to the shell, the filesystem, or an external API without going through BASE, the YAML metadata remains useful as a guide and as an audit signal, but it does not mechanically block the action.
 
-**Concrete consequence, with no technical team:** in the browser alone, the guarantees are *consignes* followed by a cooperative model, not enforced mechanisms. To get real enforcement (confinement, preview before writing, validated routing), you need the broker through the CLI or MCP. The details, level by level, are in [Try BASE without installing anything](../start/essayer-sans-installer.md), useful in particular for a public administration that needs to know what is guaranteed at each level.
+**Concrete consequence, with no technical team:** in the browser alone, the guarantees are *guidelines* a cooperative model follows, not enforced mechanisms. For real enforcement (confinement, preview before writing, validated routing), you need the broker, through the CLI or through MCP. The details, level by level, appear in [Try BASE without installing anything](../start/essayer-sans-installer.md), useful in particular for a public administration that needs to know what is guaranteed at each level.
 
-A process can declare that it needs to read a source or run a tool. That declaration expresses a work need. It does not grant a permission. The real rights stay with the OS, the shared folder, the Drive, the connector, the API, the token, or the harness in use.
+A process can declare that it needs to read a source or run a tool. That declaration expresses a work need; it grants no permission. The real rights stay with the OS, the shared folder, the Drive, the connector, the API, the token, or the harness in use.
 
 ## Actions that pass through BASE
 
@@ -69,9 +69,9 @@ Public BASE does not provide:
 - a guarantee about the processing carried out by the AI provider;
 - transparency about the instructions the AI tool injects on top of your files (system prompt, rules, provider policies).
 
-These belong to the organization, its technical environment, and its provider contracts.
+These belong to the organization, its technical environment, and its contracts with providers.
 
-**External security review: planned, not yet done.** The core is designed for auditing (no dependencies, mechanisms tested and documented), but BASE has not yet undergone an independent security review.
+**External security review: planned, not yet done.** The core is designed for auditing (no dependencies, with mechanisms tested and documented), but BASE has not yet undergone an independent security review.
 
 ## Data and AI providers
 
@@ -85,7 +85,7 @@ Depending on the tool used, the content of a conversation, an open file, or a pr
 - where the processing takes place;
 - your organization's internal rules.
 
-For highly sensitive data, use a suitable environment or keep the AI out of the loop.
+For highly sensitive data, turn to a suitable environment or keep the AI out of the loop.
 
 ## Reading by adoption level
 
@@ -104,12 +104,12 @@ For highly sensitive data, use a suitable environment or keep the AI out of the 
 | Sensitive data opened for no reason | Metadata and explainable access decision | Does not block direct access outside BASE |
 | Irreversible action | Dry-run by default and confirmation | Does not protect actions outside the broker |
 | False but plausible answer | Decision points, markers, human verification | The model can always be wrong |
-| Prompt injection via external data | Design principle (a *consigne*, not a code-enforced mechanism like confinement or the egress check): an instruction runs, external data stays content to be read | Requires discipline and technical mediation |
+| Prompt injection via external data | Design principle (a *guideline*, not a mechanism enforced by the code the way confinement or the egress check is): an instruction runs, external data remains content to be read | Requires discipline and technical mediation |
 | Invisible instructions from the AI tool | Sovereignty over your layer: readable, portable, auditable files | BASE cannot see what the harness injects on top of your files |
 
 ## Responsibility rule
 
-BASE helps you structure, verify, and trace. The human keeps responsibility for the decisions, and the organization keeps responsibility for security, compliance, and access.
+BASE helps you structure, verify, and trace. The human keeps responsibility for the decisions; the organization keeps responsibility for security, compliance, and access.
 
 So the right promise is:
 
@@ -120,4 +120,4 @@ BASE does not replace a security policy.
 
 ## Compliant does not mean useful
 
-Being in order and being useful are two distinct requirements. Compliance (a register of processing activities, an impact assessment, and depending on the jurisdiction the GDPR, the Swiss nFADP, or the European AI Act) governs what you are allowed to do with AI. It does not, however, make the work useful or verifiable: ticking the boxes of a regulatory framework does not structure the interaction, does not target the relevant information, and does not close the verification loop. That is what BASE adds, alongside compliance and never in its place. This pointer is informational and does not constitute compliance advice.
+Being in order and being useful are two distinct requirements. Compliance (a register of processing activities, an impact assessment, and depending on the jurisdiction the GDPR, the Swiss nFADP, or the European AI Act) governs what you are allowed to do with AI. It does not, however, make the work useful or verifiable: ticking the boxes of a regulatory framework does not structure the interaction, does not target the relevant information, and does not close the verification loop. That is precisely what BASE adds, alongside compliance and never in its place. This pointer is informational and does not constitute compliance advice.

@@ -13,11 +13,11 @@ allowed-tools: Read
 
 # Architecture d'un agent IA métier
 
-Connaissances de référence pour concevoir et structurer des agents IA. Consulté par le créateur d'agent lors de la conception.
+Connaissances de référence pour concevoir et structurer des agents IA. Le créateur d'agent les consulte au moment de la conception.
 
 ## Pourquoi ça marche
 
-Chaque choix de design de BASE repose sur une nécessité structurelle:
+Chaque choix de conception de BASE répond à une nécessité structurelle:
 
 1. **Ce qui n'est pas écrit est oublié.** → Fichiers comme source de vérité, journal entre sessions.
 2. **Ce qui n'est pas cherchable est perdu.** → Marqueurs structurés et greppables dans les documents.
@@ -63,13 +63,13 @@ Les données métier vivent **à la racine du projet**, pas dans le dossier de l
 
 ## Le format SKILL.md
 
-Un skill est un fichier d'instructions texte que l'IA lit et suit. C'est un format Markdown portable, reconnu nativement par certains outils IA et lisible manuellement par tous. Chaque skill a un frontmatter YAML suivi d'un corps Markdown.
+Un skill est un fichier d'instructions en texte que l'IA lit et suit. Son format Markdown est portable: certains outils IA le reconnaissent nativement, et chacun peut le lire directement. Chaque skill associe un frontmatter YAML à un corps Markdown.
 
 ### Deux types de skills
 
-**Process** = workflow invocable par l'utilisateur. L'utilisateur le déclenche directement ou BASE le choisit avec le routeur, puis l'agent le suit étape par étape.
+**Process** = workflow invocable par l'utilisateur. Celui-ci le déclenche directement, ou BASE le choisit via le routeur; l'agent le suit ensuite étape par étape.
 
-**Compétence** = connaissance ou capacité réutilisable. À consulter par l'agent quand c'est pertinent. Peut aussi être invocable (`/diagnostic`).
+**Compétence** = connaissance ou capacité réutilisable. L'agent la consulte lorsque c'est pertinent. Elle peut elle aussi être invocable (`/diagnostic`).
 
 La distinction est dans le champ `user-invocable` du frontmatter.
 
@@ -81,7 +81,7 @@ Ne mélange pas trois décisions différentes:
 2. **Routage du process**: BASE choisit le workflow à suivre, ou s'abstient si la demande ne correspond pas.
 3. **Ouverture des ressources**: le process ouvre les compétences, templates, tools, documents et données nécessaires.
 
-Le routeur BASE est volontairement centré sur les process. Une compétence ou un document peut être découvert ensuite comme ressource, mais ne doit pas être présenté comme workflow primaire.
+Le routeur BASE se concentre volontairement sur les process. Une compétence ou un document se découvre ensuite, comme ressource, mais ne se présente jamais comme workflow principal.
 
 ### Frontmatter minimal
 
@@ -95,17 +95,17 @@ allowed-tools: Read Write Edit Glob Grep
 ```
 
 Champs que BASE utilise:
-- `name` (requis): identifiant, lowercase, tirets. Doit correspondre au nom du dossier.
-- `description` (requis): quand et pourquoi utiliser ce skill. Les outils IA lisent cette description au démarrage pour savoir quand charger le skill.
+- `name` (requis): identifiant en minuscules, avec tirets. Il doit correspondre au nom du dossier.
+- `description` (requis): quand et pourquoi utiliser ce skill. Au démarrage, les outils IA lisent cette description pour savoir quand charger le skill.
 - `user-invocable` (requis): `true` pour les processes, `false` pour les compétences de référence.
-- `allowed-tools` (recommandé): outils nécessaires. Canonical order: Read Write Edit Glob Grep Bash.
-- `argument-hint` (optionnel): aide à l'invocation, affiché par les outils.
+- `allowed-tools` (recommandé): outils nécessaires. Ordre canonique: Read Write Edit Glob Grep Bash.
+- `argument-hint` (optionnel): aide à l'invocation, que les outils affichent.
 
-D'autres champs existent dans certains outils (`model`, `context`, `paths`, etc.): le framework les ignore mais ne les interdit pas. Les outils ignorent les champs qu'ils ne comprennent pas. C'est ce qui rend le format portable.
+D'autres champs existent selon les outils (`model`, `context`, `paths`, etc.): le cadre les ignore sans les interdire. Chaque outil laisse de côté les champs qu'il ne comprend pas, et c'est précisément ce qui rend le format portable.
 
 ### Frontmatter BASE pour process routable
 
-Quand l'utilisateur veut que BASE choisisse automatiquement le bon workflow, ajoute les champs BASE au process. Garde-les sobres:
+Quand l'utilisateur veut que BASE choisisse automatiquement le bon workflow, ajoute les champs BASE au process. Reste sobre:
 
 ```yaml
 ---
@@ -133,11 +133,11 @@ may_use:
 ---
 ```
 
-`use_when` choisit l'action à suivre. `requires` et `may_use` indiquent ensuite avec quoi le process travaille.
+`use_when` désigne l'action à suivre. `requires` et `may_use` précisent ensuite avec quoi le process travaille.
 
 ## Comment écrire un bon AGENT.md
 
-L'AGENT.md est le fichier le plus important. Il doit être **auto-contenu**: un outil IA qui charge ce seul fichier doit savoir exactement quoi faire.
+L'AGENT.md est le fichier le plus important. Il doit se suffire à lui-même: un outil IA qui ne charge que ce fichier doit savoir exactement quoi faire.
 
 ### Sections obligatoires
 
@@ -150,7 +150,7 @@ L'AGENT.md est le fichier le plus important. Il doit être **auto-contenu**: un 
    - L'agent contrôle mécaniquement, l'humain valide le sens
    - Être un collègue, pas un outil
 
-3. **Table d'intentions**: intention utilisateur → process ou compétence à charger. Pour un assistant simple, des mots-clés suffisent. Pour un assistant routé par BASE, les process portent aussi `use_when` et éventuellement des fixtures.
+3. **Table d'intentions**: intention utilisateur → process ou compétence à charger. Pour un assistant simple, des mots-clés suffisent. Pour un assistant routé par BASE, les process portent en plus un `use_when` et, au besoin, des fixtures.
 
 4. **Reprise de session**: "Si `.ai/journal/` contient des entrées récentes, lis-les."
 
@@ -170,10 +170,10 @@ L'AGENT.md est le fichier le plus important. Il doit être **auto-contenu**: un 
 
 ### Bonnes pratiques
 
-- **Pas plus de 150 lignes.** Si c'est plus long, déplacer du contenu vers des compétences.
+- **Pas plus de 150 lignes.** Au-delà, déplace du contenu vers des compétences.
 - **Routage par intention, pas par phrases exactes.** En conversation simple, l'IA interprète l'intention. Avec BASE, le process explicite son `use_when` et les fixtures protègent les routes importantes.
 - **Chemins relatifs à la racine du projet** pour les fichiers métier.
-- **Terminologie métier** dans le routage. «Créer un devis» pas «Lancer le process de génération».
+- **Terminologie métier** dans le routage: «Créer un devis», pas «Lancer le process de génération».
 
 ## Comment écrire un bon process
 
@@ -184,14 +184,14 @@ Un process est une conversation structurée guidée par un SKILL.md invocable.
 **Reformulation** (légère, vérifie la compréhension):
 > «Voici ce que j'ai noté: [résumé]. Est-ce correct?»
 
-Se tromper n'a pas de conséquence: on ajuste et on continue. Fréquent.
+Se tromper est sans conséquence: on ajuste et on poursuit. Fréquent.
 
 **Point de décision** (critique, avant action irréversible):
 > «⚠ Point de décision. Je suis prêt à [action]. Confirmez-vous?»
 
 Précède une création/modification de fichier, un engagement, une action difficile à défaire. Rare et important.
 
-**Règle: ne diluez pas les points de décision.** Réservez-les aux moments qui comptent. Les reformulations sont légères et fréquentes. Les points de décision sont rares et importants. Si chaque étape est un point de décision, l'attention se dilue.
+**Règle: ne diluez pas les points de décision.** Réservez-les aux moments qui comptent. Les reformulations sont légères et fréquentes; les points de décision, rares et importants. Si chaque étape devient un point de décision, l'attention se dilue.
 
 ### Structure d'un process
 
@@ -203,7 +203,7 @@ Précède une création/modification de fichier, un engagement, une action diffi
 
 ## Comment écrire une bonne compétence
 
-Une compétence fournit du contexte, pas des instructions. C'est une fiche de connaissances.
+Une compétence fournit du contexte, pas des instructions: c'est une fiche de connaissances.
 
 - Factuel et concis
 - Tableaux pour la terminologie
@@ -219,21 +219,21 @@ Une compétence fournit du contexte, pas des instructions. C'est une fiche de co
 - `[ATTENTION: description]`: risque ou alerte
 - `[DECISION: choix | raison]`: choix confirmé (forme enrichie disponible pour enjeux élevés)
 
-Jamais dans les fichiers framework. Voir `competences/marqueurs/SKILL.md`.
+Jamais dans les fichiers du cadre. Voir `competences/marqueurs/SKILL.md`.
 
 ## Journal
 
-Entrée écrite à la fin de chaque process dans `.ai/journal/`. Mémoire entre sessions. Voir `competences/journal/SKILL.md`.
+Une entrée s'écrit à la fin de chaque process dans `.ai/journal/`. C'est la mémoire entre sessions. Voir `competences/journal/SKILL.md`.
 
 ## Garde-fous: deux niveaux
 
-**Niveau 1 (textuel)**: "Ce que tu ne fais jamais" dans AGENT.md. Suffisant pour les conversations courtes.
+**Niveau 1 (textuel)**: la rubrique «Ce que tu ne fais jamais» de l'AGENT.md. Elle suffit pour les conversations courtes.
 
-**Niveau 2 (mécanique)**: permissions, hooks, règles par chemin dans la configuration outil. Les consignes dérivent, les mécanismes tiennent. Quand un garde-fou est critique, préférez le mécanisme à la consigne.
+**Niveau 2 (mécanique)**: permissions, hooks, règles par chemin dans la configuration de l'outil. Les consignes dérivent, les mécanismes tiennent. Quand un garde-fou est critique, préférez le mécanisme à la consigne.
 
 ## Configuration outil: les 5 primitives
 
-Tout outil IA a besoin de 5 choses pour faire tourner un agent. Le créateur-agent les implémente selon l'outil choisi:
+Tout outil IA a besoin de cinq choses pour faire tourner un agent. Le créateur-agent les met en place selon l'outil choisi:
 
 | Primitive | Ce que c'est |
 |---|---|
@@ -241,21 +241,21 @@ Tout outil IA a besoin de 5 choses pour faire tourner un agent. Le créateur-age
 | **Skills découvrables** | L'outil trouve et invoque les SKILL.md |
 | **Règles par chemin** | Garde-fous activés selon le fichier touché |
 | **Permissions** | Contrôler ce que l'agent peut faire |
-| **Protection framework** | Empêcher la modification de `.ai/` |
+| **Protection du cadre** | Empêcher la modification de `.ai/` |
 
-Le créateur cherche la documentation actuelle de l'outil en ligne pour implémenter ces primitives. Voir `competences/outils-connus/SKILL.md` comme référence de base.
+Pour mettre en place ces primitives, le créateur consulte en ligne la documentation à jour de l'outil. Voir `competences/outils-connus/SKILL.md` comme référence de base.
 
 ## Templates
 
 - Placeholders en MAJUSCULES entre crochets: `[NOM_DU_CHAMP]`
 - Structure markdown avec sections claires
-- Commentaires HTML pour les notes à l'agent
-- Ne jamais modifier l'original: copier et remplir
-- Créer markdown ET JSON quand pertinent
+- Commentaires HTML pour les notes destinées à l'agent
+- Ne jamais modifier l'original: on le copie, puis on le remplit
+- Créer le markdown ET le JSON quand c'est pertinent
 
 ## Tools
 
-Optionnel. Un fichier par outil. Nommage: `[action]-[cible]_v1.[ext]`. Pas de logique métier dans les tools: les règles restent dans les compétences.
+Optionnel. Un fichier par outil. Nommage: `[action]-[cible]_v1.[ext]`. Aucune logique métier dans les tools: les règles restent dans les compétences.
 
 ## Conventions générales
 

@@ -23,11 +23,11 @@ allowed-tools: Read Write
 
 # Promotion de ressource
 
-Aider l'utilisateur à promouvoir un fichier personnel vers une ressource d'équipe sans introduire une gouvernance enterprise.
+Aider l'utilisateur à promouvoir un fichier personnel en ressource d'équipe, sans imposer de gouvernance enterprise.
 
 ## Déclencheurs
 
-Utiliser ce process quand l'utilisateur dit:
+Recourir à ce process lorsque l'utilisateur dit:
 
 - «Promouvoir ce process pour l'équipe.»
 - «Partager cette ressource avec l'équipe.»
@@ -47,12 +47,12 @@ Demander:
 
 ### 1. Lire et comprendre
 
-Lire la ressource source. Résumer:
+Lire la ressource source, puis en résumer:
 
 - ce qu'elle permet de faire;
 - ce qui est déjà clair;
 - ce qui manque pour un usage d'équipe;
-- les risques de sensibilité ou de contexte personnel.
+- les risques liés à la sensibilité ou au contexte personnel.
 
 ### 2. Vérifier le minimum équipe
 
@@ -86,22 +86,22 @@ promoted_at: 2026-05-05
 
 Présenter une proposition complète:
 
-- chemin source;
-- chemin cible;
-- frontmatter proposé;
-- corrections éditoriales minimales;
-- points à valider par l'utilisateur.
+- le chemin source;
+- le chemin cible;
+- le frontmatter proposé;
+- les corrections éditoriales minimales;
+- les points à faire valider par l'utilisateur.
 
-Point de décision: attendre la validation explicite avant copie, déplacement ou modification.
+Point de décision: attendre la validation explicite avant toute copie, tout déplacement ou toute modification.
 
 ### 4. Appliquer proprement
 
-Après validation:
+Une fois la validation obtenue:
 
 - copier ou déplacer selon la décision;
 - ajouter le frontmatter minimal;
-- conserver le contenu métier lisible;
-- ne pas ajouter de gouvernance enterprise sauf demande explicite;
+- garder le contenu métier lisible;
+- n'ajouter aucune gouvernance enterprise, sauf demande explicite;
 - lancer ou recommander `base validate`.
 
 ### 5. Clôturer
@@ -109,9 +109,9 @@ Après validation:
 Résumer:
 
 - ce qui a été promu;
-- ce qui reste personnel;
+- ce qui demeure personnel;
 - les décisions prises;
-- le test d'usage à faire avec l'équipe.
+- le test d'usage à mener avec l'équipe.
 
 ## Ce que tu ne fais jamais
 

@@ -18,7 +18,7 @@ routing:
     - Clarifier une décision précise.
     - Explorer une question ou synthétiser des notes.
 name: configuration
-keywords: [configurer, installer, commencer, démarrer, paramétrer, profil, préférences, première utilisation]
+keywords: [configurer, installer, commencer, demarrer, parametrer, profil, preferences, premiere utilisation]
 argument-hint: "[rien, ou ce que la personne veut régler]"
 user-invocable: true
 allowed-tools: Read Write Edit Glob Grep
@@ -26,7 +26,7 @@ allowed-tools: Read Write Edit Glob Grep
 
 # Configurer mon espace de réflexion
 
-Mettre en place l'espace personnel pour que l'assistant connaisse la façon de réfléchir de la personne, sans rien imposer. La configuration est légère et se modifie à tout moment.
+Mettre en place l'espace personnel pour que l'assistant connaisse la façon de réfléchir de la personne, sans rien imposer. La configuration reste légère et se modifie à tout moment.
 
 ## Inputs
 
@@ -43,7 +43,7 @@ Rien n'est obligatoire. Demande, une question à la fois:
 
 ### 2. Recueillir les préférences, une question à la fois
 
-Pose les questions ci-dessus une par une. N'enchaîne pas. Si la personne ne sait pas, propose de laisser le champ ouvert (`[A COMPLETER]`) plutôt que d'inventer.
+Pose les questions ci-dessus une par une, sans les enchaîner. Si la personne ne sait pas, propose de laisser le champ ouvert (`[A COMPLETER]`) plutôt que d'inventer.
 
 ← Reformulation après chaque réponse
 

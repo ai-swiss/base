@@ -15,17 +15,17 @@ allowed-tools: Read
 
 **Dernière vérification: avril 2026.**
 
-Ce fichier sert de fallback quand le créateur-agent n'a pas accès au web pour chercher la documentation actuelle d'un outil. **Toujours préférer la documentation en ligne**: les outils évoluent vite et ces informations peuvent être périmées.
+Ce fichier sert de secours quand le créateur-agent n'a pas accès au web pour consulter la documentation à jour d'un outil. **Toujours préférer la documentation en ligne**: les outils évoluent vite et ces repères peuvent être périmés.
 
 ## Rappel: les 5 primitives abstraites
 
-Tout outil IA a besoin de 5 choses pour faire tourner un agent BASE:
+Tout outil IA a besoin de 5 choses pour faire vivre un agent BASE:
 
 1. **Contexte permanent**: charger AGENT.md à chaque session
 2. **Skills découvrables**: l'outil trouve et invoque les SKILL.md
 3. **Règles par chemin**: garde-fous activés selon le fichier touché
 4. **Permissions**: contrôler ce que l'agent peut faire
-5. **Protection framework**: empêcher la modification de `.ai/`
+5. **Protection du cadre**: empêcher la modification de `.ai/`
 
 ## Claude Code
 
@@ -35,7 +35,7 @@ Tout outil IA a besoin de 5 choses pour faire tourner un agent BASE:
 | Skills découvrables | Copier les skills dans `.claude/skills/` (auto-découverte, dossiers plats) |
 | Règles par chemin | `.claude/rules/*.md` avec frontmatter `paths: ["chemin/**"]` |
 | Permissions | `.claude/settings.json` avec `permissions.allow` et `permissions.deny` |
-| Protection framework | Hook PreToolUse ou permission deny sur `.ai/**` dans settings.json |
+| Protection du cadre | Hook PreToolUse ou permission deny sur `.ai/**` dans settings.json |
 
 **Structure résultante:**
 ```
@@ -61,7 +61,7 @@ CLAUDE.md                              ← @.ai/agents/[nom]/AGENT.md
 | Skills découvrables | `.codex/skills/` ou `.agents/skills/` (enregistrés dans config.toml) |
 | Règles par chemin | `AGENTS.md` imbriqué dans les sous-dossiers (ex. `devis/AGENTS.md`) |
 | Permissions | `.codex/config.toml` avec sandbox_mode et approval_policy |
-| Protection framework | Filesystem permissions dans config.toml |
+| Protection du cadre | Filesystem permissions dans config.toml |
 
 **Note:** Codex n'a pas d'import: AGENTS.md doit contenir le contenu de AGENT.md (duplication générée, pas manuelle).
 
@@ -73,7 +73,7 @@ CLAUDE.md                              ← @.ai/agents/[nom]/AGENT.md
 | Skills découvrables | `.agents/skills/` (auto-découverte) ou `.cursor/skills/` |
 | Règles par chemin | `.cursor/rules/*.mdc` avec `globs: "chemin/**"` |
 | Permissions | Pas d'équivalent natif (garde-fous textuels uniquement) |
-| Protection framework | Instruction dans la rule (textuel, pas mécanique) |
+| Protection du cadre | Instruction dans la rule (textuel, pas mécanique) |
 
 ## Windsurf
 
@@ -83,7 +83,7 @@ CLAUDE.md                              ← @.ai/agents/[nom]/AGENT.md
 | Skills découvrables | `.windsurf/skills/` ou `.agents/skills/` (auto-découverte) |
 | Règles par chemin | `.windsurf/rules/*.md` avec `trigger: glob` et `globs: ["chemin/**"]` |
 | Permissions | Pas d'équivalent natif |
-| Protection framework | Instruction dans la rule (textuel) |
+| Protection du cadre | Instruction dans la rule (textuel) |
 
 ## Autre outil / mode générique
 
@@ -91,8 +91,8 @@ Si l'outil n'est pas listé ci-dessus:
 
 > «Je ne connais pas encore les spécificités de [outil]. Voici ce dont votre assistant a besoin pour fonctionner:
 >
-> 1. **Contexte permanent**: trouvez comment charger un fichier texte au démarrage, et faites-le pointer vers `.ai/agents/[nom]/AGENT.md`
-> 2. **Skills**: si votre outil découvre nativement des fichiers SKILL.md, copiez les skills au bon endroit. Sinon, l'agent chargera les skills à la demande en les lisant.
-> 3. **Règles**: si votre outil supporte des règles par chemin, créez des garde-fous pour les dossiers de données métier.
-> 4. **Permissions**: si votre outil le permet, restreignez la modification de `.ai/` et auto-approuvez la lecture des fichiers métier.
-> 5. **Sans rien de tout ça**: dites simplement à votre outil "Lis .ai/agents/[nom]/AGENT.md et suis ses instructions". Tout fonctionnera, sans les garde-fous mécaniques.»
+> 1. **Contexte permanent**: trouvez comment charger un fichier texte au démarrage, puis faites-le pointer vers `.ai/agents/[nom]/AGENT.md`
+> 2. **Skills**: si votre outil découvre nativement les fichiers SKILL.md, copiez les skills au bon endroit. Sinon, l'agent les chargera à la demande en les lisant.
+> 3. **Règles**: si votre outil gère des règles par chemin, posez des garde-fous sur les dossiers de données métier.
+> 4. **Permissions**: si votre outil le permet, interdisez la modification de `.ai/` et autorisez d'office la lecture des fichiers métier.
+> 5. **Sans rien de tout cela**: dites simplement à votre outil "Lis .ai/agents/[nom]/AGENT.md et suis ses instructions". Tout fonctionnera, mais sans les garde-fous mécaniques.»

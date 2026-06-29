@@ -23,9 +23,9 @@ routing:
 
 # Signaler une friction
 
-Une friction consignée est un amendement de process en attente. Ce process collecte le contexte
-minimal puis écrit l'entrée dans le journal de terrain (`.ai/feedback/`): création seule, jamais
-de modification. C'est le détecteur de lacunes le moins cher qui existe.
+Une friction consignée est un amendement de process qui s'ignore encore. Ce process réunit le
+contexte essentiel, puis inscrit l'entrée dans le journal de terrain (`.ai/feedback/`): on crée,
+on ne modifie jamais. C'est le détecteur de lacunes le moins coûteux qui soit.
 
 ## Étapes
 
@@ -37,7 +37,7 @@ Demande (ou déduis de la conversation):
 
 ### 2. Cerner l'écart
 
-Fais préciser en une phrase chacun:
+Fais préciser chacun en une phrase:
 - **Attendu**: ce que le process annonce.
 - **Observé**: ce qui s'est réellement passé (montant faux, donnée périmée, étape impossible…).
 
@@ -50,15 +50,15 @@ Appelle l'outil `report_friction`:
 - `detail`: étape, attendu, observé, et toute correction faite à la main
 - `via`: `user` si l'utilisateur dicte, `assistant` si tu consignes de toi-même
 
-Si l'outil n'est pas disponible dans cet hôte, propose le contenu du fichier
+Si l'outil n'est pas disponible sur cet hôte, propose le contenu du fichier
 `.ai/feedback/<date>_<process>.md` (frontmatter `process`, `reported`, `via`, `status: open`)
-via le gate propose → commit.
+en passant par le gate propose → commit.
 
 ### 4. Confirmer la suite
 
-Dis à l'utilisateur où la friction vit (`.ai/feedback/`) et ce qu'elle déclenche: elle apparaît
-dans la pile Terrain de Studio et chez `base doctor` jusqu'à ce qu'un humain amende le process et
-la marque résolue.
+Indique à l'utilisateur où vit la friction (`.ai/feedback/`) et ce qu'elle déclenche: elle figure
+dans la pile Terrain de Studio et chez `base doctor` tant qu'un humain n'a pas amendé le process et
+ne l'a pas marquée résolue.
 
 ## Ce que tu ne fais jamais dans ce process
 

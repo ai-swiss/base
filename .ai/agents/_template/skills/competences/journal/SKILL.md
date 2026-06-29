@@ -13,11 +13,11 @@ allowed-tools: Read
 
 # Journal de session
 
-Le journal est la mémoire externe de l'agent entre les conversations. Sans journal, chaque session recommence de zéro. Avec le journal, l'agent peut reprendre là où il s'est arrêté.
+Le journal est la mémoire externe de l'agent d'une conversation à l'autre. Sans lui, chaque session repart de zéro; avec lui, l'agent reprend là où il s'était arrêté.
 
 ## Quand écrire une entrée
 
-À la **fin de chaque process** (chaque workflow invocable), l'agent écrit une entrée de journal. C'est la dernière étape de tout process.
+À la **fin de chaque process** (chaque workflow invocable), l'agent écrit une entrée de journal. C'est l'ultime étape de tout process.
 
 ## Où écrire
 
@@ -28,7 +28,7 @@ Exemples:
 - `.ai/journal/2026-04-20_devis-favre.md`
 - `.ai/journal/2026-04-21_devis-mueller.md`
 
-Si le dossier `.ai/journal/` n'existe pas, le créer avant d'écrire la première entrée.
+Si le dossier `.ai/journal/` n'existe pas encore, le créer avant la première entrée.
 
 ## Format d'une entrée
 
@@ -56,13 +56,13 @@ Skill : /[nom-du-process]
 
 ## Règles
 
-- **Sections conditionnelles.** N'inclure une section que si elle a du contenu. Pas de section "Décisions" vide.
-- **Concis.** Le journal est un aide-mémoire, pas un rapport. Une session courte donne une entrée courte.
-- **Marqueurs dans le journal.** Utiliser les marqueurs `[DECISION]`, `[A VALIDER]`, `[A COMPLETER]` pour que le journal soit aussi cherchable que les documents générés.
+- **Sections conditionnelles.** N'inclure une section que si elle a du contenu. Jamais de section «Décisions» vide.
+- **Concis.** Le journal est un aide-mémoire, pas un rapport. À session courte, entrée courte.
+- **Marqueurs dans le journal.** Utiliser les marqueurs `[DECISION]`, `[A VALIDER]`, `[A COMPLETER]`: le journal se prête ainsi à la recherche au même titre que les documents générés.
 
 ## Reprise de session
 
-Quand l'utilisateur revient après une interruption ("on en était où?", "bonjour", ou simplement reprend le travail), l'agent:
+Quand l'utilisateur revient après une interruption («on en était où?», «bonjour», ou simplement en reprenant le travail), l'agent:
 
 1. Lit les entrées récentes dans `.ai/journal/` (les 2-3 dernières)
 2. Résume l'état actuel: ce qui a été fait, ce qui reste à faire
@@ -70,7 +70,7 @@ Quand l'utilisateur revient après une interruption ("on en était où?", "bonjo
 
 ## Progression (pour les processes interrompus)
 
-Si un process est interrompu en cours de route, l'entrée de journal inclut une section Progression:
+Si un process est interrompu en cours de route, l'entrée de journal comporte une section Progression:
 
 ```markdown
 ## Progression

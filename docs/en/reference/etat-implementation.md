@@ -1,4 +1,4 @@
-<!-- fr-synced: 7bd22841f0b5e714d4d8df302ccf499524bc2e6c -->
+<!-- fr-synced: 02c8a3da31eaf69a177cd2939a501c3f0c49c25d -->
 # What the public core of BASE does today
 
 This page is for anyone who wants to know, in the present tense, what the public core of BASE can and cannot do, without guessing. It exists to give an honest reference point, and it points to the three authoritative sources rather than copying them:
@@ -21,7 +21,7 @@ If any of these sources disagrees with this page, the source is authoritative. T
 - Resource opening with `metadata`, `instructions`, and `full` projections.
 - Local access confined within the project, refusing path traversals and outbound symlinks.
 - Local tool invocation in dry-run by default, with explicit confirmation for execution.
-- Mediated domain writes: `propose_change` prepares a readable diff without writing anything, `commit_change` writes after a decision (confirmation required by default, configurable per resource via `requires_confirmation`, never optional for `sensitive`/`restricted`), verifies the written state, and traces.
+- Mediated domain writes: `propose_change` prepares a readable diff without writing anything, `commit_change` writes after a decision (confirmation required by default, configurable per resource via `requires_confirmation`, never optional for `sensitive`/`restricted`), verifies the written state, and records it.
 - Resource promotion (`promote`): updates `scope`, `promoted_from`, and `promoted_at` through the mediated write, with diff and confirmation.
 - Listing of open markers (`markers`): `[A VALIDER]`, `[A COMPLETER]`, `[ATTENTION]`, `[DECISION]` in domain documents.
 - Multi-harness projection (`build`): generates from the kernel an `AGENTS.md` index (Codex/AGENTS.md family compatibility) and a tool matrix (`.ai/tools.md`) that honestly declares the real enforcement level per harness. On demand, `base build routing-registry` also generates `.ai/routing/registry.json`, a deterministic projection of the routing signals. Derived artifacts, never sources of truth.

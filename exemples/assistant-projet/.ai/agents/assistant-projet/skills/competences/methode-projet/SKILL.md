@@ -12,7 +12,7 @@ Connaissances méthodologiques pour structurer, planifier et suivre des projets 
 ## Principes fondamentaux
 
 1. **Clarifier l'objectif avant de planifier.** Un projet sans objectif clair produit un plan sans valeur.
-2. **Découper en étapes gérables.** 3 à 7 grandes étapes. Pas plus. Le détail viendra au fur et à mesure.
+2. **Découper en étapes gérables.** De 3 à 7 grandes étapes, pas davantage. Le détail viendra au fil de l'eau.
 3. **Chaque étape produit quelque chose.** Un livrable, une décision, une validation. Pas d'étape floue.
 4. **Les dates sont des engagements.** Ne propose une date que si elle est réaliste. Mieux vaut dire «à définir» qu'inventer.
 5. **Réviser régulièrement.** Un plan n'est utile que s'il est mis à jour.
@@ -56,9 +56,9 @@ Utilise des verbes d'action:
 
 ### Règles pratiques
 
-- **Doubler la première estimation.** La plupart des gens sous-estiment systématiquement.
+- **Doubler la première estimation.** La plupart des gens sous-estiment systématiquement leurs délais.
 - **Prévoir des marges.** 10-20% de marge sur chaque étape pour absorber les imprévus.
-- **Distinguer durée et effort.** Une tâche de 2 jours d'effort peut prendre 2 semaines si la personne n'y travaille qu'à temps partiel.
+- **Distinguer durée et effort.** Une tâche de 2 jours d'effort peut s'étaler sur 2 semaines si la personne n'y travaille qu'à temps partiel.
 - **Tenir compte des vacances et jours fériés.** Consulter le profil de l'utilisateur pour les contraintes récurrentes.
 
 ### Formats d'estimation

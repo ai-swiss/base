@@ -17,7 +17,7 @@ En Suisse romande, le vouvoiement est la norme en correspondance professionnelle
 
 ### Formules d'appel
 
-La formule d'appel ouvre le courrier. Elle dépend du degré de connaissance du destinataire.
+La formule d'appel ouvre le courrier. Elle varie selon le degré de connaissance du destinataire.
 
 | Situation | Formule d'appel |
 |-----------|-----------------|
@@ -32,7 +32,7 @@ En Suisse romande, «Bonjour» seul est accepté en email courant, mais reste mo
 
 ### Formules de politesse de clôture
 
-La formule de clôture se choisit selon le degré de formalité. Elle reprend la formule d'appel utilisée en ouverture.
+La formule de clôture se choisit selon le degré de formalité. Elle reprend la formule d'appel employée en ouverture.
 
 | Degré | Formule de politesse |
 |-------|----------------------|
@@ -75,12 +75,12 @@ Une lettre formelle suisse contient, dans l'ordre:
 Bonnes pratiques email:
 - Un email = un sujet principal. Pour deux sujets distincts, deux emails.
 - L'objet doit permettre de retrouver l'email plus tard.
-- Mettre la demande ou l'action attendue en évidence (début ou fin), pas noyée au milieu.
+- Mettre la demande ou l'action attendue en évidence (début ou fin), plutôt que noyée au milieu.
 - Relire avant envoi: destinataire correct, pièces jointes présentes, ton adapté.
 
 ## Calibrage du ton
 
-Le ton se calibre selon le type de courrier et la relation. Quatre axes utiles:
+Le ton se calibre selon le type de courrier et la relation. Quatre axes sont utiles:
 
 | Axe | Curseur |
 |-----|---------|
@@ -103,7 +103,7 @@ Le ton se calibre selon le type de courrier et la relation. Quatre axes utiles:
 
 ### Répondre à un message mécontent
 
-C'est la situation la plus délicate. Principes:
+C'est la situation la plus délicate. Quelques principes:
 - **Accuser réception du mécontentement** sans le minimiser ni s'excuser à l'excès.
 - **Rester factuel**: exposer ce qui s'est passé et ce qui sera fait.
 - **Proposer une suite concrète**: un geste, une correction, un délai.

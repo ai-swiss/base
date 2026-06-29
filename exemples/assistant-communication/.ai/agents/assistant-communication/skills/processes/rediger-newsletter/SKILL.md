@@ -101,7 +101,7 @@ Après validation, passe à la section suivante. Répète pour chaque section.
 
 Règles de rédaction:
 - **Un message par section.** Ne pas mélanger plusieurs idées dans une même section.
-- **Phrases courtes.** Le lecteur scanne avant de lire. Facilitez le survol.
+- **Phrases courtes.** Le lecteur parcourt le texte avant de le lire. Facilitez ce survol.
 - **Ton conforme à la charte.** Relis `charte/ton-et-style.md` si besoin.
 - **Lisible sur mobile.** Paragraphes courts (3-4 lignes max), sous-titres clairs.
 - **Personnalisation.** Utiliser le prénom si possible («Bonjour [Prénom]»).

@@ -6,7 +6,7 @@
 2. Dites, mot pour mot: **«Bonjour, je voudrais configurer mon activité»**
 3. Vous devriez voir: l'assistant vous accueille et lance la configuration pas à pas, en posant une seule question à la fois (en commençant par le nom de votre entreprise). Rien n'est écrit ni envoyé sans vous.
 
-Un assistant IA qui aide les PME suisses à gérer leur recrutement par la conversation: publier des offres d'emploi, préparer des entretiens et évaluer des candidats.
+Un assistant IA qui aide les PME suisses à mener leur recrutement par la conversation: publier des offres d'emploi, préparer des entretiens et évaluer les candidats.
 
 L'assistant vous guide pour configurer votre entreprise, puis vous accompagne dans tout le processus de recrutement.
 
@@ -40,7 +40,7 @@ assistant-rh/
 
 ## Adapter à votre usage
 
-Cet exemple est un point de départ. Pour créer un assistant totalement différent, utilisez le **créateur d'agent** à la racine du dossier principal du projet.
+Cet exemple est un point de départ. Pour créer un assistant entièrement différent, utilisez le **créateur d'agent** à la racine du dossier principal du projet.
 
 ## Avertissement
 
@@ -48,6 +48,6 @@ Cet exemple est **illustratif**. Il vise surtout à montrer les possibilités d'
 
 ---
 
-BASE est un framework par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
 
 Licence: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)

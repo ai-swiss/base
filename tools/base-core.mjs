@@ -42,7 +42,7 @@ export const ROUTE_TESTS_FILENAME = path.join(".ai", "routing", "route-tests.jso
 // Never resources, in any root: VCS, scratch, build output, and tool-output directories (coverage,
 // Playwright, Vite). Inventory correctness must not depend on .gitignore, so the scanner owns this.
 const SKIP_DIRS = new Set([
-  ".git", ".github", ".temp", ".plans", ".reviews", "node_modules", "dist", "trace", ".base-docs",
+  ".git", ".github", ".temp", ".plans", ".reviews", ".admin", "node_modules", "dist", "trace", ".base-docs",
   "coverage", "test-results", "playwright-report", "blob-report", ".playwright", ".vite", ".nyc_output",
 ]);
 const RESOURCE_EXTENSIONS = new Set([".md", ".json"]);

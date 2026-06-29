@@ -11,7 +11,7 @@ Every fact BASE records is one of two kinds, and they must never blur:
 - **The present (truth).** What the system *does now*, stated **statuslessly**: no `pending`/`done`/`built`/`fixed`, no "we will", no "we used to". It is reimplementable from the words alone. The present lives in `specs/`, in `docs/`, and in the code and its tests.
 - **The trajectory (history).** Dated, episodic material: *how we got here, where we are going*. Decisions taken, changes shipped, reviews run, plans not yet built. The trajectory lives in `CHANGELOG.md`, `.plans/`, `.reviews/`, and git tags.
 
-A useful test for which plane a sentence belongs to: if it would read oddly without a date or a tense (`added`, `now`, `next`, `was`), it is trajectory. If it states a current behaviour that simply *is*, it is truth, and it belongs in `specs/` or `docs/`.
+A useful test for which plane a sentence belongs to: if it reads oddly without a date or a tense (`added`, `now`, `next`, `was`), it is trajectory. If it states a current behaviour that simply *is*, it is truth, and it belongs in `specs/` or `docs/`.
 
 ## The invariant
 
@@ -21,7 +21,7 @@ It follows that there is exactly **one** authoritative reading order for the cur
 
 ## The reader corollary (and why)
 
-A page that mixes present behaviour with status or roadmap goes stale for **both** of its readers. The reader who wants today's behaviour has to subtract the dated parts and guess which still hold; the reader who wants the history has to dig it out of prose written to describe a system, not a timeline. Each gets a worse answer than a single-purpose page would give.
+A page that mixes present behaviour with status or roadmap goes stale for **both** of its readers. The reader who wants today's behaviour must subtract the dated parts and guess which still hold; the reader who wants the history must dig it out of prose written to describe a system, not a timeline. Each gets a worse answer than a single-purpose page would give.
 
 One **statusless** home for the present cannot rot by omission: there is no `done` flag to forget to flip, no `pending` left lying after the work shipped, no roadmap line silently contradicting the code. The page says what the system does; when the system changes, the page changes in the same edit, and the dated record of *that* change goes to the trajectory side. This is why `specs/` chapters carry no status and why trajectory belongs elsewhere.
 

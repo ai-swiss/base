@@ -12,7 +12,7 @@ sensitivity: internal
 # [Titre du document]
 
 <!-- Ce fichier est un TEMPLATE. Ne le modifiez pas ici.
-     L'agent le copie vers sa destination et remplace les placeholders. -->
+     L'agent le recopie à destination, puis remplace les placeholders. -->
 
 **[CHAMP_1]**
 [CHAMP_2]
@@ -42,9 +42,9 @@ sensitivity: internal
 
 <!--
 NOTES POUR L'AUTEUR DU TEMPLATE:
-- Utilisez des PLACEHOLDERS EN MAJUSCULES entre crochets: [NOM_DU_CHAMP]
-- Gardez une structure claire avec des sections markdown
-- Incluez tous les éléments obligatoires du document
-- Ajoutez des commentaires HTML pour guider l'utilisation
-- Le template sera copié et rempli par l'agent, jamais modifié ici
+- Notez les placeholders en majuscules, entre crochets: [NOM_DU_CHAMP]
+- Gardez une structure nette, découpée en sections markdown
+- N'omettez aucun élément obligatoire du document
+- Glissez des commentaires HTML pour en guider l'usage
+- L'agent copie puis remplit le template; ne le modifiez jamais ici
 -->

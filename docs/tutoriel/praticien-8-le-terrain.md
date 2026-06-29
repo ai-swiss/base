@@ -21,10 +21,10 @@ learning_level: intermediate
 **Il vous faut**: le module 7 terminé, Studio ouvert sur l'office du tourisme.
 ↻ **Rappel**: sans regarder: que produit une évaluation? (un verdict de juge + une piste de correction)
 
-La pile Terrain démarre vide. On simule une remontée.
+La pile Terrain est vide au départ. Simulons une remontée.
 
-D'abord, trois mots de contexte: la **pile Terrain** rassemble les frictions (un usage réel
-qui a coincé); le **gate** est la règle d'or: rien n'est écrit sans une proposition (un diff)
+Trois mots de contexte d'abord: la **pile Terrain** réunit les frictions (un usage réel
+qui a achoppé); le **gate** est la règle d'or: rien ne s'écrit sans une proposition (un diff)
 que vous validez.
 
 1. Créez `.ai/feedback/2026-01-10_agenda-perime.md` dans l'office du tourisme avec ce contenu:
@@ -47,10 +47,10 @@ Le process devrait vérifier la date de validité avant d'annoncer un événemen
 
 ✅ **Vérifiez**: la friction quitte la pile des «ouvertes» après validation, et le diff de résolution est passé par propose puis commit (rien n'a été écrit avant votre validation).
 
-💡 **Pourquoi ça a marché**: le terrain est la matière première de l'amélioration. Une friction est un fichier daté, jamais perdu. Toute écriture, même une résolution, passe par le gate: c'est ce qui rend l'IA sûre à laisser vivre dans vos fichiers.
+💡 **Pourquoi ça a marché**: le terrain est la matière première de l'amélioration. Une friction est un fichier daté, jamais perdu. Toute écriture, fût-ce une résolution, passe par le gate: voilà ce qui rend l'IA sûre à laisser vivre dans vos fichiers.
 
-🔁 **Chez vous**: quand votre assistant se trompera, qui notera la friction, et où? (c'est votre boucle d'amélioration)
+🔁 **Chez vous**: le jour où votre assistant se trompera, qui notera la friction, et où? (c'est votre boucle d'amélioration)
 
-→ **Et maintenant**: [Module 9: migrer vos contenus](praticien-9-migrer.md): le moment où l'exercice devient VOTRE outil.
+→ **Et maintenant**: [Module 9: migrer vos contenus](praticien-9-migrer.md): le moment où l'exercice devient VOTRE base.
 
-🆘 **Pannes courantes**: *La friction n'apparaît pas*: vérifiez le dossier `.ai/feedback/` et le frontmatter (status: open). *Pas de diff à la résolution*: la résolution passe toujours par une proposition; relisez avant de valider.
+🆘 **Pannes courantes**: *La friction n'apparaît pas*: vérifiez le dossier `.ai/feedback/` et le frontmatter (status: open). *Pas de diff à la résolution*: la résolution passe toujours par une proposition; relisez-la avant de valider.

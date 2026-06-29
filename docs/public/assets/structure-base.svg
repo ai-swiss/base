@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 690" width="1000" height="690" role="img" aria-labelledby="bp-titre bp-desc">
+  <title id="bp-titre">BASE en un coup d'œil</title>
+  <desc id="bp-desc">Vue d'ensemble de BASE. En haut, vous et votre outil d'IA. En dessous, les surfaces par lesquelles passe l'intelligence: la CLI, le serveur MCP, le Studio et l'UI de documentation. Au centre, le cœur (le broker) qui applique les garanties, avec ses points d'extension branchés sans forker: FrontmatterParser, Validator, Ranker, PolicyEnforcer, AuthProvider. Tout en bas, vos fichiers Markdown, la source de vérité que vous possédez.</desc>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+  <g font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" fill="#1f2937">
+
+    <!-- Titre -->
+    <text x="500" y="34" text-anchor="middle" font-size="26" font-weight="700">BASE en un coup d'œil</text>
+    <text x="500" y="60" text-anchor="middle" font-size="14" fill="#6b7280">Vous passez par une surface; le cœur applique les garanties; tout repose sur vos fichiers, que vous possédez.</text>
+
+    <!-- Couche 1: Vous + outil d'IA -->
+    <rect x="30" y="78" width="940" height="50" rx="10" fill="#eef2ff" stroke="#c7d2fe"/>
+    <text x="500" y="101" text-anchor="middle" font-size="15" font-weight="700">Vous + votre outil d'IA</text>
+    <text x="500" y="119" text-anchor="middle" font-size="12.5" fill="#6b7280">Claude Code, Cursor, ChatGPT, OpenCode… qui lit vos fichiers ou s'y connecte par le MCP</text>
+    <line x1="500" y1="128" x2="500" y2="148" stroke="#2563eb" stroke-width="1.6" marker-end="url(#arr)"/>
+
+    <!-- Couche 2: Les surfaces -->
+    <rect x="30" y="150" width="940" height="152" rx="10" fill="#f9fafb" stroke="#e5e7eb"/>
+    <text x="46" y="172" font-size="12.5" font-weight="700" fill="#374151">LES SURFACES</text>
+    <text x="152" y="172" font-size="11.5" fill="#9ca3af">par où passe l'intelligence que vous avez structurée (toutes écrivent par la même voie médiée)</text>
+
+    <rect x="46" y="186" width="215" height="100" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+    <text x="153" y="210" text-anchor="middle" font-size="14.5" font-weight="600">CLI (base)</text>
+    <text x="153" y="232" text-anchor="middle" font-size="11.5" fill="#6b7280">router, valider, évaluer,</text>
+    <text x="153" y="249" text-anchor="middle" font-size="11.5" fill="#6b7280">indexer; pour vous, l'IA</text>
+    <text x="153" y="266" text-anchor="middle" font-size="11.5" fill="#6b7280">et vos outils</text>
+
+    <rect x="277" y="186" width="215" height="100" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+    <text x="384" y="210" text-anchor="middle" font-size="14.5" font-weight="600">Serveur MCP</text>
+    <text x="384" y="232" text-anchor="middle" font-size="11.5" fill="#6b7280">expose le routage à tout</text>
+    <text x="384" y="249" text-anchor="middle" font-size="11.5" fill="#6b7280">outil d'IA compatible</text>
+    <text x="384" y="266" text-anchor="middle" font-size="11.5" fill="#6b7280">(lecture seule par défaut)</text>
+
+    <rect x="508" y="186" width="215" height="100" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+    <text x="615" y="210" text-anchor="middle" font-size="14.5" font-weight="600">Studio</text>
+    <text x="615" y="232" text-anchor="middle" font-size="11.5" fill="#6b7280">atelier visuel local</text>
+    <text x="615" y="249" text-anchor="middle" font-size="11.5" fill="#6b7280">(loopback): voir, éditer</text>
+    <text x="615" y="266" text-anchor="middle" font-size="11.5" fill="#6b7280">et évaluer vos objets</text>
+
+    <rect x="739" y="186" width="215" height="100" rx="8" fill="#ffffff" stroke="#d1d5db"/>
+    <text x="846" y="210" text-anchor="middle" font-size="14.5" font-weight="600">UI de documentation</text>
+    <text x="846" y="232" text-anchor="middle" font-size="11.5" fill="#6b7280">la science appliquée de</text>
+    <text x="846" y="249" text-anchor="middle" font-size="11.5" fill="#6b7280">l'interaction humain-IA,</text>
+    <text x="846" y="266" text-anchor="middle" font-size="11.5" fill="#6b7280">consultable en local</text>
+
+    <line x1="153" y1="286" x2="153" y2="318" stroke="#2563eb" stroke-width="1.4" marker-end="url(#arr)"/>
+    <line x1="384" y1="286" x2="384" y2="318" stroke="#2563eb" stroke-width="1.4" marker-end="url(#arr)"/>
+    <line x1="615" y1="286" x2="615" y2="318" stroke="#2563eb" stroke-width="1.4" marker-end="url(#arr)"/>
+    <line x1="846" y1="286" x2="846" y2="318" stroke="#2563eb" stroke-width="1.4" marker-end="url(#arr)"/>
+
+    <!-- Couche 3: Le cœur (broker) + ses points d'extension -->
+    <rect x="30" y="320" width="940" height="170" rx="12" fill="#eff6ff" stroke="#2563eb" stroke-width="2"/>
+    <text x="500" y="346" text-anchor="middle" font-size="17" font-weight="700">LE CŒUR (le broker), qui applique les garanties</text>
+    <text x="500" y="371" text-anchor="middle" font-size="14" font-weight="600">Une seule voie d'écriture: proposer, montrer le diff, puis valider.</text>
+    <text x="500" y="393" text-anchor="middle" font-size="12.5" fill="#4b5563">inventaire · routage progressif (plancher déterministe) · contexte ciblé · contrôle d'egress · trace · zéro dépendance</text>
+
+    <line x1="60" y1="408" x2="940" y2="408" stroke="#bfdbfe" stroke-width="1"/>
+    <text x="500" y="428" text-anchor="middle" font-size="12.5" fill="#374151">Points d'extension, branchés via <tspan font-style="italic">base.config</tspan>, sans forker le cœur</text>
+
+    <rect x="60" y="438" width="160" height="28" rx="14" fill="#ffffff" stroke="#93c5fd"/>
+    <text x="140" y="457" text-anchor="middle" font-size="11.5">FrontmatterParser</text>
+    <rect x="238" y="438" width="160" height="28" rx="14" fill="#ffffff" stroke="#93c5fd"/>
+    <text x="318" y="457" text-anchor="middle" font-size="12.5">Validator</text>
+    <rect x="416" y="438" width="168" height="28" rx="14" fill="#ffffff" stroke="#93c5fd"/>
+    <text x="500" y="457" text-anchor="middle" font-size="12.5">Ranker</text>
+    <rect x="602" y="438" width="160" height="28" rx="14" fill="#ffffff" stroke="#93c5fd"/>
+    <text x="682" y="457" text-anchor="middle" font-size="12.5">PolicyEnforcer</text>
+    <rect x="780" y="438" width="160" height="28" rx="14" fill="#ffffff" stroke="#93c5fd"/>
+    <text x="860" y="457" text-anchor="middle" font-size="12.5">AuthProvider</text>
+    <text x="500" y="481" text-anchor="middle" font-size="11" fill="#6b7280">+ packages optionnels: ranker sémantique, index local</text>
+
+    <line x1="500" y1="490" x2="500" y2="510" stroke="#2563eb" stroke-width="1.6" marker-end="url(#arr)"/>
+
+    <!-- Couche 4: Vos fichiers (source de vérité) -->
+    <rect x="30" y="512" width="940" height="116" rx="12" fill="#f8fafc" stroke="#64748b" stroke-width="1.6"/>
+    <text x="500" y="540" text-anchor="middle" font-size="16" font-weight="700">VOS FICHIERS MARKDOWN, la source de vérité que vous possédez</text>
+
+    <rect x="46" y="554" width="215" height="42" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="153" y="580" text-anchor="middle" font-size="13.5" font-weight="600">agents</text>
+    <rect x="277" y="554" width="215" height="42" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="384" y="580" text-anchor="middle" font-size="13" font-weight="600">process (savoir-faire)</text>
+    <rect x="508" y="554" width="215" height="42" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="615" y="580" text-anchor="middle" font-size="13" font-weight="600">compétences (savoir)</text>
+    <rect x="739" y="554" width="215" height="42" rx="6" fill="#ffffff" stroke="#cbd5e1"/>
+    <text x="846" y="580" text-anchor="middle" font-size="13.5" font-weight="600">données</text>
+    <text x="500" y="618" text-anchor="middle" font-size="11.5" fill="#6b7280">+ un index de routage (.ai/routing/index.md), dérivé de vos fichiers</text>
+
+    <!-- Pied -->
+    <text x="500" y="660" text-anchor="middle" font-size="12.5" fill="#6b7280">Des couches légères et indépendantes: vous prenez ce dont vous avez besoin. Vos textes restent lisibles, possédés, indépendants du modèle.</text>
+  </g>
+</svg>

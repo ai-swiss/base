@@ -1,6 +1,6 @@
 # Exemples
 
-Des assistants IA prêts à l'emploi pour vos métiers. La démo pré-remplie montre un résultat immédiatement; les autres exemples vous guident pour configurer vos propres données.
+Des assistants IA prêts à l'emploi pour vos métiers. La démo pré-remplie montre d'emblée un résultat; les autres exemples vous guident pour configurer vos propres données.
 
 Pour voir BASE avant de lire l'architecture, suivez la [démo 60 secondes](../docs/start/demo-60-secondes.md).
 
@@ -63,6 +63,6 @@ Pour créer un nouvel exemple, utilisez le **créateur d'agent**: ouvrez le doss
 
 ---
 
-BASE est un framework par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
 
 Licence: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)

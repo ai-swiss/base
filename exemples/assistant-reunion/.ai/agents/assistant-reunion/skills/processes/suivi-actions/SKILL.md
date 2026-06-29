@@ -18,7 +18,7 @@ routing:
     - Rédiger un nouveau compte-rendu à partir de notes.
     - Paramétrage initial de l'entreprise.
 name: suivi-actions
-keywords: [suivi, actions, décisions, échéances, qui fait quoi, ouvert, en cours, relance, point]
+keywords: [suivi, actions, decisions, echeances, qui fait quoi, ouvert, en cours, relance, point]
 argument-hint: "[période, projet ou personne à suivre]"
 user-invocable: true
 allowed-tools: Read Write Edit Glob Grep
@@ -26,7 +26,7 @@ allowed-tools: Read Write Edit Glob Grep
 
 # Suivre les actions et décisions
 
-Extraire les actions et décisions à travers les comptes-rendus existants, dresser un état des lieux clair (qui fait quoi, pour quand, où ça en est), et aider à relancer ce qui est ouvert.
+Extraire les actions et décisions des comptes-rendus existants, dresser un état des lieux clair (qui fait quoi, pour quand, où en sont les choses) et aider à relancer ce qui reste ouvert.
 
 ## Inputs
 
@@ -88,7 +88,7 @@ Présente un tableau clair:
 
 Selon la demande:
 - **Mettre à jour un statut**: proposer la modification de l'action concernée dans son compte-rendu d'origine.
-- **Préparer une relance**: proposer un texte court et neutre rappelant l'action, le responsable et l'échéance. Ne pas inventer de nouvelle échéance: si elle doit changer, c'est l'utilisateur qui la fixe.
+- **Préparer une relance**: proposer un texte court et neutre rappelant l'action, le responsable et l'échéance. N'invente aucune nouvelle échéance: si elle doit changer, c'est l'utilisateur qui la fixe.
 - **Compléter un élément**: demander l'information manquante et proposer de remplacer le `[A COMPLETER]` par la valeur.
 
 **⚠ Point de décision - avant toute modification d'un compte-rendu:**
@@ -106,4 +106,4 @@ Si l'utilisateur souhaite un relevé consolidé, propose d'utiliser le template 
 - **Changer une échéance ou un responsable de ton propre chef.** Toute modification est proposée et validée par l'utilisateur.
 - **Considérer une action comme terminée sans confirmation.** Le statut vient de l'utilisateur.
 - **Modifier un compte-rendu sans point de décision.** Chaque écriture est précédée d'une confirmation explicite.
-- **Déformer une décision en la résumant.** On cite ce qui a été décidé, fidèlement.
+- **Déformer une décision en la résumant.** On cite fidèlement ce qui a été décidé.

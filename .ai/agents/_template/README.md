@@ -2,7 +2,7 @@
 
 > **Voie assistée (recommandée)**: plutôt que de remplir ce template manuellement, dites simplement «Lis `.ai/agents/createur-agent/AGENT.md`». Le créateur d'agent vous guidera de A à Z.
 
-Ce dossier est un **template** pour ceux qui préfèrent construire manuellement. Il contient la structure de base pour créer un nouvel agent IA adapté à votre métier.
+Ce dossier est un **template** pour qui préfère construire à la main. Il réunit la structure de base d'un nouvel agent IA taillé pour votre métier.
 
 ## En 6 étapes
 
@@ -43,7 +43,7 @@ skills/processes/
 Un process typique contient:
 - **Frontmatter YAML**: `name`, `description`, `user-invocable: true`, `allowed-tools`
 - **Inputs**: ce qu'il faut demander à l'utilisateur
-- **Étapes**: les phases de la conversation, avec reformulations (légères) et points de décision (avant action irréversible)
+- **Étapes**: les phases de la conversation, avec leurs reformulations (légères) et leurs points de décision (avant toute action irréversible)
 - **Étape Journal**: écrire une entrée dans `.ai/journal/` à la fin
 
 Consultez `skills/processes/_exemple/SKILL.md` pour la structure.
@@ -64,13 +64,13 @@ Une compétence typique contient:
 - **Frontmatter YAML**: `name`, `description`, `user-invocable: false`, `allowed-tools: Read`
 - Terminologie du métier, conventions, bonnes pratiques
 
-Les 3 compétences standard (marqueurs, journal, communication) sont déjà incluses dans le template.
+Les 3 compétences standard (marqueurs, journal, communication) sont déjà fournies dans le template.
 
 Consultez `skills/competences/_exemple/SKILL.md` pour la structure.
 
 ### 5. Ajouter des tools (optionnel)
 
-Dans `tools/`, ajoutez des scripts ou connecteurs si votre agent a besoin d'automatiser des tâches. Le dossier est optionnel: un agent fonctionne très bien sans.
+Dans `tools/`, ajoutez des scripts ou des connecteurs si votre agent doit automatiser certaines tâches. Le dossier reste facultatif: un agent fonctionne très bien sans.
 
 ### 6. Configurer votre outil IA
 
@@ -86,4 +86,4 @@ Utilisez le **créateur d'agent**: dites «Lis `.ai/agents/createur-agent/AGENT.
 
 ---
 
-BASE est un framework par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).

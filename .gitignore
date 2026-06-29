@@ -4,9 +4,11 @@
 
 # Trajectoire personnelle : scratch local et transitoire, jamais source de vérité.
 # .plans/ = approches et plans de travail · .reviews/ = revues et audits datés ·
-# .temp/ = brouillon jetable · .base-docs/ = documentation générée localement.
+# .temp/ = brouillon jetable · .base-docs/ = documentation générée localement ·
+# .admin/ = notes privées d'administration et de maintenance du dépôt.
 # Ce qui doit durer est promu dans decisions/ (tracké) ou dans specs/. Voir DEVELOPING.md.
 .plans/
+.admin/
 .reviews/
 .temp/
 .base-docs/

@@ -13,11 +13,11 @@ allowed-tools: Read
 
 # Exemples d'agents par secteur
 
-Catalogue d'idées d'agents IA métier pour PME et startups. Pour chaque idée: ce que l'agent ferait, les workflows, connaissances, documents et données typiques.
+Catalogue d'idées d'agents IA métier pour PME et startups. Pour chaque idée: ce que ferait l'agent, puis ses workflows, connaissances, documents et données typiques.
 
-Ce catalogue sert d'inspiration; chaque agent doit être adapté aux besoins spécifiques de l'utilisateur.
+Ce catalogue sert d'inspiration; adaptez chaque agent aux besoins propres de l'utilisateur.
 
-État de livraison: huit exemples complets existent dans `exemples/` (devis, communication, courrier, enseignant, RH, projet, réunion, réflexion). Quand une idée ci-dessous a un exemple livré, il est indiqué; les autres idées sont à construire avec le process `creer-agent`, en montrant `exemples/assistant-devis/` comme modèle de structure.
+État de livraison: huit exemples complets figurent dans `exemples/` (devis, communication, courrier, enseignant, RH, projet, réunion, réflexion). Lorsqu'une idée ci-dessous dispose d'un exemple livré, il est signalé. Les autres restent à construire avec le process `creer-agent`, en prenant `exemples/assistant-devis/` comme modèle de structure.
 
 ---
 
@@ -176,4 +176,4 @@ Demandez à l'utilisateur:
 2. «Quel est votre premier besoin: gagner du temps, être plus professionnel, ou mieux vous organiser?»
 3. «Si votre assistant ne pouvait faire qu'une seule chose, ce serait quoi?»
 
-Commencez par cette seule chose. Un agent focalisé est plus utile qu'un agent qui fait tout.
+Commencez par cette seule chose. Un agent ciblé rend bien plus de services qu'un agent qui veut tout faire.

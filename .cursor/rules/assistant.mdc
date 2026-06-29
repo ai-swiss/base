@@ -14,6 +14,9 @@ Ce projet est un BASE: des agents et des process en texte. Tu n'as **pas d'ident
 
 Cas directs (ne route pas): si l'utilisateur **nomme un agent** («charge l'assistant devis»), ouvre directement son `AGENT.md`. C'est le seul fichier à charger. Et reste dans l'agent déjà chargé: ne route pas à chaque message.
 
+## Appliquer BASE à un dossier qui n'en est pas encore un
+Si l'utilisateur veut faire de SON dossier un BASE (il a du matériel, il veut structurer son savoir et son savoir-faire avec l'IA) et que ce dossier n'a encore ni `base.config.json` ni `.ai/agents/`: ne crée AUCUN fichier à la main. Lance d'abord `base init` (il crée le lanceur, la config, le `CLAUDE.md` et un agent de départ sous `.ai/agents/<nom>/`). Puis route vers `importer-l-existant` (à partir de matériel existant) ou `creer-agent` (de zéro): chaque écriture est proposée en diff, jamais committée d'office. Si tu te trouves dans le dépôt du cadre BASE lui-même, n'écris rien ici: initialise plutôt le dossier de l'utilisateur.
+
 ## Comment router
 Ta **carte**, c'est l'index généré: si `.ai/routing/index.md` existe, lis-le pour t'orienter. Il liste les agents et, pour chacun, ses process avec «Quand l'utiliser» et «Éviter si». Descends racine → agent → process; retiens le process dont le «Quand l'utiliser» couvre la demande, en respectant «Éviter si». Si aucun ne la couvre, abstiens-toi: ne devine pas.
 

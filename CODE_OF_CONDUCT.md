@@ -2,48 +2,48 @@
 
 ## Notre engagement
 
-Dans le but de favoriser un environnement ouvert et accueillant, nous nous engageons, en tant que membres, contributrices, contributeurs et responsables, à faire de la participation à notre communauté une expérience exempte de harcèlement pour tout le monde, quels que soient l'âge, la taille, le handicap visible ou invisible, l'origine ethnique, les caractéristiques sexuelles, l'identité et l'expression de genre, le niveau d'expérience, l'éducation, le statut socio-économique, la nationalité, l'apparence personnelle, la religion, l'identité ou l'orientation sexuelle.
+Pour favoriser un environnement ouvert et accueillant, nous nous engageons, en tant que membres, contributrices, contributeurs et responsables, à ce que la participation à notre communauté demeure pour chacune et chacun une expérience exempte de harcèlement, quels que soient l'âge, la taille, le handicap visible ou invisible, l'origine ethnique, les caractéristiques sexuelles, l'identité et l'expression de genre, le niveau d'expérience, l'éducation, le statut socio-économique, la nationalité, l'apparence, la religion, l'identité ou l'orientation sexuelle.
 
-Nous nous engageons à agir et à interagir de manière à contribuer à une communauté ouverte, accueillante, diverse, inclusive et saine.
+Nous nous engageons à agir et à échanger de manière à entretenir une communauté ouverte, accueillante, diverse, inclusive et saine.
 
 ## Nos critères
 
 Exemples de comportements qui contribuent à un environnement positif:
 
 - faire preuve d'empathie et de bienveillance;
-- respecter les opinions, points de vue et expériences différents;
-- donner et recevoir des retours constructifs avec grâce;
-- assumer ses responsabilités, présenter ses excuses aux personnes affectées par nos erreurs et apprendre de l'expérience;
-- se concentrer sur ce qui est le mieux pour l'ensemble de la communauté.
+- respecter les opinions, les points de vue et les expériences qui diffèrent des nôtres;
+- formuler et accueillir les retours constructifs avec bienveillance;
+- assumer ses responsabilités, présenter ses excuses aux personnes que nos erreurs ont affectées et tirer les leçons de l'expérience;
+- privilégier ce qui sert l'ensemble de la communauté.
 
 Exemples de comportements inacceptables:
 
-- l'usage de langage ou d'imagerie sexualisés, et les avances ou attentions sexuelles;
-- le trolling, les commentaires insultants ou désobligeants, et les attaques personnelles ou politiques;
-- le harcèlement public ou privé;
-- la publication d'informations privées d'autrui (adresse physique ou électronique) sans autorisation explicite;
-- toute autre conduite raisonnablement jugée inappropriée dans un cadre professionnel.
+- le recours à un langage ou à des images à caractère sexuel, ainsi que les avances ou les sollicitations de cette nature;
+- les provocations, les commentaires insultants ou désobligeants, et les attaques personnelles ou politiques;
+- le harcèlement, qu'il soit public ou privé;
+- la divulgation d'informations privées d'autrui, telles qu'une adresse physique ou électronique, sans autorisation explicite;
+- toute autre conduite que l'on peut raisonnablement juger déplacée dans un cadre professionnel.
 
 ## Responsabilités d'application
 
-Les responsables de la communauté sont chargés de clarifier et de faire respecter ces critères, et prendront des mesures correctives appropriées et équitables en réponse à tout comportement jugé inapproprié, menaçant, offensant ou nuisible.
+Il revient aux responsables de la communauté de clarifier ces critères et de les faire respecter; ils prendront des mesures correctives justes et proportionnées face à tout comportement qu'ils jugeront déplacé, menaçant, offensant ou nuisible.
 
-Ils ont le droit et la responsabilité de retirer, modifier ou rejeter les commentaires, les validations, le code, les modifications de documentation et les autres contributions non conformes à ce code de conduite, et communiqueront les raisons de leurs décisions lorsque cela est approprié.
+Ils ont le droit et le devoir de retirer, de modifier ou de rejeter les commentaires, les validations, le code, les modifications de documentation et les autres contributions qui ne respectent pas ce code de conduite; ils exposeront les motifs de leurs décisions chaque fois que cela se justifie.
 
 ## Portée
 
-Ce code de conduite s'applique dans tous les espaces de la communauté, ainsi que lorsqu'une personne représente officiellement la communauté dans les espaces publics.
+Ce code de conduite s'applique dans tous les espaces de la communauté, comme lorsqu'une personne la représente officiellement dans l'espace public.
 
 ## Application
 
-Les comportements abusifs, harcelants ou autrement inacceptables peuvent être signalés aux responsables chargés de l'application via **AI Swiss**, par le canal officiel indiqué sur [a-i.swiss](https://a-i.swiss). Toutes les plaintes seront examinées et instruites rapidement et équitablement. Les responsables sont tenus de respecter la vie privée et la sécurité de la personne ayant signalé un incident.
+Les comportements abusifs, harcelants ou inacceptables à tout autre titre peuvent être signalés aux responsables chargés de l'application auprès d'**AI Swiss**, par le canal officiel indiqué sur [a-i.swiss](https://a-i.swiss). Toute plainte sera examinée et instruite avec diligence et équité. Les responsables sont tenus de préserver la vie privée et la sécurité de la personne qui signale un incident.
 
 ## Directives d'application
 
-1. **Correction.** Comportement jugé inapproprié. Conséquence: un avertissement privé et écrit, clarifiant la nature de la violation. Des excuses publiques peuvent être demandées.
-2. **Avertissement.** Une violation par un incident isolé ou une série d'actions. Conséquence: un avertissement avec des conséquences en cas de comportement continu.
-3. **Bannissement temporaire.** Violation grave des critères, y compris un comportement inapproprié soutenu. Conséquence: un bannissement temporaire de toute forme d'interaction avec la communauté.
-4. **Bannissement permanent.** Démonstration d'un schéma de violation, y compris le harcèlement ou l'agression. Conséquence: un bannissement permanent de toute interaction publique au sein de la communauté.
+1. **Correction.** Comportement jugé déplacé. Conséquence: un avertissement privé et écrit, qui précise la nature du manquement. Des excuses publiques pourront être demandées.
+2. **Avertissement.** Un manquement constitué par un incident isolé ou par une série d'actes. Conséquence: un avertissement assorti de suites en cas de persistance du comportement.
+3. **Bannissement temporaire.** Un manquement grave aux critères, notamment un comportement déplacé qui se prolonge. Conséquence: un bannissement temporaire de toute forme d'échange avec la communauté.
+4. **Bannissement permanent.** Un manquement répété et avéré, notamment le harcèlement ou l'agression. Conséquence: un bannissement permanent de tout échange public au sein de la communauté.
 
 ## Attribution
 

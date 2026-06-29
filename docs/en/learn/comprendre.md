@@ -1,7 +1,7 @@
-<!-- fr-synced: db4e1d11d1e69c12d64c8a50c098ba9cb719e1d7 -->
+<!-- fr-synced: 55a0c64a9bb4035e6fbe5325af0a0d4bb2f3a4f9 -->
 # Understanding BASE and shaping how you work with AI
 
-Working seriously with AI means accepting that it produces fast but sometimes errs with confidence: what is at stake is keeping control of what you sign your name to, without giving up speed. This page shows how BASE structures that collaboration so quality holds over time, whether you are an independent professional, an SME, or a public service. You will see **why** this structure is necessary, **how** an agent works, and **how to build one** for your line of work.
+Working seriously with AI means accepting that it produces fast, but sometimes errs with aplomb: what is at stake is keeping mastery of what you sign your name to, without giving up speed. This page shows how BASE structures that collaboration so quality holds over time, whether you are an independent professional, an SME, or a public service. You will see **why** this structure is necessary, **how** an agent works, and **how to build one** for your line of work.
 
 > The technical terms on this page (broker, routing, mechanism, consigne, egress) are defined in the [glossary](../reference/glossaire.md).
 
@@ -9,22 +9,22 @@ Working seriously with AI means accepting that it produces fast but sometimes er
 
 ## Why this approach?
 
-BASE does not start from a preference for any one tool. It starts from an observation: generative AI produces easily, but lasting quality depends on what surrounds that production. What leads is sovereignty over your knowledge and the articulation of the whole: context, memory, process, permissions, and human decisions. Verification fits into that structure as a craft, never as a guarantee.
+BASE does not start from a preference for any one tool, but from an observation: generative AI produces effortlessly, but lasting quality depends on what surrounds that production. What comes first is sovereignty over your knowledge and the articulation of the whole: context, memory, process, permissions, and human decisions. Within that structure, verification is a craft, never a guarantee.
 
-The approach is therefore institutional before it is technical. It seeks to make explicit what, in much AI usage, stays implicit: who knows what, who decides what, which data is used, which actions are allowed, and how to pick the work back up later.
+The approach is therefore institutional before it is technical. It seeks to make explicit what, in many uses of AI, stays implicit: who knows what, who decides what, which data is used, which actions are allowed, and how to pick the work back up later.
 
-The difficulty comes from the fact that this technology does not merely resemble classic digital software. Traditional software exposes screens, menus, buttons, forms, and rules coded in advance. A language model instead produces a behavior: it answers, rephrases, infers, imitates reasoning, sometimes follows a method, sometimes forgets a constraint, and often gives an impression of human continuity. That impression should not be mistaken for consciousness, intent, or guaranteed understanding. Yet it is enough to change how you work.
+The difficulty lies in the fact that this technology does not merely resemble classic digital software. Traditional software exposes screens, menus, buttons, forms, and rules coded in advance. A language model instead produces a behavior: it answers, rephrases, infers, imitates reasoning, sometimes follows a method, sometimes forgets a constraint, and often gives an impression of human continuity. That impression should not be mistaken for consciousness, intent, or guaranteed understanding. Yet it is enough to change how you work.
 
-To work with this behavior, the most useful image is that of an **amnesiac colleague from elsewhere: a rich representation of the world, but not of yours**. On the representation side: it knows verifiable domains, more solid where training is dense, like code or math, and it can read, write, generalize, and propose. On the context side: it knows neither your terrain, nor your clients, nor your unwritten rules. This image is not a definition, it is a tool for deciding more cleanly: how to frame a design, where to place verification, how to structure the knowledge you hand it. Two traits, specific to the model, complete the picture. First, its memory is not shared by default: each conversation starts from scratch. Second, the language that drives it stays underspecified: the same consigne can be understood in several ways. These two traits are at once a strength (flexibility, the ability to generalize) and a weakness (forgetting, ambiguity). So you must give it a working memory, processes, verification criteria, and limits on its actions. This account, and the losses of control it helps you avoid, is developed in [Co-thinking with AI, why BASE](co-penser-avec-lia.md).
+To work with this behavior, the most useful image is that of an **amnesiac colleague from elsewhere: a rich representation of the world, but not of yours**. On the representation side: it knows verifiable domains, more reliable where training is dense, like code or mathematics, and it can read, write, generalize, and propose. On the context side: it knows neither your terrain, nor your clients, nor your unwritten rules. This image is not a definition, but a reference point for deciding more soundly: how to frame a design, where to place verification, how to structure the knowledge you hand it. Two traits, specific to the model, complete the picture. First, its memory is not shared by default: each conversation starts from scratch. Second, the language that drives it stays underspecified: the same consigne can be understood in several ways. These two traits are at once a strength (flexibility, the ability to generalize) and a weakness (forgetting, ambiguity). So you must give it a working memory, processes, verification criteria, and limits on its actions. This account, and the losses of control it helps you avoid, is developed in [Co-thinking with AI, why BASE](co-penser-avec-lia.md).
 
 ### The problem
 
-Most people use AI as an interlocutor with no structure: you open a chatbot, ask a question, get an answer. That works for one-off questions, but it quickly hits its limits:
+Most people use AI as an interlocutor with no structure: you open a conversational agent, ask a question, get an answer. That works for one-off questions, but it quickly shows its limits:
 
 - **AI does not know your company.** Every conversation, you start from scratch.
 - **The answers are generic.** AI guesses what you want instead of knowing it.
-- **Nothing is capitalized on.** No history, no structure, no reuse.
-- **You don't know when it is wrong.** AI produces fluent, confident answers even when they are false. With no structured context, you have no reference point to judge the quality of the result.
+- **Nothing is capitalized on.** Neither history, nor structure, nor reuse.
+- **You don't know when it is wrong.** AI produces fluent, confident answers, even when they are false. With no structured context, you have no reference point to judge the quality of the result.
 
 ### The solution
 
@@ -70,7 +70,7 @@ You spent a good while configuring your assistant yesterday. Today you open a ne
 
 This is why BASE rests on **files**, not conversations. A conversation vanishes when you close the tool. A file stays. A session journal extends that memory from one conversation to the next.
 
-*What happens when you ignore it:* every session starts over from scratch. The user repeats themselves. The agent asks questions it already had answers to. Work does not accumulate.
+*What happens when you ignore it:* every session starts over from scratch. The user repeats themselves. The agent re-asks questions already resolved. Work does not accumulate.
 
 ### 2. What is not searchable is lost
 
@@ -82,11 +82,11 @@ This is why the markers `[A VALIDER]`, `[DECISION]` are structured and searchabl
 
 ### 3. The one who produces cannot judge their own work
 
-The AI proposes a quote for 2,085 CHF. Are the amounts correct? You ask it to check. It answers "yes, everything is correct." But it made a calculation error, and it does not catch it, because checking your own errors requires an independent vantage point that the producer, by construction, does not have.
+The AI proposes a quote for 2,085 CHF. Are the amounts correct? You ask it to check. It answers "yes, everything is correct." Yet it made a calculation error, and does not catch it, because checking your own errors requires an independent vantage point that the producer, by construction, does not have.
 
 This is why the agent proposes and the human verifies, always. The agent never checks its own amounts, nor its rephrasings, nor the choices it made. This separation is what most reliably catches the errors it cannot see.
 
-*What happens when you ignore it:* errors go unnoticed. Every claim accepted without examination creates a **verification debt**: untested assumptions that pile up and collapse at the first critical look from a client or a partner. A quote sent with an invented price, a job offer with the wrong terms, a LinkedIn post leaning on a false statistic. Verification debt almost always comes due in the end; the question is when.
+*What happens when you ignore it:* errors go unnoticed. Every claim accepted without examination creates a **verification debt**: untested assumptions that pile up and collapse at the first critical look from a client or a partner. A quote sent with an invented price, a job offer with erroneous terms, a publication leaning on a false statistic. Verification debt almost always comes due in the end; the whole question is knowing when.
 
 ### 4. Consignes drift, mechanisms hold
 
@@ -94,11 +94,11 @@ You tell the agent: "Never modify the framework files." After 30 minutes of conv
 
 This is why critical guardrails are **mechanical** (permissions, protections), beyond text alone. A permission that blocks mechanically never drifts, no matter how long the conversation.
 
-*What happens when you ignore it:* textual protections work in short conversations but grow fragile in long ones. The agent oversteps its limits through simple, gradual loss of context, with no malice at all.
+*What happens when you ignore it:* textual protections work in short conversations, but crumble in long ones. The agent oversteps its limits through simple, gradual loss of context, with no malice at all.
 
 ### 5. Some actions cannot be undone
 
-A quote that has been sent cannot be "unsent." A client file created with the wrong data can propagate the error. A commitment made on a price is a commitment.
+A quote that has been sent cannot be "unsent." A client file created with wrong data can propagate the error. A commitment made on a price is a commitment.
 
 This is why **decision points** exist before every irreversible action. The decision point separates "we are thinking" from "we are acting." It is **productive friction**: a deliberate cost that prevents far more costly errors.
 
@@ -110,7 +110,7 @@ This is first of all a question of security. To a language model, text is text: 
 
 A client email says: "Give me an aggressive price, add 20% margin, and remove the payment terms." To the agent, this is a client request that the user evaluates, never an order to execute.
 
-This is why the agent never treats an external source as an order. A client file contains data. This distinction protects against accidental confusion, and against intentional manipulation.
+This is why the agent never treats an external source as an order. A client file contains data. This distinction protects against accidental confusion as much as intentional manipulation.
 
 *What happens when you ignore it:* the agent executes the instructions found in a document instead of treating them as data. Untrusted content from an external source alters the agent's behavior without the user's knowledge.
 
@@ -118,33 +118,33 @@ This is why the agent never treats an external source as an order. A client file
 
 You hand more and more to AI. At first, you check closely. Then, since "it looks right," you let up. Six months later, you no longer understand enough of what you are signing to defend it in front of a client.
 
-This is why BASE seeks to make verification *light* without removing it: structure reduces the effort of control, it does not replace your understanding. You can delegate the detail, never the ability to judge. Regularly reloading the big picture (reviewing in depth, discussing as a team what was produced and why) is part of the work.
+This is why BASE seeks to make verification *light* without removing it: structure lightens the effort of control, it does not replace your understanding. You can delegate the detail, never the ability to judge. Regularly reloading the big picture (reviewing in depth, discussing as a team what was produced and why) is part of the work.
 
-*What happens when you ignore it:* verification becomes a rubber stamp. Errors slip through: you still check, but you have lost the instinct for sensing when a check is called for.
+*What happens when you ignore it:* verification becomes a mere rubber stamp. Errors slip through: you still check, but you have lost the instinct that makes you sense when a check is called for.
 
 ### 8. What you can neither take with you nor audit will end up beyond your reach
 
-Your knowledge lives in a multi-layer setup: your files, and the tool's invisible instructions (system prompt, rules, the provider's policies). If all your context is captive to one interface, and if you do not know what actually shapes the AI's behavior, you operate without sovereignty.
+Your knowledge lives in a multi-layer setup: your files, and the tool's invisible instructions (system prompt, rules, the provider's policies). If all your context is captive to one interface, and if you do not know what actually shapes the AI's behavior, you work without sovereignty.
 
-This is why BASE puts your knowledge in readable, portable, auditable files: you stay sovereign over your layer, and you keep what you need to leave. Portability is a condition of control, not just a convenience.
+This is why BASE puts your knowledge in readable, portable, auditable files: you stay sovereign over your layer, and you keep what you need to leave. Portability is a condition of control, not a mere convenience.
 
 *What happens when you ignore it:* the day the tool changes its rules, its prices, or its terms, you discover that your method was never really yours.
 
 ### These necessities are not specific to BASE
 
-They apply to any coordination between distinct entities that do not share the same resources, the same modes of operation, or the same way of being wrong, whether two humans collaborating remotely, a human and an AI, or any other configuration. The tools change, the models change, these structural constraints remain.
+They hold for any coordination between distinct entities that share neither the same resources, nor the same modes of operation, nor the same way of being wrong: two humans collaborating remotely, a human and an AI, or any other configuration. The tools change, the models change; these structural constraints, for their part, remain.
 
 ---
 
 ## Verification debt
 
-Producing with AI now takes little effort; making sure an answer is right is a different kind of work, one that depends on the task: where an external verifier exists (code, math, a schema) the error detects itself and the AI can go far on its own; elsewhere, the verifier is you, and a strong structure keeps that verification light rather than heavy (otherwise, verification debt piles up). This asymmetry between producing and verifying is the observation that founds BASE, and it is what makes the structure indispensable.
+Producing with AI now takes little effort; making sure an answer is right is a different kind of work, one that depends on the task: where an external verifier exists (code, mathematics, a schema), the error detects itself and the AI can go far on its own; elsewhere, the verifier is you, and a strong structure keeps that verification light rather than heavy (failing which, verification debt piles up). This asymmetry between producing and verifying is the observation that founds BASE, and it is what makes the structure indispensable.
 
 Every claim accepted without examination is a debt: an untested assumption sleeping in your files. A quote whose price "looks right," a client record whose address is "probably correct," a job offer with terms deemed "standard."
 
-The debt accumulates silently. It surfaces at the worst moment: when a client disputes an amount, when a candidate spots an inconsistency, when a partner points out an error.
+The debt accumulates in silence. It surfaces at the worst moment: when a client disputes an amount, when a candidate spots an inconsistency, when a partner points out an error.
 
-**Strong structure upstream → light verification downstream.** This is why BASE structures before generating: up-to-date domain files, precise knowledge, explicit markers. The stronger the structure, the lighter the verification. The weaker the structure, the more verification debt explodes.
+**Strong structure upstream → light verification downstream.** This is why BASE structures before generating: up-to-date domain files, precise knowledge, explicit markers. The stronger the structure, the lighter the verification. The weaker the structure, the more verification debt swells.
 
 ---
 
@@ -164,9 +164,9 @@ AGENT.md                          The role file: who it is, what to do per reque
     └── tools/                    The toolbox: scripts, connectors (optional)
 ```
 
-> **Why "agents" and "skills"?** These are the most widespread names today, and AI models recognize them natively: BASE reuses them out of **pragmatism**. What matters is what sits behind the vocabulary:
+> **Why "agents" and "skills"?** These are the most widespread names today, and AI models recognize them natively: BASE reuses them out of **pragmatism**. What matters is what hides behind the vocabulary:
 > - **Intelligence in text.** An agent is a set of Markdown files that are readable, versionable, portable from one AI tool to another, with no code or proprietary platform. You stay the owner of the structure.
-> - **Know-how separated from knowledge.** BASE deliberately distinguishes *processes* (how to do something, step by step) from *competences* (what it knows, reusable). This is first of all a question of security: *processes* are consignes the agent executes, while *competences* and domain data are content it consults without executing. This separation, not the word "skill," is the real contribution.
+> - **Know-how separated from knowledge.** BASE deliberately distinguishes *processes* (how to do something, step by step) from *competences* (what it knows, reusable). This is first of all a question of security: *processes* are consignes the agent executes, whereas *competences* and domain data are content it consults without executing. This separation, not the word "skill," is the real contribution.
 
 ### The job description (AGENT.md)
 
@@ -228,8 +228,8 @@ Document models the agent copies and fills in. Optional scripts and connectors. 
 
 Text files are a deliberate structural choice, not a technical reflex:
 
-- **Readable by humans AND machines.** No special tool needed to read a Markdown file. No API needed to access your data. Open the file, it is all there.
-- **Versionable.** With Git or simply with `_v1`, `_v2` copies. Every change is traceable. You cannot lose an earlier version.
+- **Readable by humans AND machines.** No special tool needed to read a Markdown file, and no API needed to access your data. Open the file, it is all there.
+- **Versionable.** With Git, or simply with `_v1`, `_v2` copies. Every change is traceable. You cannot lose an earlier version.
 - **Portable.** Switch tools tomorrow: your files stay. No migration, no export, no dependency.
 - **Durable.** Databases change format. APIs disappear. Platforms shut down. A text file written in 2026 will still be readable in 2046.
 - **Auditable.** An auditor, a partner, a colleague can open any file and understand what happened. No black box.
@@ -240,7 +240,7 @@ The SKILL.md format is above all a readable textual contract. If a tool supports
 
 ### Tool configuration
 
-For your AI tool to load the agent and discover its skills with as little friction as possible, you need a tool-specific configuration. Some tools automate part of the loading, others ask you to point manually to `AGENT.md`. Every tool needs 5 things:
+For your AI tool to load the agent and discover its skills with as little friction as possible, you need a configuration proper to that tool. Some automate part of the loading, others ask you to point manually to `AGENT.md`. Every tool needs 5 things:
 
 | Need | What it is | Why it is necessary |
 |--------|-------------|--------------------------|
@@ -250,13 +250,13 @@ For your AI tool to load the agent and discover its skills with as little fricti
 | **Permissions** | Control what the agent can do | Mechanical bounds, not textual ones (necessity 4) |
 | **Framework protection** | Reduce or block modification of `.ai/` depending on the tool | The framework's instructions must not be modified by accident |
 
-The assistant creator looks up the tool's current documentation to propose the right configuration. If the tool is not known, the agent guides the user through a manual configuration.
+The assistant creator consults the tool's up-to-date documentation to propose the right configuration. If the tool is not known, the agent guides the user toward a manual configuration.
 
 ### Guardrails: two levels
 
 **Level 1: textual.** "What you never do" in AGENT.md. Enough for short conversations and simple cases.
 
-**Level 2: mechanical.** Permissions, protections, rules in the tool's configuration, or actions mediated through a BASE connector. When a guardrail is critical and the consequences of a slip are serious, the mechanical level is indispensable. Level 2 does not replace level 1: it reinforces it wherever the harness allows.
+**Level 2: mechanical.** Permissions, protections, rules in the tool's configuration, or actions passing through a BASE connector. When a guardrail is critical and the consequences of a slip are heavy, the mechanical level becomes indispensable. Level 2 does not replace level 1: it reinforces it wherever the tool allows.
 
 ---
 
@@ -303,7 +303,7 @@ The `.ai/agents/_template/` folder contains the base structure with a step-by-st
 
 ### The key idea
 
-What makes an AI assistant useful has less to do with the technology than with the **structure of the knowledge** you give it. A good AGENT.md with good skills turns any AI tool into a specialized assistant. Your expertise is the multiplier. AI amplifies it, but does not replace it.
+What makes an AI assistant useful has less to do with the technology than with the **structure of the knowledge** you give it. A good AGENT.md, equipped with good skills, turns any AI tool into a specialized assistant. Your expertise is the multiplier: AI amplifies it, but does not replace it.
 
 ---
 
@@ -312,20 +312,20 @@ What makes an AI assistant useful has less to do with the technology than with t
 ### Verify
 
 1. **Verify before validating.** An AI answer always remains to be checked, especially for facts, prices, and commitments: it can be false while looking certain. Every claim accepted without examination creates a verification debt.
-2. **Watch out for three traps.** Ease (it is easy to ask, not to get a good result), appearance (well-written text is not necessarily correct), and vendors' overblown promises. See [Co-thinking in practice](pratiques-co-pensee.md).
+2. **Watch out for three traps.** Ease (asking is easy, getting a good result is not), appearance (well-written text is not necessarily correct), and vendors' overblown promises. See [Co-thinking in practice](pratiques-co-pensee.md).
 
 ### Structure
 
 3. **The files are the truth.** If it is not in a file, the agent does not know it. Keep your files up to date: they are your assistant's memory.
-4. **Start small.** An agent with 1 workflow that works well beats 5 untested ones. You can always add more.
-5. **Version the resources.** `_v1`, `_v2`, etc. It lets you evolve without breaking what works.
-6. **Copy, don't modify.** The templates stay intact in `.ai/`. The agent copies and adapts.
+4. **Start small.** An agent equipped with a single workflow that works well beats five untested ones. You can always add more.
+5. **Version the resources.** `_v1`, `_v2`, etc. It lets you evolve them without breaking what works.
+6. **Copy, don't modify.** The templates stay intact in `.ai/`. The agent copies, then adapts.
 
 ### Interact
 
 7. **Discuss before acting.** The agent proposes, you validate. Never the other way around.
-8. **One question at a time.** Good workflows move step by step, not all at once.
-9. **Summarize regularly.** On long conversations, ask for a summary of progress to keep the thread.
+8. **One question at a time.** Good workflows move step by step, not in bulk.
+9. **Summarize regularly.** On long conversations, ask for a progress check to keep the thread.
 
 ---
 
@@ -344,11 +344,11 @@ All of BASE fits into one compass, blueprints that must **never be conflated**:
 > **Text = truth · Router = choice · Broker = guarantees · Index = scale · MCP = exposure · LLM = orchestration.**
 
 - **Text = truth.** Your Markdown/JSON files are the source of truth: readable by a human, versioned, yours.
-- **Router = choice.** The router chooses *which* agent and *which* process to follow, or abstains honestly. It takes off your shoulders the mental load of hunting for the right process. The mechanism stays rudimentary but effective, and extends through adapters. It classifies with inspectable rules; it enforces nothing and never invents a route.
+- **Router = choice.** The router chooses *which* agent and *which* process to follow, or abstains honestly. It spares you the mental load of hunting for the right process. The mechanism stays rudimentary but effective, and extends through adapters. It classifies according to inspectable rules; it enforces nothing and never invents a route.
 - **Broker = guarantees.** The broker is the only place that enforces the invariants (confinement, policy, trace). **A guarantee is only real for an action that passes through it.**
-- **Index = scale.** The manifest, the routing registry, the search index are **projections**, never an authority. They can always be regenerated from the text (or deleted).
+- **Index = scale.** The manifest, the routing registry, the search index are **projections**, never an authority. They can always be regenerated from the text, or deleted.
 - **MCP = exposure.** The MCP server exposes the broker's primitives to the platforms; it orchestrates no business logic.
-- **LLM = orchestration.** Deciding *what to do next* falls to the model in the tool, guided by the text and the router's candidates; it is not hard-coded into the tooling.
+- **LLM = orchestration.** Deciding *what to do next* falls to the model in the tool, guided by the text and the router's candidates; nothing is hard-coded into the tooling.
 
 **Design rule:** an extension point must protect a real boundary. Putting domain vocabulary in the index, or domain orchestration in the MCP, is a design error. This is why routing **lives with the text** (`use_when`, descriptions) rather than in a hand-maintained catalog: such a catalog would violate the "Text = truth" blueprint.
 

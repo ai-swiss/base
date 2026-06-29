@@ -1,9 +1,9 @@
-<!-- fr-synced: ba0e8142a129919bb0ab5e6d55ee783fa5528676 -->
+<!-- fr-synced: bb45359c79dc14bd24c428202568806cf9ab1492 -->
 # Institutional pilot, 90 minutes, no personal data
 
-Before committing an institution to an AI tool, you want to judge for yourself, with nothing at risk: this pilot lets you see BASE with your own eyes, **with no citizen's personal data whatsoever**, and decide in full awareness whether to go further. Concretely, it is a **time-boxed pilot** (about 90 minutes) that a government office can run on real commands: not putting a service into production, but seeing what BASE does, what it refuses to do without you, and what stays local. All it requires is working on internal, non-personal procedures.
+Before committing an institution to an AI tool, you want to judge for yourself, with nothing at risk: this pilot lets you see BASE with your own eyes, **with no citizen's personal data whatsoever**, and decide in full awareness whether to go further. It is a **time-boxed pilot** (about 90 minutes) that a government office can run on real commands. The point is not to put a service into production, but to see what BASE does, what it refuses to do without you, and what stays local. There is only one condition: working on internal, non-personal procedures.
 
-> **Note.** This page is **informational**, not legal or compliance advice. It does not replace your impact assessment (AIPD/DPIA) or your security policy. A pilot, even a successful one, **does not establish** the compliance of a future real-world processing operation: it gives you what you need to decide, in full awareness, whether to go further.
+> **Note.** This page is **informational**: it is neither legal advice nor compliance advice. It does not replace your impact assessment (AIPD/DPIA) or your security policy. A pilot, even a successful one, **does not establish** the compliance of a future real-world processing operation: it gives you what you need to decide, in full awareness, whether to go further.
 
 ## What this pilot establishes, and what it does not
 
@@ -37,7 +37,7 @@ Before any command, set the pilot's rule, in writing, for the team:
 - You work only on **internal, non-personal templates and procedures**: a standard letter template, an intake procedure, an internal checklist, a scoping note.
 - If a candidate document contains the slightest personal element, it is **out of pilot**.
 
-This rule is an **organizational *consigne***, not a mechanism: BASE does not know, on your behalf, that a text contains personal data. It is up to you to filter upstream. BASE then helps keep the boundary visible (the `sensitivity` metadata, egress control), but the decision to bring content in is yours.
+This rule is an **organizational *consigne***, not a mechanism: BASE does not know, on your behalf, that a text contains personal data. Screening upstream is your job. BASE then helps keep the boundary visible (the `sensitivity` metadata, egress control), but the decision to bring content in is yours.
 
 ## Phase 1: see the shape of an assistant (15 min)
 
@@ -51,7 +51,7 @@ Open the Veytaux tourist office example to see, without installing anything new,
   node .ai/base.mjs route "Quelles activités à faire cet après-midi ?" --root .
   ```
 
-Goal of this phase: recognize the **shape** (agent, process, data, template) that you will reproduce with your own internal procedures. The Veytaux office is deliberately fictional and contains no personal data.
+Goal of this phase: recognize the **shape** (agent, process, data, template) that you will reproduce with your own internal procedures. The Veytaux office is deliberately fictional and free of any personal data.
 
 ## Phase 2: start from a starter and import 1 to 2 internal, non-personal procedures (40 min)
 
@@ -71,7 +71,7 @@ Copy a starting folder, then bring in one or two of your internal **non-personal
    node .ai/base.mjs commit <id-du-changement> --root . --confirmed
    ```
 
-What you observe here is a **mechanism**: the import goes through a proposal step, the write is deferred until you agree, then applied atomically. Mediated operations are logged locally in the `.ai/trace` journal (operation, resource, status, duration), with no domain content by default.
+What you observe here is a **mechanism**: the import goes through a proposal step, the write waits for your agreement, then applies atomically. Mediated operations are logged locally in the `.ai/trace` journal (operation, resource, status, duration), with no domain content by default.
 
 ## Phase 3: prove that it works, validate and route (15 min)
 
@@ -91,7 +91,7 @@ Check the consistency of the corpus, then route two or three realistic requests.
   node .ai/base.mjs route "rediger une lettre type d'accuse de reception" --root .
   ```
 
-  Note two possible behaviors, both **mechanisms**:
+  Observe two possible behaviors, both **mechanisms**:
   - the router proposes the relevant agent and process, **locally** (lexical, zero network by default);
   - or it **abstains** (out of scope, ambiguous, clarification needed) rather than giving a false certainty. Abstention is an **intended** outcome, not a failure.
 
@@ -102,8 +102,8 @@ Check the consistency of the corpus, then route two or three realistic requests.
 Take stock, explicitly, of the data boundary.
 
 - **Stays local with no model call at all:** the default routing (lexical), `base validate`, the diff-based import, the `.ai/trace` journal. Advanced semantic ranking sends text to an embeddings provider **only if you enable it**, and a local option (Ollama) exists (see [Security of routing data](../trust/securite-donnees-routage.md)).
-- **What a call to a model would send:** as soon as an assistant calls a generative model, the projected context leaves for that model. The provider is **your choice** and it lives **outside BASE**.
-- **BASE's guardrail:** the **egress** control verifies, **before** the call, that a confidential resource or a root declared local-only is **not** sent to a remote model. This is a **mechanism**, not a *consigne*. The MCP is read-only by default (bearer-token option), the Studio is local-loop only, and the settings store keeps environment variable **names**, not API keys in clear text.
+- **What a call to a model would send:** as soon as an assistant calls on a generative model, the projected context leaves for that model. The choice of provider is **yours**, and it lives **outside BASE**.
+- **BASE's guardrail:** the **egress** control verifies, **before** the call, that a confidential resource or a root declared local-only is **not** sent to a remote model. This is a **mechanism**, not a *consigne*. The MCP is read-only by default (bearer-token option), the Studio runs as a local loop only, and the settings store keeps environment variable **names**, never API keys in clear text.
 
 To understand this boundary in detail, read the reference page: [Egress perimeters and governance](../tutoriel/equipe-2-perimetres-et-egress.md), rounded out by [Data protection](../trust/protection-des-donnees.md).
 
@@ -119,7 +119,7 @@ To understand this boundary in detail, read the reference page: [Egress perimete
 
 ## Before any real data: the AIPD/DPIA
 
-This pilot stops **before** the slightest piece of real personal data. To cross that step, your institution must conduct its impact assessment (AIPD/DPIA) and keep its records of processing. BASE provides a **reusable skeleton** to fill in, the [DPIA impact assessment template](dpia-modele.md), but it **does not perform** the assessment for you and does not constitute legal advice. The institutional scoping (classification, legal basis, authorized model provider, retention) is detailed, on the decisions side, in the [Government and public sector kit](kit-administration-secteur-public.md) and the [Data protection](../trust/protection-des-donnees.md) page.
+This pilot stops **before** the slightest piece of real personal data. To cross that step, your institution must conduct its impact assessment (AIPD/DPIA) and keep its records of processing. BASE provides a **reusable skeleton** to fill in, the [DPIA impact assessment template](dpia-modele.md); it **does not perform** the assessment for you and does not constitute legal advice. The institutional scoping (classification, legal basis, authorized model provider, retention) is detailed, on the decisions side, in the [Government and public sector kit](kit-administration-secteur-public.md) and the [Data protection](../trust/protection-des-donnees.md) page.
 
 Reminder: this page is informational. Responsibility for the AIPD/DPIA and the security policy remains your institution's.
 

@@ -19,8 +19,8 @@ recorded internally.
   ```
 
   `check-translations` recomputes the source hash and fails the build when a translation falls behind
-  its source. To refresh a translation: re-translate the changed passages, then update the hash to
-  the current source SHA.
+  its source. To refresh one, re-translate the changed passages, then update the hash to the current
+  source SHA.
 - A language may be partial. Pages without a mirror fall back to the French body with a visible note.
   A page that exists but has drifted is **not** allowed: keep it in sync or remove it.
 
@@ -49,8 +49,8 @@ modeling), American conventions, and plain, precise technical prose.
 - **Keep verbatim.** Code identifiers, file paths, commands, frontmatter keys, product names
   (`BASE`, `Studio`), and marker **tokens** (`[A VALIDER]`, `[DECISION]`) are never translated. A
   marker token is a literal string the tooling matches; translating it would break it.
-- **Loanwords.** A few French terms have become BASE's own vocabulary and stay, italicised on first
-  use with a short gloss. The glossary marks them "keep".
+- **Loanwords.** A few French terms have become part of BASE's own vocabulary and stay, italicised on
+  first use with a short gloss. The glossary marks them "keep".
 - **Acronym.** On first mention, gloss BASE once as "Build Assistants with a Structure of Expertise"
   (a rendering of the French *Bâtir des Assistants avec une Structure d'Expertise*), then use `BASE`.
 

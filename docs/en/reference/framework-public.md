@@ -1,4 +1,4 @@
-<!-- fr-synced: 76af5eee944a870e378f21341ab5e050e83321e1 -->
+<!-- fr-synced: d1ba9b804f215cf8bcdb0359787f69b7963b6434 -->
 # Adopting public BASE: from local to team
 
 If you are an individual, a freelancer, a startup, a small or mid-sized business, or a small team, this page shows you what public BASE gives you: a way to structure your collaboration with AI without installing a heavy platform. It also explains how to adopt it in stages, staying simple on the surface without blocking your later growth.
@@ -19,7 +19,7 @@ The reading path by profile (solo person, SMB, large enterprise) is maintained i
 | Structure | `.ai/agents/`, `docs/reference/framework-public.md`, `base.schema.json` | Stabilize agents, skills, resources, and workflows |
 | Integration | `tools/`, `mcp/`, `tests/`, `docs/reference/specification-v0.md` | Verify, connect, and audit without locking BASE inside one tool |
 
-`CLAUDE.md` and `.cursor/rules/` are harness adapters. They help Claude Code and Cursor load the right context, but they are not the conceptual source of the framework. As a convenience, never a requirement, two optional local interfaces exist: Studio (`npm run studio -- <dossier>`, on `127.0.0.1:5174`) to browse and edit resources behind the propose-then-commit gate, and the documentation served locally (`npm run docs:serve`).
+`CLAUDE.md` and `.cursor/rules/` are harness adapters. They help Claude Code and Cursor load the right context, but they are not the conceptual source of the framework. As a convenience, never a requirement, two optional local interfaces exist: Studio (`npm run studio -- <dossier>`, on `127.0.0.1:5174`) to browse and edit resources in propose-then-commit mode, and the documentation served locally (`npm run docs:serve`).
 
 Public BASE is directly usable for local work and small teams. For a large enterprise, it serves as a structuring foundation and an architecture reference, not as a complete compliance platform.
 
@@ -110,7 +110,7 @@ In this table, `access` does not mean BASE replaces native permissions. A connec
 
 ## Two kinds of skills
 
-BASE reuses the `SKILL.md` format, already familiar in several harnesses, but it does not treat every skill as the same block of instructions. This is first of all a security matter: the *consignes* of a process execute, the content of a competence is consulted without executing. Confusing the two opens the door to injection, where a piece of data tries to pass itself off as a consigne.
+BASE reuses the `SKILL.md` format, already familiar in several harnesses, but it does not treat every skill as the same block of instructions. This is first of all a security matter: a process's instructions are executed, whereas the content of a competence is consulted, not executed. Confusing the two opens the door to injection, where a piece of data tries to pass itself off as an instruction.
 
 | Type | Question | Example |
 |------|----------|---------|

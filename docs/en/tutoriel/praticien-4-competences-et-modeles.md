@@ -1,4 +1,4 @@
-<!-- fr-synced: 6d4491659db84827446557af13e63d689afdb6fe -->
+<!-- fr-synced: d3327d6684d3d6223d4a451e70a8fdae9d70e1fe -->
 # Competences and templates
 
 *⏱ ~18 min · module 4/9, Practitioner track*
@@ -7,13 +7,13 @@
 **You need**: modules 1-3 done, your `~/mon-office-tourisme` directory.
 ↻ **Recall**: without looking, what is a process? (a frontmatter the router reads + a body the model follows)
 
-A process says WHAT to do. But two more building blocks separate the simple routing of a request
-from the production of **a real deliverable**, and this is what most assistants lack.
+A process says WHAT to do. But two further building blocks separate the simple routing of a request
+from the production of **a real deliverable**, and this is precisely what most assistants lack.
 
 - a **competence** (`type: competence`): a reusable know-how (tone, rules, conventions)
-  that a process **consults**. You cite it across several processes rather than repeating yourself.
-- a **template** (`type: template`): a fill-in-the-blanks document you **complete** rather than
-  follow. This is what produces an offer, a letter, a report.
+  that a process **consults**. You cite it across several processes instead of repeating it everywhere.
+- a **template** (`type: template`): a fill-in-the-blanks document you **complete** instead of
+  follow. It is what produces an offer, a letter, a report.
 
 1. **A competence.** Create `.ai/agents/mon-office-tourisme/skills/competences/parler-au-visiteur/SKILL.md`:
 
@@ -40,7 +40,7 @@ from the production of **a real deliverable**, and this is what most assistants 
    ```
 
 2. **A template.** Create `.ai/agents/mon-office-tourisme/templates/offre-groupe_v1.md`. A template carries
-   `[PLACEHOLDERS]` to fill in and an `[A VALIDER]` wherever a human must decide:
+   `[PLACEHOLDERS]` to fill in and an `[A VALIDER]` at the points where a human must decide:
 
    ```
    ---
@@ -97,7 +97,7 @@ from the production of **a real deliverable**, and this is what most assistants 
 
 4. **Generate the document.** In your AI tool, on `~/mon-office-tourisme`, ask:
    *"prepare an offer for a group outing of 30 people"*. The assistant routes to
-   `reserver-une-sortie-groupe`, follows the competence (tone, one question at a time), **fills in the template**, and leaves
+   `reserver-une-sortie-groupe`, applies the competence (tone, one question at a time), **fills in the template** and leaves
    `[A VALIDER]` on the total. As in Discovery: it proposes, nothing is written without you.
 
 ```routage-fixture
@@ -106,10 +106,10 @@ Organiser une sortie pour notre groupe de 30 personnes
 
 ✅ **Check**: `base validate --root .` passes (competence, template, and process are valid resources); `base route "Organiser une sortie pour notre groupe de 30 personnes" --root .` routes to `reserver-une-sortie-groupe`; and the generated offer has its `[PLACEHOLDERS]` filled in with an `[A VALIDER]` on the amount.
 
-💡 **Why it worked**: a process orchestrates, a **competence** factors out a reusable know-how, a **template** carries the shape of the deliverable. The router reads only the frontmatter (use_when, examples); the body, for its part, points to the competence and the template, which the language model then applies. The `[A VALIDER]` in the template asks that a human decide the figure: the instruction is for generation to stop rather than decide for you.
+💡 **Why it worked**: a process orchestrates, a **competence** factors out a reusable know-how, a **template** carries the shape of the deliverable. The router reads only the frontmatter (use_when, examples); the body, for its part, refers back to the competence and the template, which the language model then applies. The `[A VALIDER]` written into the template demands that a human decide the figure: the instruction calls for generation to stop instead of deciding for you.
 
-🔁 **At home**: which repetitive document in your line of work (quotes, form letters, reports) would benefit from becoming a fill-in-the-blanks template? Which know-how (a tone, some rules) deserves a reusable competence?
+🔁 **At home**: which repetitive document in your line of work (quotes, form letters, reports) would benefit from becoming a fill-in-the-blanks template? Which know-how (a tone, a few rules) would deserve a reusable competence?
 
 → **And now**: [Module 5: data that goes stale](praticien-5-donnees-qui-periment.md): the life cycle of an expertise.
 
-🆘 **Common breakdowns**: *`base route` does not find `reserver-une-sortie-groupe`*: bring your `routing.examples` closer to a real group-outing request. *The assistant invents a total instead of `[A VALIDER]`*: step 3 must require it explicitly, and the template must carry the marker. *validate fails*: a template has neither `name` nor `user-invocable`; a competence does (keep the shape of the skeletons).
+🆘 **Common breakdowns**: *`base route` does not find `reserver-une-sortie-groupe`*: bring your `routing.examples` closer to a real group-outing request. *The assistant invents a total instead of leaving `[A VALIDER]`*: step 3 must require it explicitly, and the template must carry the marker. *validate fails*: a template has neither `name` nor `user-invocable`; a competence does (keep the shape of the skeletons).

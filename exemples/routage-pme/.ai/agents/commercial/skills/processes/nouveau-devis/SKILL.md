@@ -23,7 +23,7 @@ routing:
 
 # Nouveau devis
 
-Créer une offre commerciale de A à Z: comprendre le besoin, chiffrer, rédiger, proposer.
+Bâtir une offre commerciale de bout en bout: comprendre le besoin, chiffrer, rédiger, proposer.
 
 ## Étapes
 

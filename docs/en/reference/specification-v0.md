@@ -1,13 +1,13 @@
-<!-- fr-synced: 41d20072d31ae54d86e801e0ff1a98d61d85a632 -->
+<!-- fr-synced: 6233d219894b98cb084a750381a047342d4fe8fa -->
 # BASE Spec v0: founding principle and where to read the current spec
 
 This page is a landmark for anyone looking for the BASE specification. It states the founding principle and points to the up-to-date engineering specification, so you don't end up working from a stale text.
 
-> **This page is deliberately short.** The engineering specification of the BASE tooling (broker, CLI, MCP, ports, schemas) lives in `specs/current/`, in English, verified against the code and the tests; each published version is frozen by a git tag (`git show v1.0.0:specs/current/…`). In case of divergence, `specs/` is authoritative.
+> **This page is deliberately short.** The engineering specification of the BASE tooling (broker, CLI, MCP, ports, schemas) lives in `specs/current/`, in English, verified by the code and the tests; each published version is frozen by a git tag (`git show v1.0.0:specs/current/…`). In case of divergence, `specs/` is authoritative.
 
 Entry point: [`specs/current/README.md`](../../../specs/current/README.md).
 
-"v0" referred to the initial conceptual narrative of BASE, before the engineering specification existed. Its normative content has been absorbed into `specs/current/`; this page keeps the founding principle and the reading map.
+"v0" referred to the initial conceptual narrative of BASE, predating the engineering specification. Its normative content has been carried over into `specs/current/`; this page keeps only the founding principle and the reading map.
 
 ## The fundamental principle, unchanged
 
@@ -30,7 +30,7 @@ BASE is a minimal protocol for durably articulating knowledge, instructions, pro
 
 ## The key invariants, one line each
 
-The detail lives in `specs/current/`, but three invariants deserve to stay legible here:
+The detail lives in `specs/current/`, but three invariants deserve to stay in view here:
 
 - **Derived index**: manifests, caches, and indexes are not the source of truth; they regenerate from the files.
 - **External data ≠ instruction**: an email, a résumé, or web content is treated as data, never as a governance instruction.
@@ -54,9 +54,9 @@ The only part of v0 that stays forward-looking is the target of portability acro
 2. **Intermediate layer**: the projection compiles the core to each harness's native format (generated output, never source); the realization binds each intent to the best mechanism the harness offers, otherwise falls back to the broker, and records the level reached.
 3. **Tool declaration**: per agent, harness, and intent, the level actually held, computable rather than editorial. This is what `.ai/tools.md` already projects.
 
-The broker is the fallback realization: whatever a harness does not do natively, the broker takes on as soon as the action passes through it (confinement, dry-run, trace, mediated write). An intent like `requires_confirmation` reaches a strict level only for the actions that actually pass through it.
+The broker is the fallback realization: whatever a harness does not do natively, it takes on as soon as the action passes through it (confinement, dry-run, trace, mediated write). An intent like `requires_confirmation` reaches the strict level only for the actions that actually pass through it.
 
-Documented migration target: a single semantic dialect (`base.resource.v2`) that would absorb the resource dialect and the skill dialect that are distinct today; the native frontmatter would become projections, generated and verified in CI like any derived artifact.
+Documented migration target: a single semantic dialect (`base.resource.v2`) that would bring together the resource dialect and the skill dialect that are distinct today; the native frontmatter would become projections, generated and verified in CI like any derived artifact.
 
 ---
 

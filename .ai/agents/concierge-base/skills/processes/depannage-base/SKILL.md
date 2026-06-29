@@ -27,7 +27,7 @@ allowed-tools: Read Bash
 
 # Dépannage BASE
 
-Débloquer rapidement quand quelque chose ne marche pas, sans noyer l'utilisateur. Tu poses peu de questions, tu lis la doc utile, tu donnes **un** contrôle concret, puis tu passes la main si c'est une installation ou une incohérence de framework.
+Débloquer vite, sans noyer l'utilisateur. Tu poses peu de questions, tu lis la doc utile, tu donnes **un** contrôle concret, puis tu passes la main s'il s'agit d'une installation ou d'une incohérence du cadre.
 
 ## Étapes
 
@@ -37,35 +37,35 @@ Débloquer rapidement quand quelque chose ne marche pas, sans noyer l'utilisateu
 
 ### 2. Identifier ce que voit l'utilisateur
 
-En langage simple: message d'erreur, écran vide, mauvais agent, rien ne se charge.
+En mots simples: un message d'erreur, un écran vide, le mauvais agent, ou rien qui ne se charge.
 
 ### 3. Vérifier les causes probables
 
-- mauvais dossier / mauvaise racine sélectionnée;
-- pas de `.ai/agents/` à l'endroit ouvert;
+- mauvais dossier ou mauvaise racine sélectionnée;
+- absence de `.ai/agents/` à l'endroit ouvert;
 - MCP non connecté ou serveur non lancé;
-- ambiguïté de workspace (plusieurs racines, aucune choisie);
-- droits natifs / accès fichiers de l'outil.
+- espace de travail ambigu (plusieurs racines, aucune choisie);
+- droits natifs ou accès aux fichiers de l'outil.
 
 ### 4. Lire la doc pertinente avant de conclure
 
 - `mcp/README.md`;
 - `specs/current/10_core/mcp.md`;
 - `specs/current/10_core/cli.md`;
-- `docs/trust/securite-et-limites.md` si l'accès ou la sécurité est en cause.
+- `docs/trust/securite-et-limites.md` si l'accès ou la sécurité est en jeu.
 
 ### 5. Donner un seul contrôle concret
 
-Par exemple: «Depuis le dossier du projet, lancez `base validate`: s'il dit `BASE root not found`, vous n'êtes pas dans la bonne racine.»
+Par exemple: «Depuis le dossier du projet, lancez `base validate`: s'il répond `BASE root not found`, vous n'êtes pas dans la bonne racine.»
 
 ### 6. Passer la main
 
-- C'est une **installation** du routage / MCP → `createur-agent` / `activer-routage`.
-- C'est une **incohérence du framework** (liens cassés, ressources manquantes) → `createur-agent` / `entretien-base`.
+- S'il s'agit d'une **installation** du routage ou du MCP → `createur-agent` / `activer-routage`.
+- S'il s'agit d'une **incohérence du cadre** (liens cassés, ressources manquantes) → `createur-agent` / `entretien-base`.
 
 ## Ce que tu ne fais jamais
 
 - Lancer une commande qui écrit ou modifie sans accord explicite.
 - Deviner une cause sans avoir lu la doc utile.
-- Refaire l'installation complète ici (c'est `activer-routage`).
-- Promettre que tout est réparé sans vérification de l'utilisateur.
+- Refaire ici l'installation complète (c'est le rôle d'`activer-routage`).
+- Promettre que tout est réparé sans que l'utilisateur l'ait vérifié.

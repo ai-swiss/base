@@ -7,7 +7,7 @@ allowed-tools: Read
 
 # Marqueurs
 
-Conventions pour rendre l'état du travail observable directement dans les fichiers. Les marqueurs sont du texte structuré, placé dans les documents générés (devis, fiches clients, rapports) et dans le journal. Ils ne sont jamais placés dans les fichiers du framework (skills, AGENT.md).
+Conventions pour rendre l'état du travail observable directement dans les fichiers. Les marqueurs sont du texte structuré, placé dans les documents générés (devis, fiches clients, rapports) et dans le journal. Ils ne sont jamais placés dans les fichiers du cadre (skills, AGENT.md).
 
 Chaque marqueur correspond à une phase de la boucle de co-pensée (Cadrer → Confier → Évaluer → Ajuster).
 
@@ -71,7 +71,7 @@ Pour retrouver tous les éléments en attente dans un projet:
 ## Règles d'usage
 
 - Les marqueurs vivent dans les **documents générés** (devis, fiches clients, rapports) et dans le **journal**
-- Ils ne sont **jamais** placés dans les fichiers du framework (AGENT.md, SKILL.md, templates)
+- Ils ne sont **jamais** placés dans les fichiers du cadre (AGENT.md, SKILL.md, templates)
 - Un marqueur `[A VALIDER]` devient `[DECISION]` quand l'utilisateur confirme
 - Un marqueur `[A COMPLETER]` disparaît quand l'information est fournie
 - Un marqueur `[ATTENTION]` reste tant que le risque n'a pas été traité

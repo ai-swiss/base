@@ -26,7 +26,7 @@ This repository **dogfoods its own method**: BASE is built the AI-first, spec-dr
 
 ### Rules
 1. **`current/` is the single living spec.** There is no parallel snapshot tree; a historical specification is a git tag — `git show v1.0.0:specs/current/10_core/requirements.md`. The Design-History question is answered by git, not a copied folder.
-2. **Statusless truth — *what the system does*, not *what was built*.** No `pending`/`done`/`Built`/`Fixed` status in a chapter; trajectory (what changed, when) lives in `CHANGELOG.md`, `.plans/`, and git. The bar to hold every chapter to: *could the code be deleted and regenerated from `specs/` plus its tests?*
+2. **Statusless truth — *what the system does*, not *what was built*.** No `pending`/`done`/`Built`/`Fixed` status in a chapter; trajectory (what changed, when) lives in `CHANGELOG.md`, `.plans/`, and git. The bar for every chapter: *could the code be deleted and regenerated from `specs/` plus its tests?*
 3. **Never invent a requirement.** Mark unknowns inline as `[NEEDS CLARIFICATION: reason]`.
 4. **Update `CHANGELOG.md`** in the same edit as any notable spec change.
 5. **The code is part of the spec.** "Matches `functionName`" makes that function's source normative. Reference functions **by name** (stable), not line number (drifts).

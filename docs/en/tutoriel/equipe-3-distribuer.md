@@ -1,4 +1,4 @@
-<!-- fr-synced: 7d55e3423acdaefa2d37e9f6863c5857ddcfc7c5 -->
+<!-- fr-synced: 429e21090d5f5168378b7d6232f7b3e9dcd78a61 -->
 # Distribute to a team
 
 *⏱ ~20 min · module 3/3, Team track*
@@ -18,7 +18,7 @@ for the shared mechanical guarantees (deterministic routing, mediated writes), f
    ```
 
    Resources are Markdown: a process change reads back as a diff. An
-   improvement = a branch + a **pull request**, reviewed before merging.
+   improvement fits in a branch and a **pull request**, reviewed before it is merged.
 
 2. **Stand up the MCP server.** From the BASE repo:
 

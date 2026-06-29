@@ -1,19 +1,19 @@
-<!-- fr-synced: a78f823839d65a72fb41bb7b17e086044d331a88 -->
+<!-- fr-synced: 21482e781e02bb413bba210a0657cd5e0a410041 -->
 # BASE Glossary: the vocabulary at a glance
 
 You come across a BASE term and want its exact definition: this page gives it in one sentence, with a link to the document that develops it. It is the canonical source of the vocabulary; other pages point here rather than redefining the same terms. The order is alphabetical.
 
-**Abstention.** When no route is clear enough, the router refuses to guess and returns an explicit status (`ambiguous`, `needs_clarification`, `out_of_scope`) with a readable reason. See [Routing, processes, and resources](routage-process-et-ressources.md).
+**Abstention.** When no route is clear enough, the router refuses to guess and returns an explicit status (`ambiguous`, `needs_clarification`, `out_of_scope`) with a readable reason. Note: "deterministic" applies to the code router (`base route` / `route_request`), which returns the same result for the same request and corpus; when the assistant routes by reading the index itself, that is a model following a *consigne* and can vary, with the code router serving as confirmation. Abstention is an honest fallback, not a guarantee of correctness. See [Routing, processes, and resources](routage-process-et-ressources.md).
 
-**Agent.** A file of instructions (`AGENT.md` and its skills): Markdown that tells the model which role to play, which processes it knows, which files to consult, and which guardrails to respect. It is its job description, and it is text that you write, own, and carry from one AI tool to another. BASE keeps the word "agent" for compatibility with the ecosystem, because models recognize it, and not to designate an autonomous creature: an agent is a file, not a person. See [Understanding the approach](../learn/comprendre.md).
+**Agent.** A file of instructions (`AGENT.md` and its skills): Markdown that tells the model which role to play, which processes it knows, which files to consult, and which guardrails to respect. It is its job description, and it is text that you write, own, and carry from one AI tool to another. BASE keeps the word "agent" for compatibility with the ecosystem, because models recognize it, and not to designate an autonomous creature: an agent is a file, not a person. Put plainly, it is simply a train of thought laid down in text files. See [Understanding the approach](../learn/comprendre.md).
 
 **Assistant.** Your agent brought to life by a model: what the end user uses. You own the agent (your files), you rent the model (the AI tool, which will change), and the assistant is born of their meeting. The same agent can become one assistant in Claude Code and another in Cursor: the agent is what you keep, the assistant is what you use. See [Understanding the approach](../learn/comprendre.md).
 
 **Broker.** The local core that enforces the guarantees (confinement, policy, dry-run, trace) for the actions that pass through it, via the CLI or the MCP. See [Security and limits](../trust/securite-et-limites.md).
 
-**Human-AI co-thinking.** The applied science of human-AI interaction: how to think, work, and decide with an entity whose internal representations of the world are compatible enough with ours to communicate in natural language, yet without sharing our context, our memory, or our guarantees. It starts from the fundamentals of what must be made explicit, structured, and verified for such a collaboration to be reliable, and it is invented domain by domain, trade by trade, person by person. See [Why BASE: co-thinking with AI](../learn/co-penser-avec-lia.md).
+**Human-AI co-thinking.** The applied science of human-AI interaction: how to think, work, and decide with an entity whose internal representations of the world are close enough to ours to communicate in natural language, yet without sharing our context, our memory, or our guarantees. It starts from the fundamentals, what must be made explicit, structured, and verified for such a collaboration to be reliable, and it is invented domain by domain, trade by trade, person by person. See [Why BASE: co-thinking with AI](../learn/co-penser-avec-lia.md).
 
-**Competence.** A reusable knowledge skill (VAT, communication tone, markers) that several processes can consult. See [Understanding the approach](../learn/comprendre.md).
+**Competence.** A reusable knowledge (VAT, communication tone, markers) that several processes can consult; one of the two types of skill, the other being the process. See [Understanding the approach](../learn/comprendre.md).
 
 ***Consigne.*** An instruction in text, followed by a cooperative model. Useful, but prone to drift, where a mechanism holds by construction. See [Security and limits](../trust/securite-et-limites.md).
 
@@ -36,6 +36,8 @@ You come across a BASE term and want its exact definition: this page gives it in
 **MCP.** The open protocol, and the BASE server that implements it, to expose the broker's primitives to chat apps. Read-only by default. See [MCP server](../../../mcp/README.md).
 
 **Mechanism.** A guarantee actually enforced by the broker, the CLI, or the MCP, as opposed to a *consigne* in text. See [Security and limits](../trust/securite-et-limites.md).
+
+**Deterministic floor.** The code router (`base route` / `route_request`), without a model: for the same request and the same corpus, it returns the same route or a motivated abstention. It is the deterministic mechanism beneath the model-led progressive discovery. See [Routing, processes, and resources](routage-process-et-ressources.md).
 
 **Process.** A workflow skill: a step-by-step way of doing, with reformulations and decision points. It is the target of routing. See [Routing, processes, and resources](routage-process-et-ressources.md).
 

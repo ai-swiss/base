@@ -29,13 +29,13 @@ allowed-tools: Read Write Edit Glob Grep
 
 # Configuration de l'entreprise
 
-Guider l'utilisateur pas à pas pour configurer toutes les informations nécessaires au fonctionnement de l'assistant. Ce process se lance à la première utilisation ou quand les fichiers métier contiennent encore des placeholders.
+Guider l'utilisateur pas à pas pour réunir toutes les informations nécessaires au fonctionnement de l'assistant. Ce process se lance à la première utilisation, ou lorsque les fichiers métier contiennent encore des champs à compléter.
 
 ## Inputs
 
 Avant de commencer, vérifie:
-- **`entreprise/identite.md`**: contient-il des placeholders (`[...]`) ou est-il rempli?
-- **`catalogue/services.json`**: contient-il des données réelles ou le template vide?
+- **`entreprise/identite.md`**: contient-il des champs à compléter (`[...]`) ou est-il déjà rempli?
+- **`catalogue/services.json`**: contient-il des données réelles ou le modèle vide?
 
 Si tout est déjà rempli, informe l'utilisateur et propose de passer directement à la création d'un devis.
 
@@ -49,7 +49,7 @@ Si `.ai/journal/` contient des entrées récentes, lis-les pour reprendre le con
 
 ### 2. Identité de l'entreprise
 
-Pose les questions une par une. Ne passe à la suivante que quand la réponse est claire.
+Pose les questions une à une. Ne passe à la suivante qu'une fois la réponse claire.
 
 Questions:
 - Nom de l'entreprise

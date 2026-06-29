@@ -1,10 +1,10 @@
 # Idées d'agents pour votre métier
 
-Cette page s'adresse à vous si vous voulez un assistant IA sans savoir par où commencer. Elle réunit des exemples concrets, secteur par secteur, pour vous donner une idée à reprendre tout de suite.
+Cette page est pour vous si vous souhaitez un assistant IA sans savoir par où commencer. Elle rassemble des exemples concrets, secteur par secteur, pour vous proposer une idée à reprendre.
 
-Chaque idée est un point de départ. Le créateur d'assistant vous aide à la transformer en assistant adapté à votre contexte, sous réserve de vos contraintes métier, légales, réglementaires et de confidentialité.
+Chaque idée est un point de départ. Le créateur d'assistant vous aide à la transformer en un assistant ajusté à votre contexte, dans le respect de vos contraintes métier, légales, réglementaires et de confidentialité.
 
-Nous distinguons clairement deux cas. *Exemple disponible* signifie qu'un dossier prêt à copier existe dans [`exemples/`](../../exemples/). Les autres idées restent à construire avec le créateur d'assistant: aucun exemple n'est encore livré.
+Deux cas se distinguent nettement. *Exemple disponible* signifie qu'un dossier prêt à copier existe dans [`exemples/`](../../exemples/). Les autres idées restent à construire avec le créateur d'assistant: aucun exemple n'est encore livré.
 
 > **Important**: BASE structure le travail et les connaissances. Il ne remplace pas un professionnel habilité, une revue juridique, médicale, financière, RH ou conformité quand elle est requise.
 
@@ -12,7 +12,7 @@ Nous distinguons clairement deux cas. *Exemple disponible* signifie qu'un dossie
 
 ## Commercial et vente
 
-| Assistant | Ce qu'il fait pour vous |
+| Assistant | Ce qu'il vous aide à faire |
 |-----------|------------------------|
 | **Devis et propositions** | Chiffre et rédige des devis professionnels à partir de demandes clients |
 | **Prospection** | Prépare vos rendez-vous, qualifie les prospects, suit votre pipeline |
@@ -25,9 +25,9 @@ Nous distinguons clairement deux cas. *Exemple disponible* signifie qu'un dossie
 
 ## Communication et marketing
 
-| Assistant | Ce qu'il fait pour vous |
+| Assistant | Ce qu'il vous aide à faire |
 |-----------|------------------------|
-| **Réseaux sociaux** | Rédige des posts LinkedIn, Instagram, Facebook dans votre ton |
+| **Réseaux sociaux** | Rédige des publications LinkedIn, Instagram, Facebook dans votre ton |
 | **Newsletter** | Structure et rédige vos envois réguliers |
 | **Site web** | Crée des pages, des articles de blog, des FAQ |
 | **Relations presse** | Prépare des communiqués, des dossiers de presse |
@@ -38,7 +38,7 @@ Nous distinguons clairement deux cas. *Exemple disponible* signifie qu'un dossie
 
 ## Ressources humaines
 
-| Assistant | Ce qu'il fait pour vous |
+| Assistant | Ce qu'il vous aide à faire |
 |-----------|------------------------|
 | **Recrutement** | Rédige des offres d'emploi, prépare les entretiens, évalue les candidats |
 | **Onboarding** | Crée des guides d'accueil pour les nouveaux collaborateurs |
@@ -51,7 +51,7 @@ Nous distinguons clairement deux cas. *Exemple disponible* signifie qu'un dossie
 
 ## Administration et gestion
 
-| Assistant | Ce qu'il fait pour vous |
+| Assistant | Ce qu'il vous aide à faire |
 |-----------|------------------------|
 | **Procès-verbaux** | Transforme vos notes en PV structurés après chaque réunion |
 | **Gestion de projets** | Suit les tâches, prépare les points d'avancement, rédige les bilans |
@@ -64,7 +64,7 @@ Nous distinguons clairement deux cas. *Exemple disponible* signifie qu'un dossie
 
 ## Métiers spécialisés
 
-| Assistant | Ce qu'il fait pour vous |
+| Assistant | Ce qu'il vous aide à faire |
 |-----------|------------------------|
 | **Cabinet d'architecte** | Brief client, programme des besoins, suivi chantier, PV de réception |
 | **Agence immobilière** | Estimations, rédaction d'annonces, suivi des visites et négociations |
@@ -78,10 +78,10 @@ Nous distinguons clairement deux cas. *Exemple disponible* signifie qu'un dossie
 
 ## Restauration et hôtellerie
 
-| Assistant | Ce qu'il fait pour vous |
+| Assistant | Ce qu'il vous aide à faire |
 |-----------|------------------------|
-| **Restaurant** | Création de menus, gestion fournisseurs, calcul food cost, inventaires |
-| **Hôtel** | Check-in/check-out, conciergerie, gestion des avis, rapports |
+| **Restaurant** | Création de menus, gestion fournisseurs, calcul du coût matière, inventaires |
+| **Hôtel** | Arrivées et départs, conciergerie, gestion des avis, rapports |
 | **Traiteur / événementiel** | Devis événements, planification logistique, gestion inscriptions |
 
 > *Pas encore d'exemple livré: à construire avec le créateur d'assistant*
@@ -90,7 +90,7 @@ Nous distinguons clairement deux cas. *Exemple disponible* signifie qu'un dossie
 
 ## Éducation et associations
 
-| Assistant | Ce qu'il fait pour vous |
+| Assistant | Ce qu'il vous aide à faire |
 |-----------|------------------------|
 | **Enseignant** | Prépare séquences d'enseignement et évaluations, avec différenciation |
 | **École / centre de formation** | Inscriptions, planification cours, communication parents, bulletins |
@@ -103,7 +103,7 @@ Nous distinguons clairement deux cas. *Exemple disponible* signifie qu'un dossie
 
 ## Agriculture et artisanat
 
-| Assistant | Ce qu'il fait pour vous |
+| Assistant | Ce qu'il vous aide à faire |
 |-----------|------------------------|
 | **Exploitation agricole** | Planification cultures, suivi parcelles, vente directe, déclarations |
 | **Artisan** | Devis travaux, planification chantier, facturation, suivi garantie |
@@ -121,7 +121,7 @@ Posez-vous trois questions:
 2. **Cette tâche suit-elle un processus que je pourrais décrire?**
 3. **Si je la déléguais, quel serait l'impact immédiat?**
 
-Si la réponse est claire pour ces trois questions et que le risque est acceptable, c'est un bon candidat pour votre premier agent.
+Si la réponse vous paraît claire pour ces trois questions et que le risque demeure acceptable, voilà un bon candidat pour votre premier agent.
 
 > **Pas sûr?** Dites «Aide-moi à trouver par où commencer» au créateur d'assistant. Il vous posera les bonnes questions.
 
@@ -129,10 +129,10 @@ Si la réponse est claire pour ces trois questions et que le risque est acceptab
 
 ## Le principe
 
-Vous n'avez pas besoin d'être un profil technique. Vous avez surtout besoin de **connaître votre métier**. C'est votre expertise qui donne toute sa valeur à l'assistant: l'IA l'amplifie sans la remplacer.
+Vous n'avez pas besoin d'avoir un profil technique. Vous avez surtout besoin de **connaître votre métier**. C'est votre expertise qui donne toute sa valeur à l'assistant: l'IA l'amplifie sans s'y substituer.
 
-Un bon assistant commence petit: **un seul workflow**, bien fait. Vous pourrez en ajouter ensuite.
+Un bon assistant commence petit: **un seul flux de travail**, bien mené. Vous en ajouterez d'autres ensuite.
 
 ---
 
-BASE est un framework par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).

@@ -25,13 +25,13 @@ allowed-tools: Read
 
 # Accueil BASE
 
-Le point d'entrée amical de BASE. Ce process est surtout chargé en **repli**: quand le routeur s'abstient honnêtement (il ne trouve pas de workflow métier), l'assistant ouvre cet accueil au lieu de laisser l'utilisateur dans le vide.
+Le point d'entrée amical de BASE. Ce process est surtout chargé en **repli**: quand le routeur s'abstient honnêtement, faute de workflow métier, l'assistant ouvre cet accueil plutôt que de laisser l'utilisateur sans réponse.
 
 Il sert aussi quand quelqu'un demande directement «par où je commence?» ou «quelles sont mes options?».
 
 ## Important
 
-`accueil` n'est **pas** un aimant de routage pour toute demande floue. Une demande sans intention claire («Bonjour», «aide») doit produire une **abstention honnête** du routeur, qui retombe ensuite sur cet accueil via le repli. On ne transforme pas une salutation vide en route certaine.
+`accueil` n'est **pas** un aimant de routage pour toute demande floue. Une demande sans intention claire («Bonjour», «aide») doit conduire le routeur à une **abstention honnête**, qui retombe ensuite sur cet accueil par le repli. On ne transforme pas une salutation vide en route certaine.
 
 ## Étapes
 
@@ -71,7 +71,7 @@ Selon la réponse:
 
 ## Si l'utilisateur était déjà sur une autre tâche
 
-Réponds à l'orientation, puis propose: «Voulez-vous que je vous redirige, ou qu'on revienne à ce que vous faisiez?»
+Réponds à l'orientation, puis propose: «Voulez-vous que je vous redirige, ou que l'on revienne à ce que vous faisiez?»
 
 ## Ce que tu ne fais jamais
 

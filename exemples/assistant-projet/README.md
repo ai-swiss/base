@@ -4,7 +4,7 @@
 
 1. Ouvrez **ce dossier** (pas la racine du dépôt) dans Claude Code ou Cursor.
 2. Dites, mot pour mot: **«Bonjour, je voudrais configurer mon activité»**
-3. Vous devriez voir: l'assistant vous accueille et vous pose, une question à la fois, votre prénom, votre rôle, votre organisation et votre lieu pour remplir votre profil. Rien n'est écrit ni envoyé sans vous.
+3. Vous devriez voir: l'assistant vous accueille, puis vous demande, une question à la fois, votre prénom, votre rôle, votre organisation et votre lieu pour remplir votre profil. Rien n'est écrit ni envoyé sans vous.
 
 Un assistant IA qui aide à structurer, planifier et suivre des projets professionnels ou personnels.
 
@@ -43,6 +43,6 @@ Cet assistant est un **exemple illustratif** à des fins d'apprentissage. Les m�
 
 ---
 
-BASE est un framework par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
 
 Licence: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)

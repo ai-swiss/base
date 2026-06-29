@@ -1,10 +1,10 @@
 # Créateur d'agent
 
-Un méta-agent qui guide les utilisateurs dans la création de leur propre assistant IA métier. Au lieu de lire de la documentation et de remplir des templates manuellement, l'utilisateur décrit ses besoins et le créateur d'agent construit tout pour lui.
+Un méta-agent qui accompagne chacun dans la création de son propre assistant IA métier. Plutôt que de lire la documentation et de remplir des templates à la main, vous décrivez vos besoins et le créateur d'agent bâtit le reste pour vous.
 
 ## Pourquoi ce méta-agent existe
 
-Créer un bon agent IA demande un savoir-faire: comprendre comment décomposer un besoin en workflows, identifier les connaissances métier à capturer, structurer les documents types. Ce savoir-faire est encodé dans les skills (processes et compétences) de ce méta-agent, le rendant accessible à n'importe qui par la conversation.
+Créer un bon agent IA demande un savoir-faire: décomposer un besoin en workflows, repérer les connaissances métier à capturer, structurer les documents types. Ce savoir-faire est inscrit dans les skills (processes et compétences) de ce méta-agent, qui le met à la portée de tous au fil de la conversation.
 
 ## Comment ça fonctionne
 
@@ -14,10 +14,10 @@ Créer un bon agent IA demande un savoir-faire: comprendre comment décomposer u
     ▼
 AGENT.md (créateur d'agent)
     │
-    ├── Comprend votre métier (questions ouvertes)
-    ├── Identifie vos workflows → futurs processes (SKILL.md)
-    ├── Identifie vos connaissances → futures compétences (SKILL.md)
-    ├── Identifie vos documents → futurs templates
+    ├── Cerne votre métier (questions ouvertes)
+    ├── Repère vos workflows → futurs processes (SKILL.md)
+    ├── Repère vos connaissances → futures compétences (SKILL.md)
+    ├── Repère vos documents → futurs templates
     │
     ▼
 Crée un agent complet, prêt à l'emploi
@@ -28,22 +28,22 @@ Crée un agent complet, prêt à l'emploi
 Dites simplement:
 > «J'aimerais créer un assistant pour [votre métier]»
 
-Le méta-agent vous guidera pas à pas. Aucune connaissance technique n'est requise.
+Le méta-agent vous guide pas à pas. Aucune connaissance technique n'est requise.
 
 ## Ce qu'il produit
 
-À la fin de la conversation, vous aurez:
-- Un nouveau dossier dans `.ai/agents/` avec votre agent complet (AGENT.md, skills, templates)
-- Des dossiers métier à la racine pour vos données
-- La configuration de votre outil IA (Claude Code, Cursor, Codex, etc.) pour que l'agent se charge selon l'outil
-- Les compétences standard (marqueurs, journal, communication) installées
+Au terme de la conversation, vous disposerez:
+- D'un nouveau dossier dans `.ai/agents/` réunissant votre agent complet (AGENT.md, skills, templates)
+- De dossiers métier à la racine pour vos données
+- De la configuration de votre outil IA (Claude Code, Cursor, Codex, etc.), afin que l'agent se charge selon l'outil
+- Des compétences standard (marqueurs, journal, communication), déjà installées
 
 ## Trois modes
 
-1. **Diagnostiquer**: identifier les meilleures opportunités IA pour votre métier
-2. **Créer**: construire un nouvel agent de zéro
-3. **Améliorer**: enrichir ou modifier un agent existant
+1. **Diagnostiquer**: repérer les meilleures opportunités IA pour votre métier
+2. **Créer**: bâtir un nouvel agent de zéro
+3. **Améliorer**: enrichir ou remanier un agent existant
 
 ---
 
-BASE est un framework par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).

@@ -1,6 +1,6 @@
 # Classes
 
-Ce dossier contient les profils de vos classes, sous forme **anonymisée**. C'est un principe de cet assistant, pas une option: les données d'élèves sont sensibles et n'ont pas leur place dans un outil de préparation.
+Ce dossier contient les profils de vos classes, sous forme **anonymisée**. C'est un principe de cet assistant, et non une option: les données d'élèves sont sensibles et n'ont pas leur place dans un outil de préparation.
 
 ## Le principe d'anonymisation
 

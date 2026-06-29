@@ -1,13 +1,13 @@
-<!-- fr-synced: 86b4a62cddb75aab9ef25365a895578a40f33061 -->
+<!-- fr-synced: 182676e113a8e46dfd4eda3ea7064dddc18c2895 -->
 # Where to start
 
-The repository can look dense at first glance, because it brings together three things at once: a usable framework, domain examples, and a verifiable technical foundation. This page saves you from reading everything by giving you the reading order suited to your situation, whether you are on your own, in an SMB, in a large enterprise, or in the public sector.
+At first glance, the repository can look dense, because it brings together three things at once: a usable framework, domain examples, and a verifiable technical foundation. This page saves you from reading everything: it gives you the reading order suited to your situation, whether you are on your own, in an SMB, in a large enterprise, or in the public sector.
 
-It is also the source of truth for the reading paths. Other documents may carry a short compass, but this one keeps the full hierarchy by profile.
+It is also the source of truth for the reading paths. Other documents may carry a condensed compass, but this one keeps the full hierarchy by profile.
 
 ## If you are on your own
 
-Goal: try it quickly, understand enough, keep your files readable.
+Goal: try it quickly, understand enough, follow your own train of thought with AI, and keep your files readable.
 
 Read in this order:
 
@@ -30,7 +30,7 @@ You can skip at first:
 
 At this level, BASE can stay very simple: one assistant, a few Markdown files, explicit human decisions.
 
-If you are lost, just say "Help" or "I'm lost". With routing enabled, BASE welcomes you (`concierge-base`) instead of leaving you without a next step; otherwise load `.ai/agents/concierge-base/AGENT.md`.
+If you are lost, just say "Help" or "I'm lost". With routing enabled, BASE welcomes you (`concierge-base`) instead of leaving you with no answer; otherwise, load `.ai/agents/concierge-base/AGENT.md`.
 
 ## If you are an SMB or a small team
 
@@ -39,7 +39,7 @@ Goal: move from individual use to a shared working memory.
 Read in this order:
 
 1. `README.md` for the intuition and the examples.
-2. `docs/learn/co-penser-avec-lia.md` for the why: verification, the four losses, the method.
+2. `docs/learn/co-penser-avec-lia.md` for the why: cognitive sovereignty, the losses of control (verification among them), the method.
 3. `docs/start/quickstart.md` for the local setup and the commands.
 4. `docs/audiences/kit-demarrage-pme-suisse.md` to set the team rules: data, validation, versioning, upkeep.
 5. `docs/audiences/pour-qui.md` to place your level of adoption.
@@ -56,9 +56,9 @@ At this level, the important files are:
 - `tools/` to validate, index, discover, and maintain;
 - `base.schema.json` to stabilize the shared metadata.
 
-If you manage **several BASE roots** (for example several clients), a `base.workspace.json` declares multiple roots: `base route --workspace <file>` searches across them and `--root-id <id>` targets a specific root (each read and write stays confined to the chosen root). See [Routing, processes, and resources](../reference/routage-process-et-ressources.md) and `specs/current/10_core/cli.md`.
+If you manage **several BASE roots** (for example several clients), a `base.workspace.json` declares multiple roots: `base route --workspace <file>` searches across them and `--root-id <id>` targets a specific root (every read and every write stays confined to the chosen root). See [Routing, processes, and resources](../reference/routage-process-et-ressources.md) and `specs/current/10_core/cli.md`.
 
-You do not need a heavy platform. You need clear conventions, local validation, readable descriptions, and regular upkeep.
+You do not need a heavy platform, but clear conventions, local validation, readable descriptions, and regular upkeep.
 
 ## If you are a large enterprise
 
@@ -66,7 +66,7 @@ Goal: evaluate BASE as a structuring language and an integration foundation, not
 
 Read in this order:
 
-1. `docs/learn/co-penser-avec-lia.md` for the *why* (common to every profile): verification, the four losses, the method.
+1. `docs/learn/co-penser-avec-lia.md` for the *why* (common to every profile): verification, the losses of control, the method.
 2. `docs/reference/framework-public.md` for the public model.
 3. `docs/reference/base-et-vos-outils-ia.md` to understand how BASE coexists with your AI tools and platforms (and how to integrate a scheduled agent into them), then `docs/reference/positionnement.md` to place BASE category by category in the 2026 tool landscape.
 4. `docs/reference/etat-implementation.md` to tell apart shipped, planned, and out of scope.
@@ -104,7 +104,7 @@ Read in this order:
 6. `mcp/README.md` if the institution wants to connect BASE to an AI platform.
 7. `specs/current/README.md`, `base.schema.json`, and `tests/` for the technical audit.
 
-At this level, BASE is an auditable component. Compliance stays in your institutional decisions: legal basis, register of processing activities, IAM, DLP, archiving, procurement, model provider, and legal review.
+At this level, BASE is an auditable component. Compliance, for its part, rests with your institutional decisions: legal basis, register of processing activities, IAM, DLP, archiving, procurement, model provider, and legal review.
 
 ## What each folder means
 
@@ -146,6 +146,6 @@ At this level, BASE is an auditable component. Compliance stays in your institut
 
 `base.manifest.json` is generated by `base index`. It makes discovery easier, but it is not the source of truth.
 
-`mcp/` is an integration. It proves portability, but you can use BASE without an MCP server.
+`mcp/` is an integration. It attests to portability, but BASE works perfectly well without an MCP server.
 
-`tests/` and `tools/` make the framework credible and maintainable. Someone who only wants to try an assistant can skip them.
+`tests/` and `tools/` make the framework credible and maintainable. Anyone who only wants to try an assistant can set them aside.

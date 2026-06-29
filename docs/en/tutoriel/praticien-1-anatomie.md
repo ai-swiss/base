@@ -1,4 +1,4 @@
-<!-- fr-synced: b5573293fe891c7be374cfce89c1445d5f99cfbc -->
+<!-- fr-synced: c29c96d6055c18209986b34c9387af7c5df0eff6 -->
 # The anatomy of an assistant
 
 *⏱ ~12 min · module 1/9, Practitioner track*
@@ -9,7 +9,7 @@
 1. Open `.ai/agents/office-tourisme/AGENT.md`: the assistant's ID card (who, when).
 2. Open `.ai/agents/office-tourisme/skills/processes/renseigner-un-visiteur/SKILL.md`: the steps,
    and above all the `use_when` field and `routing.examples`.
-3. **Predict**: where should the request "what time is it open?" route? Say it out loud.
+3. **Predict**: where should the request "What is there to do this afternoon?" route? Say it out loud.
 4. Check your prediction:
 
 ```routage-fixture
