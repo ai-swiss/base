@@ -61,6 +61,10 @@ export function authMiddleware(provider: AuthProvider): RequestHandler {
     try {
       const result = await provider(req);
       if (result.ok) {
+        // The principal (when the provider knows one — a custom OAuth provider does, the shared
+        // bearer token honestly does not) rides res.locals to the handler, which attributes the
+        // request's trace events to it (withTraceActor).
+        res.locals.principal = result.principal;
         next();
         return;
       }

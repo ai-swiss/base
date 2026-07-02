@@ -1,4 +1,4 @@
-<!-- fr-synced: 182676e113a8e46dfd4eda3ea7064dddc18c2895 -->
+<!-- fr-synced: 622ce54253d62a586e3157d8dfe02c30273d2e0d -->
 # Where to start
 
 At first glance, the repository can look dense, because it brings together three things at once: a usable framework, domain examples, and a verifiable technical foundation. This page saves you from reading everything: it gives you the reading order suited to your situation, whether you are on your own, in an SMB, in a large enterprise, or in the public sector.
@@ -12,10 +12,10 @@ Goal: try it quickly, understand enough, follow your own train of thought with A
 Read in this order:
 
 1. `README.md` to grasp the general idea.
-2. `docs/learn/co-penser-avec-lia.md` to understand *why* BASE is necessary (the method, in brief).
-3. **`docs/tutoriel/index.md`**, the "Learn by doing" tutorial: the recommended path, step by step and verified at each stage (Discovery with nothing installed, Practitioner, Team).
-4. `docs/start/quickstart.md` to try it in a few minutes (or `docs/start/essayer-sans-installer.md` if all you have is a browser, with nothing to install).
-5. The `exemples/assistant-devis-demo/` demo, then the `exemples/assistant-devis/` folder if you want to start over from your own data.
+2. **`docs/tutoriel/index.md`**, the "Learn by doing" tutorial: the recommended path, step by step and verified at each stage (Discovery with nothing installed, Practitioner, Team). You came to try it: start by doing.
+3. `docs/start/quickstart.md` to try it in a few minutes (or `docs/start/essayer-sans-installer.md` if all you have is a browser, with nothing to install).
+4. The `exemples/assistant-devis-demo/` demo, then the `exemples/assistant-devis/` folder if you want to start over from your own data.
+5. `docs/learn/co-penser-avec-lia.md` to understand *why* BASE is necessary (the method, in brief), once you have tasted the practice; then `docs/learn/pratiques-co-pensee.md` for the day-to-day method, in 16 principles.
 6. `docs/learn/comprendre.md` only if you want to go deeper into the method.
 7. `docs/trust/evidence.md` if you want to check the promises and their limits.
 
@@ -48,6 +48,8 @@ Read in this order:
 8. `docs/guides/routage-semantique-quickstart.md` to understand how BASE chooses agent and process.
 9. `docs/learn/pratiques-co-pensee.md` to avoid the bad uses of AI.
 10. `docs/reference/documentation-interactive.md` if you want to expose or deploy living documentation without duplicating the sources.
+11. `docs/learn/adoption-organisation.md` for the adoption trajectory: how an individual practice becomes a team process, who promotes it, and who answers for it.
+12. `docs/learn/cycle-de-vie-expertise.md` for upkeep over time: field friction, validity dates, evaluation, what `base doctor` watches.
 
 At this level, the important files are:
 
@@ -67,7 +69,7 @@ Goal: evaluate BASE as a structuring language and an integration foundation, not
 Read in this order:
 
 1. `docs/learn/co-penser-avec-lia.md` for the *why* (common to every profile): verification, the losses of control, the method.
-2. `docs/reference/framework-public.md` for the public model.
+2. `docs/reference/le-standard.md` for the citable page of the `base.resource.v1` standard (format, separations, routing conventions, stability), then `docs/reference/framework-public.md` for the public model.
 3. `docs/reference/base-et-vos-outils-ia.md` to understand how BASE coexists with your AI tools and platforms (and how to integrate a scheduled agent into them), then `docs/reference/positionnement.md` to place BASE category by category in the 2026 tool landscape.
 4. `docs/reference/etat-implementation.md` to tell apart shipped, planned, and out of scope.
 5. `docs/guides/choisir-provider-embeddings.md` to compare local, cloud, gateway, and an internal model.
@@ -81,7 +83,7 @@ Read in this order:
 13. `base.schema.json` to inspect the machine contract.
 14. `tests/` to see what is verified.
 
-At this level, BASE has to be wired into the organization's systems: IAM, SSO, RBAC, DLP, SIEM, retention, classification, legal review, secrets management, and environment separation.
+At this level, BASE has to be wired into the organization's systems: IAM, SSO, RBAC, DLP, SIEM, retention, classification, legal review, secrets management, and environment separation. The adoption trajectory itself, from individual uses to instituted flows, is described in `docs/learn/adoption-organisation.md`.
 
 So the right way to read it is:
 
@@ -123,6 +125,7 @@ At this level, BASE is an auditable component. Compliance, for its part, rests w
 | `docs/reference/documentation-interactive.md` | Local, public, deployable documentation generated from the sources | When you want to learn, publish, or audit BASE in a portal |
 | `docs/trust/evidence.md` | Promises, mechanisms, tests, and limits | When you want to audit BASE's claims |
 | `docs/reference/glossaire.md` | Definitions of the terms (broker, routing, mechanism, consigne, egress) | When a technical word is unclear |
+| `docs/reference/le-standard.md` | The citable page of the `base.resource.v1` standard: format, separations, conventions, stability | When you cite, compare, or reimplement the format |
 | `docs/reference/routage-process-et-ressources.md` | The agent -> process -> resources doctrine | When you enable routing or structure several workflows |
 | `tools/` | Local CLI and broker | When you want to verify or automate |
 | `mcp/` | Adapter to MCP-compatible AI tools | When you want to integrate |

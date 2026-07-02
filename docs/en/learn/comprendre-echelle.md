@@ -1,4 +1,4 @@
-<!-- fr-synced: 2d8154729adf2d9b12aef32d927cbf13d0a223ae -->
+<!-- fr-synced: 6538509c68224c3f72153cc72639d3a6337ad230 -->
 # Choosing between scan, local index, and external store based on your scale
 
 Sizing BASE's routing well means avoiding two pitfalls: paying for infrastructure you don't need, or
@@ -53,5 +53,5 @@ Consequences:
 
 ## In one sentence
 
-BASE knows when a scan is enough, when an index helps, and how much each option costs. Reproducible
-benchmarks measure it: that beats a mere assertion.
+BASE knows when a scan is enough, when an index helps, and how much each option costs. [Reproducible
+benchmarks](../guides/benchmarks-echelle.md) measure it: that beats a mere assertion.

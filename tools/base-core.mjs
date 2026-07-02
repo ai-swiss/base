@@ -4,6 +4,7 @@
 // projections). The public surface of this facade never changes during an extraction.
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
+import { AsyncLocalStorage } from "node:async_hooks";
 import * as crypto from "node:crypto";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
@@ -21,7 +22,8 @@ import { buildRoutingRegistry } from "./core/routing.mjs";
 import { createRouteBroker } from "./core/route-broker.mjs";
 import { readSettings, resolveEmbedder, resolveModel } from "./core/model-settings.mjs";
 import { renderRoutingIndex } from "./core/index-md.mjs";
-import { applyRoutingVectors, loadRoutingVectors } from "./core/routing-vectors.mjs";
+import { applyRoutingVectors, loadRoutingVectors, verifyRoutingVectors } from "./core/routing-vectors.mjs";
+import { routingStrategy } from "./core/router.mjs";
 import { renderAgentsMd, renderBootstrapMd, renderToolMatrix, renderClaudeMd, renderCursorRule } from "./core/bootstrap.mjs";
 import { WORKSPACE_FILENAME } from "./core/roots.mjs";
 import { computeRoute, compareRoute, summarizeRoute, STOPWORDS } from "./core/route-service.mjs";
@@ -39,12 +41,9 @@ export const TRACE_DIR = path.join(".ai", "trace");
 export const CHANGES_DIR = path.join(".ai", "changes");
 export const ROUTE_TESTS_FILENAME = path.join(".ai", "routing", "route-tests.json");
 
-// Never resources, in any root: VCS, scratch, build output, and tool-output directories (coverage,
-// Playwright, Vite). Inventory correctness must not depend on .gitignore, so the scanner owns this.
-const SKIP_DIRS = new Set([
-  ".git", ".github", ".temp", ".plans", ".reviews", ".admin", "node_modules", "dist", "trace", ".base-docs",
-  "coverage", "test-results", "playwright-report", "blob-report", ".playwright", ".vite", ".nyc_output",
-]);
+// The walk policy (universal skip names, runtime prefixes, comparator) lives in ONE module shared
+// by every walker: tools/core/walk-policy.mjs. Project-specific exclusions come from
+// `inventory.exclude` in base.config — the engine hard-codes no repository layout of its own.
 const RESOURCE_EXTENSIONS = new Set([".md", ".json"]);
 // Validate announces a single stage line always; a per-resource [i/N] counter only above this size,
 // below which (today's corpus is ~147) a counter would be noise, not reassurance.
@@ -53,12 +52,26 @@ const MAINTENANCE_TOKEN_PATTERN = /\b(?:TODO|FIXME|PLACEHOLDER)\b/g;
 // The base.resource.v1 controlled vocabulary lives in core/schema.mjs (used by core/validators.mjs).
 const execFileAsync = promisify(execFile);
 
-/** @typedef {{ projection?: string, purpose?: string, confirmed?: boolean, grantToken?: string, resources?: any[], config?: any, signal?: AbortSignal, limit?: number, dryRun?: boolean, fixturesPath?: string, egress?: { modelLocality: "local" | "remote", rootPolicy?: "local-only" | "any" }, embeddingStrategy?: { readRouting?: () => Promise<any>, resolveEmbedder?: (root: string, ref: string) => Promise<any>, resolveModel?: (root: string, ref: string) => Promise<any> } }} BrokerOptions */
+/** @typedef {{ projection?: string, purpose?: string, confirmed?: boolean, grantToken?: string, resources?: any[], config?: any, signal?: AbortSignal, limit?: number, dryRun?: boolean, fixturesPath?: string, strategy?: "lexical" | "production", egress?: { modelLocality: "local" | "remote", rootPolicy?: "local-only" | "any" }, embeddingStrategy?: { readRouting?: () => Promise<any>, resolveEmbedder?: (root: string, ref: string) => Promise<any>, resolveModel?: (root: string, ref: string) => Promise<any> } }} BrokerOptions */
+
+import { skipsDirName, skipsPath } from "./core/walk-policy.mjs";
+
+// Inventory must never fail because a config is malformed: validate/doctor must still be able to
+// LOOK at such a project. A broken config degrades to the defaults here; `resolveConfig` (the
+// strict door) keeps throwing for the callers that must refuse.
+async function resolveConfigSafe(root) {
+  try {
+    return await resolveConfig(root);
+  } catch {
+    return { ...DEFAULTS };
+  }
+}
 
 // confineToRoot + pathExists live in core/confine.mjs; re-exported for the façade.
 export { confineToRoot, pathExists };
 
 // Extension foundation: config resolver + stable error-code registry (façade re-exports).
+import { DEFAULTS } from "./core/config.mjs";
 export { resolveConfig, DEFAULTS, mergeConfig } from "./core/config.mjs";
 export { appendAbstention, isAbstention, normalizeQuery, reportFriction } from "./core/feedback.mjs";
 export { CODES, codeMessage } from "./core/codes.mjs";
@@ -91,8 +104,11 @@ export { deriveRoutingSignals, decideRoute, buildRoutingRegistry, ROUTING_DEFAUL
 export { routeTerms, routeAvoidReasons } from "./core/route-service.mjs";
 export { ROUTER_BODY, ROUTER_INTRO, renderClaudeMd, renderBootstrapMd, renderCursorRule } from "./core/bootstrap.mjs";
 
-export async function walkResourceFiles(rootDir) {
+export async function walkResourceFiles(rootDir, { exclude } = /** @type {{ exclude?: string[] }} */ ({})) {
   const root = path.resolve(rootDir);
+  // The project's own exclusions: passed by inventoryResources (which resolved the config), or
+  // resolved here for direct callers. Root-relative prefixes, normalized by the config layer.
+  const excludeList = exclude ?? (await resolveConfigSafe(root)).inventory.exclude;
   const results = [];
 
   async function visit(dir) {
@@ -107,36 +123,17 @@ export async function walkResourceFiles(rootDir) {
     entries.sort((a, b) => compareByCodePoint(a.name, b.name));
 
     for (const entry of entries) {
-      if (SKIP_DIRS.has(entry.name)) continue;
+      if (skipsDirName(entry.name)) continue;
       const fullPath = path.join(dir, entry.name);
       const relativeFromRoot = path.relative(root, fullPath).split(path.sep).join("/");
-      if (relativeFromRoot === ".ai/trace" || relativeFromRoot.startsWith(".ai/trace/")) continue;
-      if (relativeFromRoot === ".ai/changes" || relativeFromRoot.startsWith(".ai/changes/")) continue;
-      // Evaluation data: scenario specs, run results and reports are eval artifacts, not resources.
-      if (relativeFromRoot === ".ai/experiments" || relativeFromRoot.startsWith(".ai/experiments/")) continue;
-      // The generated routing registry is a derived projection, not a source resource.
-      if (relativeFromRoot === ".ai/routing" || relativeFromRoot.startsWith(".ai/routing/")) continue;
-      // The agent template is scaffolding, not a discoverable business resource.
-      if (relativeFromRoot === ".ai/agents/_template" || relativeFromRoot.startsWith(".ai/agents/_template/")) continue;
-      // Engineering specs are developer docs, not business resources: keep them out of
-      // inventory/discovery/manifest (resource boundary, plan 0A.3). They are reviewed via CI + tests.
-      if (relativeFromRoot === "specs" || relativeFromRoot.startsWith("specs/")) continue;
-      // Examples are standalone sample projects, not the framework's own resources. Each is
-      // validated/discovered in isolation (`--root exemples/<name>`); merging them here would
-      // share an id namespace across independent projects and pollute framework discovery.
-      if (relativeFromRoot === "exemples" || relativeFromRoot.startsWith("exemples/")) continue;
-      // The official optional packages (`@ai-swiss/base-ranker-semantic`, `-index-local`) are
-      // separate publishable units with their own README/SECURITY/package.json — not the framework's
-      // own business resources. Same resource boundary as specs/ and exemples/.
-      if (relativeFromRoot === "packages" || relativeFromRoot.startsWith("packages/")) continue;
-      // The test tree holds fixtures and scaffolding, never business resources: a golden eval set or a
-      // sample frontmatter file must never become routable. Same resource boundary as specs/ and exemples/.
-      if (relativeFromRoot === "tests" || relativeFromRoot.startsWith("tests/")) continue;
-      // Documentation translation mirrors (docs/en/…, docs/de/…) shadow a French source for the docs
-      // site; they are translations, not standalone resources, so they stay out of inventory,
-      // discovery and the manifest (their links resolve against the French source, not their own path).
-      if (/^docs\/(en|de|it)\//.test(relativeFromRoot)) continue;
-
+      // Runtime areas (.ai/trace, .ai/changes, .ai/experiments, the generated .ai/routing, the
+      // _template scaffolding) plus the PROJECT'S OWN exclusions. This repository's base.config.json
+      // excludes its engineering trees (specs/, exemples/, packages/, tests/) and its translation
+      // mirrors (docs/en|de|it): developer docs, standalone sample projects, separately-publishable
+      // units, and pages that shadow a French source are not business resources HERE — while a user's
+      // folder that happens to contain a `specs/` directory keeps it, because the engine no longer
+      // hard-codes this repository's layout into every root's walk.
+      if (skipsPath(relativeFromRoot, excludeList)) continue;
       if (entry.isDirectory()) {
         await visit(fullPath);
         continue;
@@ -145,7 +142,10 @@ export async function walkResourceFiles(rootDir) {
       if (!entry.isFile()) continue;
       if (!RESOURCE_EXTENSIONS.has(path.extname(entry.name))) continue;
 
-      const relativePath = path.relative(root, fullPath);
+      // POSIX-normalized (reuse relativeFromRoot): resource.path is the identity every downstream
+      // surface keys on — manifest, routing cache, maintenance report — so it must read `a/b.md` on
+      // every OS, never `a\b.md` on Windows (see FR-CORE path-identity; the Windows smoke job guards it).
+      const relativePath = relativeFromRoot;
       if (relativePath === MANIFEST_FILENAME) continue;
       // Project config is code/data loaded only by the resolver — never a discoverable/routable resource.
       if (entry.name === "base.config.json" || entry.name === "base.config.mjs" || entry.name === WORKSPACE_FILENAME) continue;
@@ -167,7 +167,8 @@ export async function inventoryResources(rootDir, { egress } = /** @type {Broker
   const start = Date.now();
   const root = path.resolve(rootDir);
   try {
-    const files = (await walkResourceFiles(root)).filter((f) => !isRuntimeArtifact(f));
+    const cfg = await resolveConfigSafe(root);
+    const files = (await walkResourceFiles(root, { exclude: cfg.inventory.exclude })).filter((f) => !isRuntimeArtifact(f));
     const resources = [];
 
     for (const relativePath of files) {
@@ -793,6 +794,7 @@ const routeBroker = createRouteBroker({
   inventoryResources,
   applyRoutingVectors,
   loadRoutingVectors,
+  verifyRoutingVectors,
   resolveConfig,
   computeRoute,
   resolveEmbedder,
@@ -810,7 +812,7 @@ export const routeRequest = routeBroker.routeRequest;
  * @param {string} rootDir
  * @param {BrokerOptions} [options]
  */
-export async function runRouteTests(rootDir, { fixturesPath, config } = {}) {
+export async function runRouteTests(rootDir, { fixturesPath, config, strategy = "lexical" } = {}) {
   const root = path.resolve(rootDir);
   const target = await confineToRoot(root, fixturesPath ?? ROUTE_TESTS_FILENAME);
   if (!(await pathExists(target))) {
@@ -826,6 +828,16 @@ export async function runRouteTests(rootDir, { fixturesPath, config } = {}) {
 
   const cfg = config ?? await resolveConfig(root);
   const resources = await inventoryResources(root);
+  // Which strategy PRODUCTION `base route` would use right now — so a green run says honestly WHICH
+  // path it certifies. Fixtures replay the lexical floor by default (deterministic, CI-safe);
+  // `strategy: "production"` replays each case through routeRequest, the exact path `base route`
+  // takes (model-backed when Voie 2 is configured — deliberate, per-run, not for CI).
+  let productionStrategy = "lexical";
+  try {
+    productionStrategy = routingStrategy((await readSettings(root)).routing ?? null);
+  } catch {
+    productionStrategy = "lexical"; // unreadable settings → the lexical default, as in routing
+  }
   const failures = [];
   for (const [index, testCase] of cases.entries()) {
     const request = testCase?.request;
@@ -834,12 +846,21 @@ export async function runRouteTests(rootDir, { fixturesPath, config } = {}) {
       failures.push({ index, request: request ?? null, mismatches: ["case has no string `request`"] });
       continue;
     }
-    const actual = { request, ...(await computeRoute(root, request, resources, cfg)) };
+    const actual = strategy === "production"
+      ? await routeRequest(root, request, { config: cfg })
+      : { request, ...(await computeRoute(root, request, resources, cfg)) };
     const mismatches = compareRoute(expect, actual);
     if (mismatches.length) failures.push({ index, request, mismatches, actual: summarizeRoute(actual) });
   }
 
-  return { ok: failures.length === 0, total: cases.length, passed: cases.length - failures.length, failures };
+  return {
+    ok: failures.length === 0,
+    total: cases.length,
+    passed: cases.length - failures.length,
+    failures,
+    strategy: strategy === "production" ? productionStrategy : "lexical",
+    productionStrategy,
+  };
 }
 
 // Static, owner-run structural insights: things that can drift silently, found without running
@@ -1009,6 +1030,19 @@ async function decide(rootDir, resource, action, context = {}, config) {
   return resolvePolicy(cfg)(resource, action, context);
 }
 
+// The actor context: WHO performs the traced operations, when a deployment can know it. Two doors,
+// no per-call threading: a server wraps each authenticated request (the MCP wraps handleRequest in
+// withTraceActor with the AuthProvider's principal), and a CLI session may set BASE_TRACE_ACTOR.
+// Absent both, the field is simply omitted — a single-user local trace carries no ceremony.
+const traceActorStorage = new AsyncLocalStorage();
+/**
+ * Run `fn` with `actor` attached to every recordEvent call it (transitively) makes.
+ * @template T @param {unknown} actor @param {() => T} fn @returns {T}
+ */
+export function withTraceActor(actor, fn) {
+  return actor ? traceActorStorage.run({ actor: String(actor) }, fn) : fn();
+}
+
 export async function recordEvent(rootDir, event) {
   const root = path.resolve(rootDir);
   const traceDir = path.join(root, TRACE_DIR);
@@ -1027,6 +1061,8 @@ export async function recordEvent(rootDir, event) {
     error: event.error ?? null,
     metadata: event.metadata ?? undefined,
   };
+  const actor = event.actor ?? traceActorStorage.getStore()?.actor ?? process.env.BASE_TRACE_ACTOR;
+  if (actor) entry.actor = String(actor);
 
   try {
     await fs.mkdir(traceDir, { recursive: true });

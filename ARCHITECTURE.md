@@ -35,7 +35,9 @@ Truth, change, and scratch never mix. The discipline is stated in
 - **`tools/core/`**: the functional core, dependency-free and pure where it can be: `rankers.mjs`
   (lexical routing), `context-pack.mjs` (resolve a process's declared references under a token budget),
   `egress.mjs` (the model-locality chokepoint), `frontmatter.mjs` (parse once), `roots.mjs` /
-  `perimeter.mjs` (what a directory *is*: root, workspace, collection), `fswalk.mjs`, `confine.mjs`.
+  `perimeter.mjs` (what a directory *is*: root, workspace, collection), `walk-policy.mjs` (the ONE
+  skip table + comparator every walker shares — inventory, fswalk, the Studio watcher, MCP discovery),
+  `fswalk.mjs`, `confine.mjs`.
 - **`tools/base-core.mjs`**: the broker façade over core: `inventoryResources`, discovery, routing,
   the propose/commit write path, tool invocation. The imperative shell around the pure core.
 - **`tools/base.mjs`**: the CLI entry point (every `base <command>`).

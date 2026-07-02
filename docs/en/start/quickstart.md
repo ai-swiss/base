@@ -1,11 +1,11 @@
-<!-- fr-synced: 394c4af7847af624518b8df43b4c485f5e0561b2 -->
+<!-- fr-synced: 38a01bb026de88b9823834db2a2a8ccf1cf00f77 -->
 # Shape your first assistant
 
-In a few minutes, you hand off a task you repeat by hand to an assistant that takes it on, with no code and without giving up any control: it proposes, you approve. Concretely, you copy an example into an AI tool that can read your files (GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code, for instance), you say what you want to do, and the assistant does the rest.
+In a few minutes, you hand off a task you repeat by hand to an assistant that takes it on, with no code and without giving up any control: it proposes, you approve. Concretely, you copy an example into an AI tool that can read your files, you say what you want to do, and the assistant does the rest.
 
 > **No repository yet?** See [Get BASE](obtenir-base.md) to choose a ZIP, a Git clone, an example copy, or the browser pack.
 >
-> **No tool installed yet?** See the [installation guide](installer.md) to set up an AI tool that can read your files (GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code, for instance).
+> **No tool installed yet?** See the [installation guide](installer.md) to set up an AI tool that can read your files.
 >
 > **Only a browser (ChatGPT, Claude)?** You do not need to install anything to start: follow [Try BASE without installing anything](essayer-sans-installer.md).
 
@@ -29,7 +29,7 @@ Copy the `exemples/assistant-devis/` folder into your workspace (your Desktop or
 |-------|---------|
 | **Cursor** | File → Open Folder → select the copied folder |
 | **Claude Code** | Run `claude` in the copied folder |
-| **ChatGPT** | Set up the [MCP server](installer-mcp.md) → load the agent → make a concrete request |
+| **ChatGPT / Claude (browser)** | Nothing to install to try it: paste an example's pack ([Try without installing](essayer-sans-installer.md)). To connect your agents with the mechanical guarantees, the [MCP server](installer-mcp.md) (technical path) |
 
 > **Prefer a visual workshop?** Studio is optional: run `npm run studio` to open the workshop and see your files, your agents, and their processes at a glance. Your AI tool stays the day-to-day experience; Studio is only a supplementary workshop.
 
@@ -69,7 +69,7 @@ This control also covers what leaves your machine: for what goes through the BAS
 | See how BASE routes a request | From the repository root: `node tools/base.mjs route-test --root exemples/routage-pme` |
 | Your own assistant | Open the project's main folder and say "Read `.ai/agents/createur-agent/AGENT.md`" |
 | Find where to start | Same thing, then say "Help me find where to start" |
-| **Lost, or a question about BASE?** | In the BASE repository or a project where the router is enabled, say "I am lost" or "Help": the concierge welcomes you. Every business example now ships a fallback welcome, so "I am lost" guides you even inside a copied folder. |
+| **Lost, or a question about BASE?** | In the BASE repository or a project where the router is enabled, say "I am lost" or "Help": the concierge welcomes you. Every business example ships a fallback welcome: "I am lost" guides you even inside a copied folder. |
 | Get inspired | Browse the [idea gallery](../guides/idees-agents.md) |
 
 > **Two different doors.** In a project with a router, "Help / I am lost" opens the **welcome** (concierge): it orients you and answers questions about BASE. "Help me find where to start" opens the assistant creator's **diagnosis**: it works out *which assistant to build* for your line of work.
@@ -84,13 +84,15 @@ For a small business or a small team, add the [Swiss SME starter kit](../audienc
 
 ---
 
-BASE is a framework by [AI Swiss](https://a-i.swiss). Use case in partnership with [Innovaud](https://innovaud.ch).
-
 ## I already have a folder of notes or procedures
 
 You rarely start from a blank page. Two doors, same result:
 
 - **CLI**: `base init --root my-folder` shows exactly which files would be created (a minimal agent, or a workspace file if the folder already contains several BASE roots); `--yes` creates them: never an overwrite.
-- **Studio**: launch the workshop on the folder (`base studio --root my-folder`): the Welcome screen shows the same plan, in readable form, with a "Create these files" button. The app then switches to normal mode without restarting. Your AI tool stays the day-to-day experience; Studio is the workshop, and your files stay at the center, with the AI tool of your choice (GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code, for instance).
+- **Studio**: launch the workshop on the folder (`base studio --root my-folder`): the Welcome screen shows the same plan, in readable form, with a "Create these files" button. The app then switches to normal mode without restarting. Your AI tool stays the day-to-day experience; Studio serves as the workshop, and your files stay at the center, with the AI tool of your choice.
 
 Then, to turn your documents into processes and competences, ask your assistant: "import my existing procedures." The router will send it to `importer-l-existant`, which proposes each conversion as a diff. The router stays rudimentary but effective, and extensible through adapters. It saves you from hunting for the right process yourself.
+
+---
+
+BASE is a framework by [AI Swiss](https://a-i.swiss). Use case in partnership with [Innovaud](https://innovaud.ch).

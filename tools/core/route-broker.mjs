@@ -30,6 +30,7 @@ import { routingStrategy, embeddingRouter } from "./router.mjs";
  *   inventoryResources: (root: string, opts?: any) => Promise<any[]>,
  *   applyRoutingVectors: (resources: any[], vectors: any) => any[],
  *   loadRoutingVectors: (root: string) => Promise<any>,
+ *   verifyRoutingVectors: (resources: any[], loaded: any) => { byPath: Record<string, number[]> | null, stale: string[], legacy: boolean, embedder: string | null },
  *   resolveConfig: (root: string) => Promise<any>,
  *   computeRoute: (root: string, request: string, resources: any[], cfg: any, opts?: any) => Promise<any>,
  *   resolveEmbedder: (root: string, ref: string) => Promise<(text: string) => Promise<number[]>>,
@@ -40,17 +41,27 @@ import { routingStrategy, embeddingRouter } from "./router.mjs";
  * }} deps
  */
 export function createRouteBroker(deps) {
-  const { inventoryResources, applyRoutingVectors, loadRoutingVectors, resolveConfig, computeRoute } = deps;
+  const { inventoryResources, applyRoutingVectors, loadRoutingVectors, verifyRoutingVectors, resolveConfig, computeRoute } = deps;
   const { resolveEmbedder, resolveModel, readRouting, recordEvent, hashArgs } = deps;
 
   /**
    * Inventory the routable, deny-filtered corpus both strategies route over. `egress` filters the inventory
    * (a confidential / local-only target is never surfaced to a remote model); `rootDeny` is the
-   * project-level deny.
+   * project-level deny. Precomputed vectors are VERIFIED before use (route_text hash): a stale vector is
+   * dropped and the drop is journaled — degraded retrieval is a visible fact, never a silent one.
    * @param {string} root @param {any} cfg @param {{ egress?: any }} [opts]
    */
   async function prepareCorpus(root, cfg, { egress } = {}) {
-    const inventory = applyRoutingVectors(await inventoryResources(root, { egress }), await loadRoutingVectors(root));
+    const raw = await inventoryResources(root, { egress });
+    const verified = verifyRoutingVectors(raw, await loadRoutingVectors(root));
+    if (verified.stale.length) {
+      await recordEvent(root, {
+        op: "route", action: "search", decision: "not_applicable", status: "ok",
+        args_hash: hashArgs(["routing-vectors"]),
+        metadata: { routing_vectors_stale: verified.stale.length },
+      });
+    }
+    const inventory = applyRoutingVectors(raw, verified.byPath);
     const rootDeny = Array.isArray(cfg.routing?.policy?.deny) ? cfg.routing.policy.deny : [];
     return denyFilterResources(inventory, { rootDeny, routableKinds: ROUTABLE_KINDS, agentDirOf });
   }
@@ -75,6 +86,23 @@ export function createRouteBroker(deps) {
 
     if (routingStrategy(routing) === "embedding" && routing) {
       try {
+        // Model-mismatch guard: vectors built with another embedding model live in another vector
+        // space — cosine against them is noise, worse than no cache. Compare the MODEL segment of
+        // the stamp (build side: cfg.routing.embedder; query side: settings ref — provider ids may
+        // legitimately differ between the two surfaces, the model name is the comparable part).
+        // On mismatch, strip the precomputed vectors (the retriever re-embeds on the fly with the
+        // query model) and journal the fact.
+        const modelOf = (ref) => { const s = String(ref ?? ""); const i = s.indexOf("/"); return i >= 0 ? s.slice(i + 1) : s; };
+        const stamp = await loadRoutingVectors(root);
+        const builtWith = stamp && stamp.schema_version ? stamp.embedder ?? null : null;
+        if (builtWith && modelOf(builtWith) !== modelOf(routing.embedding_model)) {
+          resources = resources.map(({ embedding, ...rest }) => rest);
+          await recordEvent(root, {
+            op: "route", action: "search", decision: "not_applicable", status: "ok",
+            args_hash: hashArgs([request]),
+            metadata: { routing_vectors_model_mismatch: { built_with: builtWith, query_model: routing.embedding_model } },
+          });
+        }
         const embed = await toEmbedder(root, routing.embedding_model);
         const model = await toModel(root, routing.refiner_model);
         // Lazy import: the embedding strategy is the ONLY caller, so the optional companion packages

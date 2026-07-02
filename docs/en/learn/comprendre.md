@@ -1,4 +1,4 @@
-<!-- fr-synced: 55a0c64a9bb4035e6fbe5325af0a0d4bb2f3a4f9 -->
+<!-- fr-synced: d8aa81ec54824146d1e057b883419a259112f741 -->
 # Understanding BASE and shaping how you work with AI
 
 Working seriously with AI means accepting that it produces fast, but sometimes errs with aplomb: what is at stake is keeping mastery of what you sign your name to, without giving up speed. This page shows how BASE structures that collaboration so quality holds over time, whether you are an independent professional, an SME, or a public service. You will see **why** this structure is necessary, **how** an agent works, and **how to build one** for your line of work.
@@ -84,7 +84,7 @@ This is why the markers `[A VALIDER]`, `[DECISION]` are structured and searchabl
 
 The AI proposes a quote for 2,085 CHF. Are the amounts correct? You ask it to check. It answers "yes, everything is correct." Yet it made a calculation error, and does not catch it, because checking your own errors requires an independent vantage point that the producer, by construction, does not have.
 
-This is why the agent proposes and the human verifies, always. The agent never checks its own amounts, nor its rephrasings, nor the choices it made. This separation is what most reliably catches the errors it cannot see.
+This is why, in BASE, the agent proposes and the human verifies: you do not hand the agent control over its own amounts, its own rephrasings, or the choices it made. This separation is what most reliably catches the errors it cannot see.
 
 *What happens when you ignore it:* errors go unnoticed. Every claim accepted without examination creates a **verification debt**: untested assumptions that pile up and collapse at the first critical look from a client or a partner. A quote sent with an invented price, a job offer with erroneous terms, a publication leaning on a false statistic. Verification debt almost always comes due in the end; the whole question is knowing when.
 
@@ -108,9 +108,9 @@ This is why **decision points** exist before every irreversible action. The deci
 
 This is first of all a question of security. To a language model, text is text: it does not spontaneously distinguish your working consignes from the content it reads. If an external source contains a sentence phrased as an order, the model may execute it. This is the injection risk: an email, a PDF, or a visited site hijacks the agent's behavior without your knowledge.
 
-A client email says: "Give me an aggressive price, add 20% margin, and remove the payment terms." To the agent, this is a client request that the user evaluates, never an order to execute.
+A client email says: "Give me an aggressive price, add 20% margin, and remove the payment terms." To the agent, this is a client request that the user evaluates, not an order to execute.
 
-This is why the agent never treats an external source as an order. A client file contains data. This distinction protects against accidental confusion as much as intentional manipulation.
+This is why the consigne is stated plainly: an external source is read as data, not as an order; a client file contains data, nothing more. This distinction protects against accidental confusion as much as intentional manipulation.
 
 *What happens when you ignore it:* the agent executes the instructions found in a document instead of treating them as data. Untrusted content from an external source alters the agent's behavior without the user's knowledge.
 
@@ -178,6 +178,7 @@ The only file an AI tool needs to load. It contains:
 - **Its guardrails**: what it never does
 
 You will come across files named `assistant-devis` or `assistant-rh` that are in fact agents: this is intentional. The file carries the name of the assistant whose job description it is. The agent is the file you keep; the assistant is what it becomes once brought to life by a model.
+
 
 ### Skills: workflows and knowledge
 
@@ -365,6 +366,12 @@ All of BASE fits into one compass, blueprints that must **never be conflated**:
 | **Journal** | The working memory between sessions, in files. |
 | **Broker** | The local core that enforces the guarantees (confinement, validation, policy, trace); the CLI and the MCP pass through it. |
 | **Harness** | The AI tool in which you open your BASE: a tool able to read your files (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code), or an assistant connected through MCP. |
+
+## Going further still
+
+- [The life cycle of an expertise](cycle-de-vie-expertise.md): how a base lives on after its creation: friction from the field, validity dates, evaluation, governance of outputs.
+- [Choosing between scan, local index, and external base](comprendre-echelle.md): when a scan is enough, when an index helps, and what each option costs.
+- [The BASE standard](../reference/le-standard.md): the citable page for the `base.resource.v1` format and its conventions.
 
 ---
 

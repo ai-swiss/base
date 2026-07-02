@@ -1,11 +1,14 @@
 // A debounced filesystem watcher for a BASE root: coalesces bursts of file events into a single
 // "something changed" callback. Used to push live "resources-changed" SSE events so the UI is a live
-// projection of the files. Ignores runtime/noise paths (trace, changes, index, .git, node_modules).
+// projection of the files. Ignores the universal skip names (walk-policy.mjs) and the .ai runtime
+// areas; over-triggering is harmless (debounced), so the filter needs recall, not precision.
 
 import { watch as nodeWatch } from "node:fs";
 import path from "node:path";
+import { UNIVERSAL_SKIP_DIRS } from "../core/walk-policy.mjs";
 
-const IGNORED = /(?:^|\/)(?:\.git|node_modules)(?:\/|$)|\/\.ai\/(?:trace|changes|index|experiments)\//;
+const SKIP_NAMES = [...UNIVERSAL_SKIP_DIRS].map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
+const IGNORED = new RegExp(`(?:^|/)(?:${SKIP_NAMES})(?:/|$)|/\\.ai/(?:trace|changes|index|experiments)/`);
 
 // `watch` is injectable so the debounce/relevance/close logic is unit-testable without the OS watcher
 // (which can be unavailable — EMFILE on constrained/sandboxed hosts). Defaults to node:fs `watch`.

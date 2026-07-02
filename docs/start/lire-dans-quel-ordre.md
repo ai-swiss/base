@@ -23,10 +23,10 @@ Objectif: essayer vite, comprendre assez, suivre votre propre fil de pensée ave
 Lisez dans cet ordre:
 
 1. `README.md` pour comprendre l'idée générale.
-2. `docs/learn/co-penser-avec-lia.md` pour comprendre *pourquoi* BASE est nécessaire (la méthode, en bref).
-3. **`docs/tutoriel/index.md`**, le tutoriel «Apprendre en faisant»: le parcours recommandé, pas à pas et vérifié à chaque étape (Découverte sans rien installer, Praticien, Équipe).
-4. `docs/start/quickstart.md` pour essayer en quelques minutes (ou `docs/start/essayer-sans-installer.md` si vous n'avez qu'un navigateur, sans rien installer).
-5. La démo `exemples/assistant-devis-demo/`, puis le dossier `exemples/assistant-devis/` si vous voulez repartir de vos propres données.
+2. **`docs/tutoriel/index.md`**, le tutoriel «Apprendre en faisant»: le parcours recommandé, pas à pas et vérifié à chaque étape (Découverte sans rien installer, Praticien, Équipe). Vous venez pour essayer: commencez par faire.
+3. `docs/start/quickstart.md` pour essayer en quelques minutes (ou `docs/start/essayer-sans-installer.md` si vous n'avez qu'un navigateur, sans rien installer).
+4. La démo `exemples/assistant-devis-demo/`, puis le dossier `exemples/assistant-devis/` si vous voulez repartir de vos propres données.
+5. `docs/learn/co-penser-avec-lia.md` pour comprendre *pourquoi* BASE est nécessaire (la méthode, en bref), une fois la pratique goûtée; puis `docs/learn/pratiques-co-pensee.md` pour la méthode au quotidien, en 16 principes.
 6. `docs/learn/comprendre.md` seulement si vous voulez approfondir la méthode.
 7. `docs/trust/evidence.md` si vous voulez vérifier les promesses et leurs limites.
 
@@ -59,6 +59,8 @@ Lisez dans cet ordre:
 8. `docs/guides/routage-semantique-quickstart.md` pour comprendre comment BASE choisit agent et process.
 9. `docs/learn/pratiques-co-pensee.md` pour éviter les mauvais usages de l'IA.
 10. `docs/reference/documentation-interactive.md` si vous voulez exposer ou déployer une documentation vivante sans dupliquer les sources.
+11. `docs/learn/adoption-organisation.md` pour la trajectoire d'adoption: comment une pratique individuelle devient un process d'équipe, qui le promeut et qui en répond.
+12. `docs/learn/cycle-de-vie-expertise.md` pour l'entretien dans la durée: frictions du terrain, dates de validité, évaluation, ce que `base doctor` surveille.
 
 À ce niveau, les fichiers importants sont:
 
@@ -78,7 +80,7 @@ Objectif: évaluer BASE comme langage de structuration et socle d'intégration, 
 Lisez dans cet ordre:
 
 1. `docs/learn/co-penser-avec-lia.md` pour le *pourquoi* (commun à tous les profils): la vérification, les pertes de contrôle, la méthode.
-2. `docs/reference/framework-public.md` pour le modèle public.
+2. `docs/reference/le-standard.md` pour la page citable du standard `base.resource.v1` (format, séparations, conventions de routage, stabilité), puis `docs/reference/framework-public.md` pour le modèle public.
 3. `docs/reference/base-et-vos-outils-ia.md` pour comprendre comment BASE coexiste avec vos outils et plateformes IA (et y intégrer un agent planifié), puis `docs/reference/positionnement.md` pour situer BASE catégorie par catégorie dans le paysage des outils de 2026.
 4. `docs/reference/etat-implementation.md` pour distinguer livré, prévu et hors périmètre.
 5. `docs/guides/choisir-provider-embeddings.md` pour comparer local, cloud, gateway et modèle interne.
@@ -92,7 +94,7 @@ Lisez dans cet ordre:
 13. `base.schema.json` pour inspecter le contrat machine.
 14. `tests/` pour voir ce qui est vérifié.
 
-À ce niveau, BASE doit être relié aux systèmes de l'organisation: IAM, SSO, RBAC, DLP, SIEM, rétention, classification, revue juridique, gestion des secrets et séparation des environnements.
+À ce niveau, BASE doit être relié aux systèmes de l'organisation: IAM, SSO, RBAC, DLP, SIEM, rétention, classification, revue juridique, gestion des secrets et séparation des environnements. La trajectoire d'adoption elle-même, des usages individuels aux flux institués, est décrite dans `docs/learn/adoption-organisation.md`.
 
 Il faut donc le lire ainsi:
 
@@ -134,6 +136,7 @@ Lisez dans cet ordre:
 | `docs/reference/documentation-interactive.md` | Documentation locale, publique et déployable générée depuis les sources | Quand vous voulez apprendre, publier ou auditer BASE dans un portail |
 | `docs/trust/evidence.md` | Promesses, mécanismes, tests et limites | Quand vous voulez auditer les affirmations de BASE |
 | `docs/reference/glossaire.md` | Définitions des termes (broker, routage, mécanisme, consigne, egress) | Quand un mot technique n'est pas clair |
+| `docs/reference/le-standard.md` | La page citable du standard `base.resource.v1`: format, séparations, conventions, stabilité | Quand vous citez, comparez ou réimplémentez le format |
 | `docs/reference/routage-process-et-ressources.md` | Doctrine agent → process → ressources | Quand vous activez le routage ou structurez plusieurs workflows |
 | `tools/` | CLI locale et broker | Quand vous voulez vérifier ou automatiser |
 | `mcp/` | Adaptateur vers outils IA compatibles MCP | Quand vous voulez intégrer |

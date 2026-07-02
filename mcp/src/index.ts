@@ -19,13 +19,16 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { z } from "zod";
 import * as fs from "fs/promises";
-import { realpathSync, type Dirent } from "node:fs";
+import { readFileSync, realpathSync, type Dirent } from "node:fs";
+import { createRequire } from "node:module";
 import * as path from "path";
 import express from "express";
 import { fileURLToPath } from "node:url";
 import { noAuth, resolveAuthProvider, authMiddleware, type AuthProvider } from "./auth.js";
 import {
   brokerAccessResource,
+  brokerWithTraceActor,
+  brokerWalkPolicy,
   brokerCommitChange,
   brokerConfineToProject,
   brokerInventoryResources,
@@ -62,8 +65,21 @@ export type { AgentInfo, DataFile, ResourceInfo, ServerOptions } from "./types.j
 // ---------------------------------------------------------------------------
 
 const SERVER_NAME = "base-mcp";
-const SERVER_VERSION = "1.0.0";
+// One source of truth for the server version: its own package.json (../package.json resolves from
+// dist/index.js in prod and from src/index.ts under tsx alike).
+const SERVER_VERSION: string = createRequire(import.meta.url)("../package.json").version;
 const MCP_ENDPOINT = "/mcp";
+
+// The stamp bundle-core.mjs writes beside the compiled server: WHICH core this build embeds
+// (root package version + commit). Absent in the repo-layout dev run, where the core is live.
+function bundledCoreStamp(): { name: string; version: string; commit: string | null } | null {
+  try {
+    const here = path.dirname(fileURLToPath(import.meta.url));
+    return JSON.parse(readFileSync(path.resolve(here, "core-version.json"), "utf8"));
+  } catch {
+    return null;
+  }
+}
 
 const AGENT_FILENAME = "AGENT.md";
 const AGENT_RESOURCE_DIRS = ["skills", "templates", "tools"] as const;
@@ -72,7 +88,13 @@ const DATA_FILES_SECTION = "## Fichiers métier";
 // Directories and files excluded from scanning
 const SKIP_PREFIX_DOT = ".";
 const SKIP_PREFIX_UNDERSCORE = "_";
-const PROJECT_DISCOVERY_SKIP_DIRS = new Set([".git", ".temp", ".plans", "node_modules", "dist", "trace"]);
+// Project discovery skips the SAME universal names as every core walker (walk-policy.mjs, loaded
+// from the bundled core so the two artifacts cannot drift), plus every dot-directory (below).
+let projectDiscoverySkipDirs: Set<string> | null = null;
+async function discoverySkipDirs(): Promise<Set<string>> {
+  if (!projectDiscoverySkipDirs) projectDiscoverySkipDirs = (await brokerWalkPolicy()).UNIVERSAL_SKIP_DIRS;
+  return projectDiscoverySkipDirs;
+}
 
 // ---------------------------------------------------------------------------
 // Path Confinement - prevent path traversal attacks
@@ -141,6 +163,8 @@ async function discoverServerRoots(rootDir: string): Promise<WorkspaceRoot[]> {
 async function discoverProjectRoots(rootDir: string): Promise<string[]> {
   const roots: string[] = [];
 
+  const skipDirs = await discoverySkipDirs();
+
   async function visit(dir: string): Promise<void> {
     let entries: Dirent[];
     try {
@@ -162,7 +186,7 @@ async function discoverProjectRoots(rootDir: string): Promise<string[]> {
     for (const entry of entries) {
       if (!entry.isDirectory()) continue;
       if (entry.name === ".ai") continue;
-      if (shouldSkipProjectDiscoveryDir(entry.name)) continue;
+      if (skipDirs.has(entry.name) || entry.name.startsWith(SKIP_PREFIX_DOT)) continue;
       await visit(path.join(dir, entry.name));
     }
   }
@@ -171,9 +195,6 @@ async function discoverProjectRoots(rootDir: string): Promise<string[]> {
   return roots;
 }
 
-function shouldSkipProjectDiscoveryDir(name: string): boolean {
-  return PROJECT_DISCOVERY_SKIP_DIRS.has(name) || name.startsWith(SKIP_PREFIX_DOT);
-}
 
 async function scanAgentsIn(
   agentsDir: string,
@@ -236,8 +257,11 @@ export function extractDescription(content: string): string {
 
     const clean = line.replace(/\*\*/g, "").trim();
 
-    // "Quand ce fichier est chargé, agis comme [role]." → extract just the role
-    const roleMatch = clean.match(/agis comme (.+?)\.?\s*$/i);
+    // "Quand ce fichier est chargé, agis comme [role]." → extract just the role.
+    // `[^\S\n]*` (horizontal whitespace only) mirrors the core's hardened variant
+    // (deriveDescription, tools/base-core.mjs): on this single line it is equivalent to \s*,
+    // and keeping the two regexes byte-comparable is what prevents the next drift.
+    const roleMatch = clean.match(/agis comme (.+?)\.?[^\S\n]*$/i);
     if (roleMatch) {
       const role = roleMatch[1].trim();
       return role.charAt(0).toUpperCase() + role.slice(1);
@@ -943,9 +967,12 @@ function createHttpApp(
   // unbounded body is a cheap amplification vector. 1 MB is ample for MCP JSON-RPC envelopes.
   app.use(express.json({ limit: "1mb" }));
 
-  // Health check (unauthenticated — no project data)
+  // Health check (unauthenticated — no project data). `core` names the broker copy this build
+  // embeds (version + commit, stamped by bundle-core.mjs), so a drifted server/core pairing is
+  // diagnosable from one curl; absent in the repo-layout dev run where the core is live.
   app.get("/", (_req, res) => {
-    res.json({ name: SERVER_NAME, version: SERVER_VERSION, status: "running" });
+    const core = bundledCoreStamp();
+    res.json({ name: SERVER_NAME, version: SERVER_VERSION, status: "running", ...(core ? { core } : {}) });
   });
 
   // MCP endpoint - stateless: fresh server+transport per request, behind the AuthProvider
@@ -958,7 +985,8 @@ function createHttpApp(
       const requestServer = createServer(rootDir, { ...options, requireExecuteConfirmation: true });
       const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
       await requestServer.connect(transport);
-      await transport.handleRequest(req, res, req.body);
+      // Attribute this request's trace events to the authenticated principal (FR-TRACE-001: actor).
+      await brokerWithTraceActor(res.locals.principal, () => transport.handleRequest(req, res, req.body));
       log.debug("HTTP request handled", { durationMs: Date.now() - startTime });
     } catch (err) {
       log.error("HTTP handler error", { error: String(err) });

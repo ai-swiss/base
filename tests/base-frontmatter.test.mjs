@@ -54,6 +54,48 @@ describe("frontmatter — golden positive (corpus shapes)", () => {
   });
 });
 
+describe("frontmatter — CRLF tolerance (Windows checkouts, NFR-PARSE-001)", () => {
+  // The invariant is EQUIVALENCE: a CRLF document yields the same data and the same error codes
+  // as its LF twin — never a silent demotion of the whole frontmatter to body.
+  const toCrlf = (s) => s.replace(/\n/g, "\r\n");
+
+  it("parses a CRLF document identically to its LF twin (data, errors, body text)", () => {
+    const lf = wrap(
+      [
+        "schema_version: base.resource.v1",
+        "id: my-id",
+        'description: "A description: with a colon."',
+        "keywords: [vente, client]",
+        "execution:",
+        "  runtime: python",
+        "requires:",
+        "  - ref: catalogue",
+        "    access: read",
+      ].join("\n"),
+    );
+    const a = parseFrontmatter(lf);
+    const b = parseFrontmatter(toCrlf(lf));
+    assert.deepEqual(b.errors, []);
+    assert.deepEqual(b.data, a.data);
+    assert.match(b.body, /body text/);
+  });
+
+  it("rejects in CRLF form exactly what it rejects in LF form (same codes)", () => {
+    const doc = wrap("id: a\n\tkind: b\ndescription: |\n  multi");
+    const a = parseFrontmatter(doc);
+    const b = parseFrontmatter(toCrlf(doc));
+    assert.deepEqual(codesOf(b), codesOf(a));
+    assert.ok(codesOf(b).length > 0);
+  });
+
+  it("a lone '---' with no newline is still body, not an unterminated frontmatter", () => {
+    const r = parseFrontmatter("---");
+    assert.deepEqual(r.data, {});
+    assert.deepEqual(r.errors, []);
+    assert.equal(r.body, "---");
+  });
+});
+
 describe("frontmatter — golden negative (one per error code)", () => {
   const cases = [
     ["tab_indent", "id: a\n\tkind: b", "base.yaml.tab_indent"],

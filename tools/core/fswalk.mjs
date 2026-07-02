@@ -1,12 +1,11 @@
 // Disk-tree walker — zero dependencies, one rule for every consumer (Studio's explorer, the
 // doctor's link graph): the truth of the disk, confined. Hidden entries are skipped except `.ai`;
-// .git/node_modules/.base-docs are skipped; symlinks are never followed (they are omitted,
-// matching the confinement rule of every other surface).
+// the universal skip set (walk-policy.mjs: VCS, build output, tool output) is skipped; symlinks are
+// never followed (they are omitted, matching the confinement rule of every other surface).
 
 import { readdir } from "node:fs/promises";
 import path from "node:path";
-
-const IGNORED_DIRS = new Set([".git", "node_modules", ".base-docs"]);
+import { UNIVERSAL_SKIP_DIRS, compareByCodePoint } from "./walk-policy.mjs";
 
 /**
  * Walk a root directory into a nested tree of plain entries.
@@ -20,7 +19,9 @@ export async function walkTree(rootDir) {
 
 async function walk(abs, rel, name) {
   const entries = await readdir(abs, { withFileTypes: true });
-  entries.sort((a, b) => a.name.localeCompare(b.name));
+  // Code-point order, never localeCompare: stable projections must not depend on the host ICU
+  // configuration (the ordering doctrine every other walker already follows).
+  entries.sort((a, b) => compareByCodePoint(a.name, b.name));
   const dirs = [];
   const files = [];
   for (const entry of entries) {
@@ -28,7 +29,7 @@ async function walk(abs, rel, name) {
     if (entry.name.startsWith(".") && entry.name !== ".ai") continue;
     const childRel = rel ? `${rel}/${entry.name}` : entry.name;
     if (entry.isDirectory()) {
-      if (IGNORED_DIRS.has(entry.name)) continue;
+      if (UNIVERSAL_SKIP_DIRS.has(entry.name)) continue;
       dirs.push(await walk(path.join(abs, entry.name), childRel, entry.name));
     } else if (entry.isFile()) {
       files.push({ name: entry.name, path: childRel });

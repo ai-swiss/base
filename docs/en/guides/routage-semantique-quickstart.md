@@ -1,4 +1,4 @@
-<!-- fr-synced: 74019b48f8777232010bf6e6c856b70312b2fdfd -->
+<!-- fr-synced: 4b2cd28795087024c25dbff7b8ad00b37c490aee -->
 # Setting up semantic routing, from zero config to real embeddings
 
 From the moment BASE is installed, requests should reach the right agent and the right process with no initial configuration, then grow in quality the day the need makes itself felt: that is what you set up here. BASE routes a request, or abstains honestly when nothing fits.
@@ -13,7 +13,7 @@ Before the *quality* of the ranking (the "paths" below), here is how the assista
 
 - **Manual, zero tools.** If you know which agent you want, point straight at its `AGENT.md`: it is the only file to load. "Read `exemples/assistant-devis/.ai/agents/assistant-devis/AGENT.md`" is enough (path relative to the repo; in an assistant project, it is nothing more than `.ai/agents/<agent>/AGENT.md`). No routing, no installation.
 - **CLI.** `base route "<request>" --root <project>` chooses the agent → process deterministically, and abstains honestly if nothing fits. The same router, at the terminal.
-- **MCP.** The `route_request` tool exposes that same router to an AI tool able to read your files (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code). To wire it up, follow the `activer-routage` process.
+- **MCP.** The `route_request` tool exposes that same router to an AI tool able to read your files. To wire it up, follow the `activer-routage` process.
 
 Routing (CLI/MCP), deterministic by default, helps most when several processes or agents could answer, or when you want guarantees (tested abstention, fixtures). It spares the user the trouble of hunting for the right process. The moment an embedding ranker comes into play, the ranking depends on the chosen provider; the statuses and the fixtures, though, do not change. For a single simple assistant, loading manually is enough.
 

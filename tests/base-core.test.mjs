@@ -179,17 +179,21 @@ describe("inventoryResources", () => {
     assert.equal(resources.some((resource) => resource.path.startsWith(".base-docs/")), false);
   });
 
-  it("keeps the test tree out of the inventory (a fixture must never become routable)", async () => {
+  it("inventory exclusions are the PROJECT'S choice, not the engine's layout (inventory.exclude)", async () => {
     await write(".ai/agents/real/AGENT.md", "# Real\n\nDescription.");
-    // A golden eval set or a sample frontmatter file lives under tests/ and must never be a resource:
-    // routing it would let a request "route to the eval golden set". Even a fixture that mimics real
-    // frontmatter (schema_version + id + type) stays out, because the boundary is the tree, not the shape.
-    await write("tests/fixtures/route-eval-golden.json", '{"schema":"base.route-eval.golden.v1","about":"labeled eval set"}');
     await write("tests/fixtures/looks-real.md", "---\nschema_version: base.resource.v1\nid: looks-real\ntype: process\ndescription: A fixture.\n---\n# Looks real\n");
 
-    const resources = await inventoryResources(tmpDir);
-    assert.equal(resources.some((resource) => resource.path.startsWith("tests/")), false, "nothing under tests/ is inventoried");
-    assert.equal(resources.some((resource) => resource.path === ".ai/agents/real/AGENT.md"), true, "the real agent is still inventoried");
+    // A user's folder that happens to contain a `tests/` directory keeps it: the engine no longer
+    // hard-codes this repository's layout into every root's walk.
+    const unconfigured = await inventoryResources(tmpDir);
+    assert.equal(unconfigured.some((resource) => resource.path.startsWith("tests/")), true, "without config, tests/ is a directory like any other");
+
+    // The project that WANTS the boundary declares it — this repository's own base.config.json
+    // excludes its engineering trees, so its fixtures can never become routable.
+    await write("base.config.json", JSON.stringify({ inventory: { exclude: ["tests"] } }));
+    const configured = await inventoryResources(tmpDir);
+    assert.equal(configured.some((resource) => resource.path.startsWith("tests/")), false, "the configured exclusion holds");
+    assert.equal(configured.some((resource) => resource.path === ".ai/agents/real/AGENT.md"), true, "the real agent is still inventoried");
   });
 });
 
@@ -789,6 +793,22 @@ describe("buildArtifacts", () => {
 });
 
 describe("policy and trace", () => {
+  it("attributes trace events to an actor when one is in scope, and omits the field otherwise (FR-TRACE-001)", async () => {
+    const { recordEvent, withTraceActor } = await import("../tools/base-core.mjs");
+    // No actor in scope: the field is simply absent — a single-user local trace carries no ceremony.
+    await recordEvent(tmpDir, { op: "validate" });
+    // A server wraps the request in withTraceActor with the AuthProvider principal.
+    await withTraceActor("alice@example.ch", () => recordEvent(tmpDir, { op: "open" }));
+    const day = new Date().toISOString().slice(0, 10);
+    const lines = (await fs.readFile(path.join(tmpDir, ".ai", "trace", `${day}.jsonl`), "utf8"))
+      .trim().split("\n").map((l) => JSON.parse(l));
+    const bare = lines.find((l) => l.op === "validate");
+    const attributed = lines.find((l) => l.op === "open");
+    assert.equal("actor" in bare, false);
+    assert.equal(attributed.actor, "alice@example.ch");
+  });
+
+
   it("denies restricted full reads without purpose and records a trace", async () => {
     await write(
       "secret.md",

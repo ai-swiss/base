@@ -19,16 +19,14 @@ learning_level: beginner
 Installer BASE peut revenir à votre IA plutôt qu'à vous: vous repartez avec un espace de
 travail prêt à l'emploi sans avoir tapé une seule commande, pourvu que votre outil sache
 exécuter ces commandes à votre place et vous laisse relire chaque étape avant qu'elle s'applique.
-Concrètement, vous collez un bloc dans un outil IA capable d'exécuter des commandes (par exemple
-GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code): il procède à l'installation
+Concrètement, vous collez un bloc dans un outil IA capable d'exécuter des commandes: il procède à l'installation
 à votre place, puis vous prévient lorsque votre espace de travail est prêt.
 
 ## Avant de coller le bloc
 
 1. Créez un dossier vide pour votre travail: par exemple, dans vos Documents, un dossier
    `mon-assistant`.
-2. Ouvrez ce dossier dans votre outil IA capable de lire vos fichiers (par exemple GitHub
-   Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code): selon l'outil, ce sera
+2. Ouvrez ce dossier dans votre outil IA capable de lire vos fichiers: selon l'outil, ce sera
    un *File → Open Folder*, ou bien un `cd mon-assistant` suivi du lancement de l'outil dans ce
    dossier.
 3. Ouvrez le chat en **mode agent** (celui qui sait exécuter des commandes): selon l'outil,
@@ -49,8 +47,8 @@ D'abord, demande-moi: «Où veux-tu installer le cadre BASE?»
    lettre, et tu reprends ici.
 2. Installe le cadre dans <BASE_DIR> s'il n'y est pas déjà:
    `git clone https://github.com/ai-swiss/base.git <BASE_DIR>`
-   Si git n'est pas disponible, télécharge
-   https://github.com/ai-swiss/base/archive/refs/heads/main.zip, décompresse-le, et
+   Si git n'est pas disponible, télécharge la dernière version publiée,
+   https://github.com/ai-swiss/base/releases/latest/download/base.zip, décompresse-la, et
    place son contenu dans <BASE_DIR>, puis continue. (Sur Mac, taper git peut ouvrir un
    dialogue d'installation des outils de développement: c'est normal, le ZIP l'évite.)
 3. Montre-moi ce que l'initialisation créerait ICI (mon dossier de travail, pas <BASE_DIR>):

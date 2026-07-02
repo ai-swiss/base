@@ -1,4 +1,4 @@
-<!-- fr-synced: 4ba4a816b5a1c819f5f956ea34351ad5d4364f1a -->
+<!-- fr-synced: 8ed499cb67add6318c2446d9a6e1baa9d5af647d -->
 # The field: a friction comes up
 
 *⏱ ~10 min · module 8/9, Practitioner track*
@@ -30,7 +30,7 @@ The process should check the validity date before announcing an event from the a
 
 ✅ **Check**: the friction leaves the "open" stack after validation, and the resolution diff went through propose then commit (nothing was written before your validation).
 
-💡 **Why it worked**: the field is the raw material of improvement. A friction is a dated file, never lost. Every write, even a resolution, goes through the gate: that is what makes the AI safe to let live in your files.
+💡 **Why it worked**: the field is the raw material of improvement. A friction is a dated file, never lost. Every write, even a resolution, goes through the gate: that is what makes the AI safe to let live in your files. The full loop, from friction to a watched resource: [The lifecycle of an expertise](../learn/cycle-de-vie-expertise.md).
 
 🔁 **At home**: when your assistant gets it wrong, who will note the friction, and where? (that is your improvement loop)
 

@@ -34,7 +34,7 @@ Détail: [Sécurité et données du routage](securite-donnees-routage.md), secti
 
 Ce que vous fournissez vous-même: base légale, registre des traitements, gestion des droits des personnes et évaluation du fournisseur d'IA que vous utilisez. Voir [Sécurité et limites](securite-et-limites.md), section «Ce que BASE ne protège pas seul».
 
-Vous n'avez pas à trancher seul ces questions: **AI Swiss peut y répondre et vous orienter vers des experts établis**. Ce sont des sujets aux réponses connues, et des spécialistes savent les traiter.
+Vous n'avez pas à trancher seul ces questions: ce sont des sujets balisés, et **AI Swiss peut y répondre ou vous orienter vers des experts établis**.
 
 ## Sécurité
 

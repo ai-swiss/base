@@ -1,4 +1,4 @@
-<!-- fr-synced: f68d9ca2ef41854756ba05f4b1397523252d3e5e -->
+<!-- fr-synced: 11a5536e7c12ed4697d0ace182058267a2abf7b1 -->
 # Updating BASE without breaking your work
 
 This page is for the people who build on BASE: a freelancer, a small business, a school, or a public agency. It says what version 1.x guarantees and what may still change, so you can adopt BASE and update it without fear that a new release will break what you have built.
@@ -15,7 +15,7 @@ Starting at **1.0**, BASE follows [Semantic Versioning](https://semver.org/lang/
 
 These elements do not change in an incompatible way without a **major** increment:
 
-- **The resource format**: the `schema_version: base.resource.v1` frontmatter, its fields, and its `type` values. A file that is valid today stays valid.
+- **The resource format, [the `base.resource.v1` standard](le-standard.md)**: the `schema_version: base.resource.v1` frontmatter, its fields, and its `type` values. A file that is valid today stays valid.
 - **The existing CLI commands**: `validate`, `index`, `inventory`, `discover`, `route`, `route-test`, `open`, `access`, `invoke`, `propose`, `commit`, `promote`, `markers`, `trace`, `build`, and `entretien`, with their documented flags.
 - **The existing MCP tools**: their names and their parameters.
 - **The projection schemas**: `base.manifest.v1`, `base.routing.v1`.
@@ -35,6 +35,10 @@ This is the **NFR-CORE-002** commitment, the "no breakage" promise: what already
 - **Node.js >= 18.** The core is zero-dependency and tested in continuous integration on Node 18, 20, 22, and 24. The optional tools (evaluation, Studio) have their own dependencies, standard and isolated from the core.
 - **Portable across tools.** The `CLAUDE.md`, `.cursor/rules/`, and `AGENTS.md` files are generated adapters; the portable core stays `.ai/`, the Markdown documents, and the local commands.
 - **Portable across stacks.** From the specifications shipped with the framework (`specs/`), you can switch languages or libraries to rebuild equivalent features: an interface like Studio requires code, and therefore standard technical choices.
+
+## Updating: `base update` and its two channels
+
+`base update` updates the framework itself. By default it follows the **stable** channel: it advances your clone to the **latest version tag** (`v1.x.y`), never beyond; what you run only changes at a release, which gives the versioning above its concrete meaning. Contributors who want the development head choose `base update --channel main`. A ZIP install has no git history: the command then honestly names the path (re-download the [latest published version](https://github.com/ai-swiss/base/releases/latest/download/base.zip) and replace the folder). Before any major update, keep a copy of your folder: your files are the one thing BASE cannot regenerate.
 
 ## Deprecations
 

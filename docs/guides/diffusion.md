@@ -113,7 +113,7 @@ Pour une conférence ou un atelier:
 3. Introduire les fichiers comme mémoire durable.
 4. Montrer les workflows et les compétences.
 5. Expliquer les points de décision et la dette de vérification.
-6. Montrer le routeur/broker une fois le besoin concret établi: rudimentaire mais efficace, extensible par adaptateurs, il épargne l'effort de chercher le bon processus.
+6. Montrer le routeur/broker une fois le besoin concret établi: rudimentaire mais efficace, extensible par adaptateurs, il épargne l'effort de chercher le bon process.
 7. Conclure sur la souveraineté: le capital durable n'est pas le modèle, mais la structure de l'expertise.
 
 Pour une personne non technique:

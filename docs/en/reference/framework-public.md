@@ -1,4 +1,4 @@
-<!-- fr-synced: d1ba9b804f215cf8bcdb0359787f69b7963b6434 -->
+<!-- fr-synced: 4c4420160cffed38b08a14ef6a5dbffe3b67450c -->
 # Adopting public BASE: from local to team
 
 If you are an individual, a freelancer, a startup, a small or mid-sized business, or a small team, this page shows you what public BASE gives you: a way to structure your collaboration with AI without installing a heavy platform. It also explains how to adopt it in stages, staying simple on the surface without blocking your later growth.
@@ -16,7 +16,7 @@ The reading path by profile (solo person, SMB, large enterprise) is maintained i
 | Layer | Contents | Why it exists |
 | ------ | ------- | -------------------- |
 | Usage | `README.md`, `docs/start/quickstart.md`, `exemples/` | Get started without understanding the whole architecture |
-| Structure | `.ai/agents/`, `docs/reference/framework-public.md`, `base.schema.json` | Stabilize agents, skills, resources, and workflows |
+| Structure | `.ai/agents/`, `docs/reference/le-standard.md`, `docs/reference/framework-public.md`, `base.schema.json` | Stabilize agents, skills, resources, and workflows |
 | Integration | `tools/`, `mcp/`, `tests/`, `docs/reference/specification-v0.md` | Verify, connect, and audit without locking BASE inside one tool |
 
 `CLAUDE.md` and `.cursor/rules/` are harness adapters. They help Claude Code and Cursor load the right context, but they are not the conceptual source of the framework. As a convenience, never a requirement, two optional local interfaces exist: Studio (`npm run studio -- <dossier>`, on `127.0.0.1:5174`) to browse and edit resources in propose-then-commit mode, and the documentation served locally (`npm run docs:serve`).
@@ -85,7 +85,7 @@ Do not make the public core carry these controls as a shortcut. BASE stays the l
 The right reading is therefore:
 
 ```text
-Public BASE = local-first framework + conventions + router + local MCP
+Public BASE = open standard (format + conventions) + local-first reference implementation (router, CLI, local MCP)
 Enterprise = governed integration + internal policies + additional technical controls
 ```
 

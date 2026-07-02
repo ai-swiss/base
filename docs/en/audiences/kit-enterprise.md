@@ -1,4 +1,4 @@
-<!-- fr-synced: 02bfce8e211fce5639f1fffefdd9e98f37354212 -->
+<!-- fr-synced: 9e8ba9b23d02da2cc9ddeaea649f7c2ad55a535d -->
 # Deploying BASE in an organization
 
 Deploying BASE in an organization means deciding who can do what with your assistants and keeping a hand on sensitive actions, without surrendering your know-how to a platform. For a team or an IT department, the stakes are these: staying on top of what the framework actually enforces, knowing how to lock it down, and choosing a deployment mode that matches your requirements. BASE rounds out your existing stack on two fronts: a language for expertise in files that belong to you, and honest mediation of sensitive actions, something you plug in without touching the heart of the system. None of which makes it a compliance platform: BASE replaces neither IAM, nor SSO, nor RBAC, nor DLP, nor SIEM, nor regulatory retention (see [Security and limits](../trust/securite-et-limites.md)).
@@ -46,7 +46,7 @@ For the MCP, add an `auth` descriptor (bearer token or a homegrown `AuthProvider
 | Mode | Mediation | For whom |
 | --- | --- | --- |
 | Local, browser only | None (*consignes* followed by the model) | Discovery, no installation |
-| AI tool + folder (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code) | Weak (the tool follows the routing) | Individual, first setup |
+| AI tool + folder | Weak (the tool follows the routing) | Individual, first setup |
 | Local CLI | Strong on mediated actions (propose/commit, dry-run) | Team, maintaining a BASE |
 | Authenticated MCP | Read-only by default, explicit writes, auth required off loopback | Multi-client integration |
 | Strict policy (`policy: { type: "strict" }`) | Read grants and explicit confirmations on mediated actions | Organization, fine-grained governance |

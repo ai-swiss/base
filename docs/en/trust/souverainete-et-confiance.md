@@ -1,4 +1,4 @@
-<!-- fr-synced: b0a7eb3c476a78dc0ff0851c55e2f37010509f6c -->
+<!-- fr-synced: e4707340f451dc1aebbefdc498657410d15426a4 -->
 # Making the case for BASE: sovereignty, trust, compliance
 
 Adopting BASE often means winning someone over first: a client worried about their data, an IT department, a compliance officer. Here, in one place, is what you need to defend that choice without dodging the hard questions: data sovereignty, data protection, security, license, and governance. Written for any organization evaluating BASE, from the freelancer to the institution, this page points to the reference documents rather than replacing them.
@@ -29,7 +29,7 @@ BASE on its own **does not make you compliant** with Swiss data protection law (
 
 What you provide yourself: legal basis, record of processing activities, handling of data subjects' rights, and the assessment of the AI provider you use. See [Security and limits](securite-et-limites.md), the "What BASE does not protect on its own" section.
 
-You do not have to settle these questions alone: **AI Swiss can answer them and point you to established experts**. These topics have known answers, and specialists to handle them.
+You do not have to settle these questions alone: they are well-charted topics, and **AI Swiss can answer them or point you to established experts**.
 
 ## Security
 

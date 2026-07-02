@@ -19,6 +19,20 @@ import { buildProcessHarness } from "../tools/eval/broker-harness.mjs";
 const NOW = "2026-06-11T12:00:00.000Z";
 
 describe("doctor — diagnoseData (pure, injected fixtures)", () => {
+  it("stale_routing_vectors: a drifted or legacy vector cache warns, a fresh one stays silent (Voie 2 never degrades silently)", () => {
+    const stale = diagnoseData({ inventory: [], routingVectors: { byPath: null, stale: ["a.md", "b.md"], legacy: false, embedder: "ollama/e" }, now: NOW })
+      .filter((f) => f.type === "stale_routing_vectors");
+    assert.equal(stale.length, 1);
+    assert.equal(stale[0].severity, "warn");
+    assert.match(stale[0].message, /2 vecteur/);
+    const legacy = diagnoseData({ inventory: [], routingVectors: { byPath: {}, stale: [], legacy: true, embedder: null }, now: NOW })
+      .filter((f) => f.type === "stale_routing_vectors");
+    assert.equal(legacy.length, 1, "a pre-v1 cache cannot say whether it is stale: same nudge");
+    const fresh = diagnoseData({ inventory: [], routingVectors: { byPath: { "a.md": [1] }, stale: [], legacy: false, embedder: "ollama/e" }, now: NOW })
+      .filter((f) => f.type === "stale_routing_vectors");
+    assert.equal(fresh.length, 0, "a healthy cache is not a finding");
+  });
+
   it("flags dead links and orphans, with fix hints, and spares structural files", () => {
     const inventory = [
       { id: "p", type: "process", path: "a/p/SKILL.md", body: "Voir [x](docs/absent.md) et [ok](docs/present.md)." },

@@ -1,6 +1,6 @@
 # Contribuer, adapter, réutiliser
 
-BASE est publié comme un socle ouvert et réutilisable, **maintenu par un mainteneur principal** sous l'intendance d'AI Swiss, avec une gouvernance légère et ouverte à la co-maintenance. Sa vocation première n'est pas d'être une plateforme à rejoindre, mais une **amorce à forker** (à reprendre dans votre propre dépôt pour en faire une copie indépendante): reprenez-le, adaptez-le et faites-en le point de départ de vos propres projets.
+BASE est publié comme un socle ouvert et réutilisable, **maintenu par un mainteneur principal** sous l'intendance d'AI Swiss, avec une gouvernance légère et ouverte à la co-maintenance. Sa vocation première n'est pas d'être une plateforme à rejoindre, mais une **amorce à forker** (à reprendre dans votre propre dépôt pour en faire une copie indépendante): reprenez-le, adaptez-le et faites-en le point de départ de vos propres projets. Le [standard `base.resource.v1`](docs/reference/le-standard.md), lui, reste le langage commun: un fork qui le conserve demeure lisible par l'outillage BASE et par toute implémentation conforme.
 
 ## Développer BASE (point de départ technique)
 

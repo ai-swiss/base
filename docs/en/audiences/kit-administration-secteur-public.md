@@ -1,4 +1,4 @@
-<!-- fr-synced: fc115a58cfe56657b29adace72da66bbc5ea1310 -->
+<!-- fr-synced: 4707719e45b951c5a08f01c7b88bb2bfc37a1115 -->
 # Evaluating and using BASE responsibly in the public sector
 
 Deploying BASE in a public institution puts citizen data, a legal basis, and public procurement on the line: deciding whether and how to do it without taking on needless risk calls for clear bearings. This checklist provides those concrete bearings and flags the decisions that remain yours (legal counsel, data protection officer, archives, procurement); it is not a substitute for legal advice.
@@ -63,4 +63,4 @@ Display what BASE does not enforce mechanically (especially in browser-only mode
 
 For an institutional conversation (evaluation, pilot, compliance questions), write to AI Swiss at [info@a-i.swiss](mailto:info@a-i.swiss): we aim for a first reply within about ten business days. See also [a-i.swiss](https://a-i.swiss).
 
-The same address points you to the right person for the terms of support for a pilot.
+The same address points you to the right person for the terms of support for a pilot. For a public tender that requires a nameable support line, AI Swiss is also the party that carries and formalizes that commitment with you (response times, scope, people involved), the association remaining the steward of the framework ([governance](../../../GOVERNANCE.md)).

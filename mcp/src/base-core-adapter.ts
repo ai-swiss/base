@@ -64,6 +64,7 @@ export interface BrokerRouteResult {
 type EgressContext = { modelLocality: "local" | "remote"; rootPolicy?: "local-only" | "any" };
 
 interface BrokerModule {
+  withTraceActor<T>(actor: unknown, fn: () => T): T;
   confineToRoot(rootDir: string, targetPath: string): Promise<string>;
   resolveConfig(rootDir: string): Promise<Record<string, unknown>>;
   rootEgressPolicy(rootDir: string): Promise<"local-only" | "any">;
@@ -135,7 +136,14 @@ interface RouteWorkspaceModule {
 
 let brokerPromise: Promise<BrokerModule> | null = null;
 let rootsPromise: Promise<RootsModule> | null = null;
+let walkPolicyPromise: Promise<{ UNIVERSAL_SKIP_DIRS: Set<string> }> | null = null;
 let routeWorkspacePromise: Promise<RouteWorkspaceModule> | null = null;
+
+/** Attribute every trace event recorded while `fn` runs to `actor` (no-op when actor is empty). */
+export async function brokerWithTraceActor<T>(actor: unknown, fn: () => T): Promise<Awaited<T>> {
+  const broker = await loadBroker();
+  return await broker.withTraceActor(actor, fn);
+}
 
 async function loadBroker(): Promise<BrokerModule> {
   if (!brokerPromise) {
@@ -179,6 +187,29 @@ async function loadRoots(): Promise<RootsModule> {
     rootsPromise = import(pathToFileURL(rootsPath).href) as Promise<RootsModule>;
   }
   return rootsPromise;
+}
+
+/** The shared walk policy (universal skip names) — the same table every walker in the core uses. */
+export async function brokerWalkPolicy(): Promise<{ UNIVERSAL_SKIP_DIRS: Set<string> }> {
+  if (!walkPolicyPromise) {
+    const currentDir = path.dirname(fileURLToPath(import.meta.url));
+    const candidates = [
+      path.resolve(currentDir, "core", "walk-policy.mjs"), // bundled beside the compiled index (prod / npx)
+      path.resolve(currentDir, "..", "..", "tools", "core", "walk-policy.mjs"), // repo layout (dev / tsx)
+    ];
+    let policyPath = candidates[candidates.length - 1];
+    for (const candidate of candidates) {
+      try {
+        fs.accessSync(candidate);
+        policyPath = candidate;
+        break;
+      } catch {
+        // try the next candidate
+      }
+    }
+    walkPolicyPromise = import(pathToFileURL(policyPath).href) as Promise<{ UNIVERSAL_SKIP_DIRS: Set<string> }>;
+  }
+  return walkPolicyPromise;
 }
 
 async function loadRouteWorkspace(): Promise<RouteWorkspaceModule> {

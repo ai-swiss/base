@@ -1,4 +1,4 @@
-<!-- fr-synced: bb45359c79dc14bd24c428202568806cf9ab1492 -->
+<!-- fr-synced: d35d012be5f1c11a6819d946759d3f16084ff74f -->
 # Institutional pilot, 90 minutes, no personal data
 
 Before committing an institution to an AI tool, you want to judge for yourself, with nothing at risk: this pilot lets you see BASE with your own eyes, **with no citizen's personal data whatsoever**, and decide in full awareness whether to go further. It is a **time-boxed pilot** (about 90 minutes) that a government office can run on real commands. The point is not to put a service into production, but to see what BASE does, what it refuses to do without you, and what stays local. There is only one condition: working on internal, non-personal procedures.
@@ -43,7 +43,7 @@ This rule is an **organizational *consigne***, not a mechanism: BASE does not kn
 
 Open the Veytaux tourist office example to see, without installing anything new, what a BASE assistant looks like: an agent, processes, data, a template, scenarios.
 
-- Open the `exemples/veytaux-tourisme/` folder in an AI tool able to read your files (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code), **this folder**, not the repository root.
+- Open the `exemples/veytaux-tourisme/` folder in an AI tool able to read your files, **this folder**, not the repository root.
 - Read `exemples/veytaux-tourisme/README.md`, then go through the agent and the two processes.
 - On the command line, from this folder, watch how a request is routed:
 

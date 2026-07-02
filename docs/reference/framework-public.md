@@ -27,7 +27,7 @@ Le parcours de lecture par profil (personne seule, PME, grande entreprise) est t
 | Couche | Contenu | Pourquoi elle existe |
 | ------ | ------- | -------------------- |
 | Usage | `README.md`, `docs/start/quickstart.md`, `exemples/` | Démarrer sans comprendre toute l'architecture |
-| Structure | `.ai/agents/`, `docs/reference/framework-public.md`, `base.schema.json` | Stabiliser les agents, skills, ressources et workflows |
+| Structure | `.ai/agents/`, `docs/reference/le-standard.md`, `docs/reference/framework-public.md`, `base.schema.json` | Stabiliser les agents, skills, ressources et workflows |
 | Intégration | `tools/`, `mcp/`, `tests/`, `docs/reference/specification-v0.md` | Vérifier, connecter et auditer sans enfermer BASE dans un outil |
 
 `CLAUDE.md` et `.cursor/rules/` sont des adaptateurs de harness. Ils aident Claude Code et Cursor à charger le bon contexte, mais ils ne constituent pas la source conceptuelle du cadre. Par confort, jamais par obligation, deux interfaces locales facultatives existent: Studio (`npm run studio -- <dossier>`, sur `127.0.0.1:5174`) pour parcourir et éditer les ressources selon le mode propose puis commit, et la documentation en local (`npm run docs:serve`).
@@ -96,7 +96,7 @@ Ne faites pas porter ces contrôles au cœur public par commodité. BASE reste l
 La bonne lecture est donc:
 
 ```text
-BASE public = cadre local-first + conventions + routeur + MCP local
+BASE public = standard ouvert (format + conventions) + implémentation de référence local-first (routeur, CLI, MCP local)
 Entreprise = intégration gouvernée + politiques internes + contrôles techniques additionnels
 ```
 
@@ -128,7 +128,7 @@ BASE reprend le format `SKILL.md`, déjà familier dans plusieurs harnesses, mai
 | **Process skill** | Que faire, dans quel ordre, avec quels points de décision? | `nouveau-devis`, `traiter-candidature`, `preparer-newsletter` |
 | **Competence skill** | Que faut-il savoir pour bien le faire? | TVA, politique de remise, ton de communication, marqueurs, journal |
 
-Cette distinction évite qu'un agent ne se réduise à une longue liste de skills. Un process peut déclarer ou suggérer les compétences nécessaires; le routeur peut retrouver le bon processus, puis n'ouvrir que les connaissances utiles. C'est une différence importante avec les harnesses qui exposent surtout un catalogue plat de skills.
+Cette distinction évite qu'un agent ne se réduise à une longue liste de skills. Un process peut déclarer ou suggérer les compétences nécessaires; le routeur peut retrouver le bon process, puis n'ouvrir que les connaissances utiles. C'est une différence importante avec les harnesses qui exposent surtout un catalogue plat de skills.
 
 La doctrine complète est la suivante: sélectionner l'agent quand il est connu, router vers un process quand le workflow doit être choisi, puis ouvrir les ressources utiles au process. Elle est détaillée dans `docs/reference/routage-process-et-ressources.md`.
 

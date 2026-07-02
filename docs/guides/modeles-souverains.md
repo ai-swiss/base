@@ -119,6 +119,10 @@ Deux configurations locales sont réellement utilisées par les mainteneurs, tel
 
 Dans tous les cas, le cœur demeure le même fichier de texte que vous possédez. Le modèle est un détail remplaçable, non le lieu où vit votre méthode.
 
+## Le travail quotidien: l'état honnête
+
+Ce guide couvre l'évaluation, les embeddings et le chat du Studio avec des modèles locaux ou hébergés en Suisse. Le travail quotidien dans un harnais (l'outil IA qui lit vos fichiers) est une autre affaire: les installateurs détaillés de cette documentation visent des outils dont les modèles par défaut sont ceux de fournisseurs américains, et nous n'avons pas encore de recette de bout en bout, validée par nos évaluations, qui associe un harnais à un modèle local ou suisse pour la journée entière. Plusieurs harnais savent pointer vers un endpoint compatible OpenAI (donc vers Ollama ou Infomaniak); la qualité dépend alors fortement du modèle choisi, et nous préférons ne rien recommander que nous n'avons pas mesuré. Quand une combinaison tiendra nos évaluations, elle sera documentée ici, chiffres à l'appui.
+
 ## Pour aller plus loin
 
 - [Souveraineté et confiance](../trust/souverainete-et-confiance.md)

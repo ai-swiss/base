@@ -1,4 +1,4 @@
-<!-- fr-synced: 5c49298d090cdf44f73c6db0af5ec480b6f5c030 -->
+<!-- fr-synced: 0fe1a114dea6a7560d56e980a44140943c840ccf -->
 # Learn BASE by Doing
 
 **Your AI tool is the experience; Studio is the workshop.** This tutorial has you build, with
@@ -8,7 +8,7 @@ everything works. This verification is just one brick among others, serving what
 
 ## Choose your starting point
 
-### Discovery: 32 min, nothing to install on the BASE side
+### Discovery: 32 min once your tool is connected, nothing to install on the BASE side
 You have never structured an AI's work. You open the finished tourist office, you talk to it,
 you change a rule, you watch the assistant obey the file. **3 modules.**
 By the end: you have your own folder, with one of your real documents inside it.

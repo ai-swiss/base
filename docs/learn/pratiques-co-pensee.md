@@ -4,6 +4,8 @@ description: Garder la main quand on produit avec l'IA: la boucle du quotidien, 
 keywords: [co-pensee, pratiques, principes, verification, methode, collaboration humain-IA, responsabilite, souverainete, fiche de decision, marqueurs]
 ---
 
+# La co-pensée en pratique
+
 Produire avec l'IA demande désormais peu d'effort; le défendre en demande beaucoup. L'enjeu n'est donc pas d'écrire le prompt parfait, mais de **rester celui qui garde la main**: cadrer, confier, évaluer, ajuster, et savoir, à la fin, ce que l'on signe. Cette page réunit de quoi y parvenir, du plus simple au plus complet: la boucle qui rythme chaque échange, cinq pratiques pour la rendre légère, puis les seize principes qui les fondent. On peut s'arrêter après les pratiques et déjà bien travailler; descendre jusqu'aux principes, c'est tenir la méthode dans la durée.
 
 > [Pourquoi BASE: co-penser avec l'IA](./co-penser-avec-lia.md) explique *pourquoi* la souveraineté cognitive porte tout, et où la vérification s'inscrit comme une brique. Cette page-ci montre *comment*.
@@ -23,7 +25,7 @@ Exemple complet: `exemples/assistant-courrier/`.
 
 ### 2. Vérifier contre la réalité
 
-Qui produit ne peut juger son propre travail. L'IA propose, vous confrontez à vos faits, vos fichiers, vos règles. C'est la dette de vérification: elle ne disparaît pas, on la rend visible et faible.
+Qui produit ne peut juger son propre travail. L'IA propose, vous confrontez à vos faits, vos fichiers, vos règles. C'est la dette de vérification: elle ne disparaît pas; on la rend visible et on la tient basse.
 
 > *«Sur quoi t'appuies-tu pour ce chiffre? Cite la source dans mes fichiers.»*
 
@@ -112,7 +114,7 @@ L'IA générative n'est pas toujours le bon choix. Avant chaque utilisation, sou
 
 #### 6. Soyez conscient de la complexité inhérente à la tâche
 
-Certaines tâches exigent par nature un certain nombre d'étapes, une certaine mémoire, ou la traversée d'une certaine masse d'information. Avec ou sans IA, elles ne s'accomplissent pas de façon fiable sans ces ressources. Ce ne sont pas des faiblesses de l'IA, mais des propriétés du problème: ce qui vous coûterait des étapes intermédiaires en coûte à l'IA comme à tout système au monde. Autrement dit, l'IA ne fera jamais de magie: pas de résultat d'entreprise sans l'effort qui le produit, pas de révolution dans tous les domaines sans les ressources qu'elle réclame. Au mieux, l'IA allège ou déplace l'effort; elle ne le supprime pas.
+Certaines tâches exigent par nature un certain nombre d'étapes, une certaine mémoire, ou la traversée d'une certaine masse d'information. Avec ou sans IA, elles ne s'accomplissent pas de façon fiable sans ces ressources. Ce ne sont pas des faiblesses de l'IA, mais des propriétés du problème: ce qui vous coûterait des étapes intermédiaires en coûte à l'IA comme à tout système au monde. Autrement dit, l'IA ne fait pas de magie: pas de résultat d'entreprise sans l'effort qui le produit, pas de révolution dans tous les domaines sans les ressources qu'elle réclame. Au mieux, l'IA allège ou déplace l'effort; elle ne le supprime pas.
 
 Pourquoi ces limites tiennent du problème et non de l'IA, jusqu'à la thèse de Church-Turing: voir [Pourquoi BASE](co-penser-avec-lia.md), section «Les limites de la tâche, l'IA les partage».
 
@@ -232,8 +234,8 @@ Travailler efficacement avec l'IA suit le plus souvent le même cycle:
     └──────┬───────┘  (principes 3, 6)
            │
     ┌──────▼───────┐
-    │  3. ÉVALUER  │  Vous vérifiez : est-ce correct ?
-    │              │  Est-ce que ça correspond à ma réalité ?
+    │  3. ÉVALUER  │  Vous vérifiez: est-ce correct?
+    │              │  Est-ce que ça correspond à ma réalité?
     └──────┬───────┘  (principes 4, 7, 8, 11, 12)
            │
     ┌──────▼───────┐

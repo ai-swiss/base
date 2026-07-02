@@ -251,12 +251,12 @@ pinned model/index. The generated `.ai/routing/` tree is excluded from inventory
 ## CLI & MCP (FR-ROUTE-005)
 
 - `base route "<demande>" --root <root>` — observable, testable routing outside any harness (`--json` for the full shape).
-- `base route-test [--from fixtures.json]` — runs a declarative JSON fixtures file
+- `base route-test [--from fixtures.json] [--strategy lexical|production]` — runs a declarative JSON fixtures file
   (`[{ request, expect: { status?, reason_code?, agent?, process? } }]`, default
-  `.ai/routing/route-tests.json`); exits non-zero on a mismatch. Protects business routes from
+  `.ai/routing/route-tests.json`); exits non-zero on a mismatch. Fixtures replay the **lexical floor** by default (deterministic, CI-safe); the result names both the strategy replayed and the strategy production `base route` would take (`productionStrategy`), and the CLI warns when they differ — green must never silently certify a path production does not take. `--strategy production` replays each case through `routeRequest` (model-backed when Voie 2 is configured; deliberate, per-run, not for CI). Protects business routes from
   regressions without an academic benchmark.
 - `base build routing-index [--write]` — generates the agent-readable index tree (root + one per agent), a deterministic projection of the registry, committed to the repo and gated for freshness in CI (opt-in, not part of `build all`).
-- `base build routing-embeddings [--write]` — precomputes the routing vectors via `cfg.routing.embedder` (the shipped semantic package, dynamically imported), writing the model-specific `embeddings.json` cache (gitignored). Opt-in, model-backed.
+- `base build routing-embeddings [--write]` — precomputes the routing vectors via `cfg.routing.embedder` (the shipped semantic package, dynamically imported), writing the model-specific `embeddings.json` cache (gitignored). Opt-in, model-backed. The cache is a **stamped envelope** (`base.routing_vectors.v1`): it names the embedder it was built with (`<provider>/<model>`) and each entry carries the sha256-derived hash of the `route_text` it embedded (`hashRouteText`). `confidential` resources are **never embedded** (the egress promise holds on the build path; the CLI reports the skip count). At route time, `verifyRoutingVectors` drops entries whose `route_text` drifted (journaled: `routing_vectors_stale`) and the embedding strategy strips ALL precomputed vectors when the cache's embedder model differs from `routing.embedding_model` (journaled: `routing_vectors_model_mismatch`; vectors from another model live in another space — noise, worse than no cache). A pre-v1 bare map keeps working, flagged `legacy`; `base doctor` surfaces both drifts (`stale_routing_vectors`).
 - MCP tool `route_request` — returns a route or an abstention; it does not load every instruction.
 
 ## Routability advisory (opt-in)

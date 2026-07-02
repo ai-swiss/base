@@ -37,7 +37,7 @@ Les assistants construits avec BASE ne sont attachés à aucune langue en partic
 
 ## Traductions
 
-Existent déjà: le [README en anglais](../../README.en.md) ainsi que le manifeste en [anglais](../../MANIFESTO.en.md), [allemand](../../MANIFESTO.de.md) et [italien](../../MANIFESTO.it.md). Les autres traductions (un `README.de.md`, un dossier par langue) comptent parmi les contributions les plus bienvenues. La convention figure dans [CONTRIBUTING](../../CONTRIBUTING.md): garder la sobriété de l'original, ne pas traduire les identifiants techniques et rappeler en tête de fichier que **la version française fait foi**.
+Existent déjà: le [README en anglais](../../README.en.md), le **miroir anglais intégral de la documentation** (`docs/en/`, chaque page synchronisée sur sa source française par une empreinte `fr-synced` vérifiée en intégration continue), ainsi que le manifeste en [anglais](../../MANIFESTO.en.md), [allemand](../../MANIFESTO.de.md) et [italien](../../MANIFESTO.it.md). Les autres traductions (un `README.de.md`, un dossier `docs/de/` par langue) comptent parmi les contributions les plus bienvenues. La convention figure dans [CONTRIBUTING](../../CONTRIBUTING.md): garder la sobriété de l'original, ne pas traduire les identifiants techniques et rappeler en tête de fichier que **la version française fait foi**.
 
 ---
 

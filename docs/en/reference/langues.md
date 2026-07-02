@@ -1,4 +1,4 @@
-<!-- fr-synced: ff80479ceed0389d5132d65304b36d7936102f56 -->
+<!-- fr-synced: dc9ea1407a2161c7220bf821619e22e2f723e725 -->
 # Understanding which language BASE uses, and where
 
 If you are wondering why the documentation is in French while the specifications are in English, this page explains it in a few lines. It is for anyone discovering the project, contributing to it, or wanting to build an assistant: it says which language governs what, and why your own assistants are bound to neither one.
@@ -26,7 +26,7 @@ Assistants built with BASE are not bound to any particular language. The default
 
 ## Translations
 
-Already available: the [README in English](../../../README.en.md) as well as the manifesto in [English](../../../MANIFESTO.en.md), [German](../../../MANIFESTO.de.md), and [Italian](../../../MANIFESTO.it.md). The other translations (a `README.de.md`, a folder per language) are among the most welcome contributions of all. The convention is set out in [CONTRIBUTING](../../../CONTRIBUTING.md): keep the restraint of the original, do not translate technical identifiers, and note at the top of the file that **the French version is authoritative**.
+Already available: the [README in English](../../../README.en.md), the **full English mirror of the documentation** (`docs/en/`, every page synced to its French source through an `fr-synced` fingerprint verified in continuous integration), as well as the manifesto in [English](../../../MANIFESTO.en.md), [German](../../../MANIFESTO.de.md), and [Italian](../../../MANIFESTO.it.md). The other translations (a `README.de.md`, a `docs/de/` folder per language) are among the most welcome contributions of all. The convention is set out in [CONTRIBUTING](../../../CONTRIBUTING.md): keep the restraint of the original, do not translate technical identifiers, and note at the top of the file that **the French version is authoritative**.
 
 ---
 

@@ -1,7 +1,7 @@
-<!-- fr-synced: 54ff1dcedc8f67202b43cf270c54a25939d365e1 -->
+<!-- fr-synced: 5bdc3eeb5e8cbad51e96ee772e9f7cb1827a5ed8 -->
 # Installing the BASE MCP server
 
-When your AI tool doesn't read your files directly, or when you want to share an agent beyond your own machine, the MCP (Model Context Protocol) server is what to turn to: it makes your BASE agents reachable from any compatible platform, sparing you from copying your work over by hand. The trade-off is that you expose one folder of your project to a third-party tool, which calls for a few guardrails (see below). It connects your BASE agents to compatible platforms: ChatGPT, Claude Desktop, and the AI tools that can converse over MCP (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code).
+When your AI tool doesn't read your files directly, or when you want to share an agent beyond your own machine, the MCP (Model Context Protocol) server is what to turn to: it makes your BASE agents reachable from any compatible platform, sparing you from copying your work over by hand. The trade-off is that you expose one folder of your project to a third-party tool, which calls for a few guardrails (see below). It connects your BASE agents to compatible platforms: ChatGPT, Claude Desktop, and the AI tools that can converse over MCP.
 
 ## Prerequisites
 
@@ -41,7 +41,7 @@ In `claude_desktop_config.json`:
 }
 ```
 
-The configuration is the same in the other AI tools that can converse over MCP (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code): carry the same block over into their MCP settings.
+The configuration is the same in the other AI tools that can converse over MCP: carry the same block over into their MCP settings.
 
 Consumer MCP-compatible tools, such as ChatGPT (via its developer mode), can likewise connect to this local MCP server. Enabling it, along with whatever conditions apply at the time, is a matter for the tool and its official documentation: BASE neither makes it a guided journey nor depends on it.
 

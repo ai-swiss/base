@@ -42,7 +42,7 @@ bon agent, du plus simple au plus automatique:
 - **CLI.** `base route "<demande>" --root <projet>` choisit l'agent → process de façon déterministe, et s'abstient
   honnêtement si rien ne convient. Le même routeur, au terminal.
 - **MCP.** L'outil `route_request` expose ce même routeur à un outil IA capable de lire vos fichiers
-  (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code).
+ .
   Pour le brancher, suivez le process `activer-routage`.
 
 Le routage (CLI/MCP), déterministe par défaut, sert surtout lorsque plusieurs process ou agents

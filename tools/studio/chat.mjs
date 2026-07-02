@@ -173,14 +173,20 @@ function buildSystemPrompt(resource, data, body, method) {
 }
 
 async function readTool(root, methodDir, idOrPath, egress) {
+  // A policy DENIAL must reach the model as a refusal, never masked as "not found": the model
+  // would retry paths for a file that exists but is off-limits, and the human reading the
+  // conversation would draw the wrong conclusion about their own corpus.
+  const denied = (error) => /denied|refus/i.test(String(error?.message ?? ""));
   try {
     const opened = await openResource(root, idOrPath, { projection: "full", egress });
     return opened.content;
   } catch (rootError) {
+    if (denied(rootError)) return `ERROR: accès refusé par la politique: ${idOrPath}`;
     try {
       const opened = await openResource(methodDir, idOrPath, { projection: "full", egress });
       return opened.content;
-    } catch {
+    } catch (methodError) {
+      if (denied(methodError)) return `ERROR: accès refusé par la politique: ${idOrPath}`;
       return `ERROR: introuvable dans le root et le corpus de méthode: ${idOrPath}`;
     }
   }
@@ -314,17 +320,23 @@ export async function chat(root, { path: docPath, memory = null, messages = [], 
     const calls = getToolCalls(completion.message);
     const text = getText(completion.message);
 
-    const proposeCall = calls.find((c) => c.name === "propose_document");
-    if (proposeCall) {
-      const revised = coerceProposalArguments(proposeCall.arguments, { data, body });
+    // One return shape for both proposal doors (a real tool call, or JSON recovered from text):
+    // coerce, stage the diff, prepend any coercion warnings.
+    const proposalResult = async (rawArguments, fallbackReply) => {
+      const revised = coerceProposalArguments(rawArguments, { data, body });
       const proposal = await proposeEdit(root, { path: resource.path, data: revised.data, body: revised.body });
-      const reply = text || "Voici la modification proposée — relisez le diff.";
+      const reply = fallbackReply || "Voici la modification proposée — relisez le diff.";
       return {
         reply: revised.warnings.length ? [...revised.warnings, reply].join("\n") : reply,
         proposal,
         memory: memoryOut,
         egress: egressInfo,
       };
+    };
+
+    const proposeCall = calls.find((c) => c.name === "propose_document");
+    if (proposeCall) {
+      return await proposalResult(proposeCall.arguments, text);
     }
 
     if (calls.length === 0) {
@@ -332,15 +344,7 @@ export async function chat(root, { path: docPath, memory = null, messages = [], 
       // Recover the arguments into a real diff so the human never has to read raw JSON.
       const textArgs = extractTextProposal(text);
       if (textArgs) {
-        const revised = coerceProposalArguments(textArgs, { data, body });
-        const proposal = await proposeEdit(root, { path: resource.path, data: revised.data, body: revised.body });
-        const reply = "Voici la modification proposée — relisez le diff.";
-        return {
-          reply: revised.warnings.length ? [...revised.warnings, reply].join("\n") : reply,
-          proposal,
-          memory: memoryOut,
-          egress: egressInfo,
-        };
+        return await proposalResult(textArgs, "");
       }
       return { reply: text || "(pas de réponse)", proposal: null, memory: memoryOut, egress: egressInfo };
     }

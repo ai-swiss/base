@@ -93,6 +93,20 @@ describe("resolveConfig", () => {
     await assert.rejects(() => resolveConfig(tmpDir), /base\.config\.invalid/);
   });
 
+  it("parses and normalizes inventory.exclude (the project's own resource boundary)", async () => {
+    await write("base.config.json", JSON.stringify({ inventory: { exclude: ["specs", "./tests/", "docs/en", ""] } }));
+    const config = await resolveConfig(tmpDir);
+    assert.deepEqual(config.inventory.exclude, ["specs", "tests", "docs/en"], "normalized: no ./, no trailing /, empties dropped");
+    assert.deepEqual(DEFAULTS.inventory.exclude, [], "the engine excludes nothing by default");
+  });
+
+  it("rejects a malformed inventory block loudly", async () => {
+    await write("base.config.json", JSON.stringify({ inventory: { exclude: "specs" } }));
+    await assert.rejects(() => resolveConfig(tmpDir), /inventory\.exclude/);
+    await write("base.config.json", JSON.stringify({ inventory: [] }));
+    await assert.rejects(() => resolveConfig(tmpDir), /`inventory` must be an object/);
+  });
+
   it("instantiates and validates routing.policy.deny (the project-level routing deny)", async () => {
     await write("base.config.json", JSON.stringify({ routing: { policy: { deny: ["legacy-agent", "old-process"] } } }));
     const config = await resolveConfig(tmpDir);

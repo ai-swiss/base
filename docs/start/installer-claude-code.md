@@ -16,7 +16,7 @@ keywords: [installer, claude code, cli, terminal, anthropic, npm, demarrer]
 
 À la fin de cette page, vous disposerez d'un assistant qui lit et modifie vos fichiers sous votre contrôle, prêt à travailler sur vos vrais documents: BASE cesse alors d'être un texte qu'on lit pour devenir un cadre qui agit. Il faut pour cela être à l'aise dans un terminal et posséder un compte Anthropic. En quelques minutes, vous installez Claude Code, vous le lancez dans un exemple BASE et vous faites une première demande; vous saurez aussi comment réagir en cas de blocage.
 
-Claude Code, l'agent IA d'Anthropic en ligne de commande, n'est qu'une porte d'entrée parmi d'autres: la plupart des outils IA capables de lire et de modifier vos fichiers font l'affaire (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code). Cette page décrit Claude Code; pour les autres, reportez-vous à leur installateur.
+Claude Code, l'agent IA d'Anthropic en ligne de commande, n'est qu'une porte d'entrée parmi d'autres: la plupart des outils IA capables de lire et de modifier vos fichiers font l'affaire. Cette page décrit Claude Code; pour les autres, reportez-vous à leur installateur.
 
 Il vous faut un compte Anthropic (abonnement Claude ou accès API). L'installateur natif ne réclame aucune autre dépendance.
 

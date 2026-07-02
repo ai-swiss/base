@@ -55,7 +55,7 @@ Cette règle est une **consigne d'organisation**, pas un mécanisme: BASE ne sai
 
 Ouvrez l'exemple de l'office du tourisme de Veytaux pour voir, sans rien installer de nouveau, à quoi ressemble un assistant BASE: un agent, des process, des données, un template, des scénarios.
 
-- Ouvrez le dossier `exemples/veytaux-tourisme/` dans un outil IA capable de lire vos fichiers (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code), **ce dossier**, pas la racine du dépôt.
+- Ouvrez le dossier `exemples/veytaux-tourisme/` dans un outil IA capable de lire vos fichiers, **ce dossier**, pas la racine du dépôt.
 - Lisez `exemples/veytaux-tourisme/README.md`, puis parcourez l'agent et les deux process.
 - Côté ligne de commande, depuis ce dossier, regardez comment une demande est routée:
 

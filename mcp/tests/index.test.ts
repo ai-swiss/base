@@ -1171,12 +1171,17 @@ describe("AuthProvider", () => {
     expect(() => resolveAuthProvider({ auth: "bearer" }, {})).toThrow("base.config.invalid");
   });
 
-  it("authMiddleware calls next on success and 401s on failure", async () => {
+  it("authMiddleware calls next on success (attaching the principal) and 401s on failure", async () => {
     let nexted = false;
     let status = 0;
-    const res = { status: (c: number) => { status = c; return { json: () => {} }; } } as any;
+    const res = { locals: {} as Record<string, unknown>, status: (c: number) => { status = c; return { json: () => {} }; } } as any;
     await authMiddleware(noAuth)(mockReq(), res, () => { nexted = true; });
     expect(nexted).toBe(true);
+
+    // A provider that knows WHO authenticated hands the principal to the handler, which
+    // attributes the request's trace events to it (withTraceActor).
+    await authMiddleware(() => ({ ok: true, principal: "alice@example.ch" }))(mockReq(), res, () => {});
+    expect(res.locals.principal).toBe("alice@example.ch");
 
     nexted = false;
     await authMiddleware(() => ({ ok: false }))(mockReq(), res, () => { nexted = true; });

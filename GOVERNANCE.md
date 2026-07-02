@@ -11,7 +11,7 @@ BASE a été créé par **Charles-Edouard Bardyn** (Directeur Scientifique, VP e
 
 ## L'intendance d'AI Swiss
 
-AI Swiss, association suisse à but non lucratif, assure l'intendance de BASE au titre de sa mission d'intérêt public en faveur de la littératie IA: elle porte le nom «BASE» pour ce projet, veille à la cohérence de la spécification et maintient le projet neutre vis-à-vis des modèles et des fournisseurs. Aucun partenariat exclusif ne liera un adoptant à une plateforme. Voilà ce qu'une association sans but lucratif peut garantir, là où un acteur commercial ne le pourrait pas.
+AI Swiss, association suisse à but non lucratif, assure l'intendance de BASE au titre de sa mission d'intérêt public en faveur de la littératie IA: elle porte le nom «BASE» pour ce projet, veille à la cohérence du standard `base.resource.v1` et de sa spécification, et maintient le projet neutre vis-à-vis des modèles et des fournisseurs. Aucun partenariat exclusif ne liera un adoptant à une plateforme. Voilà ce qu'une association sans but lucratif peut garantir, là où un acteur commercial ne le pourrait pas.
 
 BASE ne désigne aucun successeur, et ce choix est délibéré. Si AI Swiss ne pouvait plus assurer cette intendance, elle s'engage à l'annoncer publiquement et sans délai. La continuité ne repose donc pas sur la longévité d'une association, mais sur la réversibilité: licences ouvertes (Apache-2.0, CC BY 4.0), cœur sans dépendance, et des fichiers qui vous appartiennent. Aucun adoptant n'est captif; quiconque, institution ou personne, peut reprendre le projet et le poursuivre.
 

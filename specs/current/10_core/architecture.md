@@ -60,6 +60,8 @@ Every port receives a **resource record** produced by `inventoryResources` (FR-C
 
 Field domains are defined by the canonical `base.schema.json` (`base.resource.v1`) at the repo root; the `30_schemas/` chapter links it rather than copying it.
 
+**Path identity is POSIX on every OS.** A resource's `path` uses forward slashes on every platform, so a corpus inventoried on Windows reads identically to the same corpus on Linux or macOS, and the value every downstream surface keys on (the manifest, the routing cache, the maintenance lens) is stable across machines. The rule extends to every path BASE *records* rather than merely reads: the `framework_dir` written into `base.config.json` and the user-global config is normalized the same way. The Windows smoke leg (CI) guards this against a native-separator regression, as it guards the CRLF class (NFR-CORE-004).
+
 ## 3. The five ports
 
 A **port** is a plain function signature (Strategy as a function, no class hierarchy). The core ships one **default adapter** per port; integrators add more via `base.config.json` descriptors or trusted `base.config.mjs` adapters. Full contracts live in the per-port chapters; summary:

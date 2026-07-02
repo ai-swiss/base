@@ -35,7 +35,19 @@ export async function startEvaluation(
   { settingsDir = root, run = runEvaluation, validate = validateModels, resolve = resolveModel } = {},
 ) {
   if (current?.running) throw new ApiError("an evaluation is already running", "CONFLICT");
+  // Reserve the slot SYNCHRONOUSLY: the validations below await (model resolution, settings,
+  // scenario stat), and two concurrent POSTs must not both pass the one-at-a-time guard (TOCTOU).
+  // A reservation that fails validation rolls back to the previous idle status.
+  const previous = current;
+  current = { running: true, done: 0, total: 0, agentId: null, processId: null, batchIndex: 0, batchCount: 0, error: null };
+  try {
+    return await startValidated();
+  } catch (error) {
+    current = previous;
+    throw error;
+  }
 
+  async function startValidated() {
   // A flat list of (agentId, processId) targets — the engine runs them in sequence. The tree
   // launcher sends `targets` (possibly spanning several agents); the single-agent multi-select sends
   // `agentId` + `processIds`; the single-run and relaunch paths send `agentId` + `processId`.
@@ -105,6 +117,7 @@ export async function startEvaluation(
     });
 
   return { started: true };
+  }
 }
 
 // Three accepted input shapes collapse to one list of {agentId, processId}, newest first:

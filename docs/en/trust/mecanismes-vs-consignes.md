@@ -1,4 +1,4 @@
-<!-- fr-synced: 99e6918dea9db6d6140297eb399e1aa5c52792b4 -->
+<!-- fr-synced: a8eea22718e978a73451232f1f7166b892cbfde9 -->
 # Mechanisms vs consignes
 
 ## Why this distinction is at the heart of trustworthy AI governance

@@ -23,7 +23,11 @@ function makeError(line, code, detail) {
 }
 
 export function parseFrontmatter(content) {
-  if (!content.startsWith(FRONTMATTER_DELIMITER + "\n")) {
+  // A trailing "\r" is tolerated on the opening fence: the rest of the parser is CR-safe (every
+  // token passes through trim(), the closing fence too), so this check was the single place a CRLF
+  // file (Windows checkout with core.autocrlf, Notepad) could silently demote its whole
+  // frontmatter to body — the exact silent mis-parse NFR-CORE-004 forbids.
+  if (!/^---\r?\n/.test(content)) {
     return { data: {}, raw: "", body: content, errors: [] };
   }
 

@@ -1,10 +1,10 @@
 # Façonnez votre premier assistant
 
-En quelques minutes, vous confiez une tâche que vous répétez à la main à un assistant qui la prend en charge, sans écrire de code et sans rien céder du contrôle: il propose, vous validez. Concrètement, vous copiez un exemple dans un outil IA capable de lire vos fichiers (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code), vous dites ce que vous voulez faire, et l'assistant s'occupe du reste.
+En quelques minutes, vous confiez à un assistant une tâche que vous répétiez à la main, sans écrire de code et sans rien céder du contrôle: il propose, vous validez. Concrètement, vous copiez un exemple dans un outil IA capable de lire vos fichiers, vous dites ce que vous voulez faire, et l'assistant s'occupe du reste.
 
 > **Pas encore le dépôt?** Consultez [Obtenir BASE](obtenir-base.md) pour choisir entre ZIP, clone Git, copie d'exemple ou pack navigateur.
 >
-> **Pas encore d'outil installé?** Consultez le [guide d'installation](installer.md) pour configurer un outil IA capable de lire vos fichiers (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code).
+> **Pas encore d'outil installé?** Consultez le [guide d'installation](installer.md) pour configurer un outil IA capable de lire vos fichiers.
 >
 > **Vous n'avez qu'un navigateur (ChatGPT, Claude)?** Inutile d'installer quoi que ce soit pour commencer: suivez [Essayer BASE sans rien installer](essayer-sans-installer.md).
 
@@ -28,7 +28,7 @@ Copiez le dossier `exemples/assistant-devis/` dans votre espace de travail (par 
 |-------|---------|
 | **Cursor** | Fichier → Ouvrir un dossier → sélectionnez le dossier copié |
 | **Claude Code** | Lancez `claude` dans le dossier copié |
-| **ChatGPT** | Configurez le [serveur MCP](installer-mcp.md) → chargez l'agent → formulez une demande concrète |
+| **ChatGPT / Claude (navigateur)** | Rien à installer pour essayer: collez le pack d'un exemple ([Essayer sans installer](essayer-sans-installer.md)). Pour connecter vos agents avec les garanties mécaniques, le [serveur MCP](installer-mcp.md) (chemin technique) |
 
 > **Vous préférez un atelier visuel?** Studio est optionnel: lancez `npm run studio` pour ouvrir l'atelier et voir d'un coup d'œil vos fichiers, vos agents et leurs process. Votre outil IA reste l'expérience du quotidien; Studio n'est qu'un atelier d'appoint.
 
@@ -68,7 +68,7 @@ Ce contrôle vaut aussi pour ce qui sort de votre machine: pour ce qui passe par
 | Voir comment BASE route une demande | Depuis la racine du dépôt: `node tools/base.mjs route-test --root exemples/routage-pme` |
 | Votre propre assistant | Ouvrez le dossier principal du projet et dites «Lis `.ai/agents/createur-agent/AGENT.md`» |
 | Trouver par où commencer | Même chose, puis dites «Aide-moi à trouver par où commencer» |
-| **Perdu, ou une question sur BASE?** | Dans le dépôt BASE ou un projet où le routeur est activé, dites «Je suis perdu» ou «Aide»: le concierge vous accueille. Chaque exemple métier embarque désormais un accueil de repli, si bien que «Je suis perdu» vous oriente même dans un dossier copié. |
+| **Perdu, ou une question sur BASE?** | Dans le dépôt BASE ou un projet où le routeur est activé, dites «Je suis perdu» ou «Aide»: le concierge vous accueille. Chaque exemple métier embarque un accueil de repli: «Je suis perdu» vous oriente même dans un dossier copié. |
 | S'inspirer | Consultez la [galerie d'idées](../guides/idees-agents.md) |
 
 > **Deux portes différentes.** Dans un projet doté d'un routeur, «Aide / Je suis perdu» ouvre l'**accueil** (concierge): il oriente et répond aux questions sur BASE. «Aide-moi à trouver par où commencer» ouvre le **diagnostic** du créateur d'assistant: il détermine *quel assistant construire* pour votre métier.
@@ -83,8 +83,6 @@ Pour une PME ou une petite équipe, ajoutez le [kit de démarrage PME suisse](..
 
 ---
 
-BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
-
 ## J'ai déjà un dossier de notes ou de procédures
 
 On part rarement d'une page blanche. Deux portes, un même résultat:
@@ -96,9 +94,13 @@ On part rarement d'une page blanche. Deux portes, un même résultat:
   Bienvenue affiche le même plan, au contenu lisible, et un bouton «Créer ces fichiers».
   L'application bascule ensuite en mode normal, sans redémarrer. Votre outil IA demeure
   l'expérience du quotidien; Studio fait office d'atelier, et vos fichiers restent au centre, avec
-  l'outil IA de votre choix (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code).
+  l'outil IA de votre choix.
 
 Ensuite, pour convertir vos documents en process et en compétences, demandez à votre assistant:
 «importer mes procédures existantes». Le routeur l'enverra sur `importer-l-existant`, qui
 propose chaque conversion sous forme de diff. Ce routeur reste rudimentaire mais efficace, et extensible par
 adaptateurs. Il vous épargne la recherche du bon process.
+
+---
+
+BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).

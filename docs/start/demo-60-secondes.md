@@ -16,11 +16,11 @@ Avant de confier un vrai dossier à une IA, vous voulez savoir si vous pouvez lu
 
 Cette démo s'appuie sur `exemples/assistant-devis-demo/`, déjà garni d'une entreprise fictive, d'un catalogue de services, d'un client et d'un devis.
 
-Vous n'avez pas encore le dépôt sous la main? [Essayer sans rien installer](essayer-sans-installer.md) présente les façons les plus simples de récupérer le dossier et de le confier à votre IA, de la plus légère à la plus complète.
+Vous n'avez pas encore le dépôt sous la main? [Essayer sans rien installer](essayer-sans-installer.md) présente les façons les plus simples d'essayer: son exemple à lui est l'office du tourisme de Veytaux plutôt que ce devis, mais le principe montré est le même; revenez ici quand vous aurez le dépôt.
 
 ## 1. Ouvrez la démo
 
-Dans un outil IA capable de lire vos fichiers (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code), ouvrez ce dossier précis, et non la racine du dépôt:
+Dans un outil IA capable de lire vos fichiers, ouvrez ce dossier précis, et non la racine du dépôt:
 
 ```text
 exemples/assistant-devis-demo/

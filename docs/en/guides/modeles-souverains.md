@@ -1,4 +1,4 @@
-<!-- fr-synced: e14feb9ec2cbf42e7c92fd774fd0bee305b51658 -->
+<!-- fr-synced: 6e652057c21ece3b8c6cd0a673fca71a8dcc80f8 -->
 # Keeping your models sovereign, local or in Switzerland
 
 Using a model with BASE should not mean handing your data to a provider outside your control. If that is your requirement, two concrete paths keep you in charge, fully local or hosted in Switzerland, with a guide for choosing based on the sensitivity of what you handle.
@@ -105,6 +105,10 @@ Two local configurations are actually used by the maintainers, as is:
 - **`nomic-embed-text` for local embeddings**: it is the default model of `createOllamaEmbedder()` in the `@ai-swiss/base-ranker-semantic` package, when a project enables the semantic ranker without sending anything off the machine.
 
 In every case, the core stays the same text file you own. The model is a replaceable detail, not the place where your method lives.
+
+## Daily work: the honest state
+
+This guide covers evaluation, embeddings, and the Studio chat with local or Swiss-hosted models. Daily work in a harness (the AI tool that reads your files) is another matter: the detailed installers in this documentation target tools whose default models are those of US providers, and we do not yet have an end-to-end recipe, validated by our evaluations, that pairs a harness with a local or Swiss model for the whole day. Several harnesses can point at an OpenAI-compatible endpoint (hence at Ollama or Infomaniak); quality then depends heavily on the chosen model, and we prefer to recommend nothing we have not measured. When a combination holds up under our evaluations, it will be documented here, numbers included.
 
 ## Going further
 

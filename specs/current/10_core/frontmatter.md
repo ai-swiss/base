@@ -15,12 +15,13 @@ export function parseFrontmatter(content) {
   // → { data: object, body: string, raw: string, errors: Array<{line, code, message}> }
 }
 ```
-- If `content` does not start with `---\n`, return `{ data:{}, raw:"", body:content, errors:[] }` (no frontmatter is valid).
+- If `content` does not start with `---\n`, return `{ data:{}, raw:"", body:content, errors:[] }` (no frontmatter is valid). A `\r` before any newline is tolerated: a CRLF document (Windows checkout, editor default) parses **identically** to its LF twin — never silently demoting the frontmatter to body (NFR-CORE-004).
 - The broker treats `errors` as validation errors (today via `frontmatter_errors`).
 
 ## Supported grammar (the contract)
 ```
 document     := "---" NEWLINE mapping "---" NEWLINE?
+NEWLINE      := "\r"? "\n"                            # CRLF ≡ LF (tokens are trimmed)
 mapping      := ( entry )*
 entry        := INDENT key ":" ( SP inline_value? NEWLINE | NEWLINE nested )
 key          := /[A-Za-z0-9_-]+/                      # simple keys only
