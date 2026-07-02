@@ -1,4 +1,4 @@
-<!-- fr-synced: 429e21090d5f5168378b7d6232f7b3e9dcd78a61 -->
+<!-- fr-synced: 125dfaf1a8f21df09a67919096b79b78a9e77139 -->
 # Distribute to a team
 
 *⏱ ~20 min · module 3/3, Team track*
@@ -52,6 +52,6 @@ for the shared mechanical guarantees (deterministic routing, mediated writes), f
 
 🔁 **At home**: who, on your team, will review process changes before merging? And which machine will host the MCP server?
 
-→ **And now**: you have gone through all three tracks. Keep the reflex: gesture, check, then only the concept.
+→ **And now**: you have gone through all three tracks. Keep the reflex: gesture, check, then only the concept. For what comes next at the scale of an organization, [Adoption within an organization](../learn/adoption-organisation.md) describes how these practices become team processes, then instituted flows.
 
 🆘 **Common failures**: *`npm: command not found`*: install Node 18+ from nodejs.org. *The server refuses to start on the network*: that's intentional without authentication, set `BASE_MCP_BEARER_TOKEN`. *The platform sees no agents*: check the `--root` (absolute path) and that it contains `.ai/agents/*/AGENT.md`. *Per-tool config*: see [install the MCP server](../start/installer-mcp.md).

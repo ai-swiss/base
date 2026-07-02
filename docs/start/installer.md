@@ -7,7 +7,7 @@ Installer un espace de travail local, c'est garder vos agents et votre contexte 
 | Votre situation | Suivez |
 | --- | --- |
 | Vous voulez que votre IA installe pour vous | [Faites installer BASE par votre IA](installer-par-votre-ia.md) |
-| Vous préférez une interface graphique: plusieurs outils conviennent (Claude Code, Cursor, Antigravity, GitHub Copilot, OpenCode…), et BASE n'en privilégie aucun | [Installer Cursor](installer-cursor.md) |
+| Vous préférez une interface graphique: plusieurs outils conviennent (Cursor, Antigravity, GitHub Copilot, OpenCode…), et BASE n'en privilégie aucun | [Installer Cursor](installer-cursor.md) |
 | Vous êtes à l'aise dans un terminal | [Installer Claude Code](installer-claude-code.md) |
 | Vous voulez connecter ChatGPT, Claude Desktop ou une autre plateforme à vos agents | [Installer le serveur MCP](installer-mcp.md) |
 | Vous n'avez qu'un navigateur, rien à installer | [Essayer BASE sans rien installer](essayer-sans-installer.md) |
@@ -18,7 +18,7 @@ La plupart des outils IA capables de lire vos fichiers conviennent également (p
 
 ## Prérequis communs
 
-- **Un outil IA capable de lire vos fichiers** (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code): l'outil lui-même suffit.
+- **Un outil IA capable de lire vos fichiers**: l'outil lui-même suffit.
 - **CLI BASE ou serveur MCP**: Node 18 ou plus. C'est la seule dépendance du cœur.
 - **BASE Studio (l'atelier)**: rien d'autre. `base studio` installe ses dépendances au premier lancement et ouvre votre navigateur.
 

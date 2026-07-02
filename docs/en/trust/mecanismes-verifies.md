@@ -1,4 +1,4 @@
-<!-- fr-synced: b201202af26ded8c03e9bddc89eb502a0ad11565 -->
+<!-- fr-synced: 04c8ddadd6f8b1d0f139955a97c01bc339be7881 -->
 # Verified mechanisms: guarantee, function, test
 
 A guarantee is worth nothing unless the code enforces it and a test protects it. This view gathers the guarantees BASE holds in just that way: each row links a guarantee to the function that enforces it and to the test that would **fail** should it ever give way; nothing here is invented. It is the short read meant for an evaluation file; the exhaustive mapping of requirements to tests lives in `specs/current/10_core/requirements-matrix.md`, regenerated and verified in continuous integration.
@@ -15,7 +15,7 @@ Vocabulary reminder: a **mechanism** is enforced by the broker (code checks it, 
 | Routing picks an agent and a process, or **abstains**, deterministically | `tools/core/routing.mjs` → `decideRoute` | `base route-test`, replayed root by root in CI (`.github/workflows/ci.yml`) | Lexical routing by default (zero network); semantic ranking is optional and can run locally. |
 | The core has no runtime dependency (it runs on bare `node`) | `package.json` (zero dependencies) and the `tools/**` engine | `tests/architecture.test.mjs` (fails on any declared dependency or non-relative import) | Studio (the web application), the MCP server, and the doc site generation have their own dependencies. |
 | The documentation has no broken links and no orphan pages | `tools/docs/model.mjs`, `tools/doctor/diagnose.mjs` | `tests/base-docs.test.mjs`, `tests/base-doctor.test.mjs` | Covers the documentation corpus. |
-| Studio listens only locally (loopback) | `tools/studio/server.mjs` (refusal of any non-loopback host) | `tests/studio-server.test.mjs` | Studio does not expose itself to the network. |
+| Studio listens only locally (loopback) and refuses any request coming from a foreign page, reads included | `tools/studio/server.mjs` (refusal of any non-loopback host at bind time; anti-DNS-rebinding guard `crossOriginError` ahead of all routing, on every method) | `tests/studio-server.test.mjs` (a GET with a non-loopback `Host` gets a 403) | The `BASE_STUDIO_ALLOW_INSECURE_REMOTE=1` variable explicitly lifts the non-loopback bind refusal, at your own risk (same override logic as the MCP row above). |
 
 Each "Mechanism" and "Test" cell names a real file in the repository: you can open it, read its function, and run the test. That is what "verifiable by a third party" means: the guarantee is not a promise but a behavior the code enforces and a test protects.
 

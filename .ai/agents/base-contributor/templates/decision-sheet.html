@@ -45,8 +45,8 @@
 <div class="bar"><span class="txt" id="txt">0 répondu</span><button class="btn" id="export">Exporter pour Claude</button></div>
 <script>
 const SCALE = ["Non répondu","Non","Plutôt non","Partagé","Plutôt oui","Tout à fait"];
-const STORAGE_KEY = "decision-sheet-CHANGE-ME";
-const EXPORT_FILE = "decision-sheet_CHANGE-ME.md";
+const STORAGE_KEY = "YYYY-MM-DD_slug_decisions";       // dated stem, unique per sheet
+const EXPORT_FILE = "YYYY-MM-DD_slug_decisions-filled.md"; // same stem + -filled, pairs with the blank
 const POINTS = [
   // { id:"P1", title:"...", what:"...", reco:"...", recoSummary:"...", scaleLabel:"D'accord ?" },
 ];

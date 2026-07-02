@@ -1,6 +1,6 @@
 {
   "name": "@ai-swiss/base",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "BASE public framework: local-first assistants, resources, validation and discovery",
   "license": "Apache-2.0 AND CC-BY-4.0",
   "author": "AI Swiss (https://a-i.swiss)",
@@ -61,11 +61,18 @@
     "base.config.json",
     "base.schema.json",
     "README.md",
+    "README.en.md",
     "CHANGELOG.md",
     "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "GOVERNANCE.md",
     "LICENSE",
     "LICENSES",
+    "LICENSING.md",
     "MANIFESTO.md",
+    "MANIFESTO.en.md",
+    "MANIFESTO.de.md",
+    "MANIFESTO.it.md",
     "SECURITY.md",
     "BASE_BOOTSTRAP.md",
     "!docs/.temp",
@@ -135,8 +142,14 @@
     "@ai-swiss/base-eval": "1.x"
   },
   "peerDependenciesMeta": {
-    "@ai-swiss/base-ranker-semantic": { "optional": true },
-    "@ai-swiss/base-llm": { "optional": true },
-    "@ai-swiss/base-eval": { "optional": true }
+    "@ai-swiss/base-ranker-semantic": {
+      "optional": true
+    },
+    "@ai-swiss/base-llm": {
+      "optional": true
+    },
+    "@ai-swiss/base-eval": {
+      "optional": true
+    }
   }
 }

@@ -1,7 +1,8 @@
-// Spec coverage: UR-CORE-001 FR-INIT-005 RC-INIT-002 FR-STUDIO-001 FR-STUDIO-004 FR-STUDIO-005
+// Spec coverage: UR-CORE-001 FR-INIT-005 RC-INIT-002 FR-STUDIO-001 FR-STUDIO-004 FR-STUDIO-005 FR-STUDIO-007
 
 import assert from "node:assert/strict";
 import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import http from "node:http";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { after, before, describe, it } from "node:test";
@@ -41,7 +42,7 @@ describe("studio server — loopback enforcement", () => {
       await assert.rejects(
         () => startStudioServer(EX, { host: "127.0.0.1", port: taken, watch: false }),
         (error) => {
-          assert.match(error.message, /tourne probablement deja/);
+          assert.match(error.message, /tourne probablement déjà/);
           assert.match(error.message, new RegExp(String(taken)));
           return true;
         },
@@ -51,7 +52,7 @@ describe("studio server — loopback enforcement", () => {
     }
   });
 
-  it("crossOriginError guards state-changing requests against DNS-rebinding and cross-origin POSTs", () => {
+  it("crossOriginError guards requests against DNS-rebinding and cross-origin pages (FR-STUDIO-007)", () => {
     const req = (headers) => ({ headers });
     // Local UI: loopback Host, loopback Origin (even across ports) — allowed.
     assert.equal(crossOriginError(req({ host: "127.0.0.1:4319" })), null);
@@ -59,7 +60,7 @@ describe("studio server — loopback enforcement", () => {
     assert.equal(crossOriginError(req({ host: "[::1]:4319" })), null);
     // DNS-rebinding: the victim loaded attacker.com, which now resolves to 127.0.0.1.
     assert.match(crossOriginError(req({ host: "attacker.com" })), /non-loopback Host/);
-    // Cross-site page POSTing to the predictable local port.
+    // Cross-site page reaching the predictable local port.
     assert.match(crossOriginError(req({ host: "127.0.0.1:4319", origin: "https://evil.example" })), /cross-origin/);
   });
 });
@@ -75,6 +76,30 @@ describe("studio server — HTTP routes", () => {
   });
 
   after(() => server.close());
+
+  it("refuses a DNS-rebinding GET on a read endpoint before any handler (FR-STUDIO-007)", async () => {
+    // fetch() forbids overriding Host, so use a raw request. The guard must fire on READS: the GET
+    // endpoints serve the corpus itself (/api/file, /api/settings), the data Studio promises to
+    // keep local — a rebinding page in a non-PNA browser would otherwise exfiltrate it wholesale.
+    const raw = (headers) => new Promise((resolve, reject) => {
+      const u = new URL(base);
+      const rq = http.request({ host: u.hostname, port: u.port, path: "/api/tree", method: "GET", headers }, (rs) => {
+        let data = "";
+        rs.on("data", (c) => (data += c));
+        rs.on("end", () => resolve({ status: rs.statusCode, body: data }));
+      });
+      rq.on("error", reject);
+      rq.end();
+    });
+    const refused = await raw({ host: "attacker.example" });
+    assert.equal(refused.status, 403);
+    assert.match(JSON.parse(refused.body).error, /non-loopback Host/);
+    const foreignOrigin = await raw({ origin: "https://evil.example" });
+    assert.equal(foreignOrigin.status, 403);
+    // The same read from the local machine stays served.
+    const served = await raw({});
+    assert.equal(served.status, 200);
+  });
 
   it("GET /api/resources?type=process returns process cards", async () => {
     const res = await fetch(`${base}/api/resources?type=process`);

@@ -206,6 +206,20 @@
         "local-only",
         "any"
       ]
+    },
+    "inventory": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "The project's own inventory exclusions. The engine hard-codes no repository layout: this repo excludes its engineering trees (specs/, exemples/, packages/, tests/) and translation mirrors here; a user root excludes nothing unless it says so.",
+      "properties": {
+        "exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Root-relative path prefixes excluded from inventory/discovery/routing/manifest (e.g. \"specs\", \"docs/en\")."
+        }
+      }
     }
   },
   "$comment": "Declarative descriptor vocabulary: rankers `{type:'keywordIntent', rules}` or `{type:'semanticHybrid', aliases}`, validators `{type:'requireFields'|'requireSchemaVersion'|'forbidSensitivity'|'piiScanner'|'routability', ...}`, routing thresholds `{floor_score, top2_margin, max_candidates}`, and policy `'advisory'|'strict'` or `{type:'strict', grants:[]}` are instantiated by tools/core/config.mjs; auth (MCP) `'none'|'bearer'` or `{type:'bearer', env?: string}` is interpreted by mcp/src/auth.ts after config resolution. Function-valued options (e.g. forbidSensitivity.unless) and arbitrary adapters are .mjs-only; unknown descriptors fail loudly with base.config.invalid."

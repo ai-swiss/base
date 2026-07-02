@@ -38,6 +38,6 @@ learning_level: beginner
 
 🔁 **Chez vous**: lequel de vos documents mérite d'être le premier vrai contenu de votre assistant?
 
-→ **Et maintenant**: vous avez fait le tour de la Découverte. Pour construire pour de bon (process, évaluation, terrain), passez au [parcours Praticien](praticien-1-anatomie.md).
+→ **Et maintenant**: vous avez fait le tour de la Découverte. Pour construire pour de bon (process, évaluation, terrain), passez au [parcours Praticien](praticien-1-anatomie.md). Et pour le pourquoi, maintenant que vous avez goûté la pratique: [Pourquoi BASE](../learn/co-penser-avec-lia.md).
 
 🆘 **Pannes courantes**: *Il invente une réponse à la question 2*: c'est le risque propre au palier consignes; le routage déterministe et un bon use_when l'atténuent (parcours Praticien). *Il ne voit pas votre document*: assurez-vous qu'il se trouve bien DANS le dossier ouvert, et non ailleurs.

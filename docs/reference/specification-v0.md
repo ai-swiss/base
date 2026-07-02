@@ -12,7 +12,7 @@ La «v0» désignait le récit conceptuel initial de BASE, antérieur à la spé
 
 > L'humain et l'IA travaillent avec des fichiers texte. Le code garantit les invariants que le langage naturel ne peut pas garantir.
 
-BASE est un protocole minimal qui articule durablement du savoir, des instructions, des processus, des données, des outils exécutables, des permissions, des décisions humaines, des traces utiles et des adaptateurs vers différents agents ou harnesses. Pour lever les confusions courantes: ce n'est ni une application, ni une interface d'automatisation, ni un moteur de workflow, ni une base de données, ni un simple prompt empaqueté.
+BASE est un cadre minimal, un [standard ouvert que nous proposons](le-standard.md) avec son implémentation de référence, qui articule durablement du savoir, des instructions, des processus, des données, des outils exécutables, des permissions, des décisions humaines, des traces utiles et des adaptateurs vers différents agents ou harnesses. Pour lever les confusions courantes: ce n'est ni une application, ni une interface d'automatisation, ni un moteur de workflow, ni une base de données, ni un simple prompt empaqueté.
 
 ## Où lire quoi désormais
 

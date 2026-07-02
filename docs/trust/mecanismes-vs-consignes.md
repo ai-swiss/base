@@ -19,7 +19,7 @@ Dans la plupart des outils IA, une règle de sécurité n'est rien d'autre qu'un
 
 BASE distingue deux niveaux, et cette distinction fonde son honnêteté:
 
-- un **mécanisme** est appliqué par le broker (la CLI `base`, le cœur dans `tools/`, ou le serveur MCP lorsqu'il délègue au broker). Il intervient avant ou pendant l'action, qu'il peut bloquer, médiatiser ou refuser. Il ne tient pas à la bonne volonté du modèle.
+- un **mécanisme** est appliqué par le broker (la CLI `base`, le cœur dans `tools/`, ou le serveur MCP lorsqu'il délègue au broker). Il intervient avant ou pendant l'action, qu'il peut bloquer, médier ou refuser. Il ne tient pas à la bonne volonté du modèle.
 - une **consigne** est une instruction inscrite dans les métadonnées ou le contexte. Elle oriente un modèle coopératif et sert de signal d'audit, sans rien contraindre mécaniquement. Une consigne n'est pas du code qui s'exécute, même si un modèle la suit parfois assez fidèlement pour en donner l'illusion: il subsiste toujours une marge d'erreur, variable selon les domaines. Une règle qui doit être stricte ne se confie jamais à un modèle, elle exige un mécanisme.
 
 La condition qui fait basculer une propriété de la consigne au mécanisme est toujours la même: **l'action passe par le chemin du broker** (CLI, cœur, ou MCP déléguant au broker). Qu'elle emprunte un autre chemin (accès direct au shell, au système de fichiers ou à une API externe, sans passer par BASE), et la même propriété retombe au rang de simple consigne.

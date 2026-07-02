@@ -52,7 +52,7 @@ describe("requirements matrix", () => {
       [id("A-001"), id("A-002")],
       new Map([[id("A-001"), ["tests/a.test.mjs", "tests/b.test.mjs"]], [id("A-002"), []]]),
     );
-    assert.match(matrix, /1 of 2 requirements proven by a test — 0 weak, 1 gap\./);
+    assert.match(matrix, /1 of 2 requirements cited by a test — 0 weak, 1 gap\./);
     assert.ok(matrix.includes(`| ${id("A-001")} | ✅ | \`tests/a.test.mjs\`<br>\`tests/b.test.mjs\` |`));
     assert.ok(matrix.includes(`| ${id("A-002")} | ❌ no test — GAP | — |`), "every id gets a proof row");
     assert.ok(matrix.includes(`- ${id("A-002")}`), "gaps section lists the uncited requirement");
@@ -68,7 +68,7 @@ describe("requirements matrix", () => {
       },
     );
     assert.ok(matrix.includes(`| ${id("A-001")} | ⚠️ weak | \`tests/a.test.mjs\` |`));
-    assert.match(matrix, /1 of 1 requirements proven by a test — 1 weak, 0 gap\./);
+    assert.match(matrix, /1 of 1 requirements cited by a test — 1 weak, 0 gap\./);
     assert.match(matrix, /## Weak proofs/);
     assert.ok(matrix.includes(`- ${id("A-001")} — snapshot-only`), "weak section names the reason");
   });
@@ -80,7 +80,7 @@ describe("requirements matrix", () => {
       { descopedIds: new Set([id("A-002")]) },
     );
     // A-002 is retired: 1 active requirement, fully proven, zero gap.
-    assert.match(matrix, /1 of 1 requirements proven by a test — 0 weak, 0 gap, 1 de-scoped\./);
+    assert.match(matrix, /1 of 1 requirements cited by a test — 0 weak, 0 gap, 1 de-scoped\./);
     assert.ok(matrix.includes(`| ${id("A-002")} | ⊘ de-scoped | — |`));
     assert.match(matrix, /## De-scoped \(retired, ID preserved\)/);
   });
@@ -105,8 +105,11 @@ describe("requirements matrix", () => {
   });
 
   it("parseCounts reads the headline, ratchetVerdict fails only when weak or gap rises", () => {
-    const counts = parseCounts("**98 of 98 requirements proven by a test — 2 weak, 0 gap.**");
+    const counts = parseCounts("**98 of 98 requirements cited by a test — 2 weak, 0 gap.**");
     assert.deepEqual(counts, { proven: 98, total: 98, weak: 2, gap: 0, descoped: 0 });
+    // The ratchet must still read a baseline written before the "proven"→"cited" calibration.
+    const legacy = parseCounts("**98 of 98 requirements proven by a test — 2 weak, 0 gap.**");
+    assert.deepEqual(legacy, { proven: 98, total: 98, weak: 2, gap: 0, descoped: 0 });
     assert.equal(ratchetVerdict({ weak: 2, gap: 0 }, { weak: 2, gap: 0 }).ok, true);
     assert.equal(ratchetVerdict({ weak: 2, gap: 0 }, { weak: 1, gap: 0 }).ok, true, "improving is fine");
     assert.equal(ratchetVerdict({ weak: 2, gap: 0 }, { weak: 3, gap: 0 }).weakRose, true);

@@ -16,7 +16,7 @@ keywords: [obtenir, telecharger, installer, clone, git, zip, exemple, demarrer]
 
 La façon dont vous récupérez BASE détermine ce que vous pourrez en faire ensuite: simplement essayer un assistant, repartir de vos propres données, ou suivre les mises à jour et contribuer. Les points ci-dessous sont des **options indépendantes**, et non des étapes à enchaîner: lisez-les, puis retenez celle qui correspond à votre besoin. Pour essayer un assistant, le ZIP ou la copie d'un exemple suffit; le clone Git devient utile dès que vous voulez suivre les mises à jour ou contribuer.
 
-> **Le plus rapide, et sans terminal de votre côté:** laissez votre outil IA s'en charger. Collez un seul bloc dans un outil IA capable de lire vos fichiers (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code): il installe BASE, crée votre espace de travail et vous prévient quand tout est prêt. Voir [Faites installer BASE par votre IA](installer-par-votre-ia.md).
+> **Le plus rapide, et sans terminal de votre côté:** laissez votre outil IA s'en charger. Collez un seul bloc dans un outil IA capable de lire vos fichiers: il installe BASE, crée votre espace de travail et vous prévient quand tout est prêt. Voir [Faites installer BASE par votre IA](installer-par-votre-ia.md).
 
 > **Vous venez simplement de diriger votre outil IA vers le dépôt?** Dites-lui «applique BASE à mon dossier»: il doit d'abord lancer `base init` (qui crée l'agent au bon endroit, sous `.ai/agents/<nom>/`), puis vous proposer chaque conversion sous forme de diff, et ne jamais créer les fichiers à votre place.
 
@@ -29,7 +29,7 @@ Si vous voulez simplement éprouver la méthode dans ChatGPT ou Claude, sans out
 1. Ouvrez la page du projet sur GitHub: `https://github.com/ai-swiss/base`.
 2. Bouton vert **Code**, puis **Download ZIP**.
 3. Dézippez le dossier.
-4. Ouvrez un dossier d'**exemple** (par exemple `exemples/assistant-devis-demo/`) dans un outil IA capable de lire vos fichiers (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code), pas la racine du dépôt.
+4. Ouvrez un dossier d'**exemple** (par exemple `exemples/assistant-devis-demo/`) dans un outil IA capable de lire vos fichiers, pas la racine du dépôt.
 
 Chaque exemple est autonome: c'est un assistant complet que vous ouvrez dans l'outil IA pour lui adresser votre demande.
 
@@ -58,11 +58,11 @@ Partagez `assistant-devis.md`: la personne le colle dans sa conversation, puis �
 
 ## 6. Distribution npm et Releases
 
-La distribution par paquets npm (`@ai-swiss/base` et les paquets optionnels) et par archives de **Releases** GitHub viendra à mesure que la surface publique se stabilisera (voir [Versions et stabilité](../reference/versions-et-stabilite.md)). En attendant, le ZIP, la copie d'exemple et le clone Git ci-dessus restent les chemins officiels.
+Chaque version publiée porte ses fichiers sur la page **Releases** de GitHub: l'archive source à nom stable ([base.zip](https://github.com/ai-swiss/base/releases/latest/download/base.zip), toujours la dernière version publiée) et les packs navigateur des exemples phares. C'est ce que «1.0.0» veut dire pour vous: un état daté et figé, pas la tête mouvante d'une branche. La distribution par paquets npm (`@ai-swiss/base` et les paquets optionnels) viendra à mesure que la surface publique se stabilisera (voir [Versions et stabilité](../reference/versions-et-stabilite.md)); d'ici là, la Release, la copie d'exemple et le clone Git ci-dessus restent les chemins officiels.
 
 ## Et après?
 
 - Premier succès en quelques minutes: [Démarrage express](quickstart.md).
-- Brancher votre outil (un outil IA capable de lire vos fichiers, par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code; ou ChatGPT, Claude et le MCP): [Connecter votre outil IA](../guides/connecter-votre-outil.md).
+- Brancher votre outil (un outil IA capable de lire vos fichiers, ou ChatGPT et Claude via le MCP): [Connecter votre outil IA](../guides/connecter-votre-outil.md).
 - Quel chemin selon votre profil: [Lire dans quel ordre](lire-dans-quel-ordre.md).
 - Bloqué dans un exemple: demandez de l'aide. Avec la CLI, le MCP ou un harness qui respecte le routage, BASE vous oriente mécaniquement vers l'accueil configuré; en mode navigateur seul, ce n'est qu'une consigne que le modèle suit.

@@ -1,4 +1,4 @@
-<!-- fr-synced: 6de61458167736e130d8212b1aafbc0fec17fa8e -->
+<!-- fr-synced: 0725ae08f6d71e28f981143ae81c97525cf49f33 -->
 # Why BASE
 
 > **The question is not where your servers are, but who structures your interactions with AI.**
@@ -25,7 +25,7 @@ BASE does not replace your tools and does not stop you from using them: it is th
 
 ## The model, an amnesiac colleague from elsewhere
 
-AI **does not behave like classic digital software**. The most workable mental shortcut is perhaps a **colleague from elsewhere**, a little amnesiac, who has a rich representation of the world but not of yours; who never shares a coffee with you and does not know your full context. It masters a great many verifiable domains, without knowing anything of yours. Two real shortcomings follow. First, the generative core starts **every conversation** with an empty context window: by default, it does not share your memory, each exchange starts from scratch. Second, it communicates with you in natural language, intrinsically underspecified, which is both its strength and its weakness (any ambiguity can get executed).
+AI **does not behave like classic digital software**. The most workable mental shortcut is a **colleague from elsewhere**, a little amnesiac: a rich representation of the world, but not of yours. It masters a great many verifiable domains, but it never shares a coffee with you and knows nothing of your terrain. Two real shortcomings follow. First, the generative core starts **every conversation** with an empty context window: by default, it does not share your memory, each exchange starts from scratch. Second, it communicates with you in natural language, intrinsically underspecified, which is both its strength and its weakness (any ambiguity can get executed).
 
 The key is not a setting you make once. It is to **structure your information so it is available at the right granularity, at the right moment, across all your interactions**. For example, working back up the thread:
 
@@ -37,13 +37,13 @@ Re-contextualizing each conversation becomes a quick and reliable gesture: memor
 
 ## The applied science of human-AI interaction
 
-Co-thinking well is not a matter of talent or of the perfect prompt: it is an **applied science**, and BASE **ships the documentation** for it, reflecting the current state of the research AI Swiss conducts. Collaboration rests on proven principles:
+Co-thinking well is not a matter of talent or of the perfect prompt: it is an **applied science**, and BASE **ships the documentation** for it, reflecting the current state of the research AI Swiss conducts (including Bardyn, C. E., "Human-AI Co-Thinking: An Operational Framework for Education", in *Design for Thinking for Transformative Education*, Springer Nature, forthcoming). Collaboration rests on proven principles:
 
 - **compatible terms** to exchange without loss (Shannon, 1948): the other party understands only what your shared code can carry;
 - **clear objectives**, without which collaboration fails even when the other party is brilliant (Locke & Latham, 1990);
 - **correction loops**, like a meeting that realigns (Wiener, 1948): you generate, you evaluate, you realign.
 
-The lesson fits on one line: **the bottleneck of human-AI collaboration is shared understanding, not raw power.** BASE thus sits between AI through products (which you consume) and AI through concepts (which you recite): a path that is both scientific and sovereign.
+The lesson fits on one line: **the bottleneck of human-AI collaboration is shared understanding, not raw power.** And shared understanding cannot be bought ready-made and cannot be recited: hence BASE's path, between AI through products (which you consume) and AI through concepts (which you recite), both scientific and sovereign.
 
 The operational form is a **co-thinking loop**: state the goal and the constraints, generate, evaluate against an explicit check, revise. You start again, and the structure carries the context so each turn stays light. The full method, principle by principle: [Co-thinking in practice](pratiques-co-pensee.md).
 
@@ -78,7 +78,7 @@ Co-thinking exposes you to many potential losses of control, and verification pr
 
 The trap is that we verify poorly by default. Fluent text inspires a trust it has not earned; an answer obtained without effort switches off critical thinking. Every claim accepted without scrutiny adds a **verification debt**: a reserve of unverified assumptions that eventually gives way under the first real pressure. So treat every answer as a **hypothesis**.
 
-The good news is not only that a strong structure upstream lightens verification downstream. It is also that **the structure can include verification itself**, in the form of iteration, review, re-anchoring in reliable data. BASE tools up this engineering with elements you own (markers, write gate, process evaluation), enough to make an output reliable enough to ship, without thereby guaranteeing that an answer is true. Verification remains a brick, important and non-optional, never the column.
+The reliability of an output is a property of the workflow that produced it, not of the model alone. The good news is not only that a strong structure upstream lightens verification downstream. It is also that **the structure can include verification itself**, in the form of iteration, review, re-anchoring in reliable data. BASE tools up this engineering with elements you own (markers, write gate, process evaluation), enough to make an output reliable enough to ship, without thereby guaranteeing that an answer is true. Verification remains a brick, important and non-optional, never the column.
 
 ## The limits of the task, the AI shares them
 

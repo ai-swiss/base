@@ -65,5 +65,5 @@ optionnels. Conséquences:
 
 ## En une phrase
 
-BASE sait quand le scan suffit, quand l'index aide et ce que coûte chaque option. Des benchmarks
-reproductibles le mesurent: cela vaut mieux qu'une simple affirmation.
+BASE sait quand le scan suffit, quand l'index aide et ce que coûte chaque option. Des [benchmarks
+reproductibles](../guides/benchmarks-echelle.md) le mesurent: cela vaut mieux qu'une simple affirmation.

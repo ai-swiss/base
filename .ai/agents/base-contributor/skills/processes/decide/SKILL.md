@@ -33,9 +33,13 @@ and exports them all in one pass. The human decides; the sheet structures the de
 1. **List the real decisions.** One card per point. Each card carries the context, **your recommendation**
    (lead with it), and where relevant your prior reading. Do not pad with already-settled items.
 2. **Build from the template.** Copy the agent's template at
-   `.ai/agents/base-contributor/templates/decision-sheet.html` to `.temp/YYYY-MM-DD_subject/<name>.html`.
-   Fill the title, intro, `STORAGE_KEY`, `EXPORT_FILE` and the `POINTS` array (`id`, `title`, `what`,
-   `reco`, `recoSummary`, `scaleLabel`).
+   `.ai/agents/base-contributor/templates/decision-sheet.html` to
+   `.temp/{YYYY-MM-DD}_{slug}/{YYYY-MM-DD}_{slug}_decisions.html` — a dated stem, unique per sheet.
+   Fill the title, intro, the `POINTS` array (`id`, `title`, `what`, `reco`, `recoSummary`,
+   `scaleLabel`), and the two names that pair the blank with the return: `STORAGE_KEY` =
+   `{YYYY-MM-DD}_{slug}_decisions` (namespaces the browser autosave) and `EXPORT_FILE` =
+   `{YYYY-MM-DD}_{slug}_decisions-filled.md` (so the export sorts next to its blank and stays
+   self-describing outside the folder).
 3. **Keep it clean.** No reference to any external framework or banned phrasing; AI Swiss styling
    is already in the template. `.temp/` is gitignored, so the sheet stays scratch.
 4. **Open it for the human** and wait. The sheet auto-saves to the browser, and the export is a

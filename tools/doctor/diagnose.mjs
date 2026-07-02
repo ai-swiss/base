@@ -12,6 +12,7 @@ import { inventoryResources } from "../base-core.mjs";
 import { extractLinks, extractReferences } from "../core/context-pack.mjs";
 import { readFeedback } from "../core/feedback.mjs";
 import { listFiles, walkTree } from "../core/fswalk.mjs";
+import { loadRoutingVectors, verifyRoutingVectors } from "../core/routing-vectors.mjs";
 
 // Runtime conventions: directories BASE itself fills at run time. Referencing them is normal even
 // before they exist — never a dead link.
@@ -57,11 +58,12 @@ const RECURRING_ABSTENTION_THRESHOLD = 3;
  * The pure rule set — everything injected, fully testable without disk.
  * @param {{ inventory: any[], files?: string[], mtimes?: Record<string, number>,
  * runs?: { process: string | null, outcome: string | null, at: string }[],
- * feedback?: { frictions: { path: string, process: string, status: string }[], abstentions?: { query: string, verdict: string, count: number, lastAt: string }[] }, generated?: string[], now?: string }} data
+ * feedback?: { frictions: { path: string, process: string, status: string }[], abstentions?: { query: string, verdict: string, count: number, lastAt: string }[] }, generated?: string[],
+ * routingVectors?: { byPath: Record<string, number[]> | null, stale: string[], legacy: boolean, embedder: string | null } | null, now?: string }} data
  * `files`: every file on disk (links may target non-resources like JSON templates).
  * → [{ severity: "error" | "warn", type, path, message, fix_hint }]
  */
-export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], feedback = { frictions: [], abstentions: [] }, generated = [], now = new Date().toISOString() }) {
+export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], feedback = { frictions: [], abstentions: [] }, generated = [], routingVectors = null, now = new Date().toISOString() }) {
   const findings = [];
   const today = now.slice(0, 10);
   const paths = new Set([...inventory.map((r) => r.path), ...files]);
@@ -219,6 +221,29 @@ export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], fe
     });
   }
 
+  // The routing-vector cache must never degrade silently (Voie 2): a stale entry (use_when edited
+  // since the precompute) is dropped at route time and REPORTED here, where the owner looks; a
+  // legacy cache (pre-v1, no hashes) cannot even say whether it is stale — same nudge, rebuild.
+  if (routingVectors) {
+    if (routingVectors.legacy) {
+      findings.push({
+        severity: "warn",
+        type: "stale_routing_vectors",
+        path: ".ai/routing/embeddings.json",
+        message: "cache de vecteurs de routage à l'ancien format (sans empreintes): sa péremption est indétectable",
+        fix_hint: "Régénérez le cache: «base build routing-embeddings --write».",
+      });
+    } else if (routingVectors.stale.length) {
+      findings.push({
+        severity: "warn",
+        type: "stale_routing_vectors",
+        path: ".ai/routing/embeddings.json",
+        message: `${routingVectors.stale.length} vecteur(s) de routage périmé(s) (use_when modifié depuis le précalcul): ignorés au routage`,
+        fix_hint: "Régénérez le cache: «base build routing-embeddings --write».",
+      });
+    }
+  }
+
   return findings;
 }
 
@@ -258,7 +283,9 @@ export async function diagnose(root) {
     /* no runs yet */
   }
   const feedback = await readFeedback(root, { status: "open" });
-  return diagnoseData({ inventory, files, mtimes, runs, feedback, generated });
+  const loadedVectors = await loadRoutingVectors(root);
+  const routingVectors = loadedVectors ? verifyRoutingVectors(inventory, loadedVectors) : null;
+  return diagnoseData({ inventory, files, mtimes, runs, feedback, generated, routingVectors });
 }
 
 /** Plain-text rendering for the CLI (the `--json` door returns the findings untouched). */

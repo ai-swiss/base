@@ -66,6 +66,6 @@ pour les garanties mécaniques partagées (routage déterministe, écritures mé
 
 🔁 **Chez vous**: qui, dans votre équipe, relira les changements de process avant la fusion? Et quel poste hébergera le serveur MCP?
 
-→ **Et maintenant**: vous avez parcouru les trois parcours. Conservez le réflexe: le geste, la vérification, puis seulement le concept.
+→ **Et maintenant**: vous avez parcouru les trois parcours. Conservez le réflexe: le geste, la vérification, puis seulement le concept. Pour la suite à l'échelle d'une organisation, [L'adoption dans une organisation](../learn/adoption-organisation.md) décrit comment ces pratiques deviennent des process d'équipe, puis des flux institués.
 
 🆘 **Pannes courantes**: *`npm: command not found`*: installez Node 18+ depuis nodejs.org. *Le serveur refuse de démarrer en réseau*: c'est délibéré sans authentification, définissez `BASE_MCP_BEARER_TOKEN`. *La plateforme ne voit aucun agent*: vérifiez le `--root` (chemin absolu) et qu'il contient bien `.ai/agents/*/AGENT.md`. *Configuration par outil*: voir [installer le serveur MCP](../start/installer-mcp.md).

@@ -23,6 +23,8 @@ export function parseArgs(argv) {
     yes: false,
     out: "",
     keepDays: /** @type {number | undefined} */ (undefined),
+    channel: /** @type {string | undefined} */ (undefined),
+    strategy: /** @type {string | undefined} */ (undefined),
     positional: /** @type {string[]} */ ([]),
   };
 
@@ -150,6 +152,20 @@ export function parseArgs(argv) {
       const parsed = Number(next);
       if (!Number.isInteger(parsed) || parsed < 0) throw new Error("--keep-days must be a non-negative integer.");
       args.keepDays = parsed;
+      index++;
+      continue;
+    }
+
+    if (item === "--strategy") {
+      if (!next || next.startsWith("--")) throw new Error("--strategy requires a value (lexical or production).");
+      args.strategy = next;
+      index++;
+      continue;
+    }
+
+    if (item === "--channel") {
+      if (!next || next.startsWith("--")) throw new Error("--channel requires a value (stable or main).");
+      args.channel = next;
       index++;
       continue;
     }

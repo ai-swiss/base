@@ -166,8 +166,15 @@ export async function listCatalog(contextDir, { refresh = false, env = process.e
       models = discovered[provider.id]?.models ?? [];
     }
     if (online) {
-      discovered[provider.id] = { models, at: new Date(now()).toISOString() };
-      discoveryChanged = true;
+      // Persist ONLY when the discovered list actually changed: GET /api/models is a read, and a
+      // read that rewrites .ai/studio.settings.json on every cache miss is a write in disguise
+      // (mtime churn, spurious watcher events, review noise).
+      const before = discovered[provider.id]?.models ?? [];
+      const unchanged = before.length === models.length && before.every((m, i) => m === models[i]);
+      if (!unchanged) {
+        discovered[provider.id] = { models, at: new Date(now()).toISOString() };
+        discoveryChanged = true;
+      }
     }
     for (const model of models) {
       const ref = `${provider.id}/${model}`;

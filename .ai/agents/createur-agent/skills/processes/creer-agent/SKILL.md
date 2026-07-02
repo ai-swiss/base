@@ -167,7 +167,7 @@ Crée la structure dans `.ai/agents/[nom-agent]/`:
 
 1. **AGENT.md**: renseigne l'identité, la philosophie d'interaction (5 points), la table d'intentions, la doctrine agent → process → ressources, les fichiers métier, l'inventaire des skills et les garde-fous (6 points, dont le contrôle mécanique, la validation humaine et la séparation instructions/données). Pars de `.ai/agents/_template/AGENT.md`.
 
-2. **skills/processes/**: un dossier par workflow identifié, chaque dossier contient un SKILL.md au format standard avec frontmatter. Si l'utilisateur veut le routage BASE ou si plusieurs workflows sont proches, ajoute `schema_version`, `id`, `kind: process`, `description`, `use_when` et, si utile, `routing.examples` / `routing.avoid_when`. **Rédige `use_when`, `description` et `routing.examples` dans la langue de l'utilisateur** (le routage compare les mots de la demande à ceux-ci; en allemand, écris-les en allemand). Distingue reformulations (légères) et points de décision (avant action irréversible). Chaque process se termine par une étape Journal.
+2. **skills/processes/**: un dossier par workflow identifié, chaque dossier contient un SKILL.md au format standard avec frontmatter. Si l'utilisateur veut le routage BASE ou si plusieurs workflows sont proches, ajoute `schema_version`, `id`, `type: process`, `description`, `use_when` et, si utile, `routing.examples` / `routing.avoid_when`. **Rédige `use_when`, `description` et `routing.examples` dans la langue de l'utilisateur** (le routage compare les mots de la demande à ceux-ci; en allemand, écris-les en allemand). Distingue reformulations (légères) et points de décision (avant action irréversible). Chaque process se termine par une étape Journal.
 
 3. **skills/competences/**: un dossier par domaine de connaissance identifié, chaque dossier contient un SKILL.md avec `user-invocable: false`. Plus les 3 compétences standard:
    - Copie `marqueurs/SKILL.md` depuis `_template/skills/competences/marqueurs/`
@@ -203,7 +203,16 @@ Selon la réponse:
 **⚠ Point de décision, avant configuration:**
 > «Voici ce que je vais configurer pour [outil]: [description]. Confirmez-vous?»
 
-### 10. Tester et itérer
+### 10. Valider et rafraîchir la carte de routage
+
+Si un terminal est disponible, vérifie le travail avec les mécanismes de BASE plutôt qu'à l'œil:
+
+1. `node .ai/base.mjs validate --root .` (chaque fichier créé passe la validation; corrige avant de continuer)
+2. `node .ai/base.mjs build routing-index --write --root .` (régénère `.ai/routing/index.md` et l'index de l'agent: la carte que lit l'outil IA; sans ce pas, le nouveau process reste invisible au routage progressif)
+
+Sans terminal, dis-le simplement: «Pour que le routage voie ce nouveau process, il faudra régénérer l'index (`base build routing-index --write`) à la prochaine occasion.»
+
+### 11. Tester et itérer
 
 > «Votre assistant est prêt! Essayons-le ensemble.
 >
@@ -211,7 +220,7 @@ Selon la réponse:
 >
 > Essayez de lui demander: [suggestion tirée du premier workflow créé].»
 
-### 11. Journal
+### 12. Journal
 
 Écris une entrée dans `.ai/journal/` selon la compétence `journal`.
 

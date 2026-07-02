@@ -36,9 +36,13 @@ structure la décision.
    recommandation** (mettez-la en tête) et, si utile, votre lecture préalable. N'y ajoutez pas de
    points déjà réglés.
 2. **Construire depuis le modèle.** Copiez le modèle de l'agent,
-   `.ai/agents/concierge-base/templates/decision-sheet.html`, vers `.temp/AAAA-MM-JJ_sujet/<nom>.html`.
-   Renseignez le titre, l'intro, `STORAGE_KEY`, `EXPORT_FILE` et le tableau `POINTS` (`id`, `title`,
-   `what`, `reco`, `recoSummary`, `scaleLabel`).
+   `.ai/agents/concierge-base/templates/decision-sheet.html`, vers
+   `.temp/{AAAA-MM-JJ}_{sujet}/{AAAA-MM-JJ}_{sujet}_decisions.html`, un radical daté, unique par fiche.
+   Renseignez le titre, l'intro, le tableau `POINTS` (`id`, `title`, `what`, `reco`, `recoSummary`,
+   `scaleLabel`), et les deux noms qui apparient la fiche vierge et son retour: `STORAGE_KEY` =
+   `{AAAA-MM-JJ}_{sujet}_decisions` (nomme la sauvegarde navigateur) et `EXPORT_FILE` =
+   `{AAAA-MM-JJ}_{sujet}_decisions-filled.md` (l'export se range ainsi à côté de sa fiche vierge et
+   reste lisible hors de son dossier).
 3. **Rester sobre.** Pas de référence à un cadre externe; le style est déjà dans le modèle.
    `.temp/` est ignoré par git, la fiche reste un brouillon.
 4. **Ouvrir la fiche** pour la personne et attendre. La fiche s'enregistre dans le navigateur;

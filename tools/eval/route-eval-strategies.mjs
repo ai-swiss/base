@@ -50,8 +50,8 @@ async function prepareCorpus(root) {
 export async function makeRecallProbe(root, { embed, k = 10 }) {
   const { precomputeRoutingVectors } = await import("../core/routing-vectors.mjs");
   const { resources } = await prepareCorpus(root);
-  const vectors = await precomputeRoutingVectors(resources, embed);
-  const withVectors = applyRoutingVectors(resources, vectors);
+  const { vectors } = await precomputeRoutingVectors(resources, embed);
+  const withVectors = applyRoutingVectors(resources, Object.fromEntries(Object.entries(vectors).map(([p, e]) => [p, e.v])));
   const retrieve = makeEmbeddingRetriever({ embed });
   return async (query) => {
     const candidates = await retrieve(query, withVectors, k);
@@ -70,8 +70,8 @@ export async function makeRecallProbe(root, { embed, k = 10 }) {
 export async function makeEmbeddingRoute(root, { embed, complete, k = 10 }) {
   const { precomputeRoutingVectors } = await import("../core/routing-vectors.mjs");
   const { resources } = await prepareCorpus(root);
-  const vectors = await precomputeRoutingVectors(resources, embed);
-  const withVectors = applyRoutingVectors(resources, vectors);
+  const { vectors } = await precomputeRoutingVectors(resources, embed);
+  const withVectors = applyRoutingVectors(resources, Object.fromEntries(Object.entries(vectors).map(([p, e]) => [p, e.v])));
   const retrieve = makeEmbeddingRetriever({ embed });
   const refine = makeLlmRefiner({ complete });
   const router = embeddingRouter(retrieve, refine, k);

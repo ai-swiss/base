@@ -9,13 +9,14 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { pathToFileURL } from "node:url";
 import { confineToRoot, pathExists } from "./confine.mjs";
+import { normalizeExcludeList } from "./walk-policy.mjs";
 import { keywordIntentRanker, semanticHybridRanker } from "./rankers.mjs";
 import { requireFields, requireSchemaVersion, forbidSensitivity, piiScanner, routabilityWarnings } from "./validators.mjs";
 import { strictPolicy } from "./policy.mjs";
 
 // Default adapters. An empty/null slot means "use the broker's built-in behaviour" (neutral ranking,
 // advisory policy, no auth, default routing thresholds).
-export const DEFAULTS = { rankers: [], validators: [], policy: null, auth: null, routing: null };
+export const DEFAULTS = { rankers: [], validators: [], policy: null, auth: null, routing: null, inventory: { exclude: [] } };
 
 // Conventional basenames, in priority order. JSON (declarative, safe) is preferred over MJS.
 const CONFIG_BASENAMES = ["base.config.json", "base.config.mjs"];
@@ -66,7 +67,7 @@ export function mergeConfig(raw) {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
     throw fail("config default export must be an object.");
   }
-  const out = /** @type {{ rankers: any[], validators: any[], policy: any, auth: any, routing: any }} */ ({ ...DEFAULTS });
+  const out = /** @type {{ rankers: any[], validators: any[], policy: any, auth: any, routing: any, inventory: { exclude: string[] } }} */ ({ ...DEFAULTS });
   if (raw.rankers !== undefined) {
     if (!Array.isArray(raw.rankers)) throw fail("`rankers` must be an array.");
     out.rankers = raw.rankers.map(instantiateRanker);
@@ -82,6 +83,24 @@ export function mergeConfig(raw) {
       throw fail("`routing` must be an object (floor_score, top2_margin, max_candidates).");
     }
     out.routing = raw.routing === null ? null : instantiateRouting(raw.routing);
+  }
+  if (raw.inventory !== undefined) {
+    // The project's own inventory exclusions (root-relative path prefixes). The engine carries no
+    // repository layout of its own: THIS repo excludes its engineering trees via its base.config.json,
+    // and a user's root excludes nothing unless it says so.
+    if (raw.inventory === null) {
+      out.inventory = { exclude: [] };
+    } else if (typeof raw.inventory !== "object" || Array.isArray(raw.inventory)) {
+      throw fail("`inventory` must be an object ({ exclude: string[] }).");
+    } else {
+      if (raw.inventory.exclude !== undefined && !Array.isArray(raw.inventory.exclude)) {
+        throw fail("`inventory.exclude` must be an array of root-relative path prefixes.");
+      }
+      if (Array.isArray(raw.inventory.exclude) && raw.inventory.exclude.some((e) => typeof e !== "string")) {
+        throw fail("`inventory.exclude` entries must be strings.");
+      }
+      out.inventory = { exclude: normalizeExcludeList(raw.inventory.exclude) };
+    }
   }
   return out;
 }

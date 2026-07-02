@@ -1,15 +1,15 @@
-<!-- fr-synced: 033321b18138820ed6688ee17d1675c0ad2aa1a8 -->
+<!-- fr-synced: 0004d05177ae462d35a0fd746217689041687383 -->
 # See BASE in action
 
 Before handing a real case to an AI, you want to know whether you can trust it. This demo shows it in under a minute: a BASE assistant that draws on your files, names the rule that justifies it, and flags a `[A VALIDER]` rather than ruling on its own, where a generic chat would improvise. Then it is up to you to judge whether that honesty makes any difference to your work.
 
 This demo draws on `exemples/assistant-devis-demo/`, already stocked with a fictional company, a service catalog, a client, and a quote.
 
-Don't have the repository on hand yet? [Try it without installing anything](essayer-sans-installer.md) walks through the simplest ways to grab the folder and hand it to your AI, from the lightest option to the most complete.
+Don't have the repository on hand yet? [Try it without installing anything](essayer-sans-installer.md) walks through the simplest ways to try: its own example is the Veytaux tourist office rather than this quote, but the principle shown is the same; come back here once you have the repository.
 
 ## 1. Open the demo
 
-In an AI tool that can read your files (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code), open this specific folder, not the root of the repository:
+In an AI tool that can read your files, open this specific folder, not the root of the repository:
 
 ```text
 exemples/assistant-devis-demo/

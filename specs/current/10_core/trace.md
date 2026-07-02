@@ -29,10 +29,22 @@ Append-only JSONL, one file per day:
   duration_ms: number|null,
   args_hash: string|null,// "sha256:<hex>" of JSON.stringify(args)
   error: string|null,
-  metadata?: object      // small, non-sensitive counts (e.g. {resources: 115})
+  metadata?: object,     // small, non-sensitive counts (e.g. {resources: 115})
+  actor?: string         // WHO, when the deployment can know it (see below); omitted otherwise
 }
 ```
 The machine-readable schema is `../30_schemas/base.trace_event.v1.json`.
+
+## Actor attribution (optional, additive)
+
+A single-user local trace needs no identity; a team deployment auditing "who did what" does. The
+mechanism is a context, never a per-call argument: `withTraceActor(actor, fn)` attributes every
+event recorded while `fn` runs (AsyncLocalStorage — one seam, no threading), and `BASE_TRACE_ACTOR`
+sets a session default for CLI use. The MCP server wraps each authenticated HTTP request with the
+AuthProvider's `principal` (a custom provider knows one; the shared bearer token honestly does not
+— per-person attribution over HTTP needs per-person credentials, e.g. a reverse proxy issuing
+nominative tokens to a custom AuthProvider). The field stays an **identifier**, never business
+content (NFR-CORE-008); absent an actor, it is omitted entirely.
 
 ## Summary
 `summarizeTrace(root)` reads all `*.jsonl` and returns:

@@ -72,12 +72,14 @@ function hostnameOf(value) {
   }
 }
 
-// Defence-in-depth for the unauthenticated, loopback-bound API: refuse state-changing requests that
-// did not originate from a same-machine page. A DNS-rebinding attacker reaches us with a non-loopback
-// Host header (the domain the victim loaded, which only later resolves to 127.0.0.1); a cross-site
-// page carries a foreign Origin. The Studio UI itself always has a loopback Host and (when sent) a
-// loopback Origin — across ports is fine, since only the hostname must be loopback. GET reads are not
-// guarded; only POSTs are. Returns a refusal message, or null when the request is local.
+// Defence-in-depth for the unauthenticated, loopback-bound API: refuse requests that did not
+// originate from a same-machine page — on EVERY method (FR-STUDIO-007). A DNS-rebinding attacker
+// reaches us with a non-loopback Host header (the domain the victim loaded, which only later
+// resolves to 127.0.0.1); a cross-site page carries a foreign Origin. Reads are guarded like
+// writes: the GET endpoints serve the corpus itself (/api/file raw contents, /api/settings),
+// which is exactly what the loopback promise protects. The Studio UI itself always has a loopback
+// Host and (when sent) a loopback Origin — across ports is fine, since only the hostname must be
+// loopback. Returns a refusal message, or null when the request is local.
 export function crossOriginError(req) {
   const host = hostnameOf(req.headers?.host ?? "");
   if (host && !isLoopbackHost(host)) return `Refused: non-loopback Host header "${req.headers.host}".`;
@@ -111,16 +113,16 @@ export function createStudioServer(rootOrContext, { watch = true } = {}) {
 
   const server = http.createServer(async (req, res) => {
     try {
+      // One guard ahead of ALL routing, every method (FR-STUDIO-007) — the same order the MCP
+      // transport mounts it before auth. Reads expose the corpus, so they are as guarded as writes.
+      const blocked = crossOriginError(req);
+      if (blocked) return json(res, 403, { error: blocked, code: "FORBIDDEN" });
+
       const url = new URL(req.url ?? "/", "http://localhost");
       const p = url.pathname;
       const q = url.searchParams;
       // Every file-touching endpoint is scoped to ONE root, resolved from the request's root id.
       const rootOf = () => rootPathFor(context, q.get("root") ?? "");
-
-      if (req.method === "POST") {
-        const blocked = crossOriginError(req);
-        if (blocked) return json(res, 403, { error: blocked, code: "FORBIDDEN" });
-      }
 
       if (req.method === "POST" && p === "/api/init") {
         const { created } = await initPerimeter(context);
@@ -133,8 +135,6 @@ export function createStudioServer(rootOrContext, { watch = true } = {}) {
         return json(res, 200, contextPayload(context));
       }
       if (req.method === "PUT" && p === "/api/workspace") {
-        const blocked = crossOriginError(req);
-        if (blocked) return json(res, 403, { error: blocked, code: "FORBIDDEN" });
         if (context.mode !== "workspace") return json(res, 400, { error: "not a workspace", code: "BAD_REQUEST" });
         const body = await readJsonBody(req);
         const wsPath = context.workspace.path;
@@ -224,8 +224,6 @@ export function createStudioServer(rootOrContext, { watch = true } = {}) {
         return json(res, 200, settings);
       }
       if (req.method === "PUT" && p === "/api/settings") {
-        const blocked = crossOriginError(req);
-        if (blocked) return json(res, 403, { error: blocked, code: "FORBIDDEN" });
         const written = await writeSettings(context.settingsDir, await readJsonBody(req));
         clearCatalogCache();
         return json(res, 200, written);
@@ -377,7 +375,7 @@ export async function startStudioServer(root, { host = "127.0.0.1", port = DEFAU
     // EADDRINUSE (Studio already running) surfaces as an unhandled 'error' and a cryptic crash.
     const onError = (error) => {
       if (error.code === "EADDRINUSE") {
-        reject(new Error(`BASE Studio tourne probablement deja: le port ${port} est occupe sur ${host}. Ouvrez l'instance existante, ou arretez-la avant de relancer.`));
+        reject(new Error(`BASE Studio tourne probablement déjà: le port ${port} est occupé sur ${host}. Ouvrez l'instance existante, ou arrêtez-la avant de relancer.`));
       } else {
         reject(error);
       }

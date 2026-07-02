@@ -1,4 +1,4 @@
-<!-- fr-synced: f399959b53db8fa57a859904a063b36d0c033a6a -->
+<!-- fr-synced: 5e26d8bf0dc7b9451d3a46716a250d7a189a7cc6 -->
 # Migrate YOUR content
 
 *⏱ ~15 min · module 9/9, Practitioner track*
@@ -26,6 +26,6 @@ You have built up a "Back home" list across the modules. There's your reserve of
 
 🔁 **Back home**: plan the next one: which third document, which next task to automate?
 
-→ **And now**: you've finished the Practitioner track: YOUR assistant answers about YOUR content. For several people, see the [Team track](equipe-1-workspace.md).
+→ **And now**: you've finished the Practitioner track: YOUR assistant answers about YOUR content. For several people, see the [Team track](equipe-1-workspace.md). To anchor the method day to day: [Co-thinking in practice, 16 principles](../learn/pratiques-co-pensee.md).
 
 🆘 **Common breakdowns**: *The import proposes nonsense*: guide it document by document rather than all at once. *The protocol fails*: refine the use_when, or separate data from process.

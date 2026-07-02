@@ -1,6 +1,6 @@
 # BASE MCP Server
 
-Expose vos agents BASE sur n'importe quelle plateforme IA : ChatGPT, Claude, Cursor, etc.
+Expose vos agents BASE sur n'importe quelle plateforme IA: ChatGPT, Claude, Cursor, etc.
 
 ## Installation
 
@@ -72,6 +72,8 @@ BASE_MCP_BEARER_TOKEN=un-secret-long-et-aleatoire npm start -- --transport http 
 ```
 
 Pour une authentification sur mesure (OAuth, mTLS…), fournissez un `AuthProvider` via `base.config.mjs` (clé `auth`), ou placez le serveur derrière un reverse proxy authentifié (voir plus bas).
+
+**Attribution des traces (audit d'équipe).** Le jeton partagé authentifie l'accès, pas la personne: le journal de trace n'attribue alors rien à quiconque, honnêtement. Pour un audit nominatif, donnez des accréditations par personne (un reverse proxy qui émet des jetons nominatifs, ou un `AuthProvider` sur mesure) et retournez `{ ok: true, principal: "prenom.nom" }`: chaque événement de trace de la requête porte alors `actor: "prenom.nom"` dans `.ai/trace/*.jsonl`, prêt pour une ingestion SIEM. En CLI locale, `BASE_TRACE_ACTOR` joue le même rôle pour une session.
 
 Si vous savez ce que vous faites (réseau de confiance, tunnel maîtrisé) et acceptez le risque, forcez l'exposition **sans** authentification :
 

@@ -74,4 +74,4 @@ Affichez ce que BASE n'applique pas mécaniquement (surtout en mode navigateur s
 
 Pour un échange institutionnel (évaluation, pilote, questions de conformité), écrivez à AI Swiss à [info@a-i.swiss](mailto:info@a-i.swiss): nous visons une première réponse sous une dizaine de jours ouvrés. Voir aussi [a-i.swiss](https://a-i.swiss).
 
-La même adresse vous orientera vers la bonne personne pour définir les modalités d'accompagnement d'un pilote.
+La même adresse vous orientera vers la bonne personne pour définir les modalités d'accompagnement d'un pilote. Pour un marché public qui exige une ligne de support nommable, c'est également AI Swiss qui porte cet engagement et le formalise avec vous (délais, périmètre, intervenants), l'association restant l'intendante du cadre ([gouvernance](../../GOVERNANCE.md)).

@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: essayer-sans-installer
 type: document
 title: Essayer BASE sans rien installer de nouveau
-description: Saisir BASE en le lisant, puis essayer un assistant sans rien installer côté BASE: le plus simple, un chat IA web où vous joignez les fichiers d'exemple, ou le plus complet, un outil IA qui ouvre le dossier.
+description: Saisir BASE en le lisant, puis essayer un assistant sans rien installer côté BASE: le plus simple, un chat IA web où vous collez le pack d'un exemple, ou le plus complet, un outil IA qui ouvre le dossier.
 scope: public
 status: active
 sensitivity: public
@@ -18,32 +18,32 @@ learning_level: beginner
 
 Le plus rapide pour saisir BASE n'est pas de l'installer, c'est de le lire: [Pourquoi BASE](../learn/co-penser-avec-lia.md) en montre la méthode et la profondeur en quelques minutes. Quand vous voudrez le voir à l'œuvre, cette page propose deux façons d'essayer un véritable assistant sans rien installer côté BASE. Un seul outil IA vous suffit: celui dont vous vous servez déjà.
 
-Les deux partent du même dossier d'exemple. Téléchargez tout BASE en un clic, **[base-main.zip](https://github.com/ai-swiss/base/archive/refs/heads/main.zip)**, puis décompressez-le (Windows: clic droit sur le fichier, **Extraire tout**, un double-clic ne suffit pas; Mac: double-clic). Vous obtenez un dossier **`base-main`**; l'exemple à ouvrir est **`base-main/exemples/veytaux-tourisme`**, l'office du tourisme de Veytaux, un cas d'école.
+Les deux façons montrent le même exemple: l'office du tourisme de Veytaux, un cas d'école.
 
 ## Le plus simple: un chat IA dans le navigateur
 
 Si vous disposez déjà d'un assistant IA dans un navigateur (ChatGPT, Claude, ou un autre), rien à installer: un assistant BASE est un ensemble de fichiers texte qui structure votre collaboration (savoir-faire, savoir, données); ce n'est pas une simple documentation, et c'est lui que vous donnez comme contexte.
 
-1. Dans le dossier `veytaux-tourisme`, repérez les fichiers Markdown: l'`AGENT.md` (sous `.ai/agents/...`) et ceux de `skills/`.
-2. Créez, dans votre outil, un espace qui garde ces fichiers sous la main pendant la conversation (selon l'outil: un Projet, un assistant personnalisé, un espace de travail).
-3. Collez le contenu de l'`AGENT.md` dans les instructions, et joignez les autres fichiers Markdown.
-4. Adressez-vous à lui: «Bonjour, je voudrais configurer mon activité.»
+1. Téléchargez le pack prêt à coller de l'exemple: **[veytaux-tourisme.pack.md](https://github.com/ai-swiss/base/releases/latest/download/veytaux-tourisme.pack.md)**. Tout l'assistant tient dans ce seul fichier: rien à chercher dans des dossiers cachés.
+2. Ouvrez-le avec un éditeur de texte (Bloc-notes, TextEdit), copiez tout, et collez-le dans une nouvelle conversation. Mieux, si votre outil le permet: créez un espace qui garde ce contexte (un Projet, un assistant personnalisé).
+3. Adressez-vous à lui: «Bonjour, quelles activités proposez-vous cet après-midi?»
 
-Le seul point à retenir: un chat web ne parcourt pas un dossier de lui-même, vous lui remettez les fichiers une fois pour toutes. C'est la voie la plus accessible pour voir la méthode à l'œuvre.
+Le seul point à retenir: un chat web ne parcourt pas un dossier de lui-même, vous lui remettez le pack une fois pour toutes. C'est la voie la plus accessible pour voir la méthode à l'œuvre. Chaque exemple peut avoir son pack: `npm run browser-pack` le génère depuis n'importe quel dossier BASE.
 
 ## Le plus complet: un outil IA qui ouvre le dossier
 
 Pour que l'assistant travaille de l'intérieur, en lisant tout le dossier et en agissant sous votre regard, il faut un outil IA capable d'ouvrir un dossier et d'en lire les fichiers (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code; certains s'emploient dans une fenêtre, d'autres au terminal, comme [Claude Code](installer-claude-code.md)). Choisissez celui où vous êtes déjà à l'aise.
 
 1. Installez-le depuis son site officiel et connectez-vous; un modèle gratuit suffit pour essayer.
-2. Ouvrez-y le dossier **`base-main/exemples/veytaux-tourisme`** (souvent *File → Open Folder*), en **mode Agent** pour qu'il lise les fichiers.
-3. Demandez «Quelles activités proposez-vous cet après-midi?». L'assistant suit la méthode décrite dans les fichiers; poursuivez avec le [tutoriel pas à pas](../tutoriel/index.md).
+2. Téléchargez tout BASE en un clic, **[base.zip](https://github.com/ai-swiss/base/releases/latest/download/base.zip)** (la dernière version publiée), puis décompressez-le (Windows: clic droit sur le fichier, **Extraire tout**, un double-clic ne suffit pas; Mac: double-clic). Vous obtenez un dossier **`base`**.
+3. Ouvrez-y le dossier **`base/exemples/veytaux-tourisme`** (souvent *File → Open Folder*), en **mode Agent** pour qu'il lise les fichiers.
+4. Demandez «Quelles activités proposez-vous cet après-midi?». L'assistant suit la méthode décrite dans les fichiers; poursuivez avec le [tutoriel pas à pas](../tutoriel/index.md).
 
-> **Panne courante**: si l'assistant vous parle de «routage» ou de «BASE» au lieu de Veytaux, vous avez ouvert la racine `base-main`, qui est le cadre. Rouvrez le sous-dossier `exemples/veytaux-tourisme`.
+> **Panne courante**: si l'assistant vous parle de «routage» ou de «BASE» au lieu de Veytaux, vous avez ouvert la racine `base`, qui est le cadre. Rouvrez le sous-dossier `exemples/veytaux-tourisme`.
 
 ## Votre propre dossier
 
-Pour partir de VOS données: copiez `base-main/exemples/starter-perso` où bon vous semble (vos
+Pour partir de VOS données: copiez `base/exemples/starter-perso` où bon vous semble (vos
 Documents), renommez-le, puis rouvrez CE dossier dans votre outil. Ou demandez à votre assistant:
 «copie le dossier starter-perso vers mes Documents».
 

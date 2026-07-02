@@ -9,9 +9,14 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { buildArtifacts } from "../base-core.mjs";
 
-/** This binary's framework directory (the clone root) — two levels up from tools/cli/. */
+/**
+ * This binary's framework directory (the clone root) — two levels up from tools/cli/. POSIX-normalized:
+ * the value is RECORDED (base.config.json, the user-global config) and read back by every tool, so it
+ * reads `.../base` on every OS, never `...\base` on Windows. Node's path.join / fs / git all accept
+ * forward slashes on Windows, so internal joins are unaffected.
+ */
 export function frameworkDir() {
-  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..").split(path.sep).join("/");
 }
 
 /** Read the framework version from package.json — best-effort, "inconnue" if unreadable. */
@@ -57,21 +62,52 @@ export async function whereis(asJson) {
   console.log(`BASE ${version}\n  framework: ${dir}${note}\n  config: ${configPath}`);
 }
 
-/** Keep the framework fresh: git pull (or a ZIP message), then version + what changed. */
-export async function update() {
+/** Run one git command in the framework clone, inheriting stdio; resolves with the exit code. */
+function git(dir, ...gitArgs) {
+  return new Promise((resolve) => {
+    spawn("git", ["-C", dir, ...gitArgs], { stdio: "inherit" })
+      .on("exit", resolve)
+      .on("error", (e) => { console.error(`git indisponible: ${e.message}`); resolve(1); });
+  });
+}
+
+/** The latest version tag visible in the clone, after a best-effort tag fetch. Null when none. */
+async function fetchLatestVersionTag(dir) {
+  const { latestVersionTag } = await import("../core/update.mjs");
+  // Best-effort fetch: offline, the local tags still decide (an unreachable remote never bricks update).
+  await git(dir, "fetch", "--tags", "--quiet", "origin");
+  const { execFile } = await import("node:child_process");
+  const list = await new Promise((resolve) => {
+    execFile("git", ["-C", dir, "tag", "--list", "v*"], (error, stdout) => resolve(error ? "" : stdout));
+  });
+  return latestVersionTag(list);
+}
+
+/**
+ * Keep the framework fresh, then version + what changed. Channel `stable` (default) fast-forwards
+ * to the latest release tag — what an operator runs only changes at a release; `--channel main`
+ * follows the branch head, for contributors.
+ * @param {{ channel?: "stable" | "main" }} [options]
+ */
+export async function update({ channel = "stable" } = {}) {
   const { updatePlan, staleArtifacts } = await import("../core/update.mjs");
   const dir = await resolvedFrameworkDir();
   const hasGit = await fs.access(path.join(dir, ".git")).then(() => true, () => false);
-  const plan = updatePlan({ frameworkDir: dir, hasGit });
+  const latestTag = hasGit && channel === "stable" ? await fetchLatestVersionTag(dir) : null;
+  const plan = updatePlan({ frameworkDir: dir, hasGit, channel, latestTag });
 
   if (plan.type === "manual") {
     console.log(plan.message);
+  } else if (plan.type === "ff-tag") {
+    console.log(`Canal stable: mise à niveau vers ${plan.tag} (pour suivre la branche: base update --channel main).`);
+    const code = await git(dir, "merge", "--ff-only", plan.tag);
+    if (code !== 0) {
+      console.error(`Impossible d'avancer proprement vers ${plan.tag} (historique local divergent). Essayez «base update --channel main», ou inspectez le clone: ${dir}`);
+      process.exit(code ?? 1);
+    }
   } else {
-    const code = await new Promise((resolve) => {
-      spawn("git", ["-C", dir, "pull", "--ff-only"], { stdio: "inherit" })
-        .on("exit", resolve)
-        .on("error", (e) => { console.error(`git indisponible: ${e.message}`); resolve(1); });
-    });
+    if (plan.note) console.log(plan.note);
+    const code = await git(dir, "pull", "--ff-only");
     if (code !== 0) { process.exit(code ?? 1); }
   }
 

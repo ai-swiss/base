@@ -90,6 +90,27 @@ jobs:
         if: matrix.node == '24'
         run: npm run smoke:pack
 
+  windows-smoke:
+    name: Windows smoke (core)
+    # The docs onboard native Windows users (PowerShell install, ZIP extraction); this leg keeps the
+    # zero-dependency core honest on the OS the ubuntu matrix never sees (paths, line endings —
+    # the CRLF silent-frontmatter-loss class of defect). Lean by design: parser + CLI + one example.
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Install dev toolchain (tests only)
+        run: npm ci
+      - name: Parser, core and init tests
+        run: node --test tests/base-frontmatter.test.mjs tests/base-frontmatter-serialize.test.mjs tests/base-core.test.mjs tests/base-cli-init.test.mjs
+      - name: Validate the BASE project and one example
+        run: |
+          node tools/base.mjs validate --root .
+          node tools/base.mjs validate --root exemples/assistant-devis
+
   typecheck:
     name: Static type-check (JS)
     runs-on: ubuntu-latest
@@ -121,6 +142,10 @@ jobs:
           cache-dependency-path: tools/studio/ui/package-lock.json
       - name: Install
         run: npm ci
+      # The UI is the repo's largest third-party surface (React + Vite + their tree): audit what
+      # ships in the built bundle, same gate as the MCP job. Dev tooling stays out of scope here.
+      - name: Dependency audit
+        run: npm audit --omit=dev --audit-level=high
       - name: Component + hook tests (Vitest, jsdom) with coverage gate
         run: npm run test:coverage
       - name: Build (tsc strict + vite)

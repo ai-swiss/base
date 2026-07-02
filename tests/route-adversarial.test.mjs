@@ -55,3 +55,22 @@ describe("adversarial net — the floor abstains on noise (floor can decide)", (
     assert.equal(out.process.id, "nouveau-devis");
   });
 });
+
+describe("adversarial net — counter-intentional lexical overlap (the floor's DOCUMENTED limit)", () => {
+  // The floor compares words, not intent: a request sharing one strong `use_when` word routes even
+  // when the intent points elsewhere («mon client m'a insulté» is not a quote request). This block
+  // PINS that limit so it stays visible and deliberate: the README no longer claims more than the
+  // floor delivers, and any future coverage/confidence mechanism that fixes these cases must flip
+  // these assertions ON PURPOSE (with its spec and its own tests), never by accident.
+  const counterIntentional = [
+    "mon client m'a insulté",
+    "supprimer un devis",
+  ];
+  for (const request of counterIntentional) {
+    it(`«${request}» routes on word overlap today — known limit, not a guarantee`, async () => {
+      const out = await routeRequest(tmpDir, request);
+      assert.equal(out.status, "routed", "if this now abstains, a coverage mechanism landed: move this case to the must-abstain net");
+      assert.equal(out.process.id, "nouveau-devis");
+    });
+  }
+});

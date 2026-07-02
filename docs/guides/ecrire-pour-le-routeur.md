@@ -41,6 +41,10 @@ routing:
     - Relancer une facture impayée.
 ```
 
+## La langue de vos `use_when`
+
+Le routeur déterministe compare des mots, pas du sens: face à une demande dans une autre langue que vos `use_when`, il s'abstient plutôt que de deviner. Dans un outil IA qui lit vos fichiers, ce n'est pas un problème: le modèle mène le routage et parle toutes les langues. Mais partout où le routeur décide seul (`base route`, le serveur MCP, vos fixtures), écrivez vos `use_when` et vos `routing.examples` dans les langues que vos utilisateurs emploient réellement: une équipe bilingue met les deux formulations, et l'abstention redevient ce qu'elle doit être, le signal d'une demande hors sujet plutôt que d'une langue absente.
+
 ## Donner des exemples variés
 
 Les `routing.examples` sont des formulations telles que vos utilisateurs les emploient. Donnez-en au moins trois pour une même intention, avec des mots distincts: une tournure directe, une question, puis une demande exprimée dans l'urgence. Le routeur retrouve alors l'intention plus souvent, y compris lorsque la demande reprend les mots d'un exemple plutôt que les vôtres.
@@ -56,6 +60,16 @@ node tools/base.mjs route "il me faut une offre pour un client" --root <dossier>
 ```
 
 Lisez le résultat: le process retenu, le score et les raisons (`route:<terme>` signale les mots qui ont concordé). Si le routeur s'abstient ou hésite, les raisons en disent la cause: le plus souvent, un mot fait défaut dans votre `use_when` ou vos exemples. Ajoutez `--json` pour le détail complet.
+
+## Régénérer l'index de routage
+
+Votre outil IA s'oriente d'abord par une carte générée, `.ai/routing/index.md` (et un index par agent), qui liste chaque process avec son «Quand l'utiliser» et son «Éviter si». Cette carte ne se met pas à jour toute seule: après avoir ajouté, retiré ou reformulé un process, régénérez-la:
+
+```bash
+node tools/base.mjs build routing-index --write --root <dossier>
+```
+
+Sans ce pas, le nouveau process reste invisible au routage progressif (l'index dit encore l'état d'avant), même si `base route` le trouve déjà. Le fichier généré porte un en-tête «Ne pas éditer»: la vérité vit dans vos `use_when`, l'index n'en est que la projection.
 
 ## Figer le comportement
 

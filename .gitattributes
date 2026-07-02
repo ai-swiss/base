@@ -1,0 +1,6 @@
+# Line endings: the corpus must parse identically on every platform. Text files are stored
+# and checked out as LF everywhere (no core.autocrlf surprise on Windows); the frontmatter
+# parser additionally tolerates CRLF for files created outside git (NFR-CORE-004).
+* text=auto eol=lf
+*.png binary
+*.pdf binary

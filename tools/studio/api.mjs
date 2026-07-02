@@ -35,7 +35,9 @@ const STUDIO_HIDDEN = new Set(["decisions", "specs"]);
 
 // Where the framework lives (tools/studio/api.mjs → up two). Recorded in a Studio-initialized
 // project's base.config.json so its launcher (.ai/base.mjs) can find the engine afterwards.
-const FRAMEWORK_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
+// POSIX-normalized: recorded into base.config.json by a Studio-initiated init, so it reads `.../base`
+// on every OS (mirrors frameworkDir() in cli/framework.mjs). Forward slashes are safe for Node joins on Windows.
+const FRAMEWORK_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..", "..").split(path.sep).join("/");
 
 // ApiError lives in the core (tools/core/api-error.mjs) so the core can throw it without importing the
 // Studio layer; re-exported here, so this module's consumers and the HTTP status mapping are unchanged.

@@ -1,4 +1,4 @@
-<!-- fr-synced: 6233d219894b98cb084a750381a047342d4fe8fa -->
+<!-- fr-synced: 9926969c58eb529d4fe641b594dae4ea9f7aee3e -->
 # BASE Spec v0: founding principle and where to read the current spec
 
 This page is a landmark for anyone looking for the BASE specification. It states the founding principle and points to the up-to-date engineering specification, so you don't end up working from a stale text.
@@ -13,7 +13,7 @@ Entry point: [`specs/current/README.md`](../../../specs/current/README.md).
 
 > The human and the AI work with text files. The code guarantees the invariants that natural language cannot.
 
-BASE is a minimal protocol for durably articulating knowledge, instructions, processes, data, executable tools, permissions, human decisions, useful traces, and adapters to different agents or harnesses. To clear up common confusions: it is not an app, not an automation UI, not a workflow engine, not a database, and not a packaged prompt.
+BASE is a minimal framework, an [open standard we propose](le-standard.md) together with its reference implementation, that durably articulates knowledge, instructions, processes, data, executable tools, permissions, human decisions, useful traces, and adapters to different agents or harnesses. To clear up common confusions: it is not an app, not an automation UI, not a workflow engine, not a database, and not a packaged prompt.
 
 ## Where to read what now
 

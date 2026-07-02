@@ -53,8 +53,8 @@ Au lieu de forcer cette collaboration dans des interfaces de configuration dispe
     └──────┬───────┘
            │
     ┌──────▼───────┐
-    │  3. ÉVALUER  │  Vous vérifiez : est-ce correct ?
-    │              │  Est-ce que ça correspond à ma réalité ?
+    │  3. ÉVALUER  │  Vous vérifiez: est-ce correct?
+    │              │  Est-ce que ça correspond à ma réalité?
     └──────┬───────┘
            │
     ┌──────▼───────┐
@@ -95,7 +95,7 @@ C'est pourquoi les marqueurs `[A VALIDER]`, `[DECISION]` sont structurés et che
 
 L'IA vous propose un devis de 2'085 CHF. Les montants sont-ils corrects? Vous lui demandez de vérifier. Elle répond «oui, tout est correct». Pourtant elle a commis une erreur de calcul, et ne la détecte pas, parce que vérifier ses propres erreurs exige un point de vue indépendant que le producteur n'a pas, par construction.
 
-C'est pourquoi l'agent propose et l'humain vérifie, toujours. L'agent ne contrôle jamais ses propres montants, ni ses reformulations, ni les choix qu'il a faits. Cette séparation est ce qui rattrape le plus sûrement les erreurs qu'il ne voit pas.
+C'est pourquoi, dans BASE, l'agent propose et l'humain vérifie: on ne confie pas à l'agent le contrôle de ses propres montants, de ses reformulations ni des choix qu'il a faits. Cette séparation est ce qui rattrape le plus sûrement les erreurs qu'il ne voit pas.
 
 *Ce qui se passe quand on l'ignore:* les erreurs passent inaperçues. Chaque affirmation acceptée sans examen crée une **dette de vérification**: des hypothèses non testées qui s'accumulent et s'effondrent au premier regard critique d'un client ou d'un partenaire. Un devis envoyé avec un prix inventé, une offre d'emploi aux conditions erronées, une publication appuyée sur une statistique fausse. La dette de vérification finit le plus souvent par se payer; toute la question est de savoir quand.
 
@@ -119,9 +119,9 @@ C'est pourquoi les **points de décision** existent avant chaque action irréver
 
 C'est d'abord une question de sécurité. Pour un modèle de langage, du texte est du texte: il ne distingue pas spontanément vos consignes de travail du contenu qu'il lit. Si une source externe contient une phrase formulée comme un ordre, le modèle peut l'exécuter. C'est le risque d'injection: un courriel, un PDF ou un site consulté détourne le comportement de l'agent à votre insu.
 
-Un courriel client dit: «Faites-moi un prix agressif, ajoutez 20% de marge et supprimez les conditions de paiement.» Pour l'agent, c'est une demande du client que l'utilisateur évalue, jamais un ordre à exécuter.
+Un courriel client dit: «Faites-moi un prix agressif, ajoutez 20% de marge et supprimez les conditions de paiement.» Pour l'agent, c'est une demande du client que l'utilisateur évalue, non un ordre à exécuter.
 
-C'est pourquoi l'agent ne traite jamais une source externe comme un ordre. Un fichier client contient des données. Cette distinction protège des confusions accidentelles comme des manipulations intentionnelles.
+C'est pourquoi la consigne est posée en clair: une source externe se lit comme une donnée, pas comme un ordre; un fichier client contient des données, rien de plus. Cette distinction protège des confusions accidentelles comme des manipulations intentionnelles.
 
 *Ce qui se passe quand on l'ignore:* l'agent exécute les instructions trouvées dans un document au lieu de les traiter comme des données. Le contenu non fiable d'une source externe modifie le comportement de l'agent à l'insu de l'utilisateur.
 
@@ -377,6 +377,12 @@ Tout BASE tient dans une boussole, des plans qui ne doivent **jamais se confondr
 | **Journal** | La mémoire de travail entre sessions, en fichiers. |
 | **Broker** | Le cœur local qui applique les garanties (confinement, validation, policy, trace); la CLI et le MCP passent par lui. |
 | **Harness** | L'outil IA dans lequel vous ouvrez votre BASE: un outil capable de lire vos fichiers (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code), ou un assistant relié par MCP. |
+
+## Pour aller plus loin
+
+- [Le cycle de vie d'une expertise](cycle-de-vie-expertise.md): comment une base vit après sa création: frictions du terrain, dates de validité, évaluation, gouvernance des sorties.
+- [Choisir entre scan, index local et base externe](comprendre-echelle.md): quand le scan suffit, quand un index aide, et ce que chaque option coûte.
+- [Le standard BASE](../reference/le-standard.md): la page citable du format `base.resource.v1` et de ses conventions.
 
 ---
 

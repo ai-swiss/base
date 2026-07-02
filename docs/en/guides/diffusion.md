@@ -1,4 +1,4 @@
-<!-- fr-synced: 92d7d776e765caee5465cb8564fada945fdb0613 -->
+<!-- fr-synced: ddcafed548cb7bfb6d30ccb6556fe6b54d5ce6ca -->
 # Releasing BASE as open source
 
 Releasing BASE as open source means letting others pick up and adapt a structure of work that is their own, without depending on a vendor or a platform. The point is not to show off a finished product, but to make this foundation reusable and honest about what it does, so anyone can try it, criticize it, and help it grow. This guide brings together what you need to decide, check, and write so that this release keeps its promise.

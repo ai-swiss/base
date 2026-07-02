@@ -1,4 +1,4 @@
-<!-- fr-synced: caa5f6a1128bc0a47fb8735783e48efd5017edad -->
+<!-- fr-synced: 5c0f4a968466166d43378ab9196eb8ee962a9692 -->
 # Have your AI install BASE
 
 Installing BASE can fall to your AI rather than to you: you walk away with a ready-to-use
@@ -12,8 +12,7 @@ workspace is ready.
 
 1. Create an empty folder for your work: for example, in your Documents, a folder
    `mon-assistant`.
-2. Open that folder in your AI tool that can read your files (for example GitHub
-   Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code): depending on the tool, this
+2. Open that folder in your AI tool that can read your files: depending on the tool, this
    will be a *File → Open Folder*, or a `cd mon-assistant` followed by launching the tool in that
    folder.
 3. Open the chat in **agent mode** (the one that knows how to run commands): depending on the tool,
@@ -34,8 +33,8 @@ Steps; check each output before continuing:
    and you pick up here.
 2. Install the framework in <BASE_DIR> if it is not already there:
    `git clone https://github.com/ai-swiss/base.git <BASE_DIR>`
-   If git is not available, download
-   https://github.com/ai-swiss/base/archive/refs/heads/main.zip, unzip it, and
+   If git is not available, download the latest published version,
+   https://github.com/ai-swiss/base/releases/latest/download/base.zip, unzip it, and
    place its contents in <BASE_DIR>, then continue. (On Mac, typing git may open a
    developer-tools install dialog: that is normal, and the ZIP avoids it.)
 3. Show me what initialization would create HERE (my working folder, not <BASE_DIR>):

@@ -57,7 +57,7 @@ Pour le MCP, ajoutez un descripteur `auth` (jeton porteur ou `AuthProvider` mais
 | Mode | Médiation | Pour qui |
 | --- | --- | --- |
 | Local, navigateur seul | Aucune (consignes suivies par le modèle) | Découverte, sans installation |
-| Outil IA + dossier (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code) | Faible (l'outil suit le routage) | Individu, première mise en place |
+| Outil IA + dossier | Faible (l'outil suit le routage) | Individu, première mise en place |
 | CLI locale | Forte sur les actions médiées (propose/commit, dry-run) | Équipe, entretien d'un BASE |
 | MCP authentifié | Lecture seule par défaut, écritures explicites, auth requise hors loopback | Intégration multi-clients |
 | Politique stricte (`policy: { type: "strict" }`) | Grants de lecture et confirmations explicites sur les actions médiées | Organisation, gouvernance fine |

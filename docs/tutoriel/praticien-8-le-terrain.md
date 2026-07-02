@@ -47,7 +47,7 @@ Le process devrait vérifier la date de validité avant d'annoncer un événemen
 
 ✅ **Vérifiez**: la friction quitte la pile des «ouvertes» après validation, et le diff de résolution est passé par propose puis commit (rien n'a été écrit avant votre validation).
 
-💡 **Pourquoi ça a marché**: le terrain est la matière première de l'amélioration. Une friction est un fichier daté, jamais perdu. Toute écriture, fût-ce une résolution, passe par le gate: voilà ce qui rend l'IA sûre à laisser vivre dans vos fichiers.
+💡 **Pourquoi ça a marché**: le terrain est la matière première de l'amélioration. Une friction est un fichier daté, jamais perdu. Toute écriture, fût-ce une résolution, passe par le gate: voilà ce qui rend l'IA sûre à laisser vivre dans vos fichiers. La boucle complète, de la friction à la ressource surveillée: [Le cycle de vie d'une expertise](../learn/cycle-de-vie-expertise.md).
 
 🔁 **Chez vous**: le jour où votre assistant se trompera, qui notera la friction, et où? (c'est votre boucle d'amélioration)
 

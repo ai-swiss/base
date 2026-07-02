@@ -1,0 +1,51 @@
+# Attach distributable assets to a GitHub Release, so "1.0.0" is something a user can actually
+# hold: a source snapshot with a STABLE name and top folder (base.zip, folder `base/` whatever the
+# version — docs link https://github.com/ai-swiss/base/releases/latest/download/base.zip forever,
+# no rot at the next release), plus the browser packs (one agent bundled into one Markdown file,
+# the "no tool, just a browser" path made one-click). Runs when a release is published; the
+# dispatch input backfills an existing tag (e.g. v1.0.0).
+name: Release assets
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing release tag to attach assets to (e.g. v1.0.0)'
+        required: true
+
+permissions:
+  contents: write # gh release upload
+
+jobs:
+  assets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.tag }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      # git archive respects the tree at the checked-out ref; --prefix pins the folder name users
+      # see after unzip, so the novice docs can say «le dossier base/» once and stay true.
+      - name: Source snapshot with a stable folder name
+        run: git archive --format=zip --prefix=base/ -o base.zip HEAD
+      # Zero-dependency: browser-pack runs on bare node against the checked-out tree.
+      - name: Browser packs (flagship examples)
+        run: |
+          node tools/browser-pack.mjs --root exemples/veytaux-tourisme --out veytaux-tourisme.pack.md
+          node tools/browser-pack.mjs --root exemples/assistant-devis-demo --out assistant-devis-demo.pack.md
+          node tools/browser-pack.mjs --root exemples/assistant-courrier --out assistant-courrier.pack.md
+      - name: Upload to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="${{ github.event_name == 'release' && github.event.release.tag_name || inputs.tag }}"
+          gh release upload "$TAG" \
+            base.zip \
+            veytaux-tourisme.pack.md \
+            assistant-devis-demo.pack.md \
+            assistant-courrier.pack.md \
+            --clobber -R "${{ github.repository }}"

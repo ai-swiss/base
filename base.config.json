@@ -1,5 +1,19 @@
 {
   "routing": {
-    "fallback": { "agent": "concierge-base", "process": "accueil" }
+    "fallback": {
+      "agent": "concierge-base",
+      "process": "accueil"
+    }
+  },
+  "inventory": {
+    "exclude": [
+      "specs",
+      "exemples",
+      "packages",
+      "tests",
+      "docs/en",
+      "docs/de",
+      "docs/it"
+    ]
   }
 }

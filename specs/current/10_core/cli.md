@@ -36,10 +36,16 @@ Zero dependencies: runs with bare `node` (NFR-CORE-001).
 | `docs [validate\|model\|serve\|build]` | Build, validate, serve or statically export the interactive documentation model/site | `tools/docs/model.mjs` |
 | `studio` | Launch the local Studio workshop (installs deps on first run) | `tools/studio/ui/dev.mjs` |
 | `whereis` | Print the framework install location and version | `tools/cli/framework.mjs` |
-| `update` | Update the framework (git) and show what changed | `tools/cli/framework.mjs` |
+| `update [--channel stable\|main]` | Update the framework and show what changed. `stable` (default) fast-forwards to the latest release tag (`updatePlan`/`latestVersionTag`: what an operator runs only changes at a release); `main` follows the branch head; a ZIP install gets a re-download message pointing at the latest release | `tools/cli/framework.mjs` |
 | `help` / `--help` / `-h` / *(none)* | Usage | — |
 
 Unknown command → error + usage, exit `1`.
+
+## Dispatch and message policy
+
+Commands dispatch through ONE table (`COMMANDS` in `tools/base.mjs`: name → `handler({ args, context, rootDir })`), the same table-driven style as the engine's PROJECTIONS — adding a command is adding a row. Global commands (`help`, `whereis`, `update`, `init`) never require a BASE context and dispatch before the table.
+
+**One language per surface.** User-facing CLI text (help, result lines, refusals) is proper accented French; broker/engine errors (`Access denied`, `Resource not found`) are English — a developer/log surface relayed as-is; validator notifications are French with stable `base.*` codes. Attaching registry codes (`core/codes.mjs`) to every user-facing emitter is the named follow-up; until then the registry documents the vocabulary and the validators consume it.
 
 ## Flags
 

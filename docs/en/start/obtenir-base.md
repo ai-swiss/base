@@ -1,9 +1,9 @@
-<!-- fr-synced: f68c9c93e935096c4df044fe4aca846c3da10761 -->
+<!-- fr-synced: 0ba136248350562f3edb54652d5ac61cf087504c -->
 # Getting BASE: choosing your installation path
 
 How you get BASE decides what you can do with it next: just try out an assistant, start from your own data, or follow updates and contribute. The options below are **independent**, not steps to run in sequence: read them, then keep the one that matches your need. To try an assistant, the ZIP or a copied example is enough; the Git clone becomes useful the moment you want to follow updates or contribute.
 
-> **Fastest, and no terminal on your side:** let your AI tool do it. Paste a single block into an AI tool that can read your files (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code) and it installs BASE, creates your workspace, and tells you when it's ready. See [Have your AI install BASE](installer-par-votre-ia.md).
+> **Fastest, and no terminal on your side:** let your AI tool do it. Paste a single block into an AI tool that can read your files and it installs BASE, creates your workspace, and tells you when it's ready. See [Have your AI install BASE](installer-par-votre-ia.md).
 
 > **Have you just pointed your AI tool at the repository?** Tell it "apply BASE to my folder": it should run `base init` first (which creates the agent in the right place, under `.ai/agents/<name>/`), then propose each conversion as a diff, never create the files on your behalf.
 
@@ -16,7 +16,7 @@ If you just want to put the method to the test in ChatGPT or Claude, with no tec
 1. Open the project page on GitHub: `https://github.com/ai-swiss/base`.
 2. Green **Code** button, then **Download ZIP**.
 3. Unzip the folder.
-4. Open an **example** folder (for example `exemples/assistant-devis-demo/`) in an AI tool that can read your files (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code), not the root of the repository.
+4. Open an **example** folder (for example `exemples/assistant-devis-demo/`) in an AI tool that can read your files, not the root of the repository.
 
 Each example is self-contained: it's a complete assistant that you open in your AI tool to make your request.
 
@@ -45,11 +45,11 @@ Share `assistant-devis.md`: the person pastes it into their conversation, then w
 
 ## 6. npm distribution and Releases
 
-Distribution via npm packages (`@ai-swiss/base` and the optional packages) and via GitHub **Releases** archives will come as the public surface stabilizes (see [Versions and stability](../reference/versions-et-stabilite.md)). In the meantime, the ZIP, the example copy, and the Git clone above remain the official paths.
+Every published version carries its files on the GitHub **Releases** page: the stable-name source archive ([base.zip](https://github.com/ai-swiss/base/releases/latest/download/base.zip), always the latest published version) and the browser packs of the flagship examples. That is what "1.0.0" means for you: a dated, frozen state, not the moving head of a branch. Distribution via npm packages (`@ai-swiss/base` and the optional packages) will come as the public surface stabilizes (see [Versions and stability](../reference/versions-et-stabilite.md)); until then, the Release, the example copy, and the Git clone above remain the official paths.
 
 ## What's next?
 
 - First success in a few minutes: [Quickstart](quickstart.md).
-- Connect your tool (an AI tool that can read your files, for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code; or ChatGPT, Claude and the MCP): [Connect your AI tool](../guides/connecter-votre-outil.md).
+- Connect your tool (an AI tool that can read your files, or ChatGPT and Claude via the MCP): [Connect your AI tool](../guides/connecter-votre-outil.md).
 - Which path for your profile: [What to read in what order](lire-dans-quel-ordre.md).
 - Stuck in an example: ask for help. With the CLI, the MCP, or a harness that respects routing, BASE steers you mechanically to the configured welcome; in browser-only mode, it's only an instruction the model follows.

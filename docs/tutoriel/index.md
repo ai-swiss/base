@@ -24,7 +24,7 @@ Cette vérification repose sur un contrôle déterministe que vous inspectez et 
 
 ## Choisissez votre point de départ
 
-### Découverte: 32 min, rien à installer côté BASE
+### Découverte: 32 min une fois votre outil branché, rien à installer côté BASE
 Vous n'avez jamais structuré le travail d'une IA. Vous ouvrez l'office du tourisme déjà achevé,
 vous lui parlez, vous modifiez une règle, vous voyez l'assistant obéir au fichier. **3 modules.**
 À la fin: vous disposez de votre propre dossier, et d'un de vos vrais documents à l'intérieur.

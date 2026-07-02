@@ -1,6 +1,6 @@
 # Installer le serveur MCP de BASE
 
-Lorsque votre outil IA ne lit pas directement vos fichiers, ou lorsque vous souhaitez partager un agent au-delà de votre poste, c'est au serveur MCP (Model Context Protocol) qu'il faut recourir: il rend vos agents BASE accessibles depuis n'importe quelle plateforme compatible, sans que vous ayez à recopier votre travail à la main. En contrepartie, vous exposez un dossier de votre projet à un outil tiers, ce qui appelle quelques garde-fous (voir plus bas). Il relie vos agents BASE aux plateformes compatibles: ChatGPT, Claude Desktop et les outils IA capables de dialoguer en MCP (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code).
+Lorsque votre outil IA ne lit pas directement vos fichiers, ou lorsque vous souhaitez partager un agent au-delà de votre poste, c'est au serveur MCP (Model Context Protocol) qu'il faut recourir: il rend vos agents BASE accessibles depuis n'importe quelle plateforme compatible, sans que vous ayez à recopier votre travail à la main. En contrepartie, vous exposez un dossier de votre projet à un outil tiers, ce qui appelle quelques garde-fous (voir plus bas). Il relie vos agents BASE aux plateformes compatibles: ChatGPT, Claude Desktop et les outils IA capables de dialoguer en MCP.
 
 ## Prérequis
 
@@ -40,7 +40,7 @@ Dans `claude_desktop_config.json`:
 }
 ```
 
-La configuration est la même dans les autres outils IA capables de dialoguer en MCP (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code): reportez le même bloc dans leurs paramètres MCP.
+La configuration est la même dans les autres outils IA capables de dialoguer en MCP: reportez le même bloc dans leurs paramètres MCP.
 
 Les outils grand public compatibles MCP, comme ChatGPT (via son mode développeur), peuvent eux aussi se brancher sur ce serveur MCP local. L'activation et ses conditions du moment relèvent de l'outil et de sa documentation officielle: BASE n'en fait pas un parcours guidé et n'en dépend pas.
 

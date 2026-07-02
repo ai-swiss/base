@@ -1,4 +1,4 @@
-<!-- fr-synced: 6af4a413ec8743abcd9912d5ad9d6e5f12dfd4a1 -->
+<!-- fr-synced: 19d08490c21fdaadfa59cf11c806c7d8ac59ae80 -->
 # Your folder, your first document
 
 *⏱ ~12 min · module 3/3, Discovery track*
@@ -24,6 +24,6 @@
 
 🔁 **At home**: which of your documents deserves to be the first real content in your assistant?
 
-→ **And now**: you have completed the Discovery tour. To build for real (processes, evaluation, fieldwork), move on to the [Practitioner track](praticien-1-anatomie.md).
+→ **And now**: you have completed the Discovery tour. To build for real (processes, evaluation, fieldwork), move on to the [Practitioner track](praticien-1-anatomie.md). And for the why, now that you have had a taste of the practice: [Why BASE](../learn/co-penser-avec-lia.md).
 
 🆘 **Common breakdowns**: *It invents an answer to question 2*: that is the risk inherent to the *consigne* tier; deterministic routing and a good use_when ease it (Practitioner track). *It does not see your document*: make sure it is really INSIDE the open folder, and not somewhere else.
