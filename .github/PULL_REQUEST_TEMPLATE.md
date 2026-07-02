@@ -11,6 +11,8 @@
 
 ## Checklist
 
+- [ ] Every commit is signed off (`git commit -s`; the DCO check rejects unsigned commits, `git rebase --signoff` repairs a branch)
+- [ ] The branch starts from an up-to-date `main` and carries this one topic only
 - [ ] `npm test` green (core + packages)
 - [ ] `npm run typecheck` clean
 - [ ] `node tools/base.mjs validate --root .` → "BASE valide."
