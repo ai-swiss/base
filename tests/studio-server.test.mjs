@@ -35,6 +35,18 @@ describe("studio server — loopback enforcement", () => {
     server.close();
   });
 
+  it("the bind guard also holds on createStudioServer().listen, not only the launch path (FR-STUDIO-007)", async () => {
+    // The low-level factory is a real integration path (the tests below use it). The guard must be
+    // impossible to bypass by calling listen directly with a non-loopback host.
+    const guarded = createStudioServer(EX, { watch: false });
+    assert.throws(() => guarded.listen(0, "0.0.0.0"), /Refusing to bind non-loopback/);
+    // Loopback still binds fine through the same wrapped listen.
+    const ok = createStudioServer(EX, { watch: false });
+    await new Promise((resolve) => ok.listen(0, "127.0.0.1", resolve));
+    assert.ok(ok.address().port > 0);
+    await new Promise((resolve) => ok.close(resolve));
+  });
+
   it("rejects with a friendly message (not a cryptic crash) when the port is already in use", async () => {
     const first = await startStudioServer(EX, { host: "127.0.0.1", port: 0, watch: false });
     const taken = first.address().port;

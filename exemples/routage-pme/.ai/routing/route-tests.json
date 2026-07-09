@@ -8,5 +8,6 @@
   { "request": "bug fonctionnalité", "expect": { "status": "ambiguous", "reason_code": "two_close_candidates", "agent": "support" } },
   { "request": "vente", "expect": { "status": "needs_clarification", "reason_code": "no_clear_process", "agent": "commercial" } },
   { "request": "créer un nouveau devis pour une facture contestée", "expect": { "status": "needs_clarification", "reason_code": "no_clear_process", "agent": "commercial" } },
+  { "request": "j'ai un problème avec mon client", "expect": { "status": "ambiguous", "reason_code": "two_close_candidates" } },
   { "request": "zzqq wibble flumph plover", "expect": { "status": "out_of_scope" } }
 ]

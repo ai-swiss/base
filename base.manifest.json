@@ -2089,7 +2089,7 @@
     },
     {
       "id": "base-schema-json",
-      "type": "schema",
+      "type": "document",
       "title": "base.schema",
       "description": "{ \"$schema\": \"https://json-schema.org/draft/2020-12/schema\", \"$id\": \"https://a-i.swiss/base/schemas/base.resource.v1.json\", \"title\": \"BASE Resource\", \"description\": \"Progressive metadata for local-first BASE resources.\",",
       "path": "base.schema.json",
@@ -2099,6 +2099,7 @@
       "keywords": [
         "schema",
         "json",
+        "document",
         "https",
         "org",
         "draft",

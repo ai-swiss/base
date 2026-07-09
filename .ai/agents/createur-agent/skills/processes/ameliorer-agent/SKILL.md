@@ -93,13 +93,23 @@ Pour chaque modification validée:
 
 Présente ensuite un résumé de chaque changement.
 
-### 5. Tester
+### 5. Valider et rafraîchir le routage
+
+Modifier un agent change souvent ses process et leurs signaux: la carte de routage doit suivre. Si un terminal est disponible:
+
+1. `node .ai/base.mjs validate --root .` (les fichiers modifiés passent la validation; corrige avant de continuer)
+2. `node .ai/base.mjs build routing-index --write --root .` (régénère `.ai/routing/index.md`; sans ce pas, un process modifié ou ajouté reste invisible au routage progressif)
+3. `node .ai/base.mjs route-test --root .` (rejoue `route-tests.json` s'il existe): confirme que les routes tiennent après ta modification. Si une route dérape, resserre les signaux `use_when`/`avoid_when`/`keywords` ou ajuste la fixture, puis rejoue.
+
+Sans terminal, signale-le: «Pour que le routage reflète ces changements, il faudra régénérer l'index (`base build routing-index --write`) et rejouer `route-test`.»
+
+### 6. Tester
 
 > «Les modifications sont en place. Essayez de demander à votre assistant: "[suggestion de test]".
 >
 > Si le résultat n'est pas encore parfait, revenez, on peut ajuster.»
 
-### 6. Journal
+### 7. Journal
 
 Écris une entrée dans `.ai/journal/` selon la compétence `journal`.
 

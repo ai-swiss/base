@@ -22,13 +22,12 @@ Objectif: essayer vite, comprendre assez, suivre votre propre fil de pensée ave
 
 Lisez dans cet ordre:
 
-1. `README.md` pour comprendre l'idée générale.
-2. **`docs/tutoriel/index.md`**, le tutoriel «Apprendre en faisant»: le parcours recommandé, pas à pas et vérifié à chaque étape (Découverte sans rien installer, Praticien, Équipe). Vous venez pour essayer: commencez par faire.
-3. `docs/start/quickstart.md` pour essayer en quelques minutes (ou `docs/start/essayer-sans-installer.md` si vous n'avez qu'un navigateur, sans rien installer).
-4. La démo `exemples/assistant-devis-demo/`, puis le dossier `exemples/assistant-devis/` si vous voulez repartir de vos propres données.
-5. `docs/learn/co-penser-avec-lia.md` pour comprendre *pourquoi* BASE est nécessaire (la méthode, en bref), une fois la pratique goûtée; puis `docs/learn/pratiques-co-pensee.md` pour la méthode au quotidien, en 16 principes.
-6. `docs/learn/comprendre.md` seulement si vous voulez approfondir la méthode.
-7. `docs/trust/evidence.md` si vous voulez vérifier les promesses et leurs limites.
+1. **Voir BASE marcher une fois**, avant toute théorie: la démo `exemples/assistant-devis-demo/` (posez la question sur la remise fidélité de Dupont), ou `docs/start/demo-60-secondes.md`. Objectif: voir un `[A VALIDER]` d'abord.
+2. **Essayer ou garder**, selon votre outil: `docs/start/quickstart.md` pour quelques minutes (ou `docs/start/essayer-sans-installer.md` si vous n'avez qu'un navigateur); repartez de vos propres données avec `exemples/assistant-devis/`.
+3. **Faire grandir:** **`docs/tutoriel/index.md`**, le tutoriel «Apprendre en faisant», pas à pas et vérifié à chaque étape (Découverte sans rien installer, Praticien, Équipe).
+4. **Comprendre pourquoi**, quand vous le voulez: `README.md` (l'idée générale et les sections de fond), puis `docs/learn/co-penser-avec-lia.md` (la méthode) et `docs/learn/pratiques-co-pensee.md` (la méthode au quotidien, 16 principes).
+5. `docs/learn/comprendre.md` seulement si vous voulez approfondir la méthode.
+6. `docs/trust/evidence.md` si vous voulez vérifier les promesses et leurs limites.
 
 Vous pouvez ignorer au début:
 

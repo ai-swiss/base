@@ -16,7 +16,7 @@
     },
     "type": {
       "type": "string",
-      "enum": ["agent", "process", "knowledge", "competence", "tool", "template", "data", "data_collection", "document", "note", "journal", "trace", "source", "connector", "policy", "adapter", "schema"]
+      "enum": ["agent", "process", "competence", "tool", "template", "document"]
     },
     "title": {
       "description": "Strongly recommended for shared resources and discovery, but optional so personal Markdown can stay lightweight.",

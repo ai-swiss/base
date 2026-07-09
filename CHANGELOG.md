@@ -4,7 +4,20 @@ Tous les changements notables de BASE sont documentés ici. Le format suit l'esp
 
 À partir de la 1.0, BASE suit le [Semantic Versioning](https://semver.org/lang/fr/): la surface publique stable (format des ressources, commandes CLI, outils MCP, schémas de projection, contrat des points d'extension) ne casse pas sans incrément majeur. Détail: [Versions et stabilité](docs/reference/versions-et-stabilite.md).
 
-## [Unreleased]
+## [1.2.0] - 2026-07-09
+
+Le format perd ses valeurs de `type` spéculatives (dix-sept à six, chacune portée par un comportement réel) et la page du standard réorganise ce qui reste en méthode, opération et contexte. Les exemples chargent l'assistant que leur README promet; la documentation d'installation et de confiance cesse de promettre plus qu'elle ne tient; et deux garde-fous se durcissent (un drapeau CLI inconnu échoue au lieu d'être ignoré, l'écoute du Studio reste locale par construction).
+
+### Modifié
+- La CLI rejette un drapeau inconnu au lieu de l'ignorer: une faute de frappe comme `--comfirmed` échoue clairement, au lieu de laisser croire que l'option a été prise en compte. Les drapeaux `--ollama` et `--golden` de `route-eval` restent reconnus.
+- Le format se resserre: l'énumération des `type` passe de dix-sept à six valeurs, chacune portée par un comportement réel (`agent`, `process`, `competence` pour la méthode; `tool`, `template` pour l'opération et sa lentille de maintenance; `document` pour le contexte typé). Les onze valeurs retirées étaient spéculatives et inutilisées, aucun fichier valide ne s'y appuyait. La page du standard réorganise l'histoire des `type` en méthode / opération / contexte, distingue nom de fichier, type et emplacement, nomme la famille de schémas `base.*`, et précise qu'un `sensitivity` classe une ressource sans piloter l'egress (seuls `confidential` ou une racine `local-only` la retiennent côté local).
+
+### Corrigé
+- Les exemples `routage-pme` et `agence-multi-clients` portent désormais le harnais que leur README promet: ouvrir le dossier annoncé (un client, pour l'agence) dans un outil qui lit vos fichiers charge bien l'assistant. `assistant-reflexion` revient au harnais minimal commun aux autres exemples.
+- Honnêteté de la documentation: le README du serveur MCP ne montre plus de commande `npx` exécutable pour un paquet non publié (elle reste nommée au futur); le README annonce des invariants «vérifiables en une commande», sans durée trompeuse; la page de confiance rappelle que le loopback n'est pas une identité et qu'une exposition hors machine locale demande une authentification.
+- Porche du README plus clair pour un nouveau venu: un aperçu concret du premier succès et les limites de l'essai en chat web nommées près des deux portes, les sigles techniques glosés en clair, et comment brancher n'importe quel outil d'IA; le parcours de lecture solo commence par voir BASE fonctionner avant la théorie.
+- Sécurité: le refus d'écoute non-loopback du Studio tient désormais sur l'objet serveur lui-même; il n'est plus contournable en appelant la fabrique bas niveau `createStudioServer(...).listen(...)` directement (jusqu'ici seul le lancement par `startStudioServer` le garantissait).
+- Aide à l'écriture d'une base: les process `creer-agent` et `ameliorer-agent` rappellent de valider, de régénérer l'index de routage et de rejouer `route-test` après une création ou une modification; la page de référence du routage montre la commande `base route-test`. L'exemple `routage-pme` n'oriente plus une demande vague («j'ai un problème avec mon client») vers une route certaine: il demande de préciser, et une fixture fige ce comportement.
 
 ## [1.1.0] - 2026-07-02
 

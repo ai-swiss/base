@@ -280,6 +280,24 @@ export function createStudioServer(rootOrContext, { watch = true } = {}) {
     }
     sseClients.clear();
   });
+
+  // FR-STUDIO-007: the non-loopback refusal lives on the server OBJECT, not only in
+  // startStudioServer, so an importer calling createStudioServer(...).listen(port, host) cannot
+  // bypass it. Node's listen() is overloaded: (port), (port, cb), (port, host[, backlog][, cb]),
+  // ({ port, host, ... }). We read the host across those forms; a bare listen(port[, cb]) names no
+  // host (Node would bind all interfaces), so we force loopback rather than let exposure be silent.
+  const rawListen = server.listen.bind(server);
+  server.listen = (...listenArgs) => {
+    const opts = typeof listenArgs[0] === "object" && listenArgs[0] !== null ? listenArgs[0] : null;
+    const namedHost = opts ? opts.host : (typeof listenArgs[1] === "string" ? listenArgs[1] : undefined);
+    const exposure = remoteExposureError(namedHost ?? "127.0.0.1", process.env);
+    if (exposure) throw new Error(exposure);
+    if (namedHost === undefined && !opts) {
+      const [port, ...rest] = listenArgs; // (port) or (port, cb): pin loopback explicitly
+      return rawListen(port, "127.0.0.1", ...rest);
+    }
+    return rawListen(...listenArgs);
+  };
   return server;
 }
 

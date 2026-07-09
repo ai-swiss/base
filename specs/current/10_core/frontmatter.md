@@ -41,7 +41,7 @@ bareword     := run of chars up to comment/EOL
 `null` → `null` · `true`/`false` → boolean · `/^-?\d+(\.\d+)?$/` → number · otherwise → string. Quoted scalars are always strings, unescaped.
 
 ### Empty value (FR-PARSE-003)
-`key:` with no inline value **and** no deeper-indented block → `null`. *(Fixes the current `parseScalar("") → {}` bug.)*
+`key:` with no inline value **and** no deeper-indented block → `null` (never `{}`).
 
 ### Comments
 A line whose first non-space char is `#` → ignored. A trailing ` #…` → truncated **only when outside quotes**.

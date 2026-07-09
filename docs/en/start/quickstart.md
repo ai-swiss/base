@@ -1,4 +1,4 @@
-<!-- fr-synced: 38a01bb026de88b9823834db2a2a8ccf1cf00f77 -->
+<!-- fr-synced: f2f3c0c436215979dd9f3749f54373908db75399 -->
 # Shape your first assistant
 
 In a few minutes, you hand off a task you repeat by hand to an assistant that takes it on, with no code and without giving up any control: it proposes, you approve. Concretely, you copy an example into an AI tool that can read your files, you say what you want to do, and the assistant does the rest.
@@ -73,6 +73,8 @@ This control also covers what leaves your machine: for what goes through the BAS
 | Get inspired | Browse the [idea gallery](../guides/idees-agents.md) |
 
 > **Two different doors.** In a project with a router, "Help / I am lost" opens the **welcome** (concierge): it orients you and answers questions about BASE. "Help me find where to start" opens the assistant creator's **diagnosis**: it works out *which assistant to build* for your line of work.
+
+> **Forcing a routing choice.** Say **"R"** (or "R your request") so BASE decides through its tested engine rather than letting the model guess: for a given request, the same route, or an abstention stated clearly.
 
 ---
 

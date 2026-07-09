@@ -48,6 +48,11 @@ La vérité machine est [`base.schema.json`](../../base.schema.json), publié so
 **majeure** du format. Le format suit le versionnage sémantique (voir [Sa promesse de stabilité](#sa-promesse-de-stabilite)):
 un ajout rétrocompatible reste `base.resource.v1`; une rupture incrémenterait le `v`.
 
+`base.resource.v1` est le schéma qu'un auteur écrit. Il appartient à une petite famille versionnée:
+`base.config.v1` et `base.workspace.v1` décrivent la configuration d'un BASE, `base.manifest.v1` et
+`base.routing.v1` sont des projections **générées** (jamais une source de vérité), et
+`base.trace_event.v1` décrit les traces. Chacun porte son propre `$id` stable.
+
 ## Le modèle d'objet
 
 Une ressource est un fichier Markdown (ou JSON) portant un petit en-tête typé. Le principe est la
@@ -70,32 +75,69 @@ Quatre champs, et seulement quatre, sont exigés dès que `schema_version` est p
 
 ### Les `type`
 
-Le `type` est une énumération fermée: `agent`, `process`, `knowledge`, `competence`, `tool`,
-`template`, `data`, `data_collection`, `document`, `note`, `journal`, `trace`, `source`, `connector`,
-`policy`, `adapter`, `schema`. Deux d'entre eux, `agent` et `process`, sont **routables**; les autres
-sont du **contexte**, récupéré une fois la route choisie. La liste fermée est ce qui rend la
-distinction opérable au lieu d'être une convention molle.
+Le `type` est une énumération **fermée, et volontairement courte**: six valeurs, chacune justifiée
+par un comportement distinct dans l'implémentation. Une liste fermée est un contrat, pas un catalogue
+d'illustrations; un type qui ne changerait rien au comportement ne serait pas un type, mais une
+étiquette.
+
+- **La méthode**, comment le travail s'articule: `agent`, `process`, `competence`. L'`agent` (un rôle)
+  et le `process` (une unité de travail) sont les seuls types **routables**, ceux vers lesquels un
+  routeur choisit. La `competence` est le savoir qu'un process consulte; elle n'est jamais routée pour
+  elle-même.
+- **L'opération**: `tool` est le seul type **exécutable**, `base invoke` exige `type: tool` et un
+  `execution.entrypoint`. `template` est un artefact à remplir; sa seule singularité est d'être
+  signalé quand aucune ressource ne le référence, la même lentille de maintenance que `competence`.
+- **Le contexte**: `document`, ce qu'un agent consulte une fois la route choisie. Il ne déclenche
+  aucune opération; il est inventorié, ouvert, validé, daté, et retenu côté local s'il est
+  `confidential`, comme toute ressource.
+
+La distinction méthode / opération / contexte est opérable, pas décorative: c'est ce que le routeur,
+la CLI et le vérificateur traitent réellement.
 
 ### Champs optionnels
 
-Le reste est progressif. Chaque champ optionnel sert un mécanisme ou un signal précis, jamais la
-décoration. Quelques-uns, parmi les plus porteurs:
+Le reste est progressif, et chaque champ sert un **mécanisme** précis, jamais la décoration. Groupés
+par ce qu'ils activent:
 
-- `use_when`, `routing.examples`, `routing.avoid_when`: les signaux de routage (voir ci-dessous).
-- `confidential` (booléen, **posé par un humain, jamais inféré**): la ressource ne part pas vers un
-  modèle distant. C'est le champ qui pilote le contrôle d'egress.
-- `sensitivity`, `scope`, `owner`, `license`: la classification et la propriété par ressource.
-- `review_by`, `valid_from`, `valid_until`: l'ontologie de vieillissement, lue par `base doctor` et le
-  contexte, pour qu'une donnée périmée soit signalée au lieu de circuler en silence.
-- `status` (`draft`, `active`, `deprecated`, `archived`): une ressource dépréciée ou archivée n'est
-  jamais candidate au routage; le corpus vieillit explicitement.
-- `execution`, `requires`, `policy`, `trace`, `governance`, `source`: les points d'extension pour les
-  tools, les dépendances, la gouvernance d'entreprise et la traçabilité.
+- **Routage**: `use_when`, `routing.examples`, `routing.avoid_when` (voir ci-dessous). `title` reste
+  optionnel, mais il est vivement conseillé sur une ressource partagée: il nourrit la découverte et le
+  rappel.
+- **Contrôle d'egress**: `confidential`, un booléen **posé par un humain, jamais inféré**. C'est le
+  seul champ de ressource qui empêche un envoi vers un modèle distant.
+- **Classification et propriété**: `sensitivity`, `scope`, `owner`, `license`. Ils **décrivent** une
+  ressource, et `sensitivity` est le champ que la couche de politiques peut lire pour filtrer une
+  action. Mais la classification ne pilote pas l'egress: seuls `confidential: true`, ou une racine
+  déclarée `local-only`, retiennent une ressource côté local. Un `sensitivity: confidential`, qui
+  n'est qu'une valeur de classification, ne retient donc rien par lui-même: le booléen d'egress est
+  `confidential`.
+- **Vieillissement**: `review_by`, `valid_from`, `valid_until`, lus par `base doctor` et par le
+  contexte, pour qu'une ressource périmée soit signalée au lieu de circuler en silence.
+- **Cycle de vie**: `status` (`draft`, `active`, `deprecated`, `archived`). Une ressource dépréciée ou
+  archivée n'est jamais candidate au routage; le corpus vieillit explicitement.
+- **Points d'extension**: `execution` (les tools), `requires` (les dépendances), `policy`, `trace`,
+  `governance`, `source` (gouvernance et traçabilité). On les ajoute quand un mécanisme les appelle.
 
-Le contrat autorise les clés supplémentaires (`additionalProperties: true`): un producteur peut
-enrichir sans casser un consommateur. Mais, à la différence d'un format qui n'exige presque rien, les
-champs que BASE reconnaît sont contraints et vérifiés: c'est là que le standard prend ses quelques
-opinions, précisément celles qui activent un mécanisme.
+Le contrat autorise les clés supplémentaires (`additionalProperties: true`): un producteur enrichit
+sans casser un consommateur. Une application peut donc poser ses propres clés (cette page, servie par
+le site de documentation, porte ainsi `audience` et `learning_level`): ce sont des extensions d'un
+**modèle applicatif**, pas du format, et elles n'engagent pas le standard. Ce que BASE **reconnaît**,
+en revanche, est contraint et vérifié: c'est là qu'il prend ses quelques opinions, précisément celles
+qui activent un mécanisme.
+
+### Nom de fichier, type et emplacement
+
+Trois choses distinctes se recouvrent souvent à tort. Le **type** est l'ontologie, ce qu'est la
+ressource. Le **nom de fichier** est une convention d'interopérabilité: un process s'écrit dans un
+`SKILL.md`, le format natif reconnu par la convention Agent Skills, et un agent dans un `AGENT.md`.
+L'**emplacement** est la grammaire de chemins que suit un BASE: `.ai/agents/<id>/AGENT.md`, ses
+process sous `.ai/agents/<id>/skills/processes/<id>/SKILL.md`, ses compétences sous
+`.ai/agents/<id>/skills/competences/<id>/`, plus les `templates/` et `tools/` de l'agent. Ces noms et
+ces segments servent aussi de clés: quand le frontmatter ne déclare pas le `type`, il est **dérivé**
+du chemin (un `AGENT.md` est un agent, un `SKILL.md` sous `processes/` un process, et ainsi de suite).
+La grammaire complète est dans [`specs/`](../../specs/README.md).
+
+Les marqueurs de corps (`[A VALIDER]`, `[DECISION]`, `[A COMPLETER]`, `[ATTENTION]`) relèvent de la
+même logique: une convention de méthode, relevée par `base doctor`, et non des champs du format.
 
 ## Les deux séparations
 

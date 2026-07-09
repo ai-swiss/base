@@ -8,6 +8,7 @@ import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, it } from "node:test";
 import { LAUNCHER_SOURCE } from "../tools/core/launcher.mjs";
+import { renderClaudeMd, renderCursorRule } from "../tools/core/bootstrap.mjs";
 
 const repoRoot = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 const exemplesDir = path.join(repoRoot, "exemples");
@@ -139,5 +140,92 @@ describe("every example offers a first win in its README (open / say exactly / e
       assert.match(md, /ce dossier/i, `${dir.name}/README.md: must tell the user to open THIS folder, not the root`);
     }
     assert.ok(checked >= 12, `expected first-win headers across the examples, checked ${checked}`);
+  });
+});
+
+// The harness must match the README promise: a chat-open example that says "open this folder" must
+// carry a legal harness at the folder you open. Two legal shapes, chosen by métier-agent count:
+// A (pointer to one AGENT.md) for a single agent; B (the generated router bootstrap + launcher) for
+// several. Derived from the tree, not a hand-kept list, so a new example is covered automatically.
+const exists = (p) => fs.access(p).then(() => true, () => false);
+const rel = (p) => path.relative(repoRoot, p);
+
+async function metierAgentCount(root) {
+  try {
+    const entries = await fs.readdir(path.join(root, ".ai", "agents"), { withFileTypes: true });
+    return entries.filter((e) => e.isDirectory() && e.name !== "concierge-base").length;
+  } catch {
+    return 0;
+  }
+}
+
+function isChatOpen(md) {
+  return /## Essayez en 30 secondes/.test(md) && /(Claude Code|Cursor)/.test(md) && !/<!--\s*harness:\s*cli-only\s*-->/.test(md);
+}
+
+// Every BASE root a chat-open README invites you to open: top-level single-root examples, plus each
+// declared root of a workspace example (the workspace folder itself is not a root).
+async function chatOpenRoots() {
+  const single = [];
+  const workspaceClients = [];
+  for (const e of (await fs.readdir(exemplesDir, { withFileTypes: true })).filter((d) => d.isDirectory())) {
+    const root = path.join(exemplesDir, e.name);
+    if (await exists(path.join(root, "base.workspace.json"))) {
+      const ws = JSON.parse(await fs.readFile(path.join(root, "base.workspace.json"), "utf8"));
+      for (const r of ws.roots ?? []) workspaceClients.push(path.join(root, r.path));
+      continue;
+    }
+    if (!(await exists(path.join(root, ".ai", "agents")))) continue;
+    const md = await fs.readFile(path.join(root, "README.md"), "utf8").catch(() => "");
+    if (!isChatOpen(md)) continue;
+    single.push({ root, metier: await metierAgentCount(root) });
+  }
+  return { single, workspaceClients };
+}
+
+describe("exemples: thin harness matches the README promise (shape A/B by agent count)", () => {
+  it("single-agent chat-open roots use a pointer harness (shape A, no router body)", async () => {
+    const { single, workspaceClients } = await chatOpenRoots();
+    const roots = single.filter((s) => s.metier === 1).map((s) => s.root).concat(workspaceClients);
+    assert.ok(roots.length >= 10, `expected many shape-A roots, got ${roots.length}`);
+    for (const root of roots) {
+      const claude = await fs.readFile(path.join(root, "CLAUDE.md"), "utf8");
+      assert.match(claude, /@\.ai\/agents\/[\w-]+\/AGENT\.md/, `${rel(root)}/CLAUDE.md must @import its agent (shape A)`);
+      assert.ok(!claude.includes("Quand router"), `${rel(root)}/CLAUDE.md must be a pointer, not the full router body`);
+      assert.ok(await exists(path.join(root, ".cursor", "rules", "assistant.mdc")), `${rel(root)} must ship a .cursor rule`);
+      for (const full of ["AGENTS.md", "BASE_BOOTSTRAP.md", ".ai/tools.md"]) {
+        assert.equal(await exists(path.join(root, full)), false, `${rel(root)}/${full} must not be committed (examples stay minimal)`);
+      }
+    }
+  });
+
+  it("multi-agent chat-open roots use the generated router bootstrap + launcher (shape B)", async () => {
+    const { single } = await chatOpenRoots();
+    const roots = single.filter((s) => s.metier >= 2).map((s) => s.root);
+    assert.ok(roots.some((r) => r.endsWith("routage-pme")), "routage-pme should be detected as a shape-B root");
+    for (const root of roots) {
+      const claude = await fs.readFile(path.join(root, "CLAUDE.md"), "utf8");
+      assert.equal(claude, renderClaudeMd(), `${rel(root)}/CLAUDE.md must equal the generated router (renderClaudeMd)`);
+      const cursor = await fs.readFile(path.join(root, ".cursor", "rules", "assistant.mdc"), "utf8");
+      assert.equal(cursor, renderCursorRule(), `${rel(root)} .cursor rule must equal the generated router (renderCursorRule)`);
+      const launcher = await fs.readFile(path.join(root, ".ai", "base.mjs"), "utf8");
+      assert.equal(launcher, LAUNCHER_SOURCE, `${rel(root)} launcher drifted from LAUNCHER_SOURCE`);
+      for (const full of ["AGENTS.md", "BASE_BOOTSTRAP.md", ".ai/tools.md"]) {
+        assert.equal(await exists(path.join(root, full)), false, `${rel(root)}/${full} must not be committed`);
+      }
+    }
+  });
+
+  it("a workspace root is a steer, not a router (no router body, no local @AGENT import)", async () => {
+    for (const e of (await fs.readdir(exemplesDir, { withFileTypes: true })).filter((d) => d.isDirectory())) {
+      const root = path.join(exemplesDir, e.name);
+      if (!(await exists(path.join(root, "base.workspace.json")))) continue;
+      const claudePath = path.join(root, "CLAUDE.md");
+      if (!(await exists(claudePath))) continue; // a steer file is optional; README-only honesty is also legal
+      const claude = await fs.readFile(claudePath, "utf8");
+      assert.ok(!claude.includes("Quand router"), `${rel(root)}/CLAUDE.md (workspace) must not be a router body`);
+      assert.ok(!/@\.ai\/agents\//.test(claude), `${rel(root)}/CLAUDE.md (workspace) has no local agents to @import`);
+      assert.match(claude, /workspace/i, `${rel(root)}/CLAUDE.md should identify itself as a workspace steer`);
+    }
   });
 });

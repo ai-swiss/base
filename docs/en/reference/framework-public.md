@@ -1,4 +1,4 @@
-<!-- fr-synced: 4c4420160cffed38b08a14ef6a5dbffe3b67450c -->
+<!-- fr-synced: bea11fd11c6724b511bb0a3753e24409b04324fc -->
 # Adopting public BASE: from local to team
 
 If you are an individual, a freelancer, a startup, a small or mid-sized business, or a small team, this page shows you what public BASE gives you: a way to structure your collaboration with AI without installing a heavy platform. It also explains how to adopt it in stages, staying simple on the surface without blocking your later growth.
@@ -154,7 +154,7 @@ The public broker, shared by the CLI and the MCP, provides:
 - invocation of a tool (script) in dry-run by default, with confirmation when needed;
 - project validation.
 
-The router chooses among the agents and processes derived from the files. It does not search freely across the whole repository and does not load all the instructions. Competences, tools, templates, documents, and data are retrieved afterward as context.
+The router chooses among the agents and processes derived from the files. It does not search freely across the whole repository and does not load all the instructions. Competences, tools, templates, and documents are retrieved afterward as context.
 
 BASE could evolve toward broader routing, for example to find a competence or a tool directly. The public core does not do this by default: routing an action and retrieving context are two different responsibilities, and keeping them separate makes the system more readable and testable.
 

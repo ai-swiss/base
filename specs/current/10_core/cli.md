@@ -67,6 +67,10 @@ Commands dispatch through ONE table (`COMMANDS` in `tools/base.mjs`: name → `h
 | `--config <path>` | `validate`, `discover`, `route`, `route-test` | Confined path to a `base.config.{json,mjs}`; default `<root>/base.config.*` |
 | `--public` | `docs` | Build or validate the public-filtered documentation target |
 | `--out <dir>` | `docs model`, `docs build` | For `model`: write projections under a custom directory. For `build`: write the static site to this deployment directory. |
+| `--ollama` | `route-eval` | Run the Ollama-gated routing eval (skipped cleanly if Ollama is absent) |
+| `--golden <path>` | `route-eval` | Override the golden set (relative to the framework root); `--from` takes precedence if both are given |
+
+Unknown `--flag` → error, exit `1` (NFR-CORE-004: a mistyped flag such as `--comfirmed` fails loudly rather than being silently accumulated into positional). Non-flag tokens still accumulate as positional in order.
 
 ## Exit codes (FR-CLI-003)
 - `validate`, `entretien`: exit `1` when `ok == false`, else `0`. `doctor`: exit `1` when any finding has `severity: "error"`.

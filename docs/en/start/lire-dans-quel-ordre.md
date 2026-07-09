@@ -1,4 +1,4 @@
-<!-- fr-synced: 622ce54253d62a586e3157d8dfe02c30273d2e0d -->
+<!-- fr-synced: 7765f7ee96615c4dabd8f29a3dbd631a2f0a08fb -->
 # Where to start
 
 At first glance, the repository can look dense, because it brings together three things at once: a usable framework, domain examples, and a verifiable technical foundation. This page saves you from reading everything: it gives you the reading order suited to your situation, whether you are on your own, in an SMB, in a large enterprise, or in the public sector.
@@ -11,13 +11,12 @@ Goal: try it quickly, understand enough, follow your own train of thought with A
 
 Read in this order:
 
-1. `README.md` to grasp the general idea.
-2. **`docs/tutoriel/index.md`**, the "Learn by doing" tutorial: the recommended path, step by step and verified at each stage (Discovery with nothing installed, Practitioner, Team). You came to try it: start by doing.
-3. `docs/start/quickstart.md` to try it in a few minutes (or `docs/start/essayer-sans-installer.md` if all you have is a browser, with nothing to install).
-4. The `exemples/assistant-devis-demo/` demo, then the `exemples/assistant-devis/` folder if you want to start over from your own data.
-5. `docs/learn/co-penser-avec-lia.md` to understand *why* BASE is necessary (the method, in brief), once you have tasted the practice; then `docs/learn/pratiques-co-pensee.md` for the day-to-day method, in 16 principles.
-6. `docs/learn/comprendre.md` only if you want to go deeper into the method.
-7. `docs/trust/evidence.md` if you want to check the promises and their limits.
+1. **See BASE work once**, before any theory: the `exemples/assistant-devis-demo/` demo (ask the question about Dupont's loyalty discount), or `docs/start/demo-60-secondes.md`. The goal: see an `[A VALIDER]` first.
+2. **Try or keep**, depending on your tool: `docs/start/quickstart.md` for a few minutes (or `docs/start/essayer-sans-installer.md` if all you have is a browser); start over from your own data with `exemples/assistant-devis/`.
+3. **Grow it:** **`docs/tutoriel/index.md`**, the "Learn by doing" tutorial, step by step and verified at each stage (Discovery with nothing installed, Practitioner, Team).
+4. **Understand why**, when you want to: `README.md` (the general idea and the deeper sections), then `docs/learn/co-penser-avec-lia.md` (the method) and `docs/learn/pratiques-co-pensee.md` (the day-to-day method, 16 principles).
+5. `docs/learn/comprendre.md` only if you want to go deeper into the method.
+6. `docs/trust/evidence.md` if you want to check the promises and their limits.
 
 You can skip at first:
 

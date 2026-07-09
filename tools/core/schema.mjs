@@ -4,24 +4,16 @@
 
 export const SCHEMA_VERSION = "base.resource.v1";
 
+// Six types, each earning its place: agent/process/competence (method),
+// tool/template (operation and its orphan lens), document (typed context).
+// A closed enum is a contract, not a menu — no speculative values.
 export const SCHEMA_TYPES = new Set([
   "agent",
   "process",
-  "knowledge",
   "competence",
   "tool",
   "template",
-  "data",
-  "data_collection",
   "document",
-  "note",
-  "journal",
-  "trace",
-  "source",
-  "connector",
-  "policy",
-  "adapter",
-  "schema",
 ]);
 
 export const SCHEMA_SCOPES = new Set(["personal", "team", "org", "public", "enterprise-extension"]);

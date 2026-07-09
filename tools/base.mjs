@@ -230,11 +230,10 @@ const COMMANDS = {
     // embedder, so the eval is Ollama-gated: `--ollama` runs it (skipped cleanly if Ollama is absent);
     // without it, the default path prints the header + how to run, never a slow model round-trip. It
     // runs against the framework's golden set + corpus, not an arbitrary --root. `--golden <path>`
-    // overrides the set (relative to the framework root).
+    // (or `--from`) overrides the set, relative to the framework root; if both are given, `--from` wins.
     const { runRouteEvalCli } = await import("./eval/route-eval-cli.mjs");
-    const withOllama = args.positional.includes("--ollama");
-    const gIdx = args.positional.indexOf("--golden");
-    const goldenPath = args.from || (gIdx >= 0 ? args.positional[gIdx + 1] : undefined);
+    const withOllama = args.ollama === true;
+    const goldenPath = args.from || args.golden || undefined;
     const { result, text } = await runRouteEvalCli({ frameworkRoot: frameworkDir(), goldenPath, withOllama });
     output(args.json ? result : text, args.json, context);
     return;

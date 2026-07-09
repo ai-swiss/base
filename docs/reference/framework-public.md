@@ -165,7 +165,7 @@ Le broker public, partagé par la CLI et le MCP, fournit:
 - invocation d'un outil (script) en dry-run par défaut, avec confirmation quand nécessaire;
 - validation du projet.
 
-Le Router choisit parmi les agents et processes dérivés des fichiers. Il ne fouille pas librement tout le dépôt et ne charge pas l'ensemble des instructions. Les compétences, tools, templates, documents et données sont récupérés ensuite, à titre de contexte.
+Le Router choisit parmi les agents et processes dérivés des fichiers. Il ne fouille pas librement tout le dépôt et ne charge pas l'ensemble des instructions. Les compétences, tools, templates et documents sont récupérés ensuite, à titre de contexte.
 
 BASE pourrait évoluer vers un routage plus large, par exemple pour retrouver directement une compétence ou un outil. Le cœur public s'en abstient par défaut: router une action et retrouver du contexte sont deux responsabilités distinctes, et les tenir séparées rend le système plus lisible et plus testable.
 

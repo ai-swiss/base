@@ -2,9 +2,11 @@
 
 ## Essayez en 30 secondes
 
-1. Ouvrez **ce dossier** (pas la racine du dépôt) dans Claude Code ou Cursor.
+1. Ouvrez le dossier **`clients/dupont-conseil`** (un des clients de l'agence) dans Claude Code ou Cursor. Le dossier de l'agence lui-même est un workspace, pas une base: le travail se fait dans un client.
 2. Dites, mot pour mot: **«Prépare un devis pour Dupont Conseil»**
-3. Vous devriez voir ceci: BASE route vers la racine dupont-conseil et son assistant devis (process nouveau-devis), demeure confiné à cette racine (aucun fichier de Martin Digital n'est touché) et consulte la grille de remises confidentielles pour fixer le prix sans la recopier dans l'offre. Rien n'est écrit ni envoyé sans vous.
+3. Vous devriez voir ceci: l'assistant devis de Dupont prend la demande (process nouveau-devis), consulte la grille de remises confidentielles pour fixer le prix sans la recopier dans l'offre, et reste confiné à la racine du client. Rien n'est écrit ni envoyé sans vous.
+
+Pour router entre les clients (choisir la bonne racine automatiquement), c'est en ligne de commande, ci-dessous.
 
 Cet exemple montre comment **une agence gère plusieurs BASE** (un par client) avec un seul `base.workspace.json`.
 

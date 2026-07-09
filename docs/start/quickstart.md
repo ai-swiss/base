@@ -73,6 +73,8 @@ Ce contrôle vaut aussi pour ce qui sort de votre machine: pour ce qui passe par
 
 > **Deux portes différentes.** Dans un projet doté d'un routeur, «Aide / Je suis perdu» ouvre l'**accueil** (concierge): il oriente et répond aux questions sur BASE. «Aide-moi à trouver par où commencer» ouvre le **diagnostic** du créateur d'assistant: il détermine *quel assistant construire* pour votre métier.
 
+> **Forcer un choix de route.** Dites **«R»** (ou «R votre demande») pour que BASE tranche par son moteur testé plutôt que de laisser le modèle deviner: pour une même demande, la même route, ou une abstention dite clairement.
+
 ---
 
 **Rappel**: l'IA peut se tromper et inventer des détails. Relisez toujours un devis avant de l'envoyer.

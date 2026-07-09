@@ -19,6 +19,7 @@ const PAGE_FILES = [
   "docs/start/installer-par-votre-ia.md",
   "docs/start/essayer-sans-installer.md",
   "docs/audiences/kit-demarrage-pme-suisse.md", // the monthly ritual cites base validate/entretien/route-test
+  "mcp/README.md", // the MCP install page: its runnable fences must not invoke an unpublished npx package
 ];
 const PAGE_DIRS = ["docs/tutoriel"]; // the whole tutorial is verified
 
@@ -62,10 +63,14 @@ describe("docs ↔ CLI — a cited command is a real command", () => {
     }
   });
 
-  it("no page promises an unpublished npm package", async () => {
+  it("no code fence runs an unpublished npm package (prose may name it as future)", async () => {
+    // Fence-aware: a runnable fence must not invoke `npx @ai-swiss` while unpublished; prose is free
+    // to say the command will exist later. Lift this once the packages publish (P2).
     for (const page of await listedPages()) {
       const md = await readFile(page, "utf8");
-      assert.ok(!/npx @ai-swiss/.test(md), `${page} cites npx @ai-swiss (the package is not published)`);
+      for (const fence of md.matchAll(/```[a-z]*\n([\s\S]*?)```/g)) {
+        assert.ok(!/npx @ai-swiss/.test(fence[1]), `${page} runs npx @ai-swiss in a code fence (the package is not published)`);
+      }
     }
   });
 });

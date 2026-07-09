@@ -17,10 +17,12 @@ export function parseArgs(argv) {
     purpose: "",
     from: "",
     to: "",
+    golden: "",
     write: false,
     check: false,
     public: false,
     yes: false,
+    ollama: false,
     out: "",
     keepDays: /** @type {number | undefined} */ (undefined),
     channel: /** @type {string | undefined} */ (undefined),
@@ -169,7 +171,20 @@ export function parseArgs(argv) {
       index++;
       continue;
     }
+    if (item === "--ollama") {
+      args.ollama = true;
+      continue;
+    }
+    if (item === "--golden") {
+      if (!next || next.startsWith("--")) throw new Error("--golden requires a file path.");
+      args.golden = next;
+      index++;
+      continue;
+    }
 
+    // Unknown --flags fail loudly (NFR-CORE-004): a typo like `--comfirmed` must not be swallowed
+    // into positional and silently ignored. Non-flag tokens still accumulate as positional.
+    if (item.startsWith("--")) throw new Error(`Unknown flag: ${item}.`);
     args.positional.push(item);
   }
 

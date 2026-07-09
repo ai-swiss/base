@@ -18,6 +18,7 @@ routing:
   avoid_when:
     - créer un nouveau devis
     - le client conteste le montant de sa facture
+    - un problème vague ou non qualifié avec un client, sans mention de paiement, de retard ni de relance
 ---
 
 # Relance client

@@ -26,13 +26,13 @@ make build
 npm start -- --root /chemin/vers/votre/projet
 ```
 
-> **Sans installation manuelle.** Une fois le paquet publié, `npx @ai-swiss/base-mcp --root /chemin/vers/votre/projet` lance le serveur directement : le broker BASE est embarqué dans le paquet (`dist/`), donc aucun dépôt environnant n'est requis.
+> **Sans installation manuelle (à venir).** `npx @ai-swiss/base-mcp --root /chemin/vers/votre/projet` lancera le serveur directement, sans dépôt environnant (le broker BASE est embarqué dans `dist/`). Cette commande sera disponible ultérieurement, à la publication npm; en attendant, utilisez le dépôt cloné (ci-dessous).
 
-Sans `--root`, le serveur détecte la racine BASE ou le workspace le plus proche depuis son dossier de lancement. Pour un usage durable, préférez une configuration explicite (la commande `npx @ai-swiss/base-mcp` est disponible sur npm à partir de la publication; en attendant, lancez le serveur depuis le dépôt cloné: `node mcp/dist/index.js` après `npm --prefix mcp run build`):
+Sans `--root`, le serveur détecte la racine BASE ou le workspace le plus proche depuis son dossier de lancement. Pour un usage durable, préférez une configuration explicite. En attendant la publication npm, lancez le serveur depuis le dépôt cloné (`node mcp/dist/index.js` après `npm --prefix mcp run build`):
 
 ```bash
-npx @ai-swiss/base-mcp --root /chemin/vers/votre/projet
-npx @ai-swiss/base-mcp --workspace /chemin/vers/base.workspace.json --root-id innovaud
+node mcp/dist/index.js --root /chemin/vers/votre/projet
+node mcp/dist/index.js --workspace /chemin/vers/base.workspace.json --root-id innovaud
 ```
 
 Avec `--workspace` sans `--root-id`, `load_agent` liste les agents qualifiés par racine (`innovaud/assistant-devis`) et `route_request` peut router entre les racines déclarées. Les outils qui lisent, écrivent, exécutent, promeuvent ou listent des marqueurs restent confinés à une racine sélectionnée. Quand plusieurs racines sont visibles, passez le `root_id` retourné par `route_request` ou `load_agent`; sinon l'outil refuse l'action au lieu de choisir une racine implicitement.

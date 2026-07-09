@@ -1,6 +1,6 @@
 {
   "name": "@ai-swiss/base",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "BASE public framework: local-first assistants, resources, validation and discovery",
   "license": "Apache-2.0 AND CC-BY-4.0",
   "author": "AI Swiss (https://a-i.swiss)",

@@ -1,4 +1,4 @@
-<!-- fr-synced: bdf757c1e828f2fbfa6f8dda6420b0fbef26808f -->
+<!-- fr-synced: 259bd98d5b41c775e1c52331ca008f5889c34f0b -->
 # Routing a request to the right process (and opening the right resources)
 
 A misrouted request loads everything, mixes everything together, and drowns the decisions that matter under a wall of instructions. BASE avoids this by distinguishing three gestures that AI tools often conflate: choosing an agent, routing to a process, opening the resources. Keeping them apart keeps what is actually being decided in plain sight. If you are building or using a BASE and want to know how a request finds its way, this page shows it.
@@ -42,7 +42,7 @@ The recommended signals for a routable process are:
 - `routing.examples`: real user phrasings;
 - `routing.avoid_when`: counterexamples that prevent false routes.
 
-The `.ai/routing/route-tests.json` fixtures protect the important routes against regressions.
+The `.ai/routing/route-tests.json` fixtures protect your important routes against regressions: `base route-test --root <folder>` replays each written request and checks that BASE picks the same workflow, or abstains where expected. Add your own requests, including deliberately ambiguous ones to check abstention, and replay after every change to the signals (`use_when`, `avoid_when`, `keywords`).
 
 ## 3. Opening the useful resources
 

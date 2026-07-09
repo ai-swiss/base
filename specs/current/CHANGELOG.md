@@ -5,6 +5,10 @@ Format follows the spirit of Keep a Changelog. Versions follow semver (see `../R
 
 ## [Unreleased]
 
+### Changed
+- FR-CLI-002: unknown `--*` flags are rejected (`parseArgs` throws; exit 1), not accumulated into `positional`; `--ollama` (boolean) and `--golden <path>` registered for `route-eval` (previously read from positional).
+- FR-STUDIO-007: the non-loopback bind refusal is on the server object (a `remoteExposureError` guard wraps `listen`), so `createStudioServer(...).listen(port, host)` can no longer bypass the guard that `startStudioServer` enforced; a bare `listen(port)` is pinned to loopback.
+
 ## [1.0.0] - 2026-06-25
 
 First public specification of BASE-the-tooling. It documents the **implemented**

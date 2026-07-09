@@ -1,0 +1,6 @@
+---
+description: Workspace agence (ouvrez un client)
+alwaysApply: true
+---
+
+Ce dossier est un workspace, pas une base. Pour le chat, ouvrez `clients/dupont-conseil` ou `clients/martin-digital`. Pour router entre les clients: `base route "votre demande" --workspace base.workspace.json`.

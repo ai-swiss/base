@@ -6,6 +6,7 @@ import * as os from "node:os";
 import * as path from "node:path";
 import { promisify } from "node:util";
 import { afterEach, beforeEach, describe, it } from "node:test";
+import { parseArgs } from "../tools/cli/parse-args.mjs";
 
 const execFileAsync = promisify(execFile);
 const cliPath = path.resolve("tools/base.mjs");
@@ -34,6 +35,25 @@ async function fileExists(fullPath) {
   }
 }
 
+describe("parseArgs: unknown flags fail loudly (A1)", () => {
+  it("throws on an unknown --flag instead of swallowing it into positional", () => {
+    assert.throws(() => parseArgs(["validate", "--bogus"]), /Unknown flag: --bogus/);
+    assert.throws(() => parseArgs(["route", "--comfirmed"]), /Unknown flag/);
+  });
+  it("keeps non-flag tokens as positional", () => {
+    assert.deepEqual(parseArgs(["route", "je veux un devis"]).positional, ["route", "je veux un devis"]);
+  });
+  it("recognizes --ollama (boolean) and --golden (value) for route-eval", () => {
+    const a = parseArgs(["route-eval", "--ollama", "--golden", "sets/x.json"]);
+    assert.equal(a.ollama, true);
+    assert.equal(a.golden, "sets/x.json");
+    assert.deepEqual(a.positional, ["route-eval"]);
+  });
+  it("requires a value after --golden", () => {
+    assert.throws(() => parseArgs(["route-eval", "--golden"]), /--golden requires a file path/);
+  });
+});
+
 describe("base CLI", () => {
   it("detects the nearest BASE root from cwd and shows it in normal output", async () => {
     await write(".ai/agents/demo/AGENT.md", "---\nid: demo\ntype: agent\ndescription: Demo.\n---\n# Demo\n");
@@ -45,6 +65,18 @@ describe("base CLI", () => {
 
     assert.match(stdout, /BASE root:/);
     assert.match(stdout, /BASE valide/);
+  });
+
+  it("rejects an unknown --flag with a clear error (A1)", async () => {
+    await write(".ai/agents/demo/AGENT.md", "---\nid: demo\ntype: agent\ndescription: Demo.\n---\n# Demo\n");
+    await assert.rejects(
+      () => execFileAsync("node", [cliPath, "validate", "--bogus"], { cwd: tmpDir }),
+      (error) => {
+        assert.equal(error.code, 1);
+        assert.match(error.stderr, /Unknown flag: --bogus/);
+        return true;
+      },
+    );
   });
 
   it("fails helpfully when no BASE root or workspace can be inferred", async () => {

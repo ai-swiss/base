@@ -53,7 +53,7 @@ Pour rendre un process routable, on recommande les signaux suivants:
 - `routing.examples`: formulations réelles d'utilisateurs;
 - `routing.avoid_when`: contre-exemples qui évitent les fausses routes.
 
-Les fixtures `.ai/routing/route-tests.json` protègent les routes importantes contre les régressions.
+Les fixtures `.ai/routing/route-tests.json` protègent vos routes importantes contre les régressions: `base route-test --root <dossier>` rejoue chaque demande écrite et vérifie que BASE choisit le même workflow, ou s'abstient là où c'est attendu. Ajoutez-y vos propres demandes, y compris des cas volontairement ambigus pour vérifier l'abstention, et rejouez après chaque changement de signaux (`use_when`, `avoid_when`, `keywords`).
 
 ## 3. Ouvrir les ressources utiles
 

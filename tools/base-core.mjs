@@ -1170,7 +1170,6 @@ function deriveType(relativePath) {
   if (normalized.endsWith("/SKILL.md") && normalized.includes("/competences/")) return "competence";
   if (normalized.includes("/templates/")) return "template";
   if (normalized.includes("/tools/")) return "tool";
-  if (normalized === "base.schema.json") return "schema";
   return "document";
 }
 

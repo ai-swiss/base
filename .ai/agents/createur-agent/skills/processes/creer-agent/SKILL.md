@@ -209,8 +209,9 @@ Si un terminal est disponible, vérifie le travail avec les mécanismes de BASE 
 
 1. `node .ai/base.mjs validate --root .` (chaque fichier créé passe la validation; corrige avant de continuer)
 2. `node .ai/base.mjs build routing-index --write --root .` (régénère `.ai/routing/index.md` et l'index de l'agent: la carte que lit l'outil IA; sans ce pas, le nouveau process reste invisible au routage progressif)
+3. `node .ai/base.mjs route-test --root .` (si tu as écrit un `route-tests.json`): rejoue les demandes réalistes et confirme que BASE choisit le bon workflow et s'abstient hors périmètre. Si une route dérape (un process capte une demande trop générale), resserre ses signaux `use_when`/`avoid_when`/`keywords` ou ajuste la fixture, puis rejoue.
 
-Sans terminal, dis-le simplement: «Pour que le routage voie ce nouveau process, il faudra régénérer l'index (`base build routing-index --write`) à la prochaine occasion.»
+Sans terminal, dis-le simplement: «Pour que le routage voie ce nouveau process, il faudra régénérer l'index (`base build routing-index --write`) et rejouer `route-test` à la prochaine occasion.»
 
 ### 11. Tester et itérer
 

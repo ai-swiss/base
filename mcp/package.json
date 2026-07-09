@@ -1,6 +1,6 @@
 {
   "name": "@ai-swiss/base-mcp",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "MCP server for BASE - expose your business AI agents to any platform",
   "license": "Apache-2.0",
   "author": "AI Swiss (https://a-i.swiss)",

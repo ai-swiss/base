@@ -1,4 +1,4 @@
-<!-- fr-synced: 0a8ba0c3c7a39944cf53e78b902a13361707cba3 -->
+<!-- fr-synced: 4d443e8432aeab91a7ca6dae4fe534db8a3e82dc -->
 # The BASE standard: `base.resource.v1`
 
 BASE is not yet another platform: it is an **open standard we propose**, with its reference
@@ -35,6 +35,11 @@ a **major** version of the format. The format follows semantic versioning (see [
 promise](#its-stability-promise)): a backward-compatible addition stays `base.resource.v1`; a break
 would increment the `v`.
 
+`base.resource.v1` is the schema an author writes. It belongs to a small versioned family:
+`base.config.v1` and `base.workspace.v1` describe a BASE's configuration, `base.manifest.v1` and
+`base.routing.v1` are **generated** projections (never a source of truth), and `base.trace_event.v1`
+describes traces. Each carries its own stable `$id`.
+
 ## The object model
 
 A resource is a Markdown (or JSON) file carrying a small typed header. The principle is **progressive
@@ -57,32 +62,64 @@ Four fields, and only four, are required as soon as `schema_version` is present:
 
 ### The `type`s
 
-The `type` is a closed enumeration: `agent`, `process`, `knowledge`, `competence`, `tool`,
-`template`, `data`, `data_collection`, `document`, `note`, `journal`, `trace`, `source`, `connector`,
-`policy`, `adapter`, `schema`. Two of them, `agent` and `process`, are **routable**; the others are
-**context**, retrieved once the route is chosen. The closed list is what makes the distinction
-operable instead of a soft convention.
+The `type` is a **closed and deliberately short** enumeration: six values, each justified by a
+distinct behavior in the implementation. A closed list is a contract, not a catalogue of
+illustrations; a type that would change nothing in behavior would not be a type, but a label.
+
+- **The method**, how the work is articulated: `agent`, `process`, `competence`. The `agent` (a role)
+  and the `process` (a unit of work) are the only **routable** types, the ones a router chooses
+  toward. The `competence` is the knowledge a process consults; it is never routed for itself.
+- **The operation**: `tool` is the only **executable** type, `base invoke` requires `type: tool` and
+  an `execution.entrypoint`. `template` is a fill-in artifact; its only distinctive behavior is to be
+  flagged when no resource references it, the same maintenance lens as `competence`.
+- **The context**: `document`, what an agent consults once the route is chosen. It triggers no
+  operation; it is inventoried, opened, validated, dated, and held locally if `confidential`, like any
+  resource.
+
+The method / operation / context distinction is operable, not decorative: it is what the router, the
+CLI and the checker actually treat.
 
 ### Optional fields
 
-The rest is progressive. Each optional field serves a precise mechanism or signal, never decoration.
-A few of the most load-bearing:
+The rest is progressive, and each field serves a precise **mechanism**, never decoration. Grouped by
+what they turn on:
 
-- `use_when`, `routing.examples`, `routing.avoid_when`: the routing signals (see below).
-- `confidential` (boolean, **set by a human, never inferred**): the resource does not leave for a
-  remote model. This is the field that drives egress control.
-- `sensitivity`, `scope`, `owner`, `license`: per-resource classification and ownership.
-- `review_by`, `valid_from`, `valid_until`: the aging ontology, read by `base doctor` and the context
-  pack, so that stale data is flagged instead of circulating silently.
-- `status` (`draft`, `active`, `deprecated`, `archived`): a deprecated or archived resource is never
-  a routing candidate; the corpus ages explicitly.
-- `execution`, `requires`, `policy`, `trace`, `governance`, `source`: the extension points for tools,
-  dependencies, enterprise governance, and traceability.
+- **Routing**: `use_when`, `routing.examples`, `routing.avoid_when` (see below). `title` stays
+  optional, but is strongly advised on a shared resource: it feeds discovery and recall.
+- **Egress control**: `confidential`, a boolean **set by a human, never inferred**. It is the only
+  resource field that prevents a send to a remote model.
+- **Classification and ownership**: `sensitivity`, `scope`, `owner`, `license`. They **describe** a
+  resource, and `sensitivity` is the field the policy layer can read to filter an action. But
+  classification does not drive egress: only `confidential: true`, or a root declared `local-only`,
+  holds a resource on the local side. A `sensitivity: confidential`, which is merely a classification
+  value, therefore holds nothing back by itself: the egress boolean is `confidential`.
+- **Aging**: `review_by`, `valid_from`, `valid_until`, read by `base doctor` and the context pack, so
+  that a stale resource is flagged instead of circulating silently.
+- **Lifecycle**: `status` (`draft`, `active`, `deprecated`, `archived`). A deprecated or archived
+  resource is never a routing candidate; the corpus ages explicitly.
+- **Extension points**: `execution` (tools), `requires` (dependencies), `policy`, `trace`,
+  `governance`, `source` (governance and traceability). Add them when a mechanism calls for them.
 
-The contract allows additional keys (`additionalProperties: true`): a producer can enrich without
-breaking a consumer. But, unlike a format that requires almost nothing, the fields BASE recognizes
-are constrained and verified: that is where the standard takes its few opinions, precisely the ones
-that turn on a mechanism.
+The contract allows additional keys (`additionalProperties: true`): a producer enriches without
+breaking a consumer. An application can thus set its own keys (a documentation page like this one
+carries `audience` and `learning_level`): these are extensions of an **application model**, not of the
+format, and they do not commit the standard. What BASE **recognizes**, by contrast, is constrained and
+verified: that is where it takes its few opinions, precisely the ones that turn on a mechanism.
+
+### File name, type, and location
+
+Three distinct things are often wrongly conflated. The **type** is the ontology, what the resource is.
+The **file name** is an interoperability convention: a process is written in a `SKILL.md`, the native
+format recognized by the Agent Skills convention, and an agent in an `AGENT.md`. The **location** is
+the path grammar a BASE follows: `.ai/agents/<id>/AGENT.md`, its processes under
+`.ai/agents/<id>/skills/processes/<id>/SKILL.md`, its competences under
+`.ai/agents/<id>/skills/competences/<id>/`, plus the agent's `templates/` and `tools/`. These names
+and segments also serve as keys: when the frontmatter does not declare the `type`, it is **derived**
+from the path (an `AGENT.md` is an agent, a `SKILL.md` under `processes/` a process, and so on). The
+full grammar is in [`specs/`](../../../specs/README.md).
+
+Body markers (`[A VALIDER]`, `[DECISION]`, `[A COMPLETER]`, `[ATTENTION]`) follow the same logic: a
+method convention surfaced by `base doctor`, and not fields of the format.
 
 ## The two separations
 
