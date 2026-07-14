@@ -1,3 +1,15 @@
+---
+schema_version: base.resource.v1
+id: installer-cursor
+type: document
+title: Installer Cursor pour vos agents BASE
+description: Installer Cursor pas à pas pour faire travailler vos agents BASE: ouvrir un exemple, formuler la première demande, réagir si quelque chose bloque. Cursor est une porte d'entrée parmi d'autres.
+scope: public
+status: active
+sensitivity: public
+keywords: [cursor, installer, installation, editeur, poste, configuration]
+---
+
 # Installer Cursor pour vos agents BASE
 
 Pour faire travailler vos agents BASE, il vous faut un poste où l'IA lit vos fichiers, en écrit et exécute des commandes sous votre contrôle: cette page en installe un, prêt à l'emploi, avec Cursor. À la fin, vous aurez ouvert un exemple, formulé votre première demande, et vous saurez réagir si quelque chose se bloque. Il faut pour cela installer un logiciel et créer un compte chez l'éditeur. Cursor n'est qu'une porte d'entrée: d'autres outils IA capables de lire vos fichiers conviennent tout aussi bien (GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code, par exemple); retenez celui qui vous convient.

@@ -16,6 +16,7 @@ routing:
     - Le process devis donne un mauvais montant
     - Signaler un problème avec l'assistant
   avoid_when:
+    - Question de définition d'un process.
     - Demander de l'aide pour réaliser une tâche métier.
     - Créer ou améliorer un agent (c'est le créateur d'agent).
     - Vérifier, auditer ou publier un BASE (c'est l'entretien du créateur d'agent).

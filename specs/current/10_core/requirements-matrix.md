@@ -8,7 +8,7 @@ named only by a skipped test) · ❌ no test — GAP · ⊘ de-scoped (retired, 
 with `npm run spec:matrix`; CI fails when this file is stale, when a test cites an unknown ID, or
 when the weak/gap count rises against the baseline (`--ratchet`).
 
-**125 of 125 requirements cited by a test — 3 weak, 0 gap.**
+**125 of 125 requirements cited by a test — 3 weak, 0 gap, 1 de-scoped.**
 
 | Requirement | Proof | Covered by |
 |---|---|---|
@@ -31,6 +31,7 @@ when the weak/gap count rises against the baseline (`--ratchet`).
 | FR-CORE-008 | ✅ | `tests/base-core.test.mjs` |
 | FR-CORE-009 | ✅ | `tests/base-core.test.mjs` |
 | FR-CORE-010 | ✅ | `tests/base-core.test.mjs` |
+| FR-CORE-011 | ✅ | `tests/base-core.test.mjs` |
 | FR-PARSE-001 | ✅ | `tests/base-frontmatter-serialize.test.mjs`<br>`tests/base-frontmatter.test.mjs` |
 | FR-PARSE-002 | ✅ | `tests/base-frontmatter.test.mjs` |
 | FR-PARSE-003 | ✅ | `tests/base-frontmatter-serialize.test.mjs`<br>`tests/base-frontmatter.test.mjs` |
@@ -53,7 +54,7 @@ when the weak/gap count rises against the baseline (`--ratchet`).
 | FR-ROUTE-006 | ✅ | `packages/base-ranker-semantic/tests/hardening.test.mjs`<br>`packages/base-ranker-semantic/tests/index.test.mjs`<br>`tests/routing-vectors.test.mjs` |
 | FR-ROUTE-007 | ✅ | `tests/base-routing-quality.test.mjs`<br>`tests/example-routing.test.mjs` |
 | FR-ROUTE-008 | ✅ | `packages/base-ranker-semantic/tests/hardening.test.mjs`<br>`packages/base-ranker-semantic/tests/index.test.mjs`<br>`packages/base-ranker-semantic/tests/transport.test.mjs` |
-| FR-ROUTE-009 | ✅ | `tests/base-fallback.test.mjs` |
+| FR-ROUTE-009 | ✅ | `tests/base-fallback.test.mjs`<br>`tests/route-embedding-strategy.test.mjs` |
 | FR-ROUTE-010 | ✅ | `tests/router.test.mjs` |
 | FR-ROUTE-011 | ✅ | `tests/retrieve.test.mjs` |
 | FR-ROUTE-012 | ✅ | `tests/refine.test.mjs` |
@@ -119,7 +120,7 @@ when the weak/gap count rises against the baseline (`--ratchet`).
 | FR-BUILD-001 | ✅ | `tests/base-core.test.mjs` |
 | FR-BUILD-002 | ✅ | `tests/base-core.test.mjs`<br>`tests/base-docs.test.mjs` |
 | FR-BUILD-003 | ✅ | `tests/base-core.test.mjs` |
-| FR-BUILD-004 | ✅ | `tests/base-cli.test.mjs` |
+| FR-BUILD-004 | ⊘ de-scoped | — |
 | FR-BUILD-005 | ✅ | `tests/base-cli.test.mjs` |
 | FR-DOCS-001 | ✅ | `tests/base-docs.test.mjs`<br>`tests/docs-model-public.test.mjs` |
 | FR-DOCS-002 | ✅ | `tests/base-docs.test.mjs` |
@@ -147,3 +148,9 @@ when the weak/gap count rises against the baseline (`--ratchet`).
 ## Gaps (requirements with no citing test)
 
 None.
+
+## De-scoped (retired, ID preserved)
+
+Retired requirements keep their ID for traceability and are excluded from the proof counts.
+
+- FR-BUILD-004

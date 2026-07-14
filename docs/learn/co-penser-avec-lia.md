@@ -121,6 +121,8 @@ BASE **vise à servir d'ancre**, dans la mesure où vos fichiers restent lisible
 
 Co-penser, c'est **choisir en conscience**, non tout faire à la main. Déléguez ce qui a un vérificateur ou ne demande pas de jugement; co-pensez ce qui porte du risque et du sens. BASE fait simplement de l'humain dans la boucle le choix *par défaut*, et de la délégation un choix *explicite et visible*, là où la tendance du marché est l'automatisation *invisible*.
 
+Certaines tâches se délèguent; d'autres, fondamentalement, pas. Au risque des réponses erronées s'ajoute un autre, plus insidieux: la perte progressive de la vue d'ensemble, quand la sortie s'accumule plus vite que la compréhension et que la relecture devient un rituel. BASE ne peut pas vous forcer à structurer vos interactions en conséquence, mais il peut vous aider à le faire pour que vous restiez capable de préserver cette vue d'ensemble, en vous incitant à garder un certain niveau d'échange avec l'IA plutôt qu'une pure délégation.
+
 ## BASE met ce qui compte devant vous
 
 Une bonne collaboration épargne la recherche. Tout comme un *process* doit donner à l'IA l'information qui compte, BASE doit vous donner, à *vous*, ce qui compte, sans que vous ayez à le demander:

@@ -43,7 +43,7 @@ L'identité du format est portée par un seul champ, requis dans chaque ressourc
 schema_version: base.resource.v1
 ```
 
-La vérité machine est [`base.schema.json`](../../base.schema.json), publié sous l'identifiant stable
+La vérité machine est [`base.schema.json`](../../base.schema.json), sous l'identifiant stable
 `https://a-i.swiss/base/schemas/base.resource.v1.json`. Cet identifiant ne change qu'avec une version
 **majeure** du format. Le format suit le versionnage sémantique (voir [Sa promesse de stabilité](#sa-promesse-de-stabilite)):
 un ajout rétrocompatible reste `base.resource.v1`; une rupture incrémenterait le `v`.
@@ -104,7 +104,7 @@ par ce qu'ils activent:
   rappel.
 - **Contrôle d'egress**: `confidential`, un booléen **posé par un humain, jamais inféré**. C'est le
   seul champ de ressource qui empêche un envoi vers un modèle distant.
-- **Classification et propriété**: `sensitivity`, `scope`, `owner`, `license`. Ils **décrivent** une
+- **Classification**: `sensitivity`, `scope`, `license`. Ils **décrivent** une
   ressource, et `sensitivity` est le champ que la couche de politiques peut lire pour filtrer une
   action. Mais la classification ne pilote pas l'egress: seuls `confidential: true`, ou une racine
   déclarée `local-only`, retiennent une ressource côté local. Un `sensitivity: confidential`, qui
@@ -114,13 +114,18 @@ par ce qu'ils activent:
   contexte, pour qu'une ressource périmée soit signalée au lieu de circuler en silence.
 - **Cycle de vie**: `status` (`draft`, `active`, `deprecated`, `archived`). Une ressource dépréciée ou
   archivée n'est jamais candidate au routage; le corpus vieillit explicitement.
-- **Points d'extension**: `execution` (les tools), `requires` (les dépendances), `policy`, `trace`,
-  `governance`, `source` (gouvernance et traçabilité). On les ajoute quand un mécanisme les appelle.
+- **Points d'extension**: `execution` (les tools), `requires` (les dépendances), `source` (la
+  provenance). On les ajoute quand un mécanisme les appelle.
 
 Le contrat autorise les clés supplémentaires (`additionalProperties: true`): un producteur enrichit
 sans casser un consommateur. Une application peut donc poser ses propres clés (cette page, servie par
 le site de documentation, porte ainsi `audience` et `learning_level`): ce sont des extensions d'un
-**modèle applicatif**, pas du format, et elles n'engagent pas le standard. Ce que BASE **reconnaît**,
+**modèle applicatif**, pas du format, et elles n'engagent pas le standard. Les champs de gouvernance
+d'une organisation (`owner`, `review_date`, `policy`, `trace`, `governance`…) suivent la même voie:
+le contrat ne les schématise pas, et la couche de validation permet de les **exiger** là où votre
+contexte le demande (`requireFields(["owner", "review_date"], { whenScope: "team" })`, le motif du
+kit enterprise). Un fichier qui les porte reste valide; ce que le schéma reconnaît, lui, se limite
+aux champs qu'un mécanisme lit. Ce que BASE **reconnaît**,
 en revanche, est contraint et vérifié: c'est là qu'il prend ses quelques opinions, précisément celles
 qui activent un mécanisme.
 
@@ -193,13 +198,16 @@ La spécification est [`validator.md`](../../specs/current/10_core/validator.md)
 
 ## Sa promesse de stabilité
 
-Le format suit le versionnage sémantique: un fichier valide aujourd'hui le demeure sur toute la 1.x.
-C'est l'engagement **NFR-CORE-002**, dit «pas de rupture», détaillé dans
+Le format suit le versionnage sémantique: aucun changement incompatible sans dépréciation préalable
+et incrément majeur. C'est l'engagement **NFR-CORE-002**, dit «pas de rupture», détaillé dans
 [Versions et stabilité](versions-et-stabilite.md). L'identifiant `base.resource.v1` ne change qu'avec
 une version majeure du format. Un élément stable qui doit disparaître est d'abord déprécié, maintenu
-fonctionnel sur au moins une version mineure, avant tout retrait. La surface stable englobe le format
-et ses `type`, les commandes CLI et outils MCP existants, et les schémas des projections
-(`base.manifest.v1`, `base.routing.v1`).
+fonctionnel sur au moins une version mineure, avant tout retrait. Un standard jeune assume une taille
+de plus: une valeur que rien ne consomme (aucun mécanisme derrière elle, aucun fichier connu ne s'y
+appuie) peut être retirée en version mineure, dite telle quelle dans le CHANGELOG: la 1.2.0 l'a fait
+pour onze valeurs de `type` spéculatives. La surface stable englobe le format et ses six `type`, les
+commandes CLI et outils MCP existants, et les schémas des projections (`base.manifest.v1`,
+`base.routing.v1`).
 
 ## L'implémentation de référence, et les autres
 
@@ -229,7 +237,7 @@ use_when: "l'utilisateur veut établir ou chiffrer un devis pour un client"
 
 Quatre champs requis, un signal de routage, et le corps en Markdown. Le reste s'ajoute quand un besoin
 l'appelle: `confidential: true` pour retenir une ressource côté local, `valid_until` pour dater un
-tarif, `owner` et `sensitivity` pour une ressource partagée.
+tarif, `sensitivity` pour une ressource partagée (et `owner` en clé d'extension, si votre organisation l'exige via `requireFields`).
 
 ## L'interopérabilité, aujourd'hui
 

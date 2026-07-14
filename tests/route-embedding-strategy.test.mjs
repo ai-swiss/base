@@ -25,11 +25,12 @@ const stubEmbed = () => async (text) => {
   return [t.includes("devis") || t.includes("facture") ? 1 : 0.01, t.includes("congé") || t.includes("conge") ? 1 : 0.01];
 };
 
-// A stub refiner model: a `.complete` that returns scripted JSON. `pick` is the process id to select.
-const stubModel = (json) => ({ complete: async () => ({ message: { role: "assistant", content: [{ type: "text", text: json }] } }) });
+// A stub refiner model: a `.complete` that returns scripted JSON and records the request it received
+// (so a test can assert what DID and did NOT reach the remote prompt). `sink.request` is the capture.
+const stubModel = (json, sink = {}) => ({ complete: async (request) => { sink.request = request; return { message: { role: "assistant", content: [{ type: "text", text: json }] } }; } });
 
 // The embeddingStrategy seam: BOTH models configured (→ embedding), resolvers return the stubs above.
-const embeddingStrategyWith = ({ refinerJson, embed = stubEmbed(), throwOn }) => ({
+const embeddingStrategyWith = ({ refinerJson, embed = stubEmbed(), throwOn, sink = {}, locality }) => ({
   readRouting: async () => ({ embedding_model: "stub/embed", refiner_model: "stub/llm", k: 10 }),
   resolveEmbedder: async () => {
     if (throwOn === "embed") throw new Error("embedder unreachable");
@@ -37,8 +38,11 @@ const embeddingStrategyWith = ({ refinerJson, embed = stubEmbed(), throwOn }) =>
   },
   resolveModel: async () => {
     if (throwOn === "model") throw new Error("refiner unreachable");
-    return stubModel(refinerJson);
+    return stubModel(refinerJson, sink);
   },
+  // Optional locality override; absent, the REAL binding runs (no settings in tmpDir => "remote",
+  // the fail-safe — which is exactly what the egress tests below exercise).
+  ...(locality ? { routingLocality: async () => locality } : {}),
 });
 
 beforeEach(async () => {
@@ -85,6 +89,74 @@ describe("routeRequest — embedding strategy vs lexical strategy selection", ()
     assert.equal(out.status, "needs_clarification");
     assert.equal(out.next_question, "Devis ou congé ?");
   });
+
+  it("attaches the FR-ROUTE-009 help fallback on an embedding-strategy abstention, like the lexical floor", async () => {
+    // A help agent + the configured fallback, exactly as base-fallback.test.mjs wires the lexical case.
+    await write(".ai/agents/help-agent/AGENT.md", "---\nid: help-agent\ntype: agent\ndescription: Accueil et orientation.\n---\n# Aide\n");
+    await write(".ai/agents/help-agent/skills/processes/accueil/SKILL.md", "---\nid: accueil\ntype: process\nuse_when: Orienter un utilisateur perdu.\n---\n# Accueil\n");
+    await write("base.config.json", JSON.stringify({ routing: { fallback: { agent: "help-agent", process: "accueil" } } }));
+
+    const embeddingStrategy = embeddingStrategyWith({ refinerJson: '{"decision":"out_of_scope","process_id":null,"next_question":null}' });
+    const out = await routeRequest(tmpDir, "quelque chose de totalement hors sujet", { embeddingStrategy });
+
+    assert.equal(out.strategy, "embedding");
+    assert.equal(out.status, "out_of_scope", "the abstention stays honest — the fallback is metadata, never a route");
+    assert.deepEqual(out.fallback, {
+      agent: { id: "help-agent", path: ".ai/agents/help-agent/AGENT.md" },
+      process: { id: "accueil", path: ".ai/agents/help-agent/skills/processes/accueil/SKILL.md" },
+    });
+  });
+});
+
+describe("routeRequest — egress holds at the strategy gate, whoever calls (MECHANISM)", () => {
+  it("a local-only root never sends the request to remote models: the floor answers, the fallback is journaled", async () => {
+    await write("base.config.json", JSON.stringify({ egress: "local-only" }));
+    let modelTouched = false;
+    const embeddingStrategy = {
+      ...embeddingStrategyWith({ refinerJson: '{"decision":"select","process_id":"devis"}' }),
+      resolveEmbedder: async () => { modelTouched = true; return stubEmbed(); },
+      resolveModel: async () => { modelTouched = true; return stubModel("{}"); },
+      // No settings file in tmpDir: the REAL routingLocality fail-safes to "remote" — asserted here.
+    };
+    const out = await routeRequest(tmpDir, "préparer un devis", { embeddingStrategy });
+
+    assert.equal(out.strategy, "lexical", "the deterministic floor answered");
+    assert.equal(out.status, "routed");
+    assert.equal(out.process.id, "devis");
+    assert.equal(modelTouched, false, "neither the embedder nor the refiner was resolved: nothing left");
+  });
+
+  it("under policy any, a confidential process never reaches the remote refiner prompt", async () => {
+    await write(
+      ".ai/agents/sales/skills/processes/secret/SKILL.md",
+      "---\nid: secret-fusion\ntype: process\nconfidential: true\nuse_when: Préparer le devis confidentiel de la fusion.\n---\n# Secret\n",
+    );
+    const sink = {};
+    // The refiner is scripted to PICK the confidential process — the off-list guard must make that
+    // impossible, because egress removed it from the candidates before the prompt was built.
+    const embeddingStrategy = embeddingStrategyWith({ refinerJson: '{"decision":"select","process_id":"secret-fusion"}', sink });
+    const out = await routeRequest(tmpDir, "préparer le devis de la fusion", { embeddingStrategy });
+
+    assert.equal(out.strategy, "embedding");
+    const prompt = sink.request.messages.map((m) => m.content).join("\n");
+    assert.ok(!prompt.includes("secret-fusion"), "the confidential id never reached the remote prompt");
+    assert.ok(!prompt.includes("confidentiel de la fusion"), "its use_when never reached the remote prompt");
+    assert.notEqual(out.status, "routed", "picking the withheld id is impossible (off-list guard)");
+    assert.ok(!JSON.stringify(out.candidates).includes("secret-fusion"), "nor does it leak via candidates");
+  });
+
+  it("with LOCAL models, a confidential process stays routable (local computation keeps it)", async () => {
+    await write(
+      ".ai/agents/sales/skills/processes/secret/SKILL.md",
+      "---\nid: secret-fusion\ntype: process\nconfidential: true\nuse_when: Préparer le devis confidentiel de la fusion interne.\n---\n# Secret\n",
+    );
+    const embeddingStrategy = embeddingStrategyWith({ refinerJson: '{"decision":"select","process_id":"secret-fusion"}', locality: "local" });
+    const out = await routeRequest(tmpDir, "préparer le devis de la fusion", { embeddingStrategy });
+
+    assert.equal(out.strategy, "embedding");
+    assert.equal(out.status, "routed", "nothing leaves the machine: egress does not withhold");
+    assert.equal(out.process.id, "secret-fusion");
+  });
 });
 
 describe("routeRequest — the embedding strategy is fail-closed (MECHANISM)", () => {
@@ -101,6 +173,21 @@ describe("routeRequest — the embedding strategy is fail-closed (MECHANISM)", (
     const out = await routeRequest(tmpDir, "préparer un devis", { embeddingStrategy });
     assert.equal(out.strategy, "lexical");
     assert.equal(out.status, "routed");
+  });
+
+  it("keeps a confidential best-match on the lexical fallback when the remote refiner throws", async () => {
+    // Regression guard: the egress filter narrows only the corpus fed to the REMOTE model, never the
+    // corpus the fully-local lexical fallback routes over. Otherwise a transient remote failure
+    // silently drops a legitimate confidential route — worse than a plain (no-Voie-2) project.
+    await write(
+      ".ai/agents/sales/skills/processes/secret/SKILL.md",
+      "---\nid: secret-fusion\ntype: process\nconfidential: true\nuse_when: Préparer le devis confidentiel de la fusion Zephyr.\n---\n# Secret\n",
+    );
+    const embeddingStrategy = embeddingStrategyWith({ refinerJson: "{}", throwOn: "model" });
+    const out = await routeRequest(tmpDir, "préparer le devis confidentiel de la fusion Zephyr", { embeddingStrategy });
+    assert.equal(out.strategy, "lexical", "the remote refiner threw; the local floor answered");
+    assert.equal(out.status, "routed");
+    assert.equal(out.process.id, "secret-fusion", "the confidential best match is kept by the local fallback");
   });
 
   it("falls back to the lexical strategy when the model emits garbage that the refiner cannot use", async () => {

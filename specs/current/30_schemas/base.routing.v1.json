@@ -1,8 +1,8 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://a-i.swiss/base/schemas/base.routing.v1.json",
-  "title": "BASE Routing Registry (generated projection)",
-  "description": "Deterministic projection produced by `base build routing-registry` (buildRoutingRegistry). Holds DERIVED routing signals only — agents, their processes, and the route_text derived from the files. It is never a source of truth and is regenerable; runtime semantic scores are NOT part of it. See ../10_core/routing.md.",
+  "title": "BASE Routing Registry (in-memory derivation)",
+  "description": "Deterministic in-memory derivation produced by `buildRoutingRegistry` (the former `base build routing-registry` disk target had no reader and was retired; its readable face is `base build routing-index`). Holds DERIVED routing signals only — agents, their processes, and the route_text derived from the files. It is never a source of truth; runtime semantic scores are NOT part of it. See ../10_core/routing.md.",
   "type": "object",
   "additionalProperties": false,
   "required": ["schema_version", "agents", "diagnostics"],

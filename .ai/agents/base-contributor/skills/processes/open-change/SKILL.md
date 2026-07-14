@@ -16,8 +16,8 @@ routing:
     - Record an architecture decision for the framework
     - Start a tracked unit of work on BASE
   avoid_when:
-    - Plan the approach first (that is plan).
-    - Build an already-recorded change (go to implement).
+    - Plan or design the change before building it.
+    - Apply a change that was settled earlier.
 argument-hint: "[the change or decision to record]"
 user-invocable: true
 allowed-tools: Read, Write

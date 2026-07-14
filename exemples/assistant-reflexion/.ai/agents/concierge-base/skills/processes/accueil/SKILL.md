@@ -9,6 +9,7 @@ sensitivity: internal
 name: accueil
 description: "Accueillir et orienter quand la personne est perdue ou pose une question générale."
 use_when: Quand la personne demande de l'aide ou le menu d'options.
+keywords: [options, menu, aide, orientation, demarrer]
 routing:
   examples:
     - Quelles sont mes options?

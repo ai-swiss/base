@@ -92,6 +92,9 @@ describe("makeEmbeddingRetriever — top-k by rank", () => {
     const last = out[out.length - 1];
     assert.equal(last.resource.id, "paie", "a no-vector resource ranks below any vectored match");
     assert.ok(out[0].similarity > last.similarity, "vectored matches outrank the lexical fallback");
+    // `match` states HOW each similarity was earned, so downstream reasons never guess from the sign.
+    assert.equal(last.match, "lexical_fallback", "a no-vector resource is labelled lexical_fallback");
+    assert.ok(out.slice(0, -1).every((c) => c.match === "cosine"), "vectored matches are labelled cosine");
   });
 
   it("an empty corpus retrieves nothing (the refiner then abstains)", async () => {

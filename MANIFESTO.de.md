@@ -1,11 +1,15 @@
 # BASE-Manifest
 
 > Dies ist eine Übersetzung. Die [französische Fassung](MANIFESTO.md) ist massgebend. Auch verfügbar: [English](MANIFESTO.en.md) · [Italiano](MANIFESTO.it.md).
-<!-- fr-synced: 37779aad489563c98c4f6c9e593ce2cce9843397 -->
+<!-- fr-synced: 8a190af89ffcfb6922bbf5d1d57aa5a4d99acd23 -->
 
 **Die Struktur der eigenen Expertise besitzen, im Zeitalter der KI.**
 
 ---
+
+> «Transparenz ist die Voraussetzung für Verantwortung, wenn die Folgen real sind. Eine Organisation muss in klarer Sprache und an einem einzigen Ort sehen können, was ihre KI-gestützten Prozesse tun sollen.»
+>
+> Charles-Edouard Bardyn, AI Swiss
 
 Generative KI verändert vieles, ausser einer Sache: Sie weiss immer noch nicht, was Sie wissen. Ihre Kundinnen und Kunden, Ihre Rahmenbedingungen, Ihre Risikoschwelle, Ihre Art zu entscheiden, die Geschichte Ihrer Dossiers: Nichts davon lebt in einem Modell. Ein Modell beherrscht eine Vielzahl von Bereichen, weiss aber nichts von Ihrer Realität; standardmässig trägt es seine Erinnerung nicht von einer Sitzung zur nächsten, und die Sprache, die es steuert, bleibt unterspezifiziert, was zugleich seine Flexibilität und seine Fragilität ausmacht. Fehlen schriftliche Anweisungen, improvisiert es. Über mehrere Oberflächen verstreut, lassen sich diese Anweisungen nicht mehr pflegen.
 

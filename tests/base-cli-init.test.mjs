@@ -33,6 +33,7 @@ describe("base init (CLI)", () => {
     const { stdout } = await run("init");
     assert.match(stdout, /Fichiers à créer/);
     assert.match(stdout, /AGENT\.md/);
+    assert.ok(stdout.includes(`--root ${tmpDir}`), "the apply hint echoes --root so it is copy-paste safe");
     await assert.rejects(() => fs.access(path.join(tmpDir, ".ai")));
   });
 

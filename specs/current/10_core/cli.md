@@ -19,7 +19,9 @@ Zero dependencies: runs with bare `node` (NFR-CORE-001).
 | `index` | (Re)write `base.manifest.json` | `writeManifest` |
 | `discover "<query>"` | Explainable search | `searchResources` |
 | `route "<demande>"` | Route to agent → process, or abstain | `routeRequest` |
-| `route-test` | Run routing fixtures (JSON); exit `1` on mismatch | `runRouteTests` |
+| `route-test` | Run routing fixtures (JSON) or replay declared `routing.examples`; exit `1` on mismatch | `runRouteTests` |
+| `route-eval` | Ollama-gated routing eval (recall@k + refiner diagnostic); skipped cleanly when absent | `tools/eval/route-eval.mjs` |
+| `context <id\|path>` | Preload plan for a process: paths and notes under a budget, never bodies | `contextPack` |
 | `inventory` | List resources (`id\tkind\tpath`) | `inventoryResources` |
 | `open <id\|path>` | Open a resource under policy | `openResource` |
 | `access <id\|path>` | Read a resource or confined file | `accessResource` |
@@ -32,7 +34,7 @@ Zero dependencies: runs with bare `node` (NFR-CORE-001).
 | `commit <change-id>` | Apply a staged write (re-checked, verified) | `commitChange` |
 | `promote <id> --to <scope>` | Propose a scope promotion (frontmatter) | `promoteResource` |
 | `markers` | List typed open markers (business files) | `listMarkers` |
-| `build [target]` | Project derived artifacts (`AGENTS.md`, tool matrix, `routing-registry`) | `buildArtifacts` |
+| `build [target]` | Project derived artifacts (`AGENTS.md`, tool matrix, `routing-index`) | `buildArtifacts` |
 | `docs [validate\|model\|serve\|build]` | Build, validate, serve or statically export the interactive documentation model/site | `tools/docs/model.mjs` |
 | `studio` | Launch the local Studio workshop (installs deps on first run) | `tools/studio/ui/dev.mjs` |
 | `whereis` | Print the framework install location and version | `tools/cli/framework.mjs` |
@@ -62,6 +64,8 @@ Commands dispatch through ONE table (`COMMANDS` in `tools/base.mjs`: name → `h
 | `--confirmed` | `invoke`, `open`, `access`, `commit`, `promote` | Explicit confirmation for gated actions |
 | `--grant-token <token>` | `open`, `access`, `invoke`, `propose`, `commit`, `promote` | Optional grant token for strict policy adapters |
 | `--from <file>` | `propose`, `route-test` | New content (propose) / fixtures path (route-test) |
+| `--examples` | `route-test` | Replay the corpus's declared `routing.examples` as cases instead of a fixtures file |
+| `--strategy <lexical\|production>` | `route-test` | Which routing path the replay certifies: the deterministic floor (default, CI-safe) or the exact production path of `base route` |
 | `--to <scope>` | `promote` | Target scope (`personal`/`team`/`org`/`public`/`enterprise-extension`) |
 | `--write` | `build` | Write the projected artifacts (else dry-run plan) |
 | `--config <path>` | `validate`, `discover`, `route`, `route-test` | Confined path to a `base.config.{json,mjs}`; default `<root>/base.config.*` |
@@ -98,7 +102,7 @@ node tools/base.mjs validate --root exemples/assistant-devis
 node tools/base.mjs discover "devis client" --root exemples/assistant-devis --limit 5
 node tools/base.mjs route "je dois préparer un devis client" --root exemples/assistant-devis
 node tools/base.mjs route-test --root exemples/assistant-devis --from .ai/routing/route-tests.json
-node tools/base.mjs build routing-registry --root exemples/assistant-devis
+node tools/base.mjs build routing-index --root exemples/assistant-devis
 node tools/base.mjs docs model --root.
 node tools/base.mjs docs build --public --root . --out public-site
 node tools/base.mjs open nouveau-devis --root exemples/assistant-devis --projection instructions

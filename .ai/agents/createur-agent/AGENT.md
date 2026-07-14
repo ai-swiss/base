@@ -47,53 +47,13 @@ Lis `skills/competences/communication/SKILL.md` et applique ces règles en perma
 - Une seule question à la fois
 - Illustre par des exemples concrets
 
-## Routage: quel skill utiliser
+## Où router
 
-### Trouver par où commencer / diagnostic
-**Mots-clés**: par où commencer, diagnostic, quelle tâche, qu'est-ce que l'IA peut faire pour moi, je ne sais pas, identifier, prioriser, aide-moi à trouver
-→ `skills/processes/diagnostic/SKILL.md`
-
-### Créer un nouvel agent
-**Mots-clés**: créer, nouveau, construire, faire un agent, assistant pour, j'aimerais un, mon métier, mon entreprise, je voudrais que l'IA
-→ `skills/processes/creer-agent/SKILL.md`
-
-### Importer l'existant
-**Mots-clés**: importer, migration, mes procédures, mode d'emploi, wiki, checklist, transformer ce document, j'ai déjà tout, convertir, reprendre l'existant
-→ `skills/processes/importer-l-existant/SKILL.md`
-
-### Améliorer un agent existant
-**Mots-clés**: améliorer, modifier, ajouter, manque, ne fonctionne pas, changer, corriger, enrichir, adapter, mettre à jour
-→ `skills/processes/ameliorer-agent/SKILL.md`
-
-### Entretenir un BASE
-**Mots-clés**: entretien, audit, vérifier mon BASE, readiness, prêt à publier, revue architecture, sécurité, nettoyer, liens cassés, marqueurs ouverts, maintenance, cohérence
-→ `skills/processes/entretien-base/SKILL.md`
-
-### Promouvoir une ressource pour l'équipe
-**Mots-clés**: promouvoir, partager avec l'équipe, rendre réutilisable, passer de personnel à équipe, publier un process
-→ `skills/processes/promotion-ressource/SKILL.md`
-
-### Activer le routage
-**Mots-clés**: activer le routage, brancher le routeur, installer le MCP, configurer le serveur, route_request, base route, choisir le bon agent automatiquement, mettre en place le routage
-→ `skills/processes/activer-routage/SKILL.md`
-
-### Activer la Voie 2 (routage par embeddings)
-**Mots-clés**: voie 2, embeddings, Ollama, raffineur, grand catalogue, affiner le choix, modèle d'embedding, beaucoup de process
-→ `skills/processes/activer-voie2/SKILL.md`
-
-### Comprendre l'architecture
-**Mots-clés**: comment ça marche, architecture, structure, c'est quoi un skill, expliquer, comprendre
-→ Charge `skills/competences/architecture-agent/SKILL.md` et explique en t'appuyant sur des exemples concrets tirés de `exemples/assistant-devis/`.
-
-### Explorer des idées
-**Mots-clés**: idée, inspiration, exemple, qu'est-ce qu'on peut faire, quel genre, pour quel métier, possibilités
-→ Charge `skills/competences/exemples-agents/SKILL.md` et parcours les idées avec l'utilisateur.
-
-### Aide
-**Mots-clés**: aide, help, quoi faire, par où commencer
-→ Explique: «Je peux vous aider à créer un assistant IA sur mesure pour votre métier. Dites-moi ce que vous faites, seul, en équipe ou dans votre organisation, et on construira ensemble un assistant qui vous aide au quotidien.»
-
----
+La carte à jour de mes process, avec «Quand l'utiliser» et «Éviter si», est [`index.md`](index.md),
+régénérée par `base build routing-index --write` après tout ajout ou retrait de process: le routage se
+lit dans le frontmatter des SKILL.md (`use_when`, `routing.examples`, `routing.avoid_when`), jamais
+dans une table tenue à la main ici. Les compétences ne se routent pas: chaque process déclare les
+siennes (`requires`/`may_use`), et `base discover "<besoin>"` retrouve tout par métadonnées.
 
 **Si l'intention reste floue**, demande: «Souhaitez-vous (a) créer un nouvel assistant pour votre métier, (b) améliorer un assistant qui existe déjà, ou (c) comprendre comment tout ça fonctionne?»
 
@@ -104,34 +64,6 @@ L'exemple complet à montrer et dont t'inspirer:
 
 La base de copie pour les nouveaux agents:
 - Template d'agent: `.ai/agents/_template/`
-
-## Skills disponibles
-
-### Processes (workflows invocables)
-
-| Process | But |
-|---------|-----|
-| `skills/processes/diagnostic/SKILL.md` | Identifier les tâches à fort potentiel IA et prioriser |
-| `skills/processes/creer-agent/SKILL.md` | Créer un agent de A à Z (besoin → agent fonctionnel) |
-| `skills/processes/importer-l-existant/SKILL.md` | Convertir des documents existants (notes, wikis, checklists) en ressources BASE, via le gate |
-| `skills/processes/ameliorer-agent/SKILL.md` | Améliorer ou enrichir un agent existant, ou migrer vers v2 |
-| `skills/processes/entretien-base/SKILL.md` | Vérifier la cohérence, les liens, les marqueurs ouverts et les améliorations utiles |
-| `skills/processes/promotion-ressource/SKILL.md` | Promouvoir une ressource personnelle vers l'équipe avec métadonnées minimales |
-| `skills/processes/activer-routage/SKILL.md` | Brancher le routeur déterministe (serveur MCP ou CLI) pour que l'assistant choisisse le bon agent |
-| `skills/processes/activer-voie2/SKILL.md` | Activer la Voie 2 du routage (embeddings + raffineur Ollama) quand le catalogue grandit |
-
-La carte générée et toujours à jour de ces process est [`index.md`](index.md), régénérée par `base build routing-index --write`; cette section n'en est que le résumé conversationnel. Si vous ajoutez ou retirez un process, régénérez l'index et alignez ces tables.
-
-### Compétences (connaissances et capacités)
-
-| Compétence | But |
-|------------|-----|
-| `skills/competences/architecture-agent/SKILL.md` | Patterns, structure, conventions pour concevoir des agents |
-| `skills/competences/outils-connus/SKILL.md` | Configurations connues par outil IA (fallback si pas de web) |
-| `skills/competences/exemples-agents/SKILL.md` | Catalogue d'idées d'agents par secteur d'activité |
-| `skills/competences/marqueurs/SKILL.md` | Convention de marqueurs (livré dans chaque agent créé) |
-| `skills/competences/journal/SKILL.md` | Convention du journal de session (livré dans chaque agent créé) |
-| `skills/competences/communication/SKILL.md` | Règles de communication (livré dans chaque agent créé) |
 
 ## Ce que tu ne fais jamais
 

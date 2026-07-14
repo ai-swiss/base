@@ -1,3 +1,15 @@
+---
+schema_version: base.resource.v1
+id: quickstart
+type: document
+title: Façonnez votre premier assistant
+description: Le démarrage rapide: copier un exemple dans un outil IA qui lit vos fichiers, dire ce que vous voulez faire, et valider ce que l'assistant propose. Premier succès en quelques minutes, sans code.
+scope: public
+status: active
+sensitivity: public
+keywords: [demarrage, rapide, premier, assistant, copier, exemple, commencer, debuter]
+---
+
 # Façonnez votre premier assistant
 
 En quelques minutes, vous confiez à un assistant une tâche que vous répétiez à la main, sans écrire de code et sans rien céder du contrôle: il propose, vous validez. Concrètement, vous copiez un exemple dans un outil IA capable de lire vos fichiers, vous dites ce que vous voulez faire, et l'assistant s'occupe du reste.
@@ -30,7 +42,7 @@ Copiez le dossier `exemples/assistant-devis/` dans votre espace de travail (par 
 | **Claude Code** | Lancez `claude` dans le dossier copié |
 | **ChatGPT / Claude (navigateur)** | Rien à installer pour essayer: collez le pack d'un exemple ([Essayer sans installer](essayer-sans-installer.md)). Pour connecter vos agents avec les garanties mécaniques, le [serveur MCP](installer-mcp.md) (chemin technique) |
 
-> **Vous préférez un atelier visuel?** Studio est optionnel: lancez `npm run studio` pour ouvrir l'atelier et voir d'un coup d'œil vos fichiers, vos agents et leurs process. Votre outil IA reste l'expérience du quotidien; Studio n'est qu'un atelier d'appoint.
+> **Vous préférez un atelier visuel?** Studio est optionnel: lancez, depuis le dépôt BASE, `base studio --root <votre dossier>` (`base` = `node .ai/base.mjs`, le lanceur à la racine du dépôt: [étape 0 du tutoriel](../tutoriel/harnais.md)) pour ouvrir l'atelier et voir d'un coup d'œil vos fichiers, vos agents et leurs process. Votre outil IA reste l'expérience du quotidien; Studio n'est qu'un atelier d'appoint.
 
 ## 3. Dites ce que vous voulez faire
 

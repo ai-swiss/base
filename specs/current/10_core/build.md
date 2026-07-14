@@ -7,11 +7,11 @@
 
 ## Interface
 ```js
-// targets ⊆ {"agents-md","tools","bootstrap","routing-registry"}; "all" = {agents-md, tools, bootstrap}
+// targets ⊆ {"agents-md","tools","bootstrap","routing-index"}; "all" = {agents-md, tools, bootstrap}
 export async function buildArtifacts(root, { targets = ["all"] } = {})  // → [{target, path, content}]
 export async function writeArtifacts(root, artifacts)                    // confined writes + trace "build" → [paths]
 ```
-CLI: `base build [all|agents-md|tools|bootstrap|routing-registry] [--write]` - **dry-run by default** (prints the plan); `--write` writes the files (each `confineToRoot`-checked).
+CLI: `base build [all|agents-md|tools|bootstrap|routing-index] [--write]` - **dry-run by default** (prints the plan); `--write` writes the files (each `confineToRoot`-checked).
 
 ## FR-BUILD-001 - `AGENTS.md` (target `agents-md`)
 A derived index of the project's agents → repo-root `AGENTS.md`. Includes resources of `type=agent` under `.ai/agents/` excluding `/_` (so `_template` is skipped), sorted by path, each rendered as `- **<name>** - <description> → \`<path>\``. The file carries a generated-by banner ("do not edit by hand; edit the core then `base build`").
@@ -31,12 +31,9 @@ Generates the four harness bootstraps from **one canonical router body** (`tools
 
 **Why it matters:** BASE ships a deterministic Router; the front door must *use* it, not re-introduce hand-maintained text routing. One source → four files removes the drift that let `CLAUDE.md` hard-code an agent while Cursor routed by intent.
 
-## FR-BUILD-004 - routing registry (target `routing-registry`)
-Generates `.ai/routing/registry.json` (`schema_version: base.routing.v1`): agents, their processes grouped by agent, the derived `route_text` + signal source per card, and `diagnostics.weak_signals`. **Opt-in** - *not* part of `all`: the Router currently derives candidates in memory, and the on-disk registry is an audit/review projection plus a future cache boundary, not a runtime dependency. Deterministic for its **derived signals** (sorted, timestamp-free → idempotent; freshness-gateable if a project chooses to commit it); runtime semantic scores are **never** frozen into it. The generated `.ai/routing/` tree is excluded from inventory. See `routing.md`. Matches `buildRoutingRegistry`.
-
 ## How it's proven
 - projects an `AGENTS.md` index **and** a tool matrix from the core;
 - excludes the `_template` agent from the index;
 - projects the four harness entry points from one canonical router body, kept in sync;
 - documents the two control-retention principles consistently (matrix honesty rule);
-- the routing registry is deterministic and idempotent (`buildRoutingRegistry`, `buildArtifacts`, `tests/base-routing.test.mjs`).
+- the routing derivation is deterministic and idempotent (`buildRoutingRegistry`, `tests/base-routing.test.mjs`); its on-disk face is the routing index (`.ai/routing/index.md` plus one per agent, `base build routing-index`).

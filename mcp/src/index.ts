@@ -27,6 +27,8 @@ import { fileURLToPath } from "node:url";
 import { noAuth, resolveAuthProvider, authMiddleware, type AuthProvider } from "./auth.js";
 import {
   brokerAccessResource,
+  brokerContextPack,
+  brokerMcpGuidance,
   brokerWithTraceActor,
   brokerWalkPolicy,
   brokerCommitChange,
@@ -309,7 +311,7 @@ export async function bundleAgentBootstrap(agent: AgentInfo): Promise<string> {
     parts.push(
       [
         "\n---\n# Ressources disponibles\n",
-        "Ces ressources ne sont pas chargées automatiquement. Utilisez `discover_resources`, puis `open_resource` ou `access_resource` pour ouvrir uniquement ce qui est utile.",
+        "Ces ressources ne sont pas chargées automatiquement. Si vous avez déjà l'id ou le chemin (liste ci-dessous, ou retour de `route_request`), ouvrez-le directement: `open_resource`, ou `access_resource` pour un fichier métier. `discover_resources` sert quand vous ne l'avez pas.",
         "",
         ...resources.map((resource) => `- \`${resource.id}\` (${resource.type}) : ${resource.title} -> \`${resource.path}\``),
       ].join("\n"),
@@ -423,7 +425,11 @@ function clientError(err: unknown, rootDir: string): string {
   return message.split(rootDir).join(".");
 }
 
-export function createServer(rootDir: string, options: ServerOptions = {}): McpServer {
+export async function createServer(rootDir: string, options: ServerOptions = {}): Promise<McpServer> {
+  // The canonical guidance, from the ONE source (core bootstrap): the server `instructions` field is
+  // the belt-and-braces channel; the route_request DESCRIPTION below is the primary bearer — the one
+  // surface every MCP client re-receives on every call, whatever it does with `instructions`.
+  const guidance = await brokerMcpGuidance();
   const { readOnly = false, requireExecuteConfirmation = false, scope, workspaceScope, workspaceRoots } = options;
   const agentScope = workspaceRoots?.length ? workspaceScope : scope;
   const routeScope = workspaceRoots?.length ? workspaceScope : scope;
@@ -445,7 +451,7 @@ export function createServer(rootDir: string, options: ServerOptions = {}): McpS
     const match = workspaceRoots.find((root) => root.path === rootPath);
     return match ? { mode: "workspace", workspace: workspaceScope, root: rootScope(match) } : scope;
   };
-  const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION });
+  const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION }, { instructions: guidance.instructions });
 
   server.tool(
     "load_agent",
@@ -545,6 +551,8 @@ export function createServer(rootDir: string, options: ServerOptions = {}): McpS
       "Returns a status (routed | ambiguous | needs_clarification | out_of_scope), the chosen agent/process,",
       "ranked candidates with explainable reasons, and a clarifying question when unsure.",
       "Choose only from the returned candidates; never invent a route or load every instruction.",
+      guidance.routeDiscipline,
+      guidance.continuity,
     ].join(" "),
     {
       request: z.string().describe("The user request, in natural language."),
@@ -580,7 +588,7 @@ export function createServer(rootDir: string, options: ServerOptions = {}): McpS
 
   server.tool(
     "open_resource",
-    "Open a BASE resource by id or relative path, confined to the local project.",
+    "Open an INVENTORIED BASE resource by id or relative path, confined to the local project. Errors on a path that is not an inventoried resource (business data files: use access_resource).",
     {
       id_or_path: z.string().describe("Resource id or relative path."),
       projection: z.enum(["metadata", "instructions", "full"]).optional().describe("Projection to return. Default: full."),
@@ -605,8 +613,30 @@ export function createServer(rootDir: string, options: ServerOptions = {}): McpS
   );
 
   server.tool(
+    "get_context_pack",
+    "Plan what to preload for a process before following it: the paths and notes its declared references resolve to, with what stayed out (budget) and what could not resolve. Never returns file bodies - open a listed path with open_resource. Read-only.",
+    {
+      process: z.string().describe("Process id or relative path."),
+      root_id: z.string().optional().describe("Optional root id from load_agent or route_request when several roots are visible."),
+    },
+    async ({ process: processRef, root_id }) => {
+      let selectedRoot = rootDir;
+      try {
+        selectedRoot = await effectiveRoot(root_id);
+        const result = await brokerContextPack(selectedRoot, processRef);
+        return { content: [{ type: "text" as const, text: json(result, scopeForRoot(selectedRoot)) }] };
+      } catch (err) {
+        return {
+          content: [{ type: "text" as const, text: clientError(err, selectedRoot) }],
+          isError: true,
+        };
+      }
+    },
+  );
+
+  server.tool(
     "access_resource",
-    "Read a local file by relative path with BASE path confinement.",
+    "Read ANY project file by relative path with BASE path confinement. Superset of open_resource: an inventoried resource opens identically; any other file (e.g. business data listed by load_agent) gets a confined raw read.",
     {
       path: z.string().describe("Resource id, resource path, or relative path inside the BASE project."),
       purpose: z.string().optional().describe("Why this resource is needed. Logged or enforced by stricter adapters."),
@@ -982,7 +1012,7 @@ function createHttpApp(
     const startTime = Date.now();
     try {
       // HTTP is the network-reachable surface: never honor a tool's confirmation opt-out here.
-      const requestServer = createServer(rootDir, { ...options, requireExecuteConfirmation: true });
+      const requestServer = await createServer(rootDir, { ...options, requireExecuteConfirmation: true });
       const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
       await requestServer.connect(transport);
       // Attribute this request's trace events to the authenticated principal (FR-TRACE-001: actor).
@@ -1093,7 +1123,7 @@ export async function main() {
     process.on("SIGTERM", shutdown);
   } else {
     if (config.readOnly) log.info("Read-only mode: write and execute tools are not exposed");
-    const server = createServer(rootDir, { readOnly: config.readOnly, scope, workspaceScope, workspaceRoots });
+    const server = await createServer(rootDir, { readOnly: config.readOnly, scope, workspaceScope, workspaceRoots });
     const transport = new StdioServerTransport();
     await server.connect(transport);
 

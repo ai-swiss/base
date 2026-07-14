@@ -1,4 +1,4 @@
-<!-- fr-synced: 02c8a3da31eaf69a177cd2939a501c3f0c49c25d -->
+<!-- fr-synced: c967b0666f54db43308f48879e026b11ff0fb4f3 -->
 # What the public core of BASE does today
 
 This page is for anyone who wants to know, in the present tense, what the public core of BASE can and cannot do, without guessing. It exists to give an honest reference point, and it points to the three authoritative sources rather than copying them:
@@ -24,7 +24,7 @@ If any of these sources disagrees with this page, the source is authoritative. T
 - Mediated domain writes: `propose_change` prepares a readable diff without writing anything, `commit_change` writes after a decision (confirmation required by default, configurable per resource via `requires_confirmation`, never optional for `sensitive`/`restricted`), verifies the written state, and records it.
 - Resource promotion (`promote`): updates `scope`, `promoted_from`, and `promoted_at` through the mediated write, with diff and confirmation.
 - Listing of open markers (`markers`): `[A VALIDER]`, `[A COMPLETER]`, `[ATTENTION]`, `[DECISION]` in domain documents.
-- Multi-harness projection (`build`): generates from the kernel an `AGENTS.md` index (Codex/AGENTS.md family compatibility) and a tool matrix (`.ai/tools.md`) that honestly declares the real enforcement level per harness. On demand, `base build routing-registry` also generates `.ai/routing/registry.json`, a deterministic projection of the routing signals. Derived artifacts, never sources of truth.
+- Multi-harness projection (`build`): generates from the kernel an `AGENTS.md` index (Codex/AGENTS.md family compatibility) and a tool matrix (`.ai/tools.md`) that honestly declares the real enforcement level per harness. On demand, `base build routing-index` also generates the agent-readable routing map (`.ai/routing/index.md` plus one index per agent), a deterministic projection of the routing signals. Derived artifacts, never sources of truth.
 - Minimal JSONL trace for operations mediated by BASE, with no domain content by default.
 - Local maintenance: errors, warnings, open markers, missing descriptions, and signals drawn from the traces when they exist.
 - Derived, regenerable manifest for discovery.

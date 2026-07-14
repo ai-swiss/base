@@ -173,7 +173,7 @@ La recherche locale s'appuie sur les métadonnées YAML, les titres Markdown, le
 
 Pour l'échelle, `@ai-swiss/base-index-local` fournit un index local facultatif, dérivé et supprimable. Il ne devient pas source de vérité et demeure hors du cœur. Voir `docs/learn/comprendre-echelle.md` et `docs/guides/benchmarks-echelle.md`.
 
-Le registre `.ai/routing/registry.json` est générable, mais il demeure une projection d'audit et de préparation à l'échelle. Il n'est pas source de vérité, et le Router n'en dépend pas à ce jour. Les limites précises sont listées dans `docs/reference/etat-implementation.md`.
+L'index de routage (`base build routing-index`) est générable, mais il demeure une projection de lecture et de préparation à l'échelle. Il n'est pas source de vérité, et le Router n'en dépend pas à ce jour. Les limites précises sont listées dans `docs/reference/etat-implementation.md`.
 
 ## Souveraineté autour des modèles
 

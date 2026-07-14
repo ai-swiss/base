@@ -21,6 +21,7 @@ import {
   readSettings,
   settingsPath,
 } from "../core/model-settings.mjs";
+import { DEFAULT_ROUTING_K } from "../core/router.mjs";
 
 // The core read/resolve seam, re-exported so existing importers (the broker, the eval runner, the
 // Studio server) keep importing from one place. The canonical home is tools/core/model-settings.mjs.
@@ -30,8 +31,6 @@ const PROVIDER_TYPES = new Set(["openai-compatible", "ollama", "anthropic", "goo
 const ENV_NAME = /^[A-Z][A-Z0-9_]*$/; // an environment VARIABLE NAME, never a key value
 const DISCOVERY_TIMEOUT_MS = 2_000;
 const DISCOVERY_CACHE_MS = 5 * 60_000;
-// The embedding strategy (embeddings → refiner) candidate count: how many the refiner sees, not a tuned threshold.
-const DEFAULT_ROUTING_K = 10;
 
 /**
  * Validate then write the settings. Refuses: unknown provider types, duplicate ids, default refs

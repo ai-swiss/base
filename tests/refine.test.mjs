@@ -36,6 +36,23 @@ describe("makeLlmRefiner — select", () => {
     assert.equal(out.process.id, "devis");
     assert.equal(out.next_question, null);
     assert.equal(out.candidates.length, 2, "the shortlist travels for explainability");
+    // The SHAPE assertion the length check missed: both strategies speak the one documented candidate
+    // form ({ resource, score, reasons, route_scope } — routing.md), so the formatter and route-test
+    // read candidate.score/reasons identically whichever strategy ran.
+    assert.deepEqual(out.candidates[0], {
+      resource: { id: "devis", type: "process", title: "devis", path: ".ai/agents/sales/skills/processes/devis/SKILL.md" },
+      score: 0.5,
+      reasons: ["retriever:cosine"],
+      route_scope: "process",
+    });
+  });
+
+  it("labels a lexical-fallback candidate honestly in reasons (match travels from the retriever)", async () => {
+    const fallbackCandidate = { ...candidate("devis", "Préparer un devis."), similarity: -0.6, match: "lexical_fallback" };
+    const refine = makeLlmRefiner({ complete: completeWith('{"decision":"select","process_id":"devis"}') });
+    const out = await refine("préparer un devis", [fallbackCandidate]);
+    assert.deepEqual(out.candidates[0].reasons, ["retriever:lexical_fallback"]);
+    assert.equal(out.candidates[0].score, -0.6, "the score is the retriever similarity, strategy-scaled");
   });
 
   it("resolves the agent when the agent candidate was retrieved alongside the process", async () => {

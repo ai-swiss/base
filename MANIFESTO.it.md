@@ -1,11 +1,15 @@
 # Manifesto BASE
 
 > Questa è una traduzione. La [versione francese](MANIFESTO.md) fa fede. Disponibile anche in: [English](MANIFESTO.en.md) · [Deutsch](MANIFESTO.de.md).
-<!-- fr-synced: 37779aad489563c98c4f6c9e593ce2cce9843397 -->
+<!-- fr-synced: 8a190af89ffcfb6922bbf5d1d57aa5a4d99acd23 -->
 
 **Possedere la struttura della propria competenza, nell'era dell'IA.**
 
 ---
+
+> «La trasparenza è la condizione della responsabilità quando le conseguenze sono reali. Un'organizzazione deve poter vedere, in un linguaggio chiaro e in un unico luogo, ciò che i suoi processi assistiti dall'IA sono incaricati di fare.»
+>
+> Charles-Edouard Bardyn, AI Swiss
 
 L'IA generativa cambia molte cose, tranne una: continua a non sapere ciò che sapete voi. I vostri clienti, i vostri vincoli, la vostra soglia di rischio, il vostro modo di decidere, la storia delle vostre pratiche: nulla di tutto questo vive in un modello. Un modello padroneggia moltissimi domini, ma ignora tutto della vostra realtà; per impostazione predefinita non conserva la memoria da una sessione all'altra, e il linguaggio che lo guida resta sotto-specificato, ciò che ne fa al tempo stesso la flessibilità e la fragilità. In mancanza di istruzioni scritte, improvvisa. Disperse tra più interfacce, queste istruzioni diventano impossibili da mantenere.
 

@@ -23,6 +23,7 @@ export function parseArgs(argv) {
     public: false,
     yes: false,
     ollama: false,
+    examples: false,
     out: "",
     keepDays: /** @type {number | undefined} */ (undefined),
     channel: /** @type {string | undefined} */ (undefined),
@@ -173,6 +174,10 @@ export function parseArgs(argv) {
     }
     if (item === "--ollama") {
       args.ollama = true;
+      continue;
+    }
+    if (item === "--examples") {
+      args.examples = true;
       continue;
     }
     if (item === "--golden") {

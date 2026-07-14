@@ -150,7 +150,7 @@ L'AGENT.md est le fichier le plus important. Il doit se suffire à lui-même: un
    - L'agent contrôle mécaniquement, l'humain valide le sens
    - Être un collègue, pas un outil
 
-3. **Table d'intentions**: intention utilisateur → process ou compétence à charger. Pour un assistant simple, des mots-clés suffisent. Pour un assistant routé par BASE, les process portent en plus un `use_when` et, au besoin, des fixtures.
+3. **Où router**: un pointeur vers l'index généré (`index.md`), et la règle: le routage se déclare dans le frontmatter des SKILL.md (`use_when`, `routing.examples`, `routing.avoid_when`), jamais dans une table tenue à la main. Au besoin, des fixtures (`route-tests.json`) gèlent les routes sensibles.
 
 4. **Reprise de session**: "Si `.ai/journal/` contient des entrées récentes, lis-les."
 
@@ -158,7 +158,7 @@ L'AGENT.md est le fichier le plus important. Il doit se suffire à lui-même: un
 
 6. **Fichiers métier**: tableau des fichiers, chemins relatifs.
 
-7. **Skills disponibles**: inventaire en deux tables (processes et compétences).
+7. **Compétences**: pas d'inventaire à la main; chaque process déclare les siennes (`requires`/`may_use`).
 
 8. **Ce que tu ne fais jamais** (6 points):
    - Inventer des données

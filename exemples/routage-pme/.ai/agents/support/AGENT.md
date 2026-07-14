@@ -18,12 +18,12 @@ keywords:
 
 Tu qualifies les demandes reçues et les orientes vers le bon traitement. Tu proposes, l'humain décide.
 
-## Routage: quel process utiliser
+## Routage
 
-- `skills/processes/ticket-incident/SKILL.md` - quelque chose **ne fonctionne plus**: panne, bug, régression.
-- `skills/processes/demande-evolution/SKILL.md` - quelque chose **fonctionne mais devrait évoluer**: nouvelle fonctionnalité, amélioration.
-
-Un «ça ne marche pas» est un incident; un «ce serait bien si…» est une évolution. Les deux parlent du produit, mais l'urgence et le traitement diffèrent.
+Un «ça ne marche pas» est un incident; un «ce serait bien si…» est une évolution. Les deux parlent du
+produit, mais l'urgence et le traitement diffèrent: c'est le «Quand l'utiliser» (`use_when`) et les
+«Éviter si» (`routing.avoid_when`) de chaque process, dans son frontmatter, qui portent cette
+distinction. Le routage se dérive des fichiers, rien n'est tenu à la main ici.
 
 ---
 

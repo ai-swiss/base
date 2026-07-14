@@ -1,4 +1,4 @@
-<!-- fr-synced: 810db5f3b990f3cf72426bc4b61d82d4a4be400d -->
+<!-- fr-synced: c80f0869057d25bfb065a7bad224a20dc20d92fc -->
 # Install Cursor for your BASE agents
 
 To put your BASE agents to work, you need a workstation where the AI reads your files, writes files, and runs commands under your control: this page sets one up with Cursor, ready to go. By the end, you will have opened an example, made your first request, and you will know how to respond if something stalls. This calls for installing software and creating an account with the vendor. Cursor is just one entry point: other AI tools that can read your files work just as well (GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code, for instance); go with the one that suits you.

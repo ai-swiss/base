@@ -14,6 +14,17 @@ keywords: [securite, donnees, embeddings, confidentialite, proxy, journalisation
 
 Dès que le routage sémantique de BASE s'appuie sur un provider d'embeddings, du texte quitte votre machine: il faut alors pouvoir dire précisément lequel, et comment le maîtriser. À l'intention des équipes qui branchent ce routage, cette page expose ce qui part réellement, comment réduire l'exposition, comment passer par un proxy interne et comment journaliser sans jamais révéler de contenu métier.
 
+> **Le chemin livré (Voie 2) d'abord.** Si vous activez le routage sémantique livré
+> (`routing.embedding_model` + `refiner_model`), ce qui part est plus étroit que le périmètre décrit
+> plus bas: la **requête** de l'utilisateur, et le **«Quand l'utiliser»/«Éviter si»** des candidats
+> (`route_text`/`avoid_text`), jamais les corps. Les vecteurs se pré-calculent avec
+> `base build routing-embeddings` (seul le `route_text` est embarqué; une ressource `confidential`
+> est sautée), et à la requête, un process `confidential` n'atteint jamais le prompt du raffineur
+> distant; une racine `local-only` ne sort pas du tout (le plancher déterministe répond). Le reste de
+> cette page s'adresse aux intégrations sur mesure via `@ai-swiss/base-ranker-semantic`, dont le
+> périmètre par défaut est plus large.
+
+
 ## Aucun envoi sans configuration explicite
 
 Le cœur de BASE n'appelle **jamais** un fournisseur. En configuration sans provider, aucune donnée ne quitte la machine. Un envoi ne devient possible que si vous fournissez un `embed`, directement ou via `createOpenAICompatibleEmbedder` / `createOllamaEmbedder`. Le chemin zéro-config (lexical + `semanticHybrid`) reste entièrement local.

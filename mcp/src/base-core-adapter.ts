@@ -78,6 +78,11 @@ interface BrokerModule {
   commitChange(rootDir: string, changeId: string, options?: { confirmed?: boolean; grantToken?: string }): Promise<BrokerCommitResult>;
   promoteResource(rootDir: string, idOrPath: string, toScope: string, options?: { purpose?: string; confirmed?: boolean; grantToken?: string; egress?: EgressContext }): Promise<BrokerPromoteResult>;
   listMarkers(rootDir: string, options?: { egress?: EgressContext }): Promise<BrokerMarker[]>;
+  contextPack(rootDir: string, idOrPath: string, options?: { budget?: number; egress?: EgressContext }): Promise<BrokerContextPackSummary>;
+  renderMcpInstructions(): string;
+  MCP_ROUTE_DISCIPLINE: string;
+  MCP_READ_DISCIPLINE: string;
+  MCP_CONTINUITY: string;
   reportFriction(
     rootDir: string,
     report: { process: string; summary: string; detail?: string; via?: "user" | "assistant" },
@@ -104,6 +109,13 @@ export interface BrokerPromoteResult extends BrokerProposeResult {
   id: string;
   from: string;
   to: string;
+}
+
+export interface BrokerContextPackSummary {
+  sections: Array<{ path: string; note?: string }>;
+  omitted: string[];
+  unresolved: Array<{ ref: string; suggestions: string[] }>;
+  withheld: Array<{ path: string; reason: string }>;
 }
 
 export interface BrokerMarker {
@@ -401,4 +413,31 @@ export async function brokerPromoteResource(
 export async function brokerListMarkers(rootDir: string): Promise<BrokerMarker[]> {
   const broker = await loadBroker();
   return broker.listMarkers(rootDir, { egress: await mcpEgress(broker, rootDir) });
+}
+
+// The canonical MCP guidance, loaded from the ONE source (tools/core/bootstrap.mjs): the server
+// `instructions` and the discipline sentences the route_request description carries. Loaded once at
+// server creation — the reason createServer is async.
+export interface BrokerMcpGuidance {
+  instructions: string;
+  routeDiscipline: string;
+  readDiscipline: string;
+  continuity: string;
+}
+
+export async function brokerMcpGuidance(): Promise<BrokerMcpGuidance> {
+  const broker = await loadBroker();
+  return {
+    instructions: broker.renderMcpInstructions(),
+    routeDiscipline: broker.MCP_ROUTE_DISCIPLINE,
+    readDiscipline: broker.MCP_READ_DISCIPLINE,
+    continuity: broker.MCP_CONTINUITY,
+  };
+}
+
+// The retrieval planner: paths + notes, never bodies. Under the MCP egress posture a confidential
+// process is not even revealed (same not-found as open_resource on this surface).
+export async function brokerContextPack(rootDir: string, idOrPath: string): Promise<BrokerContextPackSummary> {
+  const broker = await loadBroker();
+  return broker.contextPack(rootDir, idOrPath, { egress: await mcpEgress(broker, rootDir) });
 }

@@ -1,11 +1,15 @@
 # BASE Manifesto
 
 > This is a translation. The [French version](MANIFESTO.md) is authoritative. Also available: [Deutsch](MANIFESTO.de.md) · [Italiano](MANIFESTO.it.md).
-<!-- fr-synced: 37779aad489563c98c4f6c9e593ce2cce9843397 -->
+<!-- fr-synced: 8a190af89ffcfb6922bbf5d1d57aa5a4d99acd23 -->
 
 **Owning the structure of your expertise, in the age of AI.**
 
 ---
+
+> "Transparency is the precondition for responsibility when the consequences are real. An organization must be able to see, in plain language and in one place, what its AI-assisted processes are instructed to do."
+>
+> Charles-Edouard Bardyn, AI Swiss
 
 Generative AI changes a great deal, except one thing: it still does not know what you know. Your clients, your constraints, your risk threshold, your way of deciding, the history of your files: none of that lives in a model. A model masters countless domains but knows nothing of your reality; by default, it does not carry its memory from one session to the next, and the language that drives it stays underspecified, which is at once its flexibility and its fragility. With no written instructions, it improvises. Scattered across interfaces, those instructions become impossible to maintain.
 

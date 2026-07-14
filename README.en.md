@@ -8,7 +8,7 @@
 
 <sub>BASE = **Build Assistants with Structured Expertise** · *Bâtir des Assistants avec une Structure d'Expertise*</sub>
 
-[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)](CHANGELOG.md)
 [![CI](https://github.com/ai-swiss/base/actions/workflows/ci.yml/badge.svg)](https://github.com/ai-swiss/base/actions/workflows/ci.yml)
 [![License: Apache-2.0 + CC BY 4.0](https://img.shields.io/badge/license-Apache--2.0%20%2B%20CC%20BY%204.0-blue.svg)](LICENSING.md)
 
@@ -34,7 +34,7 @@
 
 BASE is a **framework**: a way to articulate your knowledge and your know-how with AI, in text files you own. Not a product, not a platform: an [open standard we propose](docs/en/reference/le-standard.md), and its reference implementation. What the standard fixes is not the knowledge an AI consults, but the articulation of the work: which assistant, which process, which data, which verification. Whether you are an individual organizing your thinking or a company structuring its processes, what is at stake is your **everyday interactions with AI**, not just your work. An SME owner or a teacher knows their craft inside out; what is missing is a simple way to put that knowledge in a shape AI can work with. That is what BASE provides.
 
-**What is at stake.** The sovereignty that matters is not material (where the models, the chips, the servers run) but **cognitive**, what we call **cognitive sovereignty**: who structures your interactions with AI, who injects information on your behalf, who nudges you to delegate rather than verify. Its consequence is verifiable: with BASE, you can **open and read yourself** the files that carry your know-how. You take back control, and what you build becomes **essentially independent of the model** that runs it. BASE is not strictly model-independent: one model stays better here than there, more or less elegant to write for, more or less faithful at following instructions over long contexts. But at the level of **procedures**, today's advanced models follow well-expressed instructions in comparable ways; your procedures hold across them, and strong structure upstream lowers the level of model capability needed to follow them reliably. **Tools come and go, the context remains.**
+**What is at stake.** The sovereignty that matters is not material (where the models, the chips, the servers run) but **cognitive**, what we call **cognitive sovereignty**: who structures your interactions with AI, who injects information on your behalf, who nudges you to delegate rather than verify. Its consequence is verifiable: with BASE, you can **open and read yourself** the files that carry your know-how. You take back control, and what you build becomes **essentially independent of the model** that runs it. BASE is not strictly model-independent: one model stays better here than there, more or less elegant to write for, more or less faithful at following instructions over long contexts. But at the level of **procedures**, today's advanced models follow well-expressed instructions in comparable ways; your procedures hold across them, and strong structure upstream lowers, depending on the task, the level of model capability needed to follow them reliably. **Tools come and go, the context remains.**
 
 **In concrete terms.** You externalize your knowledge and your know-how into a **base that you own**, organized along two axes:
 
@@ -132,7 +132,7 @@ First, get the `exemples/assistant-devis-demo/` example folder, by cloning the r
 
 **(b) With a simple web chat (to test).** Drag the files from `catalogue/` and `clients/` into the chat (or attach `regles-tarification.md` and `dupont-sa.md`), then ask the same question. You will quickly see the limits: you have to **upload** the files, with no continuous synchronization with your local files, and you are injecting whole files onto a platform. It is good for understanding; but the basic condition to be truly free in your interactions is to be able, at the very least, to read and edit text files you own. → [Try with nothing installed](docs/en/start/essayer-sans-installer.md)
 
-> **Honesty about the demo.** This example folder routes **directly to a single agent** (its `CLAUDE.md` points to the quote agent): it does not ship a routing index. To see **progressive routing** itself, run `base route "<request>" --root exemples/assistant-devis-demo` (which regenerates the index `.ai/routing/index.md` and shows the route). The demo therefore does not claim to embed an index it does not contain.
+> **Honesty about the demo.** This example folder routes **directly to a single agent** (its `CLAUDE.md` points to the quote agent): it does not ship a routing index. To see **progressive routing** itself, run `base route "<request>" --root exemples/assistant-devis-demo` (the deterministic floor, no index; to generate the map: `base build routing-index --write --root exemples/assistant-devis-demo`). The demo therefore does not claim to embed an index it does not contain.
 
 **What you should observe.** An assistant that follows the instruction **typically answers no** (the loyalty discount requires two mandates, and `dupont-sa.md` says "Client (1st mandate)"), cites `dupont-sa.md` and `regles-tarification.md`, leaves an `[A VALIDER]` marker, and changes nothing on your behalf.
 
@@ -171,7 +171,7 @@ BASE answers with three anchors: (a) you articulate your interactions, in your o
 
 Models improve, far more slowly than the quantity of tools that draw on them explodes across society, but they do improve. And as they progress, what we expect of them is that they follow the instructions we give them **ever more finely**, and that they become ever more effective in collaborating with us: acting as if they shared enough of our view of the world to be talking about the same thing; drawing out, in the exchange itself, the clarifications and back-and-forth needed to align. In other words, we expect models to become **experts of human-AI interaction**, set on the fundamentals of any interaction between different entities, human or not, according to the risk-benefit balance we want (if there were no risk at all, we could delegate everything, but that is not the goal here).
 
-That is why value shifts. In most of today's discourse, it hinges on the model or the product of the moment; with BASE, it hinges on the **articulation of your know-how**, in a base that you own. Two assets compound: your **context** and your **tools**. The risk is to bind everything into a box you do not own; BASE keeps the context layer (and the routing, and the index) yours and **separable from the model**, so that a change of provider becomes a **matter of configuration, not a migration** (depending on the task, re-tuning may take a little work, but you do not rewrite the base). Tools come and go, the context remains.
+That is why value shifts. In most of today's discourse, it hinges on the model or the product of the moment; with BASE, it hinges on the **articulation of your know-how**, in a base that you own. Two assets compound: your **context** and your **tools**. The risk is to bind everything into a box you do not own; BASE keeps the context layer (and the routing, and the index) yours and **separable from the model**, so that a change of provider becomes a **matter of configuration, not a migration** (depending on the task, re-tuning may take a little work, but you do not rewrite the base). A model does not learn from your corrections from one call to the next; what compounds is the text you keep and improve, and correcting the method upstream, once, beats re-correcting the same problem downstream every time. Tools come and go, the context remains.
 
 ### Why it is durable, and not a stopgap
 
@@ -191,7 +191,7 @@ This method rests on tried-and-tested principles: a channel reliably conveys onl
 
 ### Verification, a non-optional building block
 
-The generative core generates, but it **never verifies**; and since generating now costs almost nothing, it is verification that carries the value. A large share of uses fail for lack of true verification engineering. Treat every answer as a **hypothesis**: verification falls to you. For most everyday work, the only verifier is you, except on formal terrains where an automatic external verification is possible, such as code or math (a compiler, a proof). The reliability of an output is a property of the workflow that produced it, not of the model alone. The good news is not only that strong structure upstream lightens verification downstream: it is also that **the structure can include verification itself**, in the form of iteration, review, re-anchoring in reliable data. BASE provides this engineering with elements you own (markers, write gate, evaluation), enough to make the output reliable to deliver, without thereby guaranteeing that an answer is true.
+The generative core generates, but it **never verifies**; and since generating now costs almost nothing, it is verification that carries the value. Asking it to check itself, with no reference material, is asking for another generation, not a verification. A large share of uses fail for lack of true verification engineering. Treat every answer as a **hypothesis**: verification falls to you. For most everyday work, the only verifier is you, except on formal terrains where an automatic external verification is possible, such as code or math (a compiler, a proof). The reliability of an output is a property of the workflow that produced it, not of the model alone. The good news is not only that strong structure upstream lightens verification downstream: it is also that **the structure can include verification itself**, in the form of iteration, review, re-anchoring in reliable data. BASE provides this engineering with elements you own (markers, write gate, evaluation), enough to make the output reliable to deliver, without thereby guaranteeing that an answer is true.
 
 > **What you truly own.** Markdown files, with no proprietary format and no captive dependency: versionable, readable by humans and by AI, freely reusable. What you do not own: the model, its jurisdiction, and what goes out once in conversation.
 
@@ -232,7 +232,7 @@ The real alternative is not "one product rather than another": it is *consuming 
 
 Anyone who interacts with AI, from the curious individual to the enterprise. The same abstractions serve everywhere: turnkey to start, extensible to grow.
 
-Concretely, it is the same file that climbs the ladder. The `AGENT.md` that organizes your personal notes can become, without changing format, the one a team shares and then an organization governs: you add header lines as the need arises (a sensitivity that activates egress control, routing signals, an evaluation that tracks quality), and nothing has to be migrated.
+Concretely, it is the same file that climbs the ladder. The `AGENT.md` that organizes your personal notes can become, without changing format, the one a team shares and then an organization governs: you add header lines as the need arises (a sensitivity that activates egress control, routing signals, an evaluation that tracks quality), and nothing has to be migrated. Sovereignty does not shrink as the organization grows: you add floors of governance around the same owned base, without changing format or owner.
 
 | Profile | What BASE brings | What remains your responsibility |
 | --- | --- | --- |
@@ -298,7 +298,7 @@ git clone https://github.com/ai-swiss/base.git && cd base && npm ci && npm run c
 <details>
 <summary><strong>Linguistic sovereignty, and the three planes</strong></summary>
 
-**Language.** The assistants work in any language: progressive routing, led by the model, descends your index whatever the language of the request, with no per-language grammar. Sovereignty is linguistic too. (For whoever writes the routing signals: [Writing for the router](docs/en/guides/ecrire-pour-le-routeur.md) says how to serve several languages.)
+**Language.** The assistants work in any language: progressive routing, led by the model, descends your index whatever the language of the request, with no per-language grammar, and you can even switch language mid-conversation. Sovereignty is linguistic too. (For whoever writes the routing signals: [Writing for the router](docs/en/guides/ecrire-pour-le-routeur.md) says how to serve several languages.)
 
 **Three planes** so a current state is never confused with a plan: truth = specs + code; change = decisions + CHANGELOG; draft = `.plans` + `.reviews`. Detail in [ARCHITECTURE.md](ARCHITECTURE.md).
 </details>
@@ -319,6 +319,8 @@ What to read, in what order, for your profile: [What to read in what order](docs
 
 <details>
 <summary><strong>The command-line alternative</strong> (optional, for the technically comfortable)</summary>
+
+Here `base` means the launcher `node .ai/base.mjs`, at the repository root (and created by `base init` in your own folders): see [step 0 of the tutorial](docs/tutoriel/harnais.md).
 
 ```bash
 base studio --root <folder>       # the graphical workshop, loopback http://127.0.0.1:5174

@@ -15,7 +15,8 @@ import {
   ROUTING_REGISTRY_SCHEMA,
   withRoutedAgent,
 } from "../tools/core/routing.mjs";
-import { buildArtifacts, routeRequest, routeTerms, runRouteTests, routabilityWarnings, createNotification } from "../tools/base-core.mjs";
+import { buildArtifacts, routeRequest, routeTerms, routeAvoidReasons, runRouteTests, routabilityWarnings, createNotification } from "../tools/base-core.mjs";
+import { casesFromExamples } from "../tools/core/route-service.mjs";
 
 const res = (o) => ({ id: "", type: "process", title: "", description: "", keywords: [], path: "", body: "", metadata: {}, ...o });
 
@@ -207,21 +208,6 @@ describe("buildRoutingRegistry — deterministic projection", () => {
     assert.equal(JSON.stringify(buildRoutingRegistry(resources)), JSON.stringify(buildRoutingRegistry(resources)));
   });
 
-  it("buildArtifacts exposes the routing registry projection without adding it to build all", async () => {
-    const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "base-route-build-"));
-    try {
-      await fs.mkdir(path.join(tmpDir, ".ai/agents/sales"), { recursive: true });
-      await fs.writeFile(path.join(tmpDir, ".ai/agents/sales/AGENT.md"), "# Sales\n\nVentes.\n", "utf8");
-      const all = await buildArtifacts(tmpDir, { targets: ["all"] });
-      assert.equal(all.some((artifact) => artifact.target === "routing-registry"), false);
-      const [registry] = await buildArtifacts(tmpDir, { targets: ["routing-registry"] });
-      assert.equal(registry.path, ".ai/routing/registry.json");
-      assert.match(registry.content, /"schema_version": "base.routing.v1"/);
-    } finally {
-      await fs.rm(tmpDir, { recursive: true, force: true });
-    }
-  });
-
   it("buildArtifacts exposes the routing-index projection (opt-in): a root index plus one per agent", async () => {
     const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "base-route-index-"));
     try {
@@ -310,6 +296,18 @@ describe("routeRequest (broker integration) + runRouteTests", () => {
     assert.equal(out.candidates.some((candidate) => candidate.resource.id === "nouvelle-facture"), false);
   });
 
+  it("judges avoid_when per entry, never across the concatenated entries", async () => {
+    // «créer un nouveau devis» (hits: devis) and «un problème vague avec un client» (hits: client)
+    // each match ONE term of the request; only their concatenation reaches two. The process must
+    // stay routable — its counter-examples share its own nouns.
+    await write(".ai/agents/sales/skills/processes/relance/SKILL.md", "---\nid: relance\ntype: process\ndescription: Relancer un client resté sans réponse au devis.\nuse_when: Quand un devis envoyé reste sans réponse du client.\nrouting:\n  examples:\n    - le client n'a pas répondu à mon devis\n  avoid_when:\n    - créer un nouveau devis\n    - un problème vague avec un client\n---\n# Relance\n");
+    const out = await routeRequest(tmpDir, "le client n'a pas répondu à mon devis");
+    const relance = out.candidates.find((c) => c.resource.id === "relance");
+    assert.ok(relance, "relance must stay a live candidate");
+    assert.ok(relance.score > 0, "the per-entry veto must not zero it");
+    assert.ok(relance.reasons.every((reason) => reason.startsWith("route_avoid:") === false));
+  });
+
   it("can route paraphrases through the in-core semanticHybrid ranker", async () => {
     await write(".ai/agents/hr/skills/processes/offboarding/SKILL.md", "---\nid: depart-collaborateur\ntype: process\ndescription: Accompagner une fin de relation de travail.\n---\n# Départ collaborateur\n");
     await write("base.config.json", JSON.stringify({
@@ -350,6 +348,65 @@ describe("routeRequest (broker integration) + runRouteTests", () => {
     assert.equal(result.ok, false);
     assert.equal(result.failures.length, 1);
     assert.match(result.failures[0].mismatches[0], /agent/);
+  });
+
+  it("carries the actual decision and shortlist on a failure", async () => {
+    await write(".ai/routing/route-tests.json", JSON.stringify([
+      { request: "créer un devis pour un client", expect: { agent: "hr" } },
+    ]));
+    const result = await runRouteTests(tmpDir);
+    const { actual } = result.failures[0];
+    assert.equal(actual.status, "routed");
+    assert.equal(actual.agent, "sales");
+    assert.ok(actual.candidates.length > 0);
+    assert.equal(actual.candidates[0].id, "nouveau-devis");
+    assert.equal(typeof actual.candidates[0].score, "number");
+  });
+
+  it("replays declared routing.examples as cases, without a fixtures file", async () => {
+    await write(".ai/agents/sales/skills/processes/relance/SKILL.md", "---\nid: relance\ntype: process\ndescription: Relancer un client resté sans réponse au devis.\nuse_when: Quand un devis envoyé reste sans réponse du client.\nrouting:\n  examples:\n    - relancer un client sans réponse au devis\n---\n# Relance\n");
+    const result = await runRouteTests(tmpDir, { examples: true });
+    assert.equal(result.total, 1); // exactly the declared examples — no route-tests.json in this root
+    assert.equal(result.ok, true);
+  });
+
+  it("throws on an empty examples replay instead of reporting a false 0/0 green", async () => {
+    // The base fixture declares no routing.examples: replaying them guards nothing, so it must fail
+    // loudly (like the fixtures path on a missing file), never certify zero cases as success.
+    await assert.rejects(() => runRouteTests(tmpDir, { examples: true }), /No declared routing\.examples/);
+  });
+});
+
+describe("routeAvoidReasons (per-entry veto)", () => {
+  it("vetoes when a single entry matches at least two request terms", () => {
+    const reasons = routeAvoidReasons(["le client conteste une facture"], ["client", "conteste", "devis"]);
+    assert.deepEqual(reasons.sort(), ["route_avoid:client", "route_avoid:conteste"]);
+  });
+
+  it("does not combine single hits from different entries into a veto", () => {
+    assert.deepEqual(routeAvoidReasons(["créer un nouveau devis", "un problème vague avec un client"], ["client", "repondu", "devis"]), []);
+  });
+
+  it("still accepts a plain string as one entry", () => {
+    assert.equal(routeAvoidReasons("le client conteste une facture", ["client", "conteste"]).length, 2);
+  });
+
+  it("keeps the single-term rule: one term, one hit suffices", () => {
+    assert.deepEqual(routeAvoidReasons(["relancer un paiement"], ["paiement"]), ["route_avoid:paiement"]);
+  });
+});
+
+describe("casesFromExamples (replay corpus)", () => {
+  it("derives scope-aware expects and skips blank or undeclared examples", () => {
+    const cases = casesFromExamples([
+      { id: "sales", type: "agent", metadata: { routing: { examples: ["parler à un commercial"] } } },
+      { id: "devis", type: "process", metadata: { routing: { examples: ["créer un devis", "  "] } } },
+      { id: "notes", type: "resource", metadata: {} },
+    ]);
+    assert.deepEqual(cases, [
+      { request: "parler à un commercial", expect: { agent: "sales" } },
+      { request: "créer un devis", expect: { process: "devis" } },
+    ]);
   });
 });
 

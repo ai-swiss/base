@@ -1,4 +1,4 @@
-<!-- fr-synced: f2f3c0c436215979dd9f3749f54373908db75399 -->
+<!-- fr-synced: d2b539560df3179131b09a1fa6e758f5ffb78b21 -->
 # Shape your first assistant
 
 In a few minutes, you hand off a task you repeat by hand to an assistant that takes it on, with no code and without giving up any control: it proposes, you approve. Concretely, you copy an example into an AI tool that can read your files, you say what you want to do, and the assistant does the rest.
@@ -31,7 +31,7 @@ Copy the `exemples/assistant-devis/` folder into your workspace (your Desktop or
 | **Claude Code** | Run `claude` in the copied folder |
 | **ChatGPT / Claude (browser)** | Nothing to install to try it: paste an example's pack ([Try without installing](essayer-sans-installer.md)). To connect your agents with the mechanical guarantees, the [MCP server](installer-mcp.md) (technical path) |
 
-> **Prefer a visual workshop?** Studio is optional: run `npm run studio` to open the workshop and see your files, your agents, and their processes at a glance. Your AI tool stays the day-to-day experience; Studio is only a supplementary workshop.
+> **Prefer a visual workshop?** Studio is optional: run, from the BASE repository, `base studio --root <your folder>` (`base` = `node .ai/base.mjs`, the launcher at the repository root: [step 0 of the tutorial](../tutoriel/harnais.md)) to open the workshop and see your files, your agents, and their processes at a glance. Your AI tool stays the day-to-day experience; Studio is only a supplementary workshop.
 
 ## 3. Say what you want to do
 

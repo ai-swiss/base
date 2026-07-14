@@ -1,3 +1,15 @@
+---
+schema_version: base.resource.v1
+id: idees-agents
+type: document
+title: Idées d'agents pour votre métier
+description: Des exemples concrets d'assistants par secteur d'activité, pour trouver une idée à reprendre quand on veut un assistant IA sans savoir par où commencer.
+scope: public
+status: active
+sensitivity: public
+keywords: [idees, agents, secteur, metier, exemples, inspiration]
+---
+
 # Idées d'agents pour votre métier
 
 Cette page est pour vous si vous souhaitez un assistant IA sans savoir par où commencer. Elle rassemble des exemples concrets, secteur par secteur, pour vous proposer une idée à reprendre.

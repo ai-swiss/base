@@ -5,7 +5,7 @@
 
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { embeddingRouter, routingStrategy } from "../tools/core/router.mjs";
+import { embeddingRouter, routingStrategy, DEFAULT_ROUTING_K } from "../tools/core/router.mjs";
 
 describe("routingStrategy — the all-or-nothing embedding-strategy trigger", () => {
   it("reaches the embedding strategy only when BOTH models are configured", () => {
@@ -44,6 +44,21 @@ describe("embeddingRouter — the embedding strategy as refine ∘ retrieve", ()
     assert.equal(seen.k, 10, "k flows to the retriever as the candidate count");
     assert.equal(seen.query, "préparer un devis");
     assert.deepEqual(seen.refined.map((c) => c.id), ["a", "b", "c"]);
+  });
+
+  it("defaults k to DEFAULT_ROUTING_K when omitted — a hand-written config that lacks `k` never leaks undefined to the retriever", async () => {
+    const seen = {};
+    const retrieve = async (_query, resources, k) => { seen.k = k; return resources; };
+    const refine = async () => decision("routed");
+
+    // The broker calls embeddingRouter(retrieve, refine, routing.k); when routing.k is undefined
+    // (config written by hand, not by the Studio writer), it must coalesce to the default, NOT undefined
+    // (which retrieve.mjs turns into scored.length — the whole corpus sent to the refiner).
+    await embeddingRouter(retrieve, refine)("préparer un devis", [{ id: "a" }, { id: "b" }]);
+    assert.equal(seen.k, DEFAULT_ROUTING_K, "omitted k coalesces to DEFAULT_ROUTING_K, not undefined");
+
+    await embeddingRouter(retrieve, refine, undefined)("préparer un devis", [{ id: "a" }]);
+    assert.equal(seen.k, DEFAULT_ROUTING_K, "explicit undefined k coalesces to DEFAULT_ROUTING_K too");
   });
 
   it("hands an empty candidate set to the refiner, which abstains honestly", async () => {

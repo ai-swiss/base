@@ -42,6 +42,7 @@ export function minimalDeriveSignals(resource) {
   const agent = match && !match[2].startsWith("_") ? `${match[1]}.ai/agents/${match[2]}` : null;
   return {
     route_text: resource.use_when || resource.description || resource.title || resource.id || "",
+    avoid_entries: [],
     avoid_text: "",
     route_scope: resource.type === "process" ? "process" : "agent",
     agent_path: agent,

@@ -6,6 +6,10 @@
 
 ---
 
+> «La transparence est la condition de la responsabilité quand les conséquences sont réelles. Une organisation doit pouvoir voir, en langage clair et en un lieu unique, ce que ses process assistés par l'IA sont chargés de faire.»
+>
+> Charles-Edouard Bardyn, AI Swiss
+
 L'IA générative change beaucoup de choses, sauf une: elle ne sait toujours pas ce que vous savez. Vos clients, vos contraintes, votre seuil de risque, votre manière de décider, l'histoire de vos dossiers: rien de cela ne vit dans un modèle. Un modèle maîtrise quantité de domaines, mais ignore tout de votre réalité; par défaut, il ne garde pas sa mémoire d'une session à l'autre, et le langage qui le pilote demeure sous-spécifié, ce qui fait à la fois sa souplesse et sa fragilité. Faute d'instructions écrites, il improvise. Dispersées entre plusieurs interfaces, ces instructions deviennent impossibles à maintenir.
 
 Le réflexe hérité des plateformes SaaS consiste à enfermer cette collaboration dans des espaces fermés: agents configurés à la main, instructions éparpillées sur plusieurs écrans, permissions disséminées, choix d'agent qu'il faut retenir de mémoire. On produit plus vite, mais on ne sait plus ce qui a guidé la production. Comment dire alors ce qui a été vérifié, ce qui reste réutilisable, ce qui demeure sous responsabilité humaine? L'IA alourdit la charge mentale au lieu de l'alléger.

@@ -29,8 +29,12 @@ export function formatSearchResults(results, query) {
 export function formatRouteResult(result) {
   const head = `Routage "${result.request}": ${result.status}${result.reason_code ? ` (${result.reason_code})` : ""}`;
   const lines = [head];
-  if (result.agent) {
-    lines.push(`Agent: ${result.agent.id}${result.process ? ` -> Process: ${result.process.id}` : ""}`);
+  // On competing_intents the router did NOT pick an agent: `result.agent` carries the top of two
+  // too-close agents for JSON consumers, and printing it unlabelled invites a harness to load exactly
+  // what the abstention forbids («ne devine pas»). The explanation below already names both agents.
+  // When an agent IS committed to, print the PATHS: the harness reads this text — give it what to open.
+  if (result.agent && result.reason_code !== "competing_intents") {
+    lines.push(`Agent: ${result.agent.id}${result.agent.path ? ` (${result.agent.path})` : ""}${result.process ? ` -> Process: ${result.process.id}${result.process.path ? ` (${result.process.path})` : ""}` : ""}`);
   }
   if (result.explanation) lines.push(result.explanation);
   if (result.next_question) lines.push(`Question: ${result.next_question}`);
@@ -59,6 +63,15 @@ export function formatRouteTestResult(result) {
   for (const failure of result.failures) {
     lines.push(`- [${failure.index}] "${failure.request}"`);
     for (const mismatch of failure.mismatches) lines.push(`    ${mismatch}`);
+    // The WHY next to the WHAT: decision + shortlist scores, so the author can tighten
+    // use_when/avoid_when/keywords without re-running `base route` per failing case.
+    const got = failure.actual;
+    if (got) {
+      lines.push(`    obtenu: ${got.status}${got.reason_code ? ` (${got.reason_code})` : ""} → ${got.agent ?? "-"} / ${got.process ?? "-"}`);
+      for (const c of (got.candidates ?? []).slice(0, 3)) {
+        lines.push(`    candidat: ${c.id} [${c.score}; ${(c.reasons ?? []).slice(0, 4).join(", ")}]`);
+      }
+    }
   }
   if (result.ok) lines.push("Toutes les routes attendues sont stables.");
   return lines.join("\n");
@@ -133,6 +146,18 @@ export function formatTraceSummary(summary) {
     "Operations:",
     operations,
   ].join("\n");
+}
+
+// The retrieval planner, human-readable: what to preload (paths + notes), what stayed out and why.
+// Never a body — the summary carries none by construction (summarizeContextPack).
+export function formatContextPackSummary(summary, idOrPath) {
+  const lines = [`Contexte a precharger pour ${idOrPath}:`];
+  for (const s of summary.sections) lines.push(`- ${s.path}${s.note ? ` (${s.note})` : ""}`);
+  if (summary.sections.length === 0) lines.push("(aucune reference declaree)");
+  if (summary.omitted.length) lines.push(`Hors budget (a ouvrir a la demande): ${summary.omitted.join(", ")}`);
+  for (const u of summary.unresolved) lines.push(`Reference introuvable: ${u.ref}${u.suggestions?.length ? ` (proche: ${u.suggestions.join(", ")})` : ""}`);
+  for (const w of summary.withheld) lines.push(`Retenu (egress): ${w.path} [${w.reason}]`);
+  return lines.join("\n");
 }
 
 export function formatTracePrune(result) {

@@ -17,6 +17,7 @@ routing:
   avoid_when:
     - Suivre ou relancer des actions déjà consignées lors de séances passées.
     - Paramétrage initial de l'entreprise.
+    - Paramétrer ou personnaliser le modèle de document de l'assistant.
 name: compte-rendu
 keywords: [compte-rendu, CR, proces-verbal, PV, notes, reunion, synthese, mettre au propre]
 argument-hint: "[notes de la réunion ou sujet]"

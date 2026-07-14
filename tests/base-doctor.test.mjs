@@ -124,7 +124,7 @@ describe("doctor — diagnoseData (pure, injected fixtures)", () => {
       { id: "due", type: "document", path: "due.md", body: "", metadata: { review_by: "2026-01-01" } },
       { id: "old", type: "document", path: "old.md", body: "", metadata: { valid_until: "2025-12-31" } },
     ];
-    const findings = diagnoseData({ inventory, files: ["CLAUDE.md"], now: NOW }).filter((f) => f.type !== "orphan");
+    const findings = diagnoseData({ inventory, files: ["CLAUDE.md", ".ai/base.mjs"], now: NOW }).filter((f) => f.type !== "orphan");
     assert.deepEqual(
       findings.map((f) => [f.type, f.path, f.severity]),
       [["review_due", "due.md", "warn"], ["expired", "old.md", "error"]],
@@ -156,7 +156,7 @@ describe("doctor — diagnoseData (pure, injected fixtures)", () => {
       { path: ".ai/feedback/a.md", process: "p", status: "open" },
       { path: ".ai/feedback/b.md", process: "p", status: "resolved" },
     ] };
-    const findings = diagnoseData({ inventory: [], files: ["CLAUDE.md"], feedback, now: NOW });
+    const findings = diagnoseData({ inventory: [], files: ["CLAUDE.md", ".ai/base.mjs"], feedback, now: NOW });
     assert.deepEqual(findings.map((f) => f.type), ["open_friction"]);
     assert.match(formatDiagnosis([]), /Corpus sain/);
     assert.match(formatDiagnosis(findings), /1 signal/);
@@ -170,7 +170,7 @@ describe("doctor — diagnoseData (pure, injected fixtures)", () => {
         { query: "demande rare", verdict: "ambiguous", count: 1, lastAt: "2026-06-10T00:00:00Z" },
       ],
     };
-    const findings = diagnoseData({ inventory: [], files: ["CLAUDE.md"], feedback, now: NOW }).filter((f) => f.type === "recurring_abstention");
+    const findings = diagnoseData({ inventory: [], files: ["CLAUDE.md", ".ai/base.mjs"], feedback, now: NOW }).filter((f) => f.type === "recurring_abstention");
     assert.equal(findings.length, 1, "only the >= 3 query is surfaced");
     assert.equal(findings[0].severity, "warn");
     assert.match(findings[0].message, /résilier le bail/);
@@ -181,13 +181,88 @@ describe("doctor — diagnoseData (pure, injected fixtures)", () => {
     const bare = diagnoseData({ inventory: [], now: NOW });
     assert.deepEqual(bare.map((f) => [f.type, f.severity]), [["missing_tool_artifacts", "warn"]]);
     assert.match(bare[0].fix_hint, /base init/);
-    const wired = diagnoseData({ inventory: [], files: ["CLAUDE.md"], now: NOW });
+    const wired = diagnoseData({ inventory: [], files: ["CLAUDE.md", ".ai/base.mjs"], now: NOW });
     assert.deepEqual(wired, []);
+  });
+
+  it("an entry file without the launcher gets the same class of signal, naming the heal", () => {
+    // A copied root with CLAUDE.md but no .ai/base.mjs answers `node .ai/base.mjs …` with a raw
+    // stack trace — the doctor says the one command that heals it (init, creation-only).
+    const findings = diagnoseData({ inventory: [], files: ["CLAUDE.md"], now: NOW });
+    assert.deepEqual(findings.map((f) => [f.type, f.path]), [["missing_tool_artifacts", ".ai/base.mjs"]]);
+    assert.match(findings[0].message, /lanceur/);
+    assert.match(findings[0].fix_hint, /base init/);
+  });
+
+  it("migrated entretien lenses: weak routing, missing description, dormant marker — each on its own fixture", () => {
+    const NOW_MS = Date.parse(NOW);
+    const DAY = 24 * 60 * 60 * 1000;
+    const findings = diagnoseData({
+      inventory: [
+        { id: "weak", type: "process", path: "a/weak/SKILL.md", body: "", description: "Décrit.", metadata: {} },
+        { id: "strong", type: "process", path: "a/strong/SKILL.md", body: "", description: "Décrit.", use_when: "Quand il le faut.", metadata: {} },
+        { id: "mute", type: "agent", path: ".ai/agents/mute/AGENT.md", body: "", metadata: {} },
+        { id: "dormant", type: "document", path: "clients/dossier.md", body: "[A VALIDER: montant]", description: "Dossier.", metadata: {} },
+        { id: "active", type: "document", path: "clients/actif.md", body: "[A VALIDER: date]", description: "Dossier.", metadata: {} },
+      ],
+      files: ["CLAUDE.md", ".ai/base.mjs"],
+      mtimes: {
+        "clients/dossier.md": NOW_MS - 31 * DAY,
+        "clients/actif.md": NOW_MS - 2 * DAY,
+      },
+      now: NOW,
+    });
+    assert.deepEqual(findings.filter((f) => f.type === "weak_routing").map((f) => f.path), ["a/weak/SKILL.md"], "use_when or examples silences the lens");
+    assert.deepEqual(findings.filter((f) => f.type === "missing_description").map((f) => f.path), [".ai/agents/mute/AGENT.md"]);
+    const dormant = findings.filter((f) => f.type === "stale_marker");
+    assert.deepEqual(dormant.map((f) => f.path), ["clients/dossier.md"], "a marker touched 2 days ago is not dormant");
+    assert.match(dormant[0].message, /31 jours/);
+    for (const f of [...dormant, ...findings.filter((f) => f.type === "weak_routing" || f.type === "missing_description")]) {
+      assert.equal(f.severity, "warn");
+      assert.ok(f.fix_hint);
+    }
+  });
+
+  it("a stale adopted projection warns with the exact rebuild command; nothing by default", () => {
+    const findings = diagnoseData({
+      inventory: [],
+      files: ["CLAUDE.md", ".ai/base.mjs"],
+      staleProjections: [{ path: ".ai/agents/a/index.md", target: "routing-index" }],
+      now: NOW,
+    });
+    assert.deepEqual(findings.map((f) => [f.type, f.severity, f.path]), [["stale_generated_projection", "warn", ".ai/agents/a/index.md"]]);
+    assert.match(findings[0].fix_hint, /base build routing-index --write/);
+    assert.deepEqual(diagnoseData({ inventory: [], files: ["CLAUDE.md", ".ai/base.mjs"], now: NOW }), []);
+  });
+
+  it("diagnose(root) compares adopted projections to their sources; hand-owned and absent files are exempt", async () => {
+    // A root whose committed CLAUDE.md carries the provenance banner but predates the current
+    // renderer (version dilution: an old generation serving yesterday's discipline) must warn;
+    // a hand-written CLAUDE.md (no banner) and a never-adopted AGENTS.md must not.
+    const root = await mkdtemp(path.join(tmpdir(), "doctor-stale-"));
+    try {
+      await mkdir(path.join(root, ".ai/agents/a"), { recursive: true });
+      await writeFile(path.join(root, ".ai/agents/a/AGENT.md"), "---\nid: a\ntype: agent\ndescription: Agent de test des projections.\n---\n# A\n");
+      await writeFile(path.join(root, ".ai/base.mjs"), "// lanceur factice pour le test\n");
+      await writeFile(
+        path.join(root, "CLAUDE.md"),
+        "# BASE\n\n<!-- Généré par `base build bootstrap --write`. Ne pas éditer à la main: le corps canonique est dans `tools/core/bootstrap.mjs`. -->\n\nAncienne génération.\n",
+      );
+      const stale = (await diagnose(root)).filter((f) => f.type === "stale_generated_projection");
+      assert.deepEqual(stale.map((f) => f.path), ["CLAUDE.md"], "banner + drift on CLAUDE.md only; absent AGENTS.md stays exempt");
+
+      await writeFile(path.join(root, "CLAUDE.md"), "# Mon point d'entrée, écrit à la main.\n");
+      const hand = (await diagnose(root)).filter((f) => f.type === "stale_generated_projection");
+      assert.deepEqual(hand, [], "no banner: the file is hand-owned, never compared");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
   });
 
   it("diagnose(root) wires the loaders end to end (real example: healthy)", async () => {
     const findings = await diagnose("exemples/assistant-devis");
     assert.equal(findings.filter((f) => f.severity === "error").length, 0);
+    assert.equal(findings.filter((f) => f.type === "stale_generated_projection").length, 0, "shipped example projections stay fresh");
   });
 });
 

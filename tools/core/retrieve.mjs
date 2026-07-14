@@ -23,10 +23,13 @@ import { deriveRoutingSignals, ROUTABLE_KINDS } from "./routing.mjs";
 
 /**
  * A retrieval Candidate: the resource, its derived `route_text` (the "Quand l'utiliser" signal the
- * refiner reads), the `avoid_text` ("Éviter si"), and the similarity that ranked it (for an
- * explainable trace). The refiner consumes `{ id, route_text, avoid_text }`; the rest travels so the
- * broker can map a chosen candidate back to its full resource.
- * @typedef {{ resource: object, route_text: string, avoid_text: string, similarity: number }} Candidate
+ * refiner reads), the `avoid_text` ("Éviter si"), the similarity that ranked it, and `match` — HOW
+ * that similarity was earned (a real cosine against the precomputed vector, or the lexical fallback
+ * for a resource with no vector). `match` travels so downstream `reasons` say the truth instead of
+ * guessing it from the score's sign (a genuine cosine can be negative too). The refiner consumes
+ * `{ id, route_text, avoid_text }`; the rest travels so the broker can map a chosen candidate back
+ * to its full resource.
+ * @typedef {{ resource: object, route_text: string, avoid_text: string, similarity: number, match: "cosine" | "lexical_fallback" }} Candidate
  */
 
 /**
@@ -57,7 +60,8 @@ export function makeEmbeddingRetriever({ embed }) {
       // and below 0 (a no-vector resource never outranks a genuine, if weak, embedding hit).
       const cosine = queryVector && resourceVector ? cosineSimilarity(queryVector, resourceVector) : null;
       const similarity = cosine ?? lexicalFallbackScore(signals.route_text, queryTerms);
-      return { resource, route_text: signals.route_text, avoid_text: signals.avoid_text, similarity };
+      const match = /** @type {"cosine" | "lexical_fallback"} */ (cosine === null ? "lexical_fallback" : "cosine");
+      return { resource, route_text: signals.route_text, avoid_text: signals.avoid_text, similarity, match };
     });
 
     // Top-k BY RANK: sort by similarity desc, ties broken by path (deterministic), then slice. No

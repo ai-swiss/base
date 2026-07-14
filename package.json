@@ -1,6 +1,6 @@
 {
   "name": "@ai-swiss/base",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "BASE public framework: local-first assistants, resources, validation and discovery",
   "license": "Apache-2.0 AND CC-BY-4.0",
   "author": "AI Swiss (https://a-i.swiss)",
@@ -119,7 +119,7 @@
     "spec:neutral": "node tools/spec/spec-neutral-report.mjs",
     "spec:check": "node tools/spec/requirements-matrix.mjs --check && node tools/spec/check-ids.mjs && node tools/spec/check-id-namespaces.mjs && node tools/spec/check-leaf.mjs && node tools/spec/check-markers.mjs && node tools/docs/check-statusless.mjs && node tools/docs/check-emdash.mjs && node tools/docs/check-punctuation.mjs && node tools/docs/check-lexique.mjs && node tools/docs/check-translations.mjs && node tools/docs/check-tree.mjs",
     "spec:tree": "node tools/docs/check-tree.mjs",
-    "check": "npm run spec:check && npm run typecheck && node tools/base.mjs validate --root . && node tools/base.mjs index --check --root . && node tools/base.mjs route-test --root . && node tools/base.mjs docs validate --root . && npm test && npm run docs:test && node tools/base.mjs doctor --root .",
+    "check": "npm run spec:check && npm run typecheck && node tools/base.mjs validate --root . && node tools/base.mjs index --check --root . && node tools/base.mjs route-test --root . && node tools/base.mjs route-test --examples --root . && node tools/base.mjs docs validate --root . && npm test && npm run docs:test && node tools/base.mjs doctor --root .",
     "check:release": "npm run check && npm run smoke:pack && npm --prefix mcp ci && npm --prefix mcp run build && npm --prefix mcp test",
     "studio": "node tools/studio/ui/dev.mjs",
     "browser-pack": "node tools/browser-pack.mjs",

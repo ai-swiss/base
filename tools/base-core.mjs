@@ -13,25 +13,26 @@ import { isRuntimeArtifact } from "./core/runtime-artifacts.mjs";
 import { composeMarkdown, FrontmatterSerializeError, parseFrontmatter, serializeFrontmatter } from "./core/frontmatter.mjs";
 import { resolveConfig } from "./core/config.mjs";
 import { compareByCodePoint } from "./core/ordering.mjs";
-import { scanMarkers } from "./core/markers.mjs";
+import { scanMarkers, isDocumentationMarkerPath, isMarkerReferencePath } from "./core/markers.mjs";
 import { SCHEMA_VERSION } from "./core/schema.mjs";
 import { coreSchemaValidator, runValidators } from "./core/validators.mjs";
 import { normalize, lexicalRanker, composeRankers } from "./core/rankers.mjs";
 import { advisoryPolicy, resolvePolicy } from "./core/policy.mjs";
 import { buildRoutingRegistry } from "./core/routing.mjs";
 import { createRouteBroker } from "./core/route-broker.mjs";
-import { readSettings, resolveEmbedder, resolveModel } from "./core/model-settings.mjs";
+import { readSettings, resolveEmbedder, resolveModel, routingLocality } from "./core/model-settings.mjs";
 import { renderRoutingIndex } from "./core/index-md.mjs";
 import { applyRoutingVectors, loadRoutingVectors, verifyRoutingVectors } from "./core/routing-vectors.mjs";
 import { routingStrategy } from "./core/router.mjs";
 import { renderAgentsMd, renderBootstrapMd, renderToolMatrix, renderClaudeMd, renderCursorRule } from "./core/bootstrap.mjs";
 import { WORKSPACE_FILENAME } from "./core/roots.mjs";
-import { computeRoute, compareRoute, summarizeRoute, STOPWORDS } from "./core/route-service.mjs";
+import { computeRoute, compareRoute, summarizeRoute, STOPWORDS, routeTerms, casesFromExamples } from "./core/route-service.mjs";
 import { hashArgs } from "./core/hashing.mjs";
 import { writeFileAtomic } from "./core/atomic.mjs";
 import { createBrokerWrites } from "./core/writes.mjs";
 import { createManifest } from "./core/manifest.mjs";
-import { checkEgress, egressNotice, rootEgressPolicy } from "./core/egress.mjs";
+import { egressNotice, egressWithheld, rootEgressPolicy } from "./core/egress.mjs";
+import { packSummary } from "./core/context-pack.mjs";
 import { reportProgress } from "./core/progress.mjs";
 export { rootEgressPolicy };
 
@@ -52,7 +53,7 @@ const MAINTENANCE_TOKEN_PATTERN = /\b(?:TODO|FIXME|PLACEHOLDER)\b/g;
 // The base.resource.v1 controlled vocabulary lives in core/schema.mjs (used by core/validators.mjs).
 const execFileAsync = promisify(execFile);
 
-/** @typedef {{ projection?: string, purpose?: string, confirmed?: boolean, grantToken?: string, resources?: any[], config?: any, signal?: AbortSignal, limit?: number, dryRun?: boolean, fixturesPath?: string, strategy?: "lexical" | "production", egress?: { modelLocality: "local" | "remote", rootPolicy?: "local-only" | "any" }, embeddingStrategy?: { readRouting?: () => Promise<any>, resolveEmbedder?: (root: string, ref: string) => Promise<any>, resolveModel?: (root: string, ref: string) => Promise<any> } }} BrokerOptions */
+/** @typedef {{ projection?: string, purpose?: string, confirmed?: boolean, grantToken?: string, resources?: any[], config?: any, signal?: AbortSignal, limit?: number, dryRun?: boolean, fixturesPath?: string, strategy?: "lexical" | "production", examples?: boolean, egress?: { modelLocality: "local" | "remote", rootPolicy?: "local-only" | "any" }, embeddingStrategy?: { readRouting?: () => Promise<any>, resolveEmbedder?: (root: string, ref: string) => Promise<any>, resolveModel?: (root: string, ref: string) => Promise<any> } }} BrokerOptions */
 
 import { skipsDirName, skipsPath } from "./core/walk-policy.mjs";
 
@@ -102,7 +103,7 @@ export { strictPolicy } from "./core/policy.mjs";
 // abstains by inspectable rules. The base.routing.v1 registry is a generated, deterministic projection.
 export { deriveRoutingSignals, decideRoute, buildRoutingRegistry, ROUTING_DEFAULTS, ROUTABLE_KINDS } from "./core/routing.mjs";
 export { routeTerms, routeAvoidReasons } from "./core/route-service.mjs";
-export { ROUTER_BODY, ROUTER_INTRO, renderClaudeMd, renderBootstrapMd, renderCursorRule } from "./core/bootstrap.mjs";
+export { ROUTER_BODY, ROUTER_INTRO, renderClaudeMd, renderBootstrapMd, renderCursorRule, renderMcpInstructions, MCP_ROUTE_DISCIPLINE, MCP_READ_DISCIPLINE, MCP_CONTINUITY } from "./core/bootstrap.mjs";
 
 export async function walkResourceFiles(rootDir, { exclude } = /** @type {{ exclude?: string[] }} */ ({})) {
   const root = path.resolve(rootDir);
@@ -253,9 +254,9 @@ export { buildManifest, checkManifestFresh, writeManifest };
 const DEFAULT_BUILD = ["agents-md", "tools", "bootstrap"];
 
 // Build projections, one table instead of a per-target if-chain (the orchestration ratchet's "extract
-// the projections"): target → (resources, root) => [{ path, content }] (sync or async). The opt-in targets (routing-registry,
-// routing-index) are absent from DEFAULT_BUILD, so `build all` keeps every project's tree minimal — the
-// Router derives candidates in memory for small projects; the on-disk faces are a scale optimisation
+// the projections"): target → (resources, root) => [{ path, content }] (sync or async). The opt-in target
+// routing-index is absent from DEFAULT_BUILD, so `build all` keeps every project's tree minimal — the
+// Router derives candidates in memory for small projects; the on-disk face is a scale optimisation
 // behind the same model, not a file every project carries.
 const PROJECTIONS = {
   "agents-md": (resources) => [{ path: "AGENTS.md", content: renderAgentsMd(resources) }],
@@ -266,7 +267,6 @@ const PROJECTIONS = {
     { path: "BASE_BOOTSTRAP.md", content: renderBootstrapMd() },
     { path: ".cursor/rules/assistant.mdc", content: renderCursorRule() },
   ],
-  "routing-registry": (resources) => [{ path: ".ai/routing/registry.json", content: JSON.stringify(buildRoutingRegistry(resources), null, 2) + "\n" }],
   // Agent-readable face of the registry (root + per-agent index.md), committed and CI-gated (routing.md).
   "routing-index": async (resources, root) => {
     const deny = (await resolveConfig(root)).routing?.policy?.deny;
@@ -306,15 +306,14 @@ function findResource(resources, idOrPath) {
   return resources.find((item) => item.id === idOrPath || item.path === idOrPath);
 }
 
-// Egress at the read chokepoint. When a caller supplies its egress context (a remote model in chat,
-// the eval SUT, or the MCP read surface), a confidential resource or a resource of a local-only root
-// is withheld HERE, so the rule cannot be bypassed by a tool read (open/access/discover). The refusal
-// is SAID (the content becomes the egress notice), never silent. Absent egress (the local human CLI),
-// reads are unchanged. This keeps egress.mjs's promise: one control point, no divergence by surface.
-function egressWithheld(resource, egress) {
-  if (!egress) return null;
-  const verdict = checkEgress({ modelLocality: egress.modelLocality, rootPolicy: egress.rootPolicy, resources: [resource] });
-  return verdict.withheld.length ? verdict.withheld : null;
+// Retrieval planner (CLI `context`, MCP `get_context_pack`): paths+notes, never bodies. With egress a confidential target is not even revealed (the MCP read posture); without (local CLI), reads unchanged.
+/** @param {string} rootDir @param {string} idOrPath @param {{ budget?: number, egress?: { modelLocality: "local" | "remote", rootPolicy?: "local-only" | "any" } }} [options] */
+export async function contextPack(rootDir, idOrPath, { budget, egress } = {}) {
+  const root = path.resolve(rootDir);
+  const visible = (await inventoryResources(root)).filter((r) => !egressWithheld(r, egress));
+  const summary = await packSummary(visible, async (rel) => fs.readFile(await confineToRoot(root, rel), "utf8"), idOrPath, { budget: budget ?? (await resolveConfig(root)).contextPack?.budget, egress });
+  if (!summary) throw new Error(`Resource not found: ${idOrPath}`);
+  return summary;
 }
 
 /**
@@ -348,7 +347,9 @@ export async function openResource(rootDir, idOrPath, { projection = "full", pur
     const raw = await fs.readFile(fullPath, "utf8");
     const parsed = parseFrontmatter(raw);
     const result = {
-      resource,
+      // The sibling is identification, never a second content channel: strip content/body — consumers
+      // (the MCP handler) serialize the whole result; the body travels ONLY in `content`.
+      resource: projectResourceMetadata(resource),
       policy: decision,
       content: projectResourceContent(resource, raw, parsed.body, projection),
     };
@@ -729,7 +730,10 @@ function commandForRuntime(runtime, entrypoint, args) {
 }
 
 function projectResourceContent(resource, raw, body, projection) {
-  if (projection === "metadata") return JSON.stringify(resource, null, 2);
+  // `metadata` must COST LESS than the body it summarizes: serialize the stripped projection
+  // (no content/body), never the raw inventory record — else the cheapest-clue-first ladder inverts
+  // (asking for metadata used to return MORE bytes than `full`).
+  if (projection === "metadata") return JSON.stringify(projectResourceMetadata(resource), null, 2);
   if (projection === "instructions") return body;
   return raw;
 }
@@ -742,7 +746,9 @@ function projectResourceContent(resource, raw, body, projection) {
 export async function searchResources(rootDir, query, { limit = 10, config, signal, egress } = {}) {
   const start = Date.now();
   const root = path.resolve(rootDir);
-  const terms = normalize(query).split(/\s+/).filter(Boolean);
+  // The SAME tokenization as routing (STOPWORDS stripped): a natural question is scored on its
+  // content words, never on «est/les/entre» — aligned with the keyword derivation (index side).
+  const terms = routeTerms(query);
   try {
     const cfg = config ?? await resolveConfig(root);
     const rank = composeRankers([lexicalRanker, ...(cfg.rankers ?? [])]);
@@ -800,6 +806,8 @@ const routeBroker = createRouteBroker({
   resolveEmbedder,
   resolveModel,
   readRouting: async (root) => (await readSettings(root)).routing ?? null,
+  routingLocality,
+  rootEgressPolicy,
   recordEvent,
   hashArgs,
 });
@@ -812,32 +820,38 @@ export const routeRequest = routeBroker.routeRequest;
  * @param {string} rootDir
  * @param {BrokerOptions} [options]
  */
-export async function runRouteTests(rootDir, { fixturesPath, config, strategy = "lexical" } = {}) {
+export async function runRouteTests(rootDir, { fixturesPath, config, strategy = "lexical", examples = false } = {}) {
   const root = path.resolve(rootDir);
-  const target = await confineToRoot(root, fixturesPath ?? ROUTE_TESTS_FILENAME);
-  if (!(await pathExists(target))) {
-    throw new Error(`Routing fixtures not found: ${path.relative(root, target)} (create it or pass --from).`);
-  }
-  let cases;
-  try {
-    cases = JSON.parse(await fs.readFile(target, "utf8"));
-  } catch (error) {
-    throw new Error(`Invalid routing fixtures JSON: ${String(error.message ?? error)}`);
-  }
-  if (!Array.isArray(cases)) throw new Error("Routing fixtures must be a JSON array of { request, expect } cases.");
-
   const cfg = config ?? await resolveConfig(root);
   const resources = await inventoryResources(root);
-  // Which strategy PRODUCTION `base route` would use right now — so a green run says honestly WHICH
-  // path it certifies. Fixtures replay the lexical floor by default (deterministic, CI-safe);
-  // `strategy: "production"` replays each case through routeRequest, the exact path `base route`
-  // takes (model-backed when Voie 2 is configured — deliberate, per-run, not for CI).
+  let cases;
+  if (examples) {
+    cases = casesFromExamples(resources); // replay the authors' declared phrasings, no fixtures file
+    // Fail LOUDLY on an empty replay, exactly as the fixtures path does on a missing file: a drift
+    // guard that certifies zero cases green is worse than no guard — it reads as "all promises hold"
+    // when none were made. A project with no declared examples must know it is guarding nothing.
+    if (cases.length === 0) {
+      throw new Error("No declared routing.examples to replay (add routing.examples to a SKILL.md/AGENT.md frontmatter, or drop --examples to run the JSON fixtures).");
+    }
+  } else {
+    const target = await confineToRoot(root, fixturesPath ?? ROUTE_TESTS_FILENAME);
+    if (!(await pathExists(target))) {
+      throw new Error(`Routing fixtures not found: ${path.relative(root, target)} (create it or pass --from).`);
+    }
+    try {
+      cases = JSON.parse(await fs.readFile(target, "utf8"));
+    } catch (error) {
+      throw new Error(`Invalid routing fixtures JSON: ${String(error.message ?? error)}`);
+    }
+    if (!Array.isArray(cases)) throw new Error("Routing fixtures must be a JSON array of { request, expect } cases.");
+  }
+  // Which strategy PRODUCTION `base route` would use right now, so a green run says honestly WHICH
+  // path it certifies: replay defaults to the lexical floor (deterministic, CI-safe);
+  // `strategy: "production"` replays through routeRequest, the exact `base route` path.
   let productionStrategy = "lexical";
   try {
     productionStrategy = routingStrategy((await readSettings(root)).routing ?? null);
-  } catch {
-    productionStrategy = "lexical"; // unreadable settings → the lexical default, as in routing
-  }
+  } catch { /* unreadable settings → the lexical default, as in routing */ }
   const failures = [];
   for (const [index, testCase] of cases.entries()) {
     const request = testCase?.request;
@@ -1215,29 +1229,6 @@ function deriveKeywords(metadata, resource) {
 function sentenceCase(value) {
   if (!value) return "";
   return value.charAt(0).toUpperCase() + value.slice(1);
-}
-
-function isDocumentationMarkerPath(relativePath) {
-  return relativePath.startsWith("docs/")
-    || relativePath.includes("/_template/")
-    || relativePath.includes("/templates/")
-    || relativePath.endsWith("README.md")
-    || relativePath.endsWith(".test.mjs")
-    || relativePath.endsWith(".test.ts");
-}
-
-function isMarkerReferencePath(relativePath) {
-  const normalized = relativePath.split(path.sep).join("/");
-  return normalized.startsWith(".ai/agents/")
-    || normalized.includes("/.ai/agents/")
-    || normalized.startsWith("docs/")
-    || normalized.startsWith("specs/")
-    || normalized.startsWith("tests/")
-    || normalized.startsWith("tools/")
-    || normalized.startsWith("mcp/")
-    || normalized.endsWith("README.md")
-    || normalized.endsWith(".test.mjs")
-    || normalized.endsWith(".test.ts");
 }
 
 function extractRelativeLinks(content) {

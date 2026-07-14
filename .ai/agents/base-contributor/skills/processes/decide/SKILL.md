@@ -16,8 +16,8 @@ routing:
     - I need to decide between options on BASE
     - Build a sheet so I can go through these choices
   avoid_when:
-    - Build a change that is already decided (go to implement).
-    - Record a single decision durably (that is open-change).
+    - Apply a change that is already settled.
+    - Record one single decision durably.
 argument-hint: "[the points to decide]"
 user-invocable: true
 allowed-tools: Read, Write

@@ -26,6 +26,7 @@ import {
   type AgentInfo,
 } from "../src/index.js";
 import { noAuth, bearerTokenAuth, resolveAuthProvider, authMiddleware } from "../src/auth.js";
+import { brokerMcpGuidance } from "../src/base-core-adapter.js";
 
 // ---------------------------------------------------------------------------
 // Test Fixtures - created fresh per test for full isolation
@@ -515,9 +516,22 @@ describe("confineToProject", () => {
 // ---------------------------------------------------------------------------
 
 describe("createServer integration", () => {
-  it("creates a server that can list tools", () => {
-    const server = createServer(tmpDir);
+  it("creates a server that can list tools", async () => {
+    const server = await createServer(tmpDir);
     expect(server).toBeDefined();
+  });
+
+  it("carries the routing discipline where a pure-MCP client re-receives it: description and instructions", async () => {
+    const server = (await createServer(tmpDir)) as any;
+    // The PRIMARY bearer: the tool description, re-sent to the client on every list/call. Pinned
+    // VERBATIM against the one canonical source (core bootstrap, via the adapter) so it cannot drift.
+    const guidance = await brokerMcpGuidance();
+    const description = server._registeredTools["route_request"].description as string;
+    expect(description).toContain(guidance.routeDiscipline);
+    expect(description).toContain(guidance.continuity);
+    // Belt-and-braces: the server-level instructions field carries the full rendered guidance.
+    expect(server.server._instructions).toBe(guidance.instructions);
+    expect(guidance.instructions).toContain(guidance.readDiscipline);
   });
 
   it("registers a working route_request tool", async () => {
@@ -531,7 +545,7 @@ describe("createServer integration", () => {
       "---\nid: nouveau-devis\ntype: process\ndescription: Créer un devis.\nuse_when: Quand l'utilisateur veut créer un devis client.\n---\n# Nouveau devis\n",
     );
 
-    const server = createServer(tmpDir) as any;
+    const server = await createServer(tmpDir) as any;
     const callTool = server.server._requestHandlers.get("tools/call");
     const response = await callTool({
       method: "tools/call",
@@ -547,6 +561,38 @@ describe("createServer integration", () => {
     expect(payload.process.id).toBe("nouveau-devis");
   });
 
+  it("get_context_pack plans paths and notes, never bodies — and a confidential process is not revealed", async () => {
+    await fs.mkdir(path.join(tmpDir, ".ai/agents/sales/skills/processes/devis"), { recursive: true });
+    await fs.writeFile(path.join(tmpDir, ".ai/agents/sales/AGENT.md"), "---\nid: sales\ntype: agent\ndescription: Ventes.\n---\n# Ventes\n");
+    await fs.writeFile(path.join(tmpDir, "conditions.md"), "---\nid: conditions\ntype: document\ndescription: Conditions.\n---\nSECRET-BODY-TOKEN des conditions.\n");
+    await fs.writeFile(
+      path.join(tmpDir, ".ai/agents/sales/skills/processes/devis/SKILL.md"),
+      "---\nid: nouveau-devis\ntype: process\ndescription: Créer un devis.\nuse_when: Créer un devis client.\n---\n# Devis\nLire [les conditions](conditions.md).\n",
+    );
+    await fs.writeFile(
+      path.join(tmpDir, ".ai/agents/sales/skills/processes/secret.md"),
+      "---\nid: fusion-secrete\ntype: process\nconfidential: true\ndescription: Fusion.\nuse_when: Fusion confidentielle.\n---\n# Secret\n",
+    );
+
+    const server = await createServer(tmpDir) as any;
+    const callTool = server.server._requestHandlers.get("tools/call");
+    const planned = await callTool({
+      method: "tools/call",
+      params: { name: "get_context_pack", arguments: { process: "nouveau-devis" } },
+    }, {});
+    const summary = JSON.parse(planned.content[0].text);
+    expect(summary.sections.map((x: { path: string }) => x.path)).toContain("conditions.md");
+    expect(planned.content[0].text).not.toContain("SECRET-BODY-TOKEN"); // paths + notes, never bodies
+
+    // The MCP read posture: a confidential process is not even revealed by the planner.
+    const hidden = await callTool({
+      method: "tools/call",
+      params: { name: "get_context_pack", arguments: { process: "fusion-secrete" } },
+    }, {});
+    expect(hidden.isError).toBe(true);
+    expect(hidden.content[0].text).toMatch(/Resource not found/);
+  });
+
   it("route_request returns a help fallback (not a fake route) on an honest abstention", async () => {
     await fs.mkdir(path.join(tmpDir, ".ai/agents/help/skills/processes/accueil"), { recursive: true });
     await fs.writeFile(path.join(tmpDir, ".ai/agents/help/AGENT.md"), "---\nid: concierge-base\ntype: agent\ndescription: Aide.\n---\n# Aide\n");
@@ -556,7 +602,7 @@ describe("createServer integration", () => {
     );
     await fs.writeFile(path.join(tmpDir, "base.config.json"), JSON.stringify({ routing: { fallback: { agent: "concierge-base", process: "accueil" } } }));
 
-    const server = createServer(tmpDir) as any;
+    const server = await createServer(tmpDir) as any;
     const callTool = server.server._requestHandlers.get("tools/call");
     const response = await callTool(
       { method: "tools/call", params: { name: "route_request", arguments: { request: "qwerty zzz gibberish nonsense" } } },
@@ -580,7 +626,7 @@ describe("createServer integration", () => {
       "---\nid: nouveau-devis\ntype: process\ndescription: Créer un devis.\nuse_when: Quand l'utilisateur veut créer un devis client.\n---\n# Nouveau devis\n",
     );
 
-    const server = createServer(tmpDir, {
+    const server = await createServer(tmpDir, {
       scope: { mode: "root", root: { display_path: ".", path: tmpDir } },
     }) as any;
     const callTool = server.server._requestHandlers.get("tools/call");
@@ -612,7 +658,7 @@ describe("createServer integration", () => {
       );
     }
 
-    const server = createServer(one, {
+    const server = await createServer(one, {
       scope: { mode: "workspace", root: { id: "one", path: one } },
       workspaceScope: { mode: "workspace", workspace: { id: "demo", label: "Demo" } },
       workspaceRoots: [
@@ -663,7 +709,7 @@ describe("createServer integration", () => {
       "---\nid: devis\ntype: process\ndescription: Créer un devis.\nuse_when: Quand l'utilisateur veut créer un devis client.\n---\n# Devis\n",
     );
 
-    const server = createServer(one, {
+    const server = await createServer(one, {
       workspaceRoots: [
         { id: "one", path: one },
         { id: "missing", path: missing },
@@ -690,7 +736,7 @@ describe("createServer integration", () => {
     await fs.writeFile(path.join(one, ".ai/agents/a/AGENT.md"), "---\nid: a\ntype: agent\ndescription: A.\n---\n# A\n");
     await fs.writeFile(path.join(two, ".ai/agents/b/AGENT.md"), "---\nid: b\ntype: agent\ndescription: B.\n---\n# B\n");
 
-    const server = createServer(one, {
+    const server = await createServer(one, {
       workspaceRoots: [
         { id: "one", path: one },
         { id: "two", path: two },
@@ -725,7 +771,7 @@ describe("createServer integration", () => {
       "---\nid: preparer-atelier\ntype: process\ndescription: Préparer un atelier client.\nuse_when: Quand l'utilisateur veut préparer un atelier client.\n---\n# Atelier\n",
     );
 
-    const server = createServer(tmpDir) as any;
+    const server = await createServer(tmpDir) as any;
     const callTool = server.server._requestHandlers.get("tools/call");
 
     const listed = await callTool({ method: "tools/call", params: { name: "load_agent", arguments: {} } }, {});
@@ -761,7 +807,7 @@ describe("createServer integration", () => {
       path.join(tmpDir, "secret.md"),
       "---\nid: secret-client\ntype: data\ndescription: Secret.\nsensitivity: restricted\n---\n# Secret\n",
     );
-    const server = createServer(tmpDir) as any;
+    const server = await createServer(tmpDir) as any;
     const callTool = server.server._requestHandlers.get("tools/call");
 
     const denied = await callTool({
@@ -789,7 +835,7 @@ describe("createServer integration", () => {
       path.join(tmpDir, "secret.md"),
       "---\nid: secret-client\ntype: data\ndescription: Secret client.\nsensitivity: restricted\n---\n# Secret\nclassified body\n",
     );
-    const server = createServer(tmpDir) as any;
+    const server = await createServer(tmpDir) as any;
     const callTool = server.server._requestHandlers.get("tools/call");
 
     const response = await callTool({
@@ -808,7 +854,7 @@ describe("createServer integration", () => {
   });
 
   it("sanitizes read tool errors before returning them to MCP clients", async () => {
-    const server = createServer(tmpDir) as any;
+    const server = await createServer(tmpDir) as any;
     const callTool = server.server._requestHandlers.get("tools/call");
 
     const response = await callTool({
@@ -829,7 +875,7 @@ describe("createServer integration", () => {
       path.join(tmpDir, "client.md"),
       "---\nid: client\ntype: data\ndescription: Client.\nsensitivity: restricted\n---\n# Client\nold\n",
     );
-    const server = createServer(tmpDir) as any;
+    const server = await createServer(tmpDir) as any;
     const callTool = server.server._requestHandlers.get("tools/call");
 
     const denied = await callTool({
@@ -857,14 +903,14 @@ describe("createServer exposure options", () => {
   };
 
   it("exposes write & execute tools by default", async () => {
-    const names = await toolNames(createServer(tmpDir));
+    const names = await toolNames(await createServer(tmpDir));
     for (const t of ["invoke_tool", "propose_change", "commit_change", "promote_resource"]) {
       expect(names).toContain(t);
     }
   });
 
   it("read-only mode registers no write or execute tool", async () => {
-    const names = await toolNames(createServer(tmpDir, { readOnly: true }));
+    const names = await toolNames(await createServer(tmpDir, { readOnly: true }));
     for (const t of ["invoke_tool", "propose_change", "commit_change", "promote_resource"]) {
       expect(names).not.toContain(t);
     }
@@ -874,7 +920,7 @@ describe("createServer exposure options", () => {
   });
 
   it("requireExecuteConfirmation refuses non-dry-run execution without confirmed=true", async () => {
-    const server = createServer(tmpDir, { requireExecuteConfirmation: true }) as any;
+    const server = await createServer(tmpDir, { requireExecuteConfirmation: true }) as any;
     const callTool = server.server._requestHandlers.get("tools/call");
     const response = await callTool(
       { method: "tools/call", params: { name: "invoke_tool", arguments: { id_or_path: "anything", dry_run: false } } },
@@ -1192,7 +1238,7 @@ describe("AuthProvider", () => {
 
 describe("report_friction + abstention journal", () => {
   it("report_friction writes a conform, creation-only entry under .ai/feedback/", async () => {
-    const server = createServer(tmpDir) as any;
+    const server = await createServer(tmpDir) as any;
     const callTool = server.server._requestHandlers.get("tools/call");
     const call = () =>
       callTool(
@@ -1219,15 +1265,15 @@ describe("report_friction + abstention journal", () => {
     expect(second.path).not.toBe(first.path);
   });
 
-  it("report_friction is absent from a read-only server", () => {
-    const server = createServer(tmpDir, { readOnly: true }) as any;
+  it("report_friction is absent from a read-only server", async () => {
+    const server = await createServer(tmpDir, { readOnly: true }) as any;
     const names = Object.keys(server._registeredTools ?? {});
     expect(names).not.toContain("report_friction");
     expect(names).not.toContain("propose_change");
   });
 
   it("an abstention from route_request lands in abstentions.jsonl", async () => {
-    const server = createServer(tmpDir) as any;
+    const server = await createServer(tmpDir) as any;
     const callTool = server.server._requestHandlers.get("tools/call");
     await callTool(
       { method: "tools/call", params: { name: "route_request", arguments: { request: "qwerty zzz gibberish nonsense" } } },

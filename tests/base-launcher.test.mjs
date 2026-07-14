@@ -19,16 +19,38 @@ const execFileAsync = promisify(execFile);
 const repoRoot = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 const frameworkDir = repoRoot; // tools/base.mjs lives at repoRoot/tools/base.mjs
 
-describe("launcher: one source, no drift", () => {
-  it("every committed .ai/base.mjs is byte-identical to LAUNCHER_SOURCE", async () => {
-    const committed = [
-      ".ai/base.mjs",
-      "exemples/veytaux-tourisme/.ai/base.mjs",
-      "exemples/starter-perso/.ai/base.mjs",
-      "exemples/agence-multi-clients/.ai/base.mjs",
-    ];
-    for (const rel of committed) {
-      const onDisk = await readFile(path.join(repoRoot, rel), "utf8");
+describe("launcher: one source, no drift, present in every example root", () => {
+  it("every example root ships the launcher, byte-identical to LAUNCHER_SOURCE (derived from ROOTS, so a deletion cannot pass silently)", async () => {
+    // Derive the root list from the tree, not a hand-kept array (the old 4-entry list had already
+    // drifted): the repo root, every exemples/<name>/, and the workspace's client roots — each is a
+    // self-contained BASE by contract, so a copied folder must answer `node .ai/base.mjs …` alone.
+    const { readdir, access } = await import("node:fs/promises");
+    const isBaseRoot = async (dir) => {
+      for (const marker of ["CLAUDE.md", "base.config.json", "base.workspace.json"]) {
+        if (await access(path.join(dir, marker)).then(() => true, () => false)) return true;
+      }
+      return false;
+    };
+    const roots = [repoRoot];
+    const exemplesDir = path.join(repoRoot, "exemples");
+    for (const entry of (await readdir(exemplesDir, { withFileTypes: true })).filter((e) => e.isDirectory())) {
+      const dir = path.join(exemplesDir, entry.name);
+      if (await isBaseRoot(dir)) roots.push(dir);
+      const clients = path.join(dir, "clients");
+      try {
+        for (const client of (await readdir(clients, { withFileTypes: true })).filter((e) => e.isDirectory())) {
+          const clientDir = path.join(clients, client.name);
+          if (await isBaseRoot(clientDir)) roots.push(clientDir);
+        }
+      } catch {
+        // no clients/ — a plain example
+      }
+    }
+    assert.ok(roots.length >= 16, `expected ≥ 16 roots (repo + 13 examples + 2 clients), found ${roots.length}`);
+    for (const root of roots) {
+      const rel = path.relative(repoRoot, path.join(root, ".ai", "base.mjs")) || ".ai/base.mjs";
+      const onDisk = await readFile(path.join(root, ".ai", "base.mjs"), "utf8").catch(() => null);
+      assert.ok(onDisk !== null, `${rel} is MISSING — every root must ship the launcher (a copied folder answers alone)`);
       assert.equal(onDisk, LAUNCHER_SOURCE, `${rel} drifted from tools/core/launcher.mjs — regenerate it`);
     }
   });

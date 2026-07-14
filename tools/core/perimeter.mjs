@@ -24,7 +24,19 @@ const PREEXISTABLE = [
   "BASE_BOOTSTRAP.md",
   ".cursor/rules/assistant.mdc",
   ".ai/tools.md",
+  ".gitignore",
 ];
+
+// BASE runtime data never belongs in a shared repository: traces, pending change snapshots (whose
+// diffs can target confidential files), field feedback and machine-local settings. init proposes the
+// ignore file at birth (creation-only — a project's existing .gitignore is respected, never appended),
+// so the trust promise «local, jamais transmis» survives the first `git push`.
+const GITIGNORE_CONTENT = `# Données locales BASE: traces, changements en attente, feedback, réglages machine. Jamais committées.
+.ai/trace/
+.ai/changes/
+.ai/feedback/
+.ai/studio.settings.json
+`;
 
 // The scaffolded agent's AGENT.md invites the user to say «importer mes procédures existantes»; this
 // is the process that invitation routes to, shipped WITH the agent so the promise holds in the user's
@@ -246,6 +258,11 @@ export function buildInitPlan(detection, { dirName, now, frameworkDir }) {
         path: `.ai/agents/${slug}/skills/processes/importer-l-existant/SKILL.md`,
         content: IMPORTER_PROCESS,
         reason: "Le process «importer mes procédures existantes» que l'agent promet, livré avec lui.",
+      },
+      {
+        path: ".gitignore",
+        content: GITIGNORE_CONTENT,
+        reason: "Les données locales BASE (traces, changements, feedback, réglages) restent hors du dépôt partagé.",
       },
       {
         path: "base.config.json",

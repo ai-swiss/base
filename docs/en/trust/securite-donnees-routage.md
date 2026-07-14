@@ -1,7 +1,18 @@
-<!-- fr-synced: 0bada1d51b3fb860b595a36f84a2a82b76d63890 -->
+<!-- fr-synced: 73ea169fd21cee77250778c04ac7f4c2a520a748 -->
 # Keeping your data under control when routing uses a provider
 
 The moment BASE's semantic routing relies on an embeddings provider, text leaves your machine, and you then need to say precisely which text, and how to keep it in check. Written for teams wiring up this routing, this page lays out what actually goes out, how to reduce exposure, how to go through an internal proxy, and how to log without ever revealing domain content.
+
+> **The shipped path (Voie 2) first.** If you enable the shipped semantic routing
+> (`routing.embedding_model` + `refiner_model`), what leaves is narrower than the perimeter described
+> below: the user's **request**, and the candidates' **"When to use"/"Avoid if"**
+> (`route_text`/`avoid_text`), never bodies. Vectors are precomputed with
+> `base build routing-embeddings` (only the `route_text` is embedded; a `confidential` resource is
+> skipped), and at query time a `confidential` process never reaches the remote refiner's prompt; a
+> `local-only` root does not leave at all (the deterministic floor answers). The rest of this page
+> addresses custom integrations via `@ai-swiss/base-ranker-semantic`, whose default perimeter is
+> wider.
+
 
 ## Nothing is sent without explicit configuration
 

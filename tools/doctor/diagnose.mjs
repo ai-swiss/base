@@ -8,10 +8,11 @@
 
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
-import { inventoryResources } from "../base-core.mjs";
+import { buildArtifacts, inventoryResources } from "../base-core.mjs";
 import { extractLinks, extractReferences } from "../core/context-pack.mjs";
 import { readFeedback } from "../core/feedback.mjs";
 import { listFiles, walkTree } from "../core/fswalk.mjs";
+import { isDocumentationMarkerPath, isMarkerReferencePath, scanMarkers } from "../core/markers.mjs";
 import { loadRoutingVectors, verifyRoutingVectors } from "../core/routing-vectors.mjs";
 
 // Runtime conventions: directories BASE itself fills at run time. Referencing them is normal even
@@ -53,17 +54,20 @@ function refResolves(ref, fromPath, paths) {
 }
 
 const RECURRING_ABSTENTION_THRESHOLD = 3;
+const STALE_MARKER_DAYS = 30;
+const MAINTENANCE_TOKENS = /\b(?:TODO|FIXME|PLACEHOLDER)\b/;
 
 /**
  * The pure rule set — everything injected, fully testable without disk.
  * @param {{ inventory: any[], files?: string[], mtimes?: Record<string, number>,
  * runs?: { process: string | null, outcome: string | null, at: string }[],
  * feedback?: { frictions: { path: string, process: string, status: string }[], abstentions?: { query: string, verdict: string, count: number, lastAt: string }[] }, generated?: string[],
- * routingVectors?: { byPath: Record<string, number[]> | null, stale: string[], legacy: boolean, embedder: string | null } | null, now?: string }} data
+ * routingVectors?: { byPath: Record<string, number[]> | null, stale: string[], legacy: boolean, embedder: string | null } | null,
+ * staleProjections?: { path: string, target: string }[], now?: string }} data
  * `files`: every file on disk (links may target non-resources like JSON templates).
  * → [{ severity: "error" | "warn", type, path, message, fix_hint }]
  */
-export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], feedback = { frictions: [], abstentions: [] }, generated = [], routingVectors = null, now = new Date().toISOString() }) {
+export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], feedback = { frictions: [], abstentions: [] }, generated = [], routingVectors = null, staleProjections = [], now = new Date().toISOString() }) {
   const findings = [];
   const today = now.slice(0, 10);
   const paths = new Set([...inventory.map((r) => r.path), ...files]);
@@ -163,6 +167,55 @@ export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], fe
       });
     }
 
+    // Routable without a routing signal: with neither use_when nor examples, a process routes on
+    // whatever its description happens to contain — a signal that drifts silently (the case route
+    // fixtures exist to catch). Migrated from `entretien`, which retires into this doctor in the next minor version.
+    if (resource.type === "process") {
+      const useWhen = resource.use_when ?? meta.use_when;
+      const examples = meta.routing?.examples;
+      if (!(typeof useWhen === "string" && useWhen.trim()) && !(Array.isArray(examples) && examples.length > 0)) {
+        findings.push({
+          severity: "warn",
+          type: "weak_routing",
+          path: resource.path,
+          message: "process sans use_when ni exemples de routage: son routage peut dériver sans alerte",
+          fix_hint: "Ajoutez use_when (quand l'utiliser, une phrase) ou routing.examples (formulations réelles), puis protégez la route par une fixture route-test.",
+        });
+      }
+    }
+
+    // A routable or executable resource without a description is invisible to discovery and weakly
+    // routed; the doctor names the exact file. Migrated from `entretien` (same next-minor retirement).
+    if (!resource.description && ["agent", "process", "tool"].includes(resource.type)) {
+      findings.push({
+        severity: "warn",
+        type: "missing_description",
+        path: resource.path,
+        message: "description absente: la ressource est invisible à la recherche et faiblement routable",
+        fix_hint: "Ajoutez une description d'une phrase dans la frontmatter (ce que fait la ressource, pour qui).",
+      });
+    }
+
+    // A dormant marker: a business file whose open markers have not moved for 30 days no longer
+    // triggers any decision — verification theatre. Marker-teaching paths (agent skills, docs,
+    // specs, framework code) and documentation examples are exempt. Migrated from `entretien`.
+    if (!isMarkerReferencePath(resource.path) && !isDocumentationMarkerPath(resource.path)) {
+      const body = resource.content ?? resource.body ?? "";
+      const mtime = mtimes[resource.path];
+      if (mtime && (scanMarkers(body, resource.path).length > 0 || MAINTENANCE_TOKENS.test(body))) {
+        const days = Math.floor((Date.parse(now) - mtime) / (24 * 60 * 60 * 1000));
+        if (days >= STALE_MARKER_DAYS) {
+          findings.push({
+            severity: "warn",
+            type: "stale_marker",
+            path: resource.path,
+            message: `marqueur dormant: fichier à marqueurs ouverts non touché depuis ${days} jours`,
+            fix_hint: "Tranchez le marqueur (complétez, validez ou décidez) ou retirez-le s'il ne porte plus de décision.",
+          });
+        }
+      }
+    }
+
     // Stale eval: a process EDITED after its last green run — only on later modification, never on
     // the mere absence of an eval (a doctor that nags about everything gets ignored).
     if (resource.type === "process") {
@@ -196,6 +249,19 @@ export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], fe
     });
   }
 
+  // The SAME class, second member: a root with an entry file but no launcher gives a raw Node stack
+  // trace at the first `base validate` after a copy — exactly what the launcher exists to prevent.
+  // The heal exists (`base init` on an existing BASE proposes it, creation-only); name it here.
+  if (paths.has("CLAUDE.md") && !paths.has(".ai/base.mjs")) {
+    findings.push({
+      severity: "warn",
+      type: "missing_tool_artifacts",
+      path: ".ai/base.mjs",
+      message: "pas de lanceur CLI (.ai/base.mjs absent): `node .ai/base.mjs …` échouera dans ce dossier",
+      fix_hint: "Lancez `base init` dans ce dossier: il propose le lanceur manquant, sans rien écraser.",
+    });
+  }
+
   for (const friction of feedback.frictions) {
     if (friction.status !== "open") continue;
     findings.push({
@@ -218,6 +284,20 @@ export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], fe
       path: ".ai/feedback/abstentions.jsonl",
       message: `«${abstention.query}» refusée ${abstention.count} fois (${abstention.verdict}) : une demande récurrente que le routeur ne sait pas servir.`,
       fix_hint: "Créez un process pour cette demande récurrente (ou ajustez les signaux de routage), puis protégez-le par une fixture route-test.",
+    });
+  }
+
+  // A generated projection must not silently age either: a root that ADOPTED one (the committed
+  // file carries the provenance banner) and edited its sources since is serving yesterday's index
+  // to every AI tool that opens it. Same family as the vector cache: staleness, named where the
+  // owner looks, with the one command that heals.
+  for (const stale of staleProjections) {
+    findings.push({
+      severity: "warn",
+      type: "stale_generated_projection",
+      path: stale.path,
+      message: "projection générée en retard sur ses sources (le contenu régénéré diffère du fichier présent)",
+      fix_hint: `Régénérez-la: «base build ${stale.target} --write».`,
     });
   }
 
@@ -285,7 +365,26 @@ export async function diagnose(root) {
   const feedback = await readFeedback(root, { status: "open" });
   const loadedVectors = await loadRoutingVectors(root);
   const routingVectors = loadedVectors ? verifyRoutingVectors(inventory, loadedVectors) : null;
-  return diagnoseData({ inventory, files, mtimes, runs, feedback, generated, routingVectors });
+  // Compare what `base build` would produce today to the files this root ADOPTED: present AND
+  // banner-carrying (provenance, same contract as the orphan exemption). Absent = never adopted;
+  // no banner = hand-owned; both exempt. A malformed config is validate's finding, not a staleness
+  // one — the doctor keeps serving the other checks.
+  const staleProjections = [];
+  try {
+    for (const artifact of await buildArtifacts(root, { targets: ["agents-md", "tools", "bootstrap", "routing-index"] })) {
+      let disk;
+      try {
+        disk = await readFile(path.join(root, artifact.path), "utf8");
+      } catch {
+        continue;
+      }
+      if (!/<!--\s*Généré par /.test(disk.slice(0, 400))) continue;
+      if (disk !== artifact.content) staleProjections.push({ path: artifact.path, target: artifact.target });
+    }
+  } catch {
+    /* config unreadable: build cannot plan, validate owns that signal */
+  }
+  return diagnoseData({ inventory, files, mtimes, runs, feedback, generated, routingVectors, staleProjections });
 }
 
 /** Plain-text rendering for the CLI (the `--json` door returns the findings untouched). */

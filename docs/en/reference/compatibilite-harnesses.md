@@ -1,4 +1,4 @@
-<!-- fr-synced: ae19f8b78ff7e1da95004cc5fd6a709299506d15 -->
+<!-- fr-synced: 55001e67152f344e4fa84f00972827cf0f9e3fc8 -->
 # Knowing which guarantees you get depending on your tool
 
 Your BASE files work in any AI tool that can read them (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code), as in a standard web AI platform via MCP (for example ChatGPT, Claude, Gemini), but **the guarantees vary from one tool to the next**. This page tells you, plainly, what each harness actually protects, so you can choose your level of trust with full knowledge of the facts.

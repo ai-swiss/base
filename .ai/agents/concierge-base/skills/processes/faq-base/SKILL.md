@@ -11,7 +11,7 @@ description: "Répondre brièvement à une question de base sur BASE (un agent, 
 use_when: Quand l'utilisateur pose une question simple de définition sur BASE: c'est quoi un agent, un process, une racine, un workspace, le MCP, ou si ses données sont privées.
 routing:
   examples:
-    - C'est quoi un agent ?
+    - Quelle est la définition d'un agent ?
     - C'est quoi un process ?
     - C'est quoi un agent et un process ?
     - C'est quoi une racine BASE ?
@@ -56,7 +56,9 @@ Tu ne te contentes pas d'un lien. Tu lis, puis tu aides à partir de ce que tu a
   - `docs/learn/comprendre.md`
   - `docs/reference/framework-public.md`
 - Sécurité / accès / données:
+  - `docs/trust/frontiere-local-vs-sortant.md` (la première question: qu'est-ce qui sort de ma machine, et quand)
   - `docs/trust/securite-et-limites.md`
+  - `docs/trust/mecanismes-verifies.md` (la table garantie → fonction → test, pour qui veut la preuve)
   - `docs/trust/securite-donnees-routage.md`
   - `SECURITY.md`
 - Racines / workspace / MCP:

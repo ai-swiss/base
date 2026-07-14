@@ -19,6 +19,8 @@ import { resolve as pathResolve } from "node:path";
 import { denyFilterResources } from "./route-policy.mjs";
 import { agentDirOf, ROUTABLE_KINDS, withRoutedAgent } from "./routing.mjs";
 import { routingStrategy, embeddingRouter } from "./router.mjs";
+import { resolveFallback } from "./route-service.mjs";
+import { checkEgress } from "./egress.mjs";
 // retrieve.mjs + refine.mjs (and the optional companion packages they import) load LAZILY, only when
 // the embedding strategy actually runs (see routeWithStrategy) — so the core/lexical path, and any
 // `base validate`, never pull a companion package. A missing companion fails closed to the lexical
@@ -36,13 +38,15 @@ import { routingStrategy, embeddingRouter } from "./router.mjs";
  *   resolveEmbedder: (root: string, ref: string) => Promise<(text: string) => Promise<number[]>>,
  *   resolveModel: (root: string, ref: string) => Promise<{ complete: Function }>,
  *   readRouting: (root: string) => Promise<{ embedding_model?: string, refiner_model?: string, k?: number } | null>,
+ *   routingLocality: (root: string, routing: any) => Promise<"local" | "remote">,
+ *   rootEgressPolicy: (root: string) => Promise<"local-only" | "any">,
  *   recordEvent: (root: string, event: any) => Promise<void>,
  *   hashArgs: (args: string[]) => string,
  * }} deps
  */
 export function createRouteBroker(deps) {
   const { inventoryResources, applyRoutingVectors, loadRoutingVectors, verifyRoutingVectors, resolveConfig, computeRoute } = deps;
-  const { resolveEmbedder, resolveModel, readRouting, recordEvent, hashArgs } = deps;
+  const { resolveEmbedder, resolveModel, readRouting, routingLocality, rootEgressPolicy, recordEvent, hashArgs } = deps;
 
   /**
    * Inventory the routable, deny-filtered corpus both strategies route over. `egress` filters the inventory
@@ -68,7 +72,7 @@ export function createRouteBroker(deps) {
 
   /**
    * @param {string} root @param {string} request @param {any[]} resources @param {any} cfg
-   * @param {{ limit?: number, signal?: AbortSignal, embeddingStrategy?: { readRouting?: (root: string) => Promise<any>, resolveEmbedder?: (root: string, ref: string) => Promise<any>, resolveModel?: (root: string, ref: string) => Promise<any> } }} [options]
+   * @param {{ limit?: number, signal?: AbortSignal, embeddingStrategy?: { readRouting?: (root: string) => Promise<any>, resolveEmbedder?: (root: string, ref: string) => Promise<any>, resolveModel?: (root: string, ref: string) => Promise<any>, routingLocality?: (root: string, routing: any) => Promise<"local" | "remote"> } }} [options]
    */
   async function routeWithStrategy(root, request, resources, cfg, { limit, signal, embeddingStrategy = {} } = {}) {
     // Injectable seams (default to the bound resolvers), so a broker test drives the embedding strategy
@@ -76,6 +80,7 @@ export function createRouteBroker(deps) {
     const readRoutingFn = embeddingStrategy.readRouting ?? readRouting;
     const toEmbedder = embeddingStrategy.resolveEmbedder ?? resolveEmbedder;
     const toModel = embeddingStrategy.resolveModel ?? resolveModel;
+    const toLocality = embeddingStrategy.routingLocality ?? routingLocality;
 
     let routing = null;
     try {
@@ -86,17 +91,49 @@ export function createRouteBroker(deps) {
 
     if (routingStrategy(routing) === "embedding" && routing) {
       try {
+        // EGRESS AT THE STRATEGY GATE — the same guarantee whoever calls (CLI, MCP, Studio, eval).
+        // The branch derives WHERE its own configured models run (fail-safe: unknown => remote) and
+        // applies the root policy itself, so a caller that injects no egress context (the local CLI)
+        // gets the promise anyway: (1) a local-only root's request text never leaves toward a remote
+        // model — the deterministic floor answers instead, and the fallback is journaled; (2) under
+        // policy "any", a confidential resource's route_text/avoid_text never reaches the remote
+        // refiner prompt. Idempotent over an MCP corpus already egress-filtered upstream.
+        // The egress filter narrows a LOCAL `corpus` fed only to the remote embedding path; the
+        // original `resources` stays whole for the lexical fallback below, which is fully local and
+        // sends nothing to a model — withholding a confidential resource from it would be a strict
+        // regression versus a plain project (it would silently drop a legitimate confidential route).
+        let corpus = resources;
+        if ((await toLocality(root, routing)) === "remote") {
+          const rootPolicy = await rootEgressPolicy(root);
+          if (rootPolicy === "local-only") {
+            await recordEvent(root, {
+              op: "route", action: "search", decision: "not_applicable", status: "ok",
+              args_hash: hashArgs([request]),
+              metadata: { strategy_fallback: "embedding->lexical", egress: "root_local_only" },
+            });
+            return { ...(await computeRoute(root, request, resources, cfg, { limit, signal })), strategy: "lexical" };
+          }
+          const { allowed, withheld } = checkEgress({ modelLocality: "remote", rootPolicy, resources: corpus });
+          if (withheld.length) {
+            await recordEvent(root, {
+              op: "route", action: "search", decision: "not_applicable", status: "ok",
+              args_hash: hashArgs([request]),
+              metadata: { routing_egress_withheld: withheld.length },
+            });
+            corpus = allowed;
+          }
+        }
         // Model-mismatch guard: vectors built with another embedding model live in another vector
-        // space — cosine against them is noise, worse than no cache. Compare the MODEL segment of
-        // the stamp (build side: cfg.routing.embedder; query side: settings ref — provider ids may
-        // legitimately differ between the two surfaces, the model name is the comparable part).
+        // space — cosine against them is noise, worse than no cache. Build and query read the SAME
+        // `routing.embedding_model` reference, so this only fires on a cache from an earlier model
+        // (or another machine's settings); the MODEL segment of the stamp is the comparable part.
         // On mismatch, strip the precomputed vectors (the retriever re-embeds on the fly with the
         // query model) and journal the fact.
         const modelOf = (ref) => { const s = String(ref ?? ""); const i = s.indexOf("/"); return i >= 0 ? s.slice(i + 1) : s; };
         const stamp = await loadRoutingVectors(root);
         const builtWith = stamp && stamp.schema_version ? stamp.embedder ?? null : null;
         if (builtWith && modelOf(builtWith) !== modelOf(routing.embedding_model)) {
-          resources = resources.map(({ embedding, ...rest }) => rest);
+          corpus = corpus.map(({ embedding, ...rest }) => rest);
           await recordEvent(root, {
             op: "route", action: "search", decision: "not_applicable", status: "ok",
             args_hash: hashArgs([request]),
@@ -115,10 +152,15 @@ export function createRouteBroker(deps) {
         const refine = makeLlmRefiner({ complete: (req, ctx) => model.complete(req, ctx) });
         // The embedding strategy has NO score floor: retrieve hands the top-k UNFILTERED (a weak match
         // still rides through), and the refiner IS the floor — it abstains when no candidate fits. `routing.k`
-        // (DEFAULT_ROUTING_K = 10) is intentionally larger than the lexical strategy's `max_candidates` (5):
-        // it is the refiner's input count, not an agent shortlist, so recall is wide and the model decides.
-        const decision = await embeddingRouter(retrieve, refine, routing.k)(request, resources);
-        return { ...decision, strategy: "embedding" };
+        // is the refiner's input count, not an agent shortlist, so recall is wide and the model decides;
+        // when a hand-written config omits it, embeddingRouter coalesces it to DEFAULT_ROUTING_K (10),
+        // intentionally larger than the lexical strategy's `max_candidates` (5).
+        const decision = await embeddingRouter(retrieve, refine, routing.k)(request, corpus);
+        // FR-ROUTE-009 holds on BOTH strategies: the anti-dead-end fallback attaches to an honest
+        // abstention here exactly as computeRoute attaches it on the lexical floor (route-service.mjs)
+        // — same config, same deny-filtered corpus, same eligibility.
+        const fallback = resolveFallback(cfg.routing?.fallback, corpus, decision);
+        return { ...decision, ...(fallback ? { fallback } : {}), strategy: "embedding" };
       } catch (error) {
         // Fail-closed to the lexical strategy. Recorded (not silenced): the owner can see it fell back.
         await recordEvent(root, {

@@ -22,7 +22,7 @@ Choisissez le process dont le «Quand l'utiliser» couvre la demande. Respectez 
 
 ### Créer un agent — [`creer-agent`](skills/processes/creer-agent/SKILL.md)
 **Quand l'utiliser**: Quand l'utilisateur veut créer un nouvel assistant IA métier, construire un agent ou adapter l'IA à son activité. — Je veux créer un assistant pour mon métier — Construire un agent pour mon entreprise — J'aimerais un assistant IA pour mon activité
-**Éviter si**: Audit entretien vérification publication readiness d'un BASE existant. — Review audit harden an existing BASE after implementation.
+**Éviter si**: Je ne sais pas quel choix faire en premier. — Audit entretien vérification publication readiness d'un BASE existant. — Review audit harden an existing BASE after implementation.
 
 ### Diagnostic IA métier — [`diagnostic`](skills/processes/diagnostic/SKILL.md)
 **Quand l'utiliser**: Quand l'utilisateur veut identifier les meilleures opportunités IA pour son métier, choisir par où commencer ou prioriser une première tâche à automatiser. — Aide-moi à savoir par où commencer avec l'IA — Quelles tâches de mon métier valent la peine d'automatiser ? — Je ne sais pas quel assistant créer en premier
@@ -34,7 +34,7 @@ Choisissez le process dont le «Quand l'utiliser» couvre la demande. Respectez 
 
 ### Importer l'existant — [`importer-l-existant`](skills/processes/importer-l-existant/SKILL.md)
 **Quand l'utiliser**: Quand l'utilisateur veut partir de ses documents existants: «importe mes procédures», «transforme ce mode d'emploi en process», «j'ai déjà tout dans un wiki». — Importer mes procédures existantes — Transformer ce document en process — J'ai déjà un wiki, comment le réutiliser ?
-**Éviter si**: Créer un agent de zéro sans matériau existant (c'est créer-agent). — Signaler un dysfonctionnement de l'assistant.
+**Éviter si**: Question de définition d'un process. — Ajouter un workflow à un agent déjà en place. — Créer un agent de zéro sans matériau existant. — Signaler un dysfonctionnement de l'assistant.
 
 ### Promotion de ressource — [`promotion-ressource`](skills/processes/promotion-ressource/SKILL.md)
 **Quand l'utiliser**: Quand l'utilisateur veut promouvoir une ressource personnelle en ressource d'équipe, la rendre réutilisable ou partagée. — Promouvoir ce process pour l'équipe — Rendre cette ressource réutilisable par mes collègues — Partager ce fichier personnel avec mon équipe

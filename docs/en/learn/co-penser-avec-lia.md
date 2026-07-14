@@ -1,4 +1,4 @@
-<!-- fr-synced: 0725ae08f6d71e28f981143ae81c97525cf49f33 -->
+<!-- fr-synced: d609ec0bd51ca7c794dd81453f33ba793d00d29f -->
 # Why BASE
 
 > **The question is not where your servers are, but who structures your interactions with AI.**
@@ -115,6 +115,8 @@ BASE **aims to serve as an anchor**, insofar as your files stay readable and por
 ## Calibrated, not anti-automation
 
 Co-thinking means **choosing consciously**, not doing everything by hand. Delegate what has a verifier or requires no judgment; co-think what carries risk and meaning. BASE simply makes human-in-the-loop the *default* choice, and delegation an *explicit and visible* choice, where the market trend is *invisible* automation.
+
+Some tasks can be delegated; others, fundamentally, cannot. Beyond the risk of wrong answers lies another, more insidious one: the gradual loss of the big picture, when output accumulates faster than understanding and review becomes a ritual. BASE cannot force you to structure your interactions accordingly, but it can help you do so, so that you remain able to preserve that big picture, by nudging you to keep a certain level of exchange with the AI rather than pure delegation.
 
 ## BASE puts what matters in front of you
 

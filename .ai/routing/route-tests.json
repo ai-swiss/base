@@ -292,5 +292,33 @@
       "agent": "base-contributor",
       "process": "implement"
     }
+  },
+  {
+    "request": "quelle est la surface stable de BASE ?",
+    "expect": {
+      "status": "out_of_scope",
+      "fallback": {
+        "agent": "concierge-base",
+        "process": "accueil"
+      }
+    }
+  },
+  {
+    "request": "Comment BASE applique-t-il l'egress ?",
+    "expect": {
+      "status": "out_of_scope",
+      "fallback": {
+        "agent": "concierge-base",
+        "process": "accueil"
+      }
+    }
+  },
+  {
+    "request": "Mes données sont-elles privées avec BASE ?",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "faq-base"
+    }
   }
 ]

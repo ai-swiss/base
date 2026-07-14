@@ -70,7 +70,7 @@ async function indexedDecision(root, request, extraRankers = []) {
 describe("indexed routing equals in-memory routing", () => {
   beforeEach(async () => {
     await writeAgent("sales", "Ventes, devis, offres et facturation client.", [
-      { id: "nouveau-devis", description: "Créer une offre ou un devis.", use_when: "Quand l'utilisateur veut préparer une nouvelle offre commerciale ou un devis client.", avoid_when: ["le client conteste une facture existante"] },
+      { id: "nouveau-devis", description: "Créer une offre ou un devis.", use_when: "Quand l'utilisateur veut préparer une nouvelle offre commerciale ou un devis client.", avoid_when: ["le client conteste une facture existante", "relancer un paiement en retard"] },
       { id: "contestation-facture", description: "Traiter une contestation de facture.", use_when: "Quand un client conteste une facture déjà émise." },
     ]);
     await writeAgent("hr", "Ressources humaines, recrutement et départs collaborateurs.", [
@@ -81,6 +81,9 @@ describe("indexed routing equals in-memory routing", () => {
 
   const requests = [
     "préparer une nouvelle offre commerciale pour un client",
+    // One term in EACH of nouveau-devis's two counter-examples (client, retard): the veto must not
+    // fire on their concatenation — indexed and in-memory must agree (per-entry semantics).
+    "préparer une offre pour un client malgré le retard",
     "le client conteste une facture existante",
     "préparer un offboarding pour un collaborateur qui quitte l'entreprise",
     "publier une annonce de recrutement",

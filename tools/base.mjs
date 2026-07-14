@@ -34,10 +34,12 @@ import {
   writeManifest,
   accessResource,
   confineToRoot,
+  contextPack,
   projectResourceMetadata,
   resolveConfig,
   MANIFEST_FILENAME,
 } from "./base-core.mjs";
+import { formatContextPackSummary } from "./core/formatters.mjs";
 import { WORKSPACE_FILENAME, contextScope, formatContextHeader, resolveBaseContext } from "./core/roots.mjs";
 import { LAUNCHER_SOURCE } from "./core/launcher.mjs";
 import { decideWorkspaceRoute } from "./core/route-workspace.mjs";
@@ -131,7 +133,9 @@ async function runInit(args) {
         ? { detection, plan, applied: false }
         : `Détection: ${describeDetection(detection)}\n` +
           `Fichiers à créer (rien n'est écrit sans --yes) :\n${preview}\n\n` +
-          `Pour appliquer:  base init --yes`,
+          // The hint echoes the full command: launched with --root, a hint without it is a
+          // non-sequitur when copy-pasted from another directory («Déjà un BASE: rien à initialiser»).
+          `Pour appliquer:  base init${args.root ? ` --root ${args.root}` : ""} --yes`,
       args.json,
     );
     return;
@@ -210,9 +214,9 @@ const COMMANDS = {
     const config = args.config ? await resolveConfig(rootDir, { configPath: args.config }) : undefined;
     const strategy = args.strategy === "production" ? "production" : "lexical";
     if (args.strategy && !["lexical", "production"].includes(args.strategy)) {
-      throw new Error("Usage: base route-test [--from fixtures.json] [--strategy lexical|production]");
+      throw new Error("Usage: base route-test [--from fixtures.json] [--examples] [--strategy lexical|production]");
     }
-    const result = await runRouteTests(rootDir, { fixturesPath: args.from || undefined, config, strategy });
+    const result = await runRouteTests(rootDir, { fixturesPath: args.from || undefined, config, strategy, examples: args.examples });
     output(args.json ? result : formatRouteTestResult(result), args.json, context);
     // Green must not certify a path production does not take: when Voie 2 is configured, say
     // out loud that the fixtures replayed the lexical floor, and how to replay the real path.
@@ -255,6 +259,14 @@ const COMMANDS = {
       grantToken: args.grantToken,
     });
     output(args.json ? result : result.content, args.json, context);
+    return;
+  },
+
+  "context": async ({ args, context, rootDir }) => {
+    const idOrPath = args.positional[0];
+    if (!idOrPath) throw new Error("Usage: base context <process-id-or-path> [--root path] [--json]");
+    const summary = await contextPack(rootDir, idOrPath, {});
+    output(args.json ? summary : formatContextPackSummary(summary, idOrPath), args.json, context);
     return;
   },
 
@@ -327,22 +339,23 @@ const COMMANDS = {
   "build": async ({ args, context, rootDir }) => {
     const target = args.positional[0] || "all";
     if (target === "routing-embeddings") {
-      // Precompute the routing vectors (Phase 6b) — opt-in, model-backed. The embedder comes from the
-      // shipped semantic package via a DYNAMIC import, so the core stays dependency-free.
-      const embedderCfg = (await resolveConfig(rootDir)).routing?.embedder;
-      if (!embedderCfg) throw new Error("routing-embeddings: configurez cfg.routing.embedder { provider: 'ollama'|'openai', model, ... }.");
-      const pkg = await loadCompanion("@ai-swiss/base-ranker-semantic", "Le précalcul des vecteurs de routage (build routing-embeddings)");
-      const embed = embedderCfg.provider === "openai" ? pkg.createOpenAICompatibleEmbedder(embedderCfg) : pkg.createOllamaEmbedder(embedderCfg);
+      // Precompute the routing vectors — opt-in, model-backed — with the SAME model reference the
+      // query path reads (`routing.embedding_model`, panneau Routage du Studio): one vocabulary,
+      // one place, one shared provider registry (`resolveEmbedder`, exactly as at route time).
+      const { readSettings, resolveEmbedder } = await import("./core/model-settings.mjs");
+      const embedderRef = (await readSettings(rootDir)).routing?.embedding_model;
+      if (!embedderRef) throw new Error("routing-embeddings: configurez routing.embedding_model dans .ai/studio.settings.json (panneau Routage du Studio): la même référence <provider>/<modèle> que la requête utilise.");
+      await loadCompanion("@ai-swiss/base-ranker-semantic", "Le précalcul des vecteurs de routage (build routing-embeddings)");
+      const embed = await resolveEmbedder(rootDir, embedderRef);
       const { vectors, skippedConfidential } = await precomputeRoutingVectors(await inventoryResources(rootDir), embed, { onProgress: reportProgress("embedding") });
       const count = Object.keys(vectors).length;
-      const embedderRef = `${embedderCfg.provider}/${embedderCfg.model}`;
       const confidentialNote = skippedConfidential ? ` ${skippedConfidential} ressource(s) confidentielle(s) non embarquée(s): leur texte de routage ne part jamais vers un embedder.` : "";
       if (args.write) output(args.json ? { written: await writeRoutingVectors(rootDir, vectors, { embedder: embedderRef }), count, skippedConfidential } : `Vecteurs de routage écrits (${count} ressources, embedder ${embedderRef}).${confidentialNote}`, args.json, context);
       else output(args.json ? { count, skippedConfidential } : `${count} vecteurs précalculés (dry-run; --write pour écrire .ai/routing/embeddings.json).${confidentialNote}`, args.json, context);
       return;
     }
-    if (!["all", "agents-md", "tools", "bootstrap", "routing-registry", "routing-index"].includes(target)) {
-      throw new Error("Usage: base build [all|agents-md|tools|bootstrap|routing-registry|routing-index|routing-embeddings] [--write] [--root path]");
+    if (!["all", "agents-md", "tools", "bootstrap", "routing-index"].includes(target)) {
+      throw new Error("Usage: base build [all|agents-md|tools|bootstrap|routing-index|routing-embeddings] [--write] [--root path]");
     }
     const artifacts = await buildArtifacts(rootDir, { targets: [target] });
     if (args.write) {
@@ -380,8 +393,9 @@ const COMMANDS = {
   },
 
   "doctor": async ({ args, context, rootDir }) => {
-    // The corpus health check — dead links, orphans, stale evals, due reviews, expired
-    // reference data, open frictions. A pure projection; `entretien` keeps the marker lens.
+    // The corpus health check — dead links, orphans, stale evals, due reviews, expired reference
+    // data, open frictions, weak routing, missing descriptions, dormant markers. A pure projection;
+    // the raw marker QUERY stays with `base markers`.
     const { diagnose, formatDiagnosis } = await import("./doctor/diagnose.mjs");
     const findings = await diagnose(rootDir);
     output(args.json ? findings : formatDiagnosis(findings), args.json, context);
@@ -390,8 +404,11 @@ const COMMANDS = {
   },
 
   "entretien": async ({ args, context, rootDir }) => {
+    // Deprecated in favour of `doctor` (its lenses live there now); the 1.x report is honoured
+    // unchanged until its removal in the next minor version, and the referral rides the text door only.
     const report = await createMaintenanceReport(rootDir);
-    output(args.json ? report : formatMaintenanceReport(report), args.json, context);
+    const referral = "\nCe verbe fusionne dans «base doctor» (mêmes signaux, un seul propriétaire de la santé du dossier); «entretien» sera retiré dès la prochaine version mineure.";
+    output(args.json ? report : formatMaintenanceReport(report) + referral, args.json, context);
     process.exitCode = report.ok ? 0 : 1;
     return;
   },
@@ -582,17 +599,19 @@ function help() {
     " base index [--check] [--root path | --workspace path --root-id id] [--json]",
     ' base discover "requete" [--root path | --workspace path --root-id id] [--limit n] [--config path] [--json]',
     ' base route "demande" [--limit n] [--config path] [--root path | --workspace path [--root-id id]] [--json]',
-    " base route-test [--from fixtures.json] [--strategy lexical|production] [--config path] [--root path | --workspace path --root-id id] [--json]",
+    " base route-test [--from fixtures.json] [--examples] [--strategy lexical|production] [--config path] [--root path | --workspace path --root-id id] [--json]",
+    "   (--examples rejoue les routing.examples déclarés dans les frontmatter, sans fichier de fixtures: le garde anti-dérive des formulations d'auteur)",
     " base route-eval [--ollama] [--golden path] [--json]",
     " base inventory [--root path] [--json]",
     " base open <id-or-path> [--projection metadata|instructions|full] [--purpose reason] [--confirmed] [--grant-token token] [--root path] [--json]",
+    " base context <process-id-or-path> [--root path] [--json] (quoi precharger pour ce process: chemins et notes, jamais les corps)",
     " base access <id-or-path> [--projection metadata|instructions|full] [--purpose reason] [--confirmed] [--grant-token token] [--root path] [--json]",
     " base invoke <tool-id> [args...] [--execute --confirmed] [--grant-token token] [--root path] [--json]",
     " base propose <target> [--from file] [--purpose reason] [--confirmed] [--grant-token token] [--root path] [--json]",
     " base commit <change-id> [--confirmed] [--grant-token token] [--root path] [--json]",
     " base promote <id-or-path> --to <scope> [--confirmed] [--grant-token token] [--root path] [--json]",
     " base markers [--root path] [--json]",
-    " base build [all|agents-md|tools|bootstrap|routing-registry|routing-index|routing-embeddings] [--write] [--root path] [--json]",
+    " base build [all|agents-md|tools|bootstrap|routing-index|routing-embeddings] [--write] [--root path] [--json]",
     "   (routing-index régénère .ai/routing/index.md et les index par agent, la carte que lit votre outil IA: à relancer après tout ajout ou retrait de process)",
     " base docs [validate|model|serve|build|preview] [--public] [--out dir] [--root path] [--json]",
     " base entretien [--root path] [--json] (marqueurs ouverts; lentille privée, lancée par vous, jamais de la télémétrie)",

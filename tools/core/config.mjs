@@ -67,7 +67,7 @@ export function mergeConfig(raw) {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
     throw fail("config default export must be an object.");
   }
-  const out = /** @type {{ rankers: any[], validators: any[], policy: any, auth: any, routing: any, inventory: { exclude: string[] } }} */ ({ ...DEFAULTS });
+  const out = /** @type {{ rankers: any[], validators: any[], policy: any, auth: any, routing: any, contextPack?: { budget: number } | null, inventory: { exclude: string[] } }} */ ({ ...DEFAULTS });
   if (raw.rankers !== undefined) {
     if (!Array.isArray(raw.rankers)) throw fail("`rankers` must be an array.");
     out.rankers = raw.rankers.map(instantiateRanker);
@@ -83,6 +83,25 @@ export function mergeConfig(raw) {
       throw fail("`routing` must be an object (floor_score, top2_margin, max_candidates).");
     }
     out.routing = raw.routing === null ? null : instantiateRouting(raw.routing);
+  }
+  if (raw.contextPack !== undefined) {
+    // ONE knob, mirroring how routing thresholds are validated: the token budget of the context
+    // pack (what a process's declared references may inject). The estimator ratio and the rescue
+    // floor stay internal mechanics, deliberately not exposed.
+    if (raw.contextPack === null) {
+      out.contextPack = null;
+    } else if (typeof raw.contextPack !== "object" || Array.isArray(raw.contextPack)) {
+      throw fail("`contextPack` must be an object ({ budget: positive integer }).");
+    } else {
+      const extra = Object.keys(raw.contextPack).filter((k) => k !== "budget");
+      if (extra.length) throw fail(`unknown contextPack option(s): ${extra.join(", ")}`);
+      if (raw.contextPack.budget !== undefined) {
+        if (!Number.isInteger(raw.contextPack.budget) || raw.contextPack.budget < 1) {
+          throw fail("`contextPack.budget` must be a positive integer (tokens).");
+        }
+        out.contextPack = { budget: raw.contextPack.budget };
+      }
+    }
   }
   if (raw.inventory !== undefined) {
     // The project's own inventory exclusions (root-relative path prefixes). The engine carries no
@@ -170,7 +189,9 @@ function instantiateRouting(routing) {
       continue;
     }
     if (key === "embedder") {
-      out.embedder = instantiateRoutingEmbedder(value);
+      // DEPRECATED (shipped in tagged v1.0.0 and v1.1.0): tolerated so an existing config still loads
+      // — the stability promise is that base.config stays additive across minors. It is now inert; the
+      // build and query paths read the single `routing.embedding_model` reference. Removed in the next minor version.
       continue;
     }
     if (key === "max_candidates") {
@@ -202,20 +223,6 @@ function instantiateRoutingPolicy(value) {
     out.deny = value.deny;
   }
   return out;
-}
-
-// routing.embedder: { provider: "ollama"|"openai", model, baseUrl, … } — the embedder for
-// `base build routing-embeddings` (the shipped semantic package, dynamically imported). Provider-specific
-// knobs pass through; the API key comes from the environment, never from here. Read by base.mjs at build.
-function instantiateRoutingEmbedder(value) {
-  if (value == null) return null;
-  if (typeof value !== "object" || Array.isArray(value)) throw fail("`routing.embedder` must be an object.");
-  if (value.provider !== "ollama" && value.provider !== "openai") {
-    throw fail('`routing.embedder.provider` must be "ollama" or "openai".');
-  }
-  if (value.model != null && typeof value.model !== "string") throw fail("`routing.embedder.model` must be a string.");
-  if (value.baseUrl != null && typeof value.baseUrl !== "string") throw fail("`routing.embedder.baseUrl` must be a string.");
-  return { ...value };
 }
 
 // routing.fallback: { agent: "<agent-id>", process: "<process-id>" } — the help target the Router

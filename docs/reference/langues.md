@@ -26,6 +26,8 @@ Les spécifications d'ingénierie ([`specs/`](../../specs/current/README.md)) so
 
 Les assistants construits avec BASE ne sont attachés à aucune langue en particulier. Le routage par défaut est lexical: il compare les mots normalisés d'une demande à ceux de vos propres fichiers, sans s'appuyer sur la grammaire ni le lexique d'une langue donnée. Un assistant déclaré avec des mots-clés allemands, italiens ou anglais route dans cette langue. La langue de la documentation du cadre n'impose rien à celle de vos assistants.
 
+Une nuance, parce qu'un routage lexical apparie des mots: il route dans la langue où vos signaux sont écrits, et une demande formulée dans une autre langue que vos fichiers n'y correspond pas. C'est le **niveau zéro**, déterministe et reproductible (aucun modèle, aucun appel réseau): un plancher testable et une confirmation, pas le routage le plus fin. Dès qu'un modèle lit vos fichiers, la langue cesse d'être une contrainte: dans un harnais, l'assistant descend l'index et les `AGENT.md`/`SKILL.md` quelle que soit la langue de la demande (et vous pouvez changer de langue en cours de route), et le routage sémantique optionnel, par embeddings, franchit lui aussi les langues. L'appariement à la langue ne pèse donc que sur le plancher lexical déterministe (`base route`, ou l'outil MCP `route_request` sans embeddings), pas sur la découverte progressive menée par le modèle.
+
 ## Qui lit quoi
 
 | Profil | Langue | Porte d'entrée |

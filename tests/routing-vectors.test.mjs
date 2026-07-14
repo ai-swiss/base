@@ -1,5 +1,5 @@
 // Spec coverage: FR-ROUTE-006
-// Phase 6b: precompute the routing embeddings (a cross-invocation cache). Pure over an injected embedder,
+// Voie 2 precompute: precompute the routing embeddings (a cross-invocation cache). Pure over an injected embedder,
 // so the logic is proven without a model; the CLI wires a real Ollama/OpenAI-compatible embedder.
 // The cache is STAMPED (base.routing_vectors.v1): each entry carries the hash of the route_text it
 // embedded, the file names its embedder, and verifyRoutingVectors drops (and reports) what drifted —

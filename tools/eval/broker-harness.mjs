@@ -20,7 +20,7 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { baseNativeHarness } from "@ai-swiss/base-eval";
-import { commitChange, inventoryResources, openResource, proposeChange, routeRequest, searchResources } from "../base-core.mjs";
+import { commitChange, inventoryResources, openResource, proposeChange, resolveConfig, routeRequest, searchResources } from "../base-core.mjs";
 import { buildContextPack, renderContextPack, summarizeContextPack } from "../core/context-pack.mjs";
 
 // The one harness meta-tool, excluded from the MCP isomorphism check (see header).
@@ -44,7 +44,8 @@ export async function buildProcessHarness(root, { agentId, processId, egress } =
 
   // The context pack: inject what the process declares, under budget; the rest stays
   // reachable via the tools. The pack also lands in the run trace (summarized).
-  const pack = await buildContextPack(resources, (rel) => readFile(path.join(root, rel), "utf8"), process.path, { egress });
+  // The project's own budget when configured (contextPack.budget); else the module default.
+  const pack = await buildContextPack(resources, (rel) => readFile(path.join(root, rel), "utf8"), process.path, { budget: (await resolveConfig(root)).contextPack?.budget, egress });
   const renderedPack = renderContextPack(pack);
 
   const systemPrompt = [

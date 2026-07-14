@@ -85,6 +85,15 @@ La commande rejoue toutes les routes et échoue dès que l'une d'elles cède. Vo
 
 Le routeur lexical par défaut est rudimentaire, mais efficace; il reste sensible à la formulation, car des mots absents ne correspondent à rien, le sens fût-il proche. C'est la rançon de l'explicabilité: chaque score se justifie par des raisons inspectables, sans réseau ni dépendance. Des adaptateurs permettent au demeurant de l'étendre. Pour les corpus délicats (process nombreux et voisins, vocabulaire très varié), un ranker sémantique facultatif existe: voir le [Quickstart routage sémantique](routage-semantique-quickstart.md).
 
+La **négation** est la limite la plus nette: le routeur compte des mots, il ne les inverse pas. «Ne
+crée pas un devis, annule-le» crédite créer ET annuler (les particules ne/pas ne scorent plus, mais
+les deux intentions restent présentes). L'issue conçue est l'abstention honnête: le routeur pose sa
+question avec les deux options dans les candidats, et votre outil IA, qui lit la liste, tranche; en
+`base route` seul, attendez-vous à la question. Deux conséquences d'écriture: n'encodez **jamais** une
+négation dans un `use_when` («quand le client ne veut pas…»), elle donnerait des points aux demandes
+qui la contiennent; et figez les abstentions attendues dans `route-tests.json` (le mécanisme est
+montré plus haut), pour que ce comportement reste un choix, pas un accident.
+
 ---
 
 BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).

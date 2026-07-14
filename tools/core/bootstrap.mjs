@@ -20,20 +20,22 @@ export const ROUTER_BODY = [
   "- Quand le bon agent/process n'est **pas évident**.",
   "- Quand l'utilisateur écrit **«R»** (ou «R <demande>») pour forcer un routage.",
   "",
-  "Cas directs (ne route pas): si l'utilisateur **nomme un agent** («charge l'assistant devis»), ouvre directement son `AGENT.md`. C'est le seul fichier à charger. Et reste dans l'agent déjà chargé: ne route pas à chaque message.",
+  "Cas directs (ne route pas): si l'utilisateur **nomme un agent** («charge l'assistant devis»), ouvre directement son `AGENT.md`. C'est le seul fichier à charger. Et reste dans l'agent déjà chargé: ne route pas à chaque message. Si tu ne peux plus citer le chemin du process actif (après un résumé, ou loin dans une longue conversation), rouvre son `SKILL.md` et l'`AGENT.md` sur disque avant d'agir: le fichier fait foi, pas ta mémoire.",
   "",
   "## Appliquer BASE à un dossier qui n'en est pas encore un",
-  "Si l'utilisateur veut faire de SON dossier un BASE (il a du matériel, il veut structurer son savoir et son savoir-faire avec l'IA) et que ce dossier n'a encore ni `base.config.json` ni `.ai/agents/`: ne crée AUCUN fichier à la main. Lance d'abord `base init` (il crée le lanceur, la config, le `CLAUDE.md` et un agent de départ sous `.ai/agents/<nom>/`). Puis route vers `importer-l-existant` (à partir de matériel existant) ou `creer-agent` (de zéro): chaque écriture est proposée en diff, jamais committée d'office. Si tu te trouves dans le dépôt du cadre BASE lui-même, n'écris rien ici: initialise plutôt le dossier de l'utilisateur.",
+  "Si l'utilisateur veut faire de SON dossier un BASE (il a du matériel, il veut structurer son savoir et son savoir-faire avec l'IA) et que ce dossier n'a encore ni `base.config.json` ni `.ai/agents/`: ne crée AUCUN fichier à la main. Lance d'abord `base init` (il crée le lanceur, la config, le `CLAUDE.md` et un agent de départ sous `.ai/agents/<nom>/`). Puis route vers `importer-l-existant` (à partir de matériel existant) ou `creer-agent` (de zéro), deux process du cadre BASE et non du dossier de l'utilisateur: le lanceur les atteint via `framework_dir` dans `base.config.json`. Chaque écriture est proposée en diff, jamais committée d'office. Si tu te trouves dans le dépôt du cadre BASE lui-même, n'écris rien ici: initialise plutôt le dossier de l'utilisateur.",
   "",
   "## Comment router",
-  "Ta **carte**, c'est l'index généré: si `.ai/routing/index.md` existe, lis-le pour t'orienter. Il liste les agents et, pour chacun, ses process avec «Quand l'utiliser» et «Éviter si». Descends racine → agent → process; retiens le process dont le «Quand l'utiliser» couvre la demande, en respectant «Éviter si». Si aucun ne la couvre, abstiens-toi: ne devine pas.",
+  "Ta **carte**, c'est l'index généré: si `.ai/routing/index.md` existe, lis-le pour t'orienter. Il liste les agents; l'index de chaque agent (`.ai/agents/<agent>/index.md`, lié depuis la racine) détaille ses process avec «Quand l'utiliser» et «Éviter si». Descends racine → index d'agent → process; retiens le process dont le «Quand l'utiliser» couvre la demande, en respectant «Éviter si». Pour départager, ne lis jamais tous les corps (`AGENT.md`/`SKILL.md`): au plus les métadonnées des candidats (`base discover`, `--projection metadata`, ou le seul bloc frontmatter d'un fichier). Si aucun ne couvre la demande (souvent une question de connaissance, pas une tâche), ne devine pas: `node .ai/base.mjs discover \"<la question>\" --root .` classe les sources (chemins et métadonnées, jamais les corps).",
   "",
   "Le routeur déterministe confirme ton choix et sert de repli (index absent, ou doute). S'il désigne un autre process que le tien, c'est un signal d'ambiguïté: relis les «Quand l'utiliser»/«Éviter si», et si le doute persiste, demande plutôt que de trancher seul. Par ordre de préférence:",
   "1. **Outil MCP `route_request`** (si disponible) → appelle-le, charge l'`AGENT.md` de l'agent retourné, puis le `SKILL.md` du process retourné, et suis ce process.",
   "2. **Sinon, la CLI** (si un terminal est disponible) → `node .ai/base.mjs route \"<demande>\" --root .` depuis la racine du BASE. Ce lanceur est créé par `base init`; il trouve le moteur tout seul (via `framework_dir` dans `base.config.json`), sans rien sur le PATH. Charge ensuite l'agent et le process retournés. **Le même routeur déterministe, sans MCP.**",
-  "3. **Sinon** (ni MCP ni terminal) → explique simplement l'intérêt d'un routage déterministe et honnête, et aide l'utilisateur à l'activer en suivant le process `activer-routage` (sinon `mcp/README.md` et `docs/`).",
+  "3. **Sinon** (ni MCP ni terminal) → oriente-toi au plus sur les métadonnées (les blocs frontmatter des candidats), jamais sur une lecture de tous les corps; explique simplement l'intérêt d'un routage déterministe et honnête, et aide l'utilisateur à l'activer: le process `activer-routage` du cadre BASE (sinon la doc du cadre, `mcp/README.md` et `docs/`).",
   "",
-  "Le routeur peut **s'abstenir** (`out_of_scope`, `ambiguous`, `needs_clarification`): pose alors la question qu'il propose, **ne devine pas**. Route d'abord, charge ensuite; aucun agent n'est l'agent par défaut.",
+  "Une fois routé, précharge ce que le process déclare: `node .ai/base.mjs context \"<process>\" --root .` (ou l'outil MCP `get_context_pack`): des chemins et des notes, jamais les corps; ouvre ensuite seulement ce qui sert.",
+  "",
+  "Le routeur peut **s'abstenir** (`out_of_scope`, `ambiguous`, `needs_clarification`): pose alors la question qu'il propose, **ne devine pas**, et n'ouvre pas les corps des process concurrents pour trancher: au plus leurs métadonnées. Route d'abord, charge ensuite; aucun agent n'est l'agent par défaut.",
   "",
   "Si une abstention contient un **`fallback`** (un agent → process d'aide), charge ce fallback au lieu de laisser l'utilisateur sans suite: c'est l'accueil/orientation, pas une fausse réponse. S'il n'y a pas de fallback, pose la question proposée ou explique simplement la limite.",
 ].join("\n");
@@ -107,6 +109,34 @@ export function renderAgentsMd(resources) {
   }
   lines.push("");
   return lines.join("\n");
+}
+
+// The MCP-phrased routing discipline — ONE source for the guidance a pure-MCP client re-receives on
+// every call. English on purpose: MCP tool descriptions are the one BASE surface read by clients that
+// never open the French entry files. These constants and the French body above state the same
+// discipline; tests pin the constants verbatim (in renderMcpInstructions AND in the route_request
+// description), the freshness gate pins the French projections — neither side can drift silently.
+export const MCP_ROUTE_DISCIPLINE =
+  "On `routed`: open the returned agent.path, then process.path (open_resource), and follow that process. " +
+  "On an abstention (`ambiguous`, `needs_clarification`, `out_of_scope`): ask the returned next_question, never guess; " +
+  "if the result carries `fallback`, load it the same way. Do not re-route on every message: route at task boundaries.";
+
+export const MCP_READ_DISCIPLINE =
+  "Decide on candidate metadata, never by reading all bodies (discover_resources, or open_resource with projection \"metadata\"). " +
+  "Once routed, plan what to preload with get_context_pack (paths and notes, never bodies), then open only what serves.";
+
+export const MCP_CONTINUITY =
+  "If you can no longer cite the active process path (a long, summarized conversation), " +
+  "re-open agent.path then process.path before acting: the files are the source of truth, not your memory.";
+
+/** The fifth projection of the canonical body: the MCP server `instructions` field, composed from the constants above. */
+export function renderMcpInstructions() {
+  return [
+    "This project is a BASE: agents and processes as plain files. You are the router, not an identity.",
+    MCP_ROUTE_DISCIPLINE,
+    MCP_READ_DISCIPLINE,
+    MCP_CONTINUITY,
+  ].join("\n\n");
 }
 
 export function renderToolMatrix() {
