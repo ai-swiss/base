@@ -17,6 +17,7 @@ routing:
     - route_request échoue
     - Cursor ne voit pas mes fichiers
   avoid_when:
+    - Question de définition sur ce qu'est une racine.
     - Créer un nouvel assistant métier.
     - Première installation du routage à partir de zéro.
     - Auditer la cohérence globale d'un BASE sain.

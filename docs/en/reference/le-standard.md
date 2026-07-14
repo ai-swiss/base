@@ -1,4 +1,4 @@
-<!-- fr-synced: 4d443e8432aeab91a7ca6dae4fe534db8a3e82dc -->
+<!-- fr-synced: 5e45b2213987a5f2d02a8ab45af8ad50240b7a22 -->
 # The BASE standard: `base.resource.v1`
 
 BASE is not yet another platform: it is an **open standard we propose**, with its reference
@@ -29,7 +29,7 @@ The format's identity is carried by a single field, required in every resource:
 schema_version: base.resource.v1
 ```
 
-The machine truth is [`base.schema.json`](../../../base.schema.json), published under the stable
+The machine truth is [`base.schema.json`](../../../base.schema.json), under the stable
 identifier `https://a-i.swiss/base/schemas/base.resource.v1.json`. That identifier only changes with
 a **major** version of the format. The format follows semantic versioning (see [Its stability
 promise](#its-stability-promise)): a backward-compatible addition stays `base.resource.v1`; a break
@@ -88,7 +88,7 @@ what they turn on:
   optional, but is strongly advised on a shared resource: it feeds discovery and recall.
 - **Egress control**: `confidential`, a boolean **set by a human, never inferred**. It is the only
   resource field that prevents a send to a remote model.
-- **Classification and ownership**: `sensitivity`, `scope`, `owner`, `license`. They **describe** a
+- **Classification**: `sensitivity`, `scope`, `license`. They **describe** a
   resource, and `sensitivity` is the field the policy layer can read to filter an action. But
   classification does not drive egress: only `confidential: true`, or a root declared `local-only`,
   holds a resource on the local side. A `sensitivity: confidential`, which is merely a classification
@@ -97,13 +97,17 @@ what they turn on:
   that a stale resource is flagged instead of circulating silently.
 - **Lifecycle**: `status` (`draft`, `active`, `deprecated`, `archived`). A deprecated or archived
   resource is never a routing candidate; the corpus ages explicitly.
-- **Extension points**: `execution` (tools), `requires` (dependencies), `policy`, `trace`,
-  `governance`, `source` (governance and traceability). Add them when a mechanism calls for them.
+- **Extension points**: `execution` (tools), `requires` (dependencies), `source` (provenance). Add
+  them when a mechanism calls for them.
 
 The contract allows additional keys (`additionalProperties: true`): a producer enriches without
 breaking a consumer. An application can thus set its own keys (a documentation page like this one
 carries `audience` and `learning_level`): these are extensions of an **application model**, not of the
-format, and they do not commit the standard. What BASE **recognizes**, by contrast, is constrained and
+format, and they do not commit the standard. An organisation's governance fields (`owner`,
+`review_date`, `policy`, `trace`, `governance`…) follow the same path: the contract does not
+schematize them, and the validation layer lets you **require** them where your context demands it
+(`requireFields(["owner", "review_date"], { whenScope: "team" })`, the enterprise-kit motif). A file
+carrying them stays valid; what the schema recognizes is limited to the fields a mechanism reads. What BASE **recognizes**, by contrast, is constrained and
 verified: that is where it takes its few opinions, precisely the ones that turn on a mechanism.
 
 ### File name, type, and location
@@ -175,13 +179,15 @@ the core never pretends to know an organization's rules. The specification is
 
 ## Its stability promise
 
-The format follows semantic versioning: a file that is valid today stays valid across all of 1.x.
-This is the **NFR-CORE-002** commitment, called "no breakage", detailed in
+The format follows semantic versioning: no incompatible change without prior deprecation and a
+major increment. This is the **NFR-CORE-002** commitment, called "no breakage", detailed in
 [Versions and stability](versions-et-stabilite.md). The `base.resource.v1` identifier only changes
 with a major version of the format. A stable element that must disappear is first deprecated, kept
-working for at least one minor version, before any removal. The stable surface spans the format and
-its `type`s, the existing CLI commands and MCP tools, and the projection schemas (`base.manifest.v1`,
-`base.routing.v1`).
+working for at least one minor version, before any removal. A young standard owns one further
+pruning rule: a value nothing consumes (no mechanism behind it, no known file relying on it) may be
+removed in a minor version, stated as such in the CHANGELOG (1.2.0 did so for eleven speculative
+`type` values). The stable surface spans the format and its six `type` values, the existing CLI
+commands and MCP tools, and the projection schemas (`base.manifest.v1`, `base.routing.v1`).
 
 ## The reference implementation, and the others
 
@@ -211,7 +217,7 @@ use_when: "the user wants to create or price a quote for a client"
 
 Four required fields, one routing signal, and the body in Markdown. The rest is added when a need
 calls for it: `confidential: true` to hold a resource on the local side, `valid_until` to date a
-price, `owner` and `sensitivity` for a shared resource.
+price, `sensitivity` for a shared resource (and `owner` as an extension key, if your organisation requires it via `requireFields`).
 
 ## Interoperability, today
 

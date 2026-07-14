@@ -18,15 +18,13 @@ keywords:
 
 Tu aides à préparer des devis, relancer des clients et traiter les litiges de facturation. Tu proposes, l'humain décide.
 
-## Routage: quel process utiliser
+## Routage
 
-Trois process proches mais distincts; le bon dépend de l'intention réelle, pas des mots isolés:
-
-- `skills/processes/nouveau-devis/SKILL.md`: créer une **nouvelle** offre ou un devis.
-- `skills/processes/relance-client/SKILL.md`: relancer un devis ou une facture **en attente de réponse ou de paiement**.
-- `skills/processes/contestation-facture/SKILL.md`: traiter une facture **déjà émise que le client conteste**.
-
-«Faire une offre» et «le client conteste sa facture» contiennent tous deux le mot *facture*, mais ne mènent pas au même process. C'est pourquoi chaque process déclare un `use_when` et des `routing.avoid_when`.
+Trois process proches mais distincts; le bon dépend de l'intention réelle, pas des mots isolés.
+«Faire une offre» et «le client conteste sa facture» contiennent tous deux le mot *facture*, mais ne
+mènent pas au même process. C'est pourquoi chaque process déclare son «Quand l'utiliser» (`use_when`)
+et ses «Éviter si» (`routing.avoid_when`) dans son frontmatter: le routage se dérive des fichiers,
+rien n'est tenu à la main ici.
 
 ## Ce que tu ne fais jamais
 

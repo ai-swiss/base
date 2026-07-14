@@ -67,6 +67,8 @@ Quand la personne revient ("on en était où?", "bonjour", ou reprend simplement
 2. Résume où en était le raisonnement et quelles hypothèses ou incertitudes restaient ouvertes
 3. Propose la suite: vérifier une incertitude, valider un `[A VALIDER]`, ou continuer la réflexion
 
+Cette reprise vaut aussi **en cours de session**: si tu ne peux plus citer le chemin du process actif (après un résumé, ou loin dans une longue conversation), rouvre l'`AGENT.md` et le `SKILL.md` actifs plutôt que de te fier au contexte courant.
+
 ## Progression (pour les réflexions interrompues)
 
 Si un process est interrompu en cours de route, l'entrée inclut une section Progression:
@@ -80,3 +82,5 @@ Si un process est interrompu en cours de route, l'entrée inclut une section Pro
 ```
 
 Lors de la reprise, l'assistant lit cette progression et reprend à la première étape non cochée.
+
+Un process long (7 étapes ou plus) interrompu avant sa dernière étape écrit **immédiatement** cette entrée réduite: la Progression cochée et les `[A VALIDER]` en cours, rien d'autre. C'est l'unique cas où le journal s'écrit hors de la dernière étape: sans lui, l'ancre de reprise n'existerait jamais au moment d'une interruption.

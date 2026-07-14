@@ -163,22 +163,22 @@
             "null"
           ],
           "additionalProperties": true,
-          "description": "Routing embedder for `base build routing-embeddings` (the shipped semantic package). Provider-specific knobs (baseUrl, timeoutMs…) pass through. The API key comes from the environment, not from here.",
+          "description": "DEPRECATED (shipped v1.0.0/v1.1.0): the Voie 2 embedder now has a single reference, `routing.embedding_model` (Studio → Routage). Tolerated so an existing config still loads; inert; removed in the next minor version.",
           "properties": {
             "provider": {
               "enum": [
                 "ollama",
                 "openai"
               ],
-              "description": "Which embedder factory: a local Ollama, or an OpenAI-compatible endpoint."
+              "description": "Deprecated: which embedder factory."
             },
             "model": {
               "type": "string",
-              "description": "Embedding model id (required for openai; defaults for ollama)."
+              "description": "Deprecated: embedding model id."
             },
             "baseUrl": {
               "type": "string",
-              "description": "Override the provider's base URL (e.g. an internal gateway)."
+              "description": "Deprecated: provider base URL override."
             }
           }
         }
@@ -218,6 +218,29 @@
             "type": "string"
           },
           "description": "Root-relative path prefixes excluded from inventory/discovery/routing/manifest (e.g. \"specs\", \"docs/en\")."
+        }
+      }
+    },
+    "schema_version": {
+      "const": "base.config.v1",
+      "description": "Format identifier; written by `base init`."
+    },
+    "framework_dir": {
+      "type": "string",
+      "description": "Path to the BASE framework install (where the engine lives); written by `base init` so the launcher finds tools/base.mjs."
+    },
+    "contextPack": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "description": "Context-pack (retrieval) settings. `budget` caps the tokens a preload plan may schedule (default 8000).",
+      "properties": {
+        "budget": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Injection budget in tokens (positive integer)."
         }
       }
     }

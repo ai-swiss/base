@@ -56,6 +56,29 @@ describe("adversarial net — the floor abstains on noise (floor can decide)", (
   });
 });
 
+describe("adversarial net — function words never carry a route (the measured closed class)", () => {
+  // The use_when starts with «Quand»: before the stopword hygiene, «ça ne marche pas» scored a real
+  // corpus via route:pas, «il faut» alone cleared the floor (70 > 30), and «quand ?» matched 100 %
+  // of resources. These must abstain WITHOUT any function-word reason.
+  for (const request of ["ça ne marche pas", "quand ?", "il faut", "j'aimerais vraiment, svp"]) {
+    it(`«${request}» → abstains, no function-word score`, async () => {
+      const out = await routeRequest(tmpDir, request);
+      assert.notEqual(out.status, "routed", `routed on noise: ${JSON.stringify(out.candidates)}`);
+      const reasons = (out.candidates ?? []).flatMap((c) => c.reasons ?? []);
+      for (const noise of ["route:pas", "route:ne", "route:quand", "route:faut"]) {
+        assert.ok(!reasons.includes(noise), `${noise} still scores: ${reasons.join(", ")}`);
+      }
+    });
+  }
+
+  it("verb forms that carry signal are NOT stripped — «Que fait le MCP ?» stays a real request", async () => {
+    const { STOPWORDS } = await import("../tools/core/route-service.mjs");
+    for (const kept of ["fait", "faire", "peux", "peut"]) {
+      assert.ok(!STOPWORDS.has(kept), `«${kept}» carries signal and must not be a stopword`);
+    }
+  });
+});
+
 describe("adversarial net — counter-intentional lexical overlap (the floor's DOCUMENTED limit)", () => {
   // The floor compares words, not intent: a request sharing one strong `use_when` word routes even
   // when the intent points elsewhere («mon client m'a insulté» is not a quote request). This block

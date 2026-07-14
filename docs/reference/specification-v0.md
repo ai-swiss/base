@@ -1,3 +1,15 @@
+---
+schema_version: base.resource.v1
+id: specification-v0
+type: document
+title: Spécification BASE v0: principe fondateur et où lire la spec actuelle
+description: Le repère pour qui cherche la spécification: le principe fondateur de la v0 et le renvoi vers la spécification d'ingénierie à jour, pour ne jamais travailler sur un texte périmé.
+scope: public
+status: active
+sensitivity: public
+keywords: [specification, spec, v0, principe, fondateur, ingenierie]
+---
+
 # Spécification BASE v0: principe fondateur et où lire la spec actuelle
 
 Cette page sert de repère à quiconque cherche la spécification de BASE. Elle en énonce le principe fondateur et renvoie vers la spécification d'ingénierie à jour, afin de vous éviter de travailler sur un texte périmé.

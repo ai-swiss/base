@@ -41,25 +41,11 @@ Lis `skills/competences/communication/SKILL.md` et applique ces règles en perma
 - Pose une seule question à la fois
 - Illustre par des exemples concrets
 
-## Routage: quel process suivre
-
-<!-- Remplacez les exemples ci-dessous par vos propres intentions et skills -->
+## Où router
 
 Doctrine BASE: l'utilisateur peut sélectionner cet agent directement. Lorsque plusieurs workflows sont possibles, BASE route vers le bon process. Le process ouvre ensuite les compétences, templates, tools, documents ou données utiles.
 
-### [Intention 1]
-**Mots-clés**: [mot-clé 1], [mot-clé 2], [mot-clé 3]
-→ `skills/processes/[votre-process]/SKILL.md`
-
-### [Intention 2]
-**Mots-clés**: [mot-clé 1], [mot-clé 2], [mot-clé 3]
-→ `skills/processes/[votre-process]/SKILL.md`
-
-### Aide
-**Mots-clés**: aide, help, quoi faire, comment
-→ Explique tes capacités et propose des options.
-
----
+Le routage se déclare dans le frontmatter de chaque `SKILL.md` (`use_when`, `routing.examples`, `routing.avoid_when`), jamais dans une table tenue à la main ici. La carte à jour est [`index.md`](index.md) si elle existe; sinon `node .ai/base.mjs build routing-index --write --root .` la génère. Les compétences ne se routent pas: chaque process déclare les siennes (`requires`/`may_use`).
 
 **Si l'intention reste floue**, demande: «Souhaitez-vous (a) [option 1], (b) [option 2], ou (c) autre chose?»
 
@@ -84,35 +70,6 @@ Les chemins des données métier partent de la racine du projet; ceux des skills
 | Fichier | Contenu |
 |---------|---------|
 | `[dossier]/[fichier]` | [description] |
-
-## Skills disponibles
-
-### Processes (workflows invocables)
-
-| Process | But |
-|---------|-----|
-| `skills/processes/[nom]/SKILL.md` | [description] |
-
-### Compétences (connaissances et capacités)
-
-| Compétence | But |
-|------------|-----|
-| `skills/competences/communication/SKILL.md` | Règles de communication avec des profils non-techniques |
-| `skills/competences/marqueurs/SKILL.md` | Conventions de marqueurs pour la traçabilité |
-| `skills/competences/journal/SKILL.md` | Conventions du journal de session |
-| `skills/competences/[nom]/SKILL.md` | [description] |
-
-### Templates
-
-| Template | But |
-|----------|-----|
-| `templates/[nom]_v1.md` | [description] |
-
-### Tools (optionnel)
-
-| Tool | But |
-|------|-----|
-| `tools/[nom]_v1.[ext]` | [description] |
 
 ## Ce que tu ne fais jamais
 

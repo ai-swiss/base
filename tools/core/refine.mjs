@@ -16,7 +16,7 @@
 // model can never route to a target outside the retrieved, deny-filtered set.
 
 import { completeJson } from "@ai-swiss/base-llm";
-import { agentDirOf } from "./routing.mjs";
+import { agentDirOf, routeScopeOf } from "./routing.mjs";
 
 // The refiner prompt — the locus of routing quality. Authored, not assembled ad hoc: it states the
 // one-sentence rule (pick the single best fit, or abstain), names the two signals it must weigh
@@ -74,8 +74,19 @@ export function makeLlmRefiner({ complete, jsonMode = false }) {
 // Map the parsed model output to a RouteDecision. Every branch is defensive: an unparseable reply, an
 // unknown `decision`, a `select` with no/off-list `process_id`, or a `needs_clarification` with no
 // question all collapse to an HONEST abstention rather than a guessed or fabricated route.
+//
+// The shortlist speaks the ONE candidate shape both strategies share ({ resource, score, reasons,
+// route_scope } — routing.mjs slimCandidate, routing.md): `score` is the retriever similarity the
+// candidate already carries, `reasons` states honestly HOW it was earned (`match` travels from
+// retrieve.mjs; a candidate without it — a third-party retriever — reads as cosine, the normal path).
+// Note the SCALE differs by strategy (lexical points vs cosine): comparable within one decision only.
 function interpret(raw, byId, candidates, query) {
-  const shortlist = candidates.map((c) => slimResource(c.resource));
+  const shortlist = candidates.map((c) => ({
+    resource: slimResource(c.resource),
+    score: c.similarity,
+    reasons: [`retriever:${c.match === "lexical_fallback" ? "lexical_fallback" : "cosine"}`],
+    route_scope: routeScopeOf(c.resource?.type),
+  }));
   if (!raw || typeof raw !== "object") {
     return decision("needs_clarification", null, null, shortlist,
       "Le raffineur n'a pas rendu de décision exploitable.",

@@ -73,6 +73,7 @@ function projectDocument(resource, signals) {
     route_scope: signals.route_scope ?? null,
     agent_path: signals.agent_path ?? null,
     route_text: signals.route_text ?? "",
+    avoid_entries: Array.isArray(signals.avoid_entries) ? signals.avoid_entries : [],
     avoid_text: signals.avoid_text ?? "",
     fields,
     embedding: null,

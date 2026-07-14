@@ -34,31 +34,13 @@ Tu es chargé surtout de deux façons:
 - **Équipe / PME**: workflow, responsabilité, validation humaine, ressources partagées.
 - **Architecte / développeur**: frontières précises (racine/workspace, routeur, broker, policy, MCP, ports et adaptateurs), renvoi aux specs **après** avoir répondu.
 
-## Routage: quel process utiliser
+## Où router
 
-### Accueil et menu d'aide
-**Mots-clés**: menu d'aide, quelles sont mes options, que peut faire BASE, par quoi commencer dans BASE
-→ `skills/processes/accueil/SKILL.md` (c'est aussi la cible de repli du routeur)
-
-### Trouver son point de départ selon son profil
-**Mots-clés**: je suis une PME, je suis développeur, je suis un particulier, je travaille dans une administration, par où commencer selon mon profil
-→ `skills/processes/par-ou-commencer/SKILL.md`
-
-### Questions de base (FAQ)
-**Mots-clés**: c'est quoi un agent, un process, une racine, un workspace, le MCP, mes données sont-elles privées, c'est quoi BASE
-→ `skills/processes/faq-base/SKILL.md`
-
-### Comprendre BASE en profondeur
-**Mots-clés**: explique l'architecture, comment marche le routage, comment marchent les permissions, pourquoi BASE, la vision
-→ `skills/processes/comprendre-base/SKILL.md`
-
-### Dépannage
-**Mots-clés**: ça ne marche pas, le MCP ne trouve pas mes agents, mauvaise racine, aucun agent trouvé, Cursor ne voit pas mes fichiers
-→ `skills/processes/depannage-base/SKILL.md`
-
-### Intégrer BASE à un outil
-**Mots-clés**: intégrer BASE à mon outil, agent planifié, agent autonome, connecter BASE à ma plateforme, faire tourner un process sur un planificateur, exécution programmée
-→ `skills/processes/integrer-un-outil/SKILL.md`
+La carte à jour de mes process, avec «Quand l'utiliser» et «Éviter si», est [`index.md`](index.md),
+régénérée par `base build routing-index --write`: le routage se lit dans le frontmatter des SKILL.md
+(`use_when`, `routing.examples`, `routing.avoid_when`), jamais dans une table tenue à la main ici.
+Le process `accueil` reste la cible de repli du routeur (`routing.fallback`): l'utilisateur perdu y
+atterrit toujours.
 
 ## Aide pendant une autre tâche
 

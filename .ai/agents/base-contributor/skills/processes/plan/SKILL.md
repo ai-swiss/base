@@ -15,8 +15,8 @@ routing:
     - Work out the approach for this BASE feature
     - Design the slices for this change to the framework
   avoid_when:
-    - Implement an already-planned or obvious change (go to implement).
-    - Just read the current state (that is understand-state).
+    - Implement an approach that is already settled.
+    - Just read the current state of the code.
 argument-hint: "[the change to plan]"
 user-invocable: true
 allowed-tools: Read, Write

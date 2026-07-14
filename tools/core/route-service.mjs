@@ -95,6 +95,86 @@ export const STOPWORDS = new Set([
   "va",
   "comment",
   "merci",
+  // The measured closed class of French function words (calibrated on a 600-process corpus, 604
+  // queries at 3 scales: exactly the non-content words that scored, and the list that keeps every
+  // real fixture green). Verb forms that carry signal (faire/fait, pouvoir forms) stay OUT:
+  // stripping them breaks real requests like «Que fait le MCP ?».
+  // Negations — «ça ne marche pas» must not credit a use_when for containing «ne … pas»:
+  "ne",
+  "pas",
+  "jamais",
+  "rien",
+  "plus",
+  "non",
+  "ni",
+  "sans",
+  // Interrogatives and subordinators — every use_when starts with «Quand», so «quand ?» scored 100 % of a corpus:
+  "quand",
+  "quel",
+  "quelle",
+  "quels",
+  "quelles",
+  "lorsque",
+  "si",
+  "comme",
+  "dont",
+  "qu",
+  // Demonstratives and pronouns:
+  "ce",
+  "cet",
+  "cette",
+  "ces",
+  "elle",
+  "elles",
+  "ils",
+  "tu",
+  "te",
+  "se",
+  "sa",
+  "ta",
+  "ma",
+  "moi",
+  "toi",
+  "lui",
+  "leur",
+  "leurs",
+  // Conjunction adverbs:
+  "mais",
+  "donc",
+  "alors",
+  "encore",
+  "deja",
+  // Prepositions:
+  "vers",
+  "sous",
+  "chez",
+  "entre",
+  // Degree adverbs:
+  "tres",
+  "bien",
+  "tout",
+  "toute",
+  "tous",
+  "trop",
+  "peu",
+  "assez",
+  "aussi",
+  "meme",
+  // Impersonal modals — a single «il faut» used to clear the routing floor (70 > 30) on its own:
+  "faut",
+  "faudrait",
+  // Polite request formulas — they express THAT one asks, never WHAT:
+  "besoin",
+  "envie",
+  "aimerais",
+  "voudrais",
+  "voudrait",
+  "souhaite",
+  "stp",
+  "svp",
+  "please",
+  "juste",
+  "vraiment",
 ]);
 
 export function routeTerms(request) {
@@ -105,16 +185,38 @@ export function routeTerms(request) {
   )];
 }
 
-export function routeAvoidReasons(avoidText, terms) {
-  if (!avoidText || terms.length === 0) return [];
-  // A short term (≤ 3 chars) must match a WHOLE avoid word — otherwise «ma» fires on
-  // «manger» and «ur» (from «sœur») on «sur». Longer terms keep substring recall, so
-  // «calcule» still matches «calculer» (morphology without a stemmer).
-  const hay = normalize(avoidText);
-  const avoidTokens = new Set(routeTerms(avoidText));
-  const hits = terms.filter((term) => (term.length <= 3 ? avoidTokens.has(term) : hay.includes(term)));
+export function routeAvoidReasons(avoidEntries, terms) {
+  const entries = (Array.isArray(avoidEntries) ? avoidEntries : [avoidEntries]).filter((e) => typeof e === "string" && e.trim());
+  if (entries.length === 0 || terms.length === 0) return [];
+  // The veto is judged per counter-example, never across their concatenation: «créer un nouveau
+  // devis» plus «un problème vague avec un client» must not combine into a veto on «relancer le
+  // client qui n'a pas répondu au devis» that neither entry justifies alone — a process whose
+  // counter-examples share its own nouns would otherwise veto itself out of every request.
   const minimumHits = terms.length === 1 ? 1 : 2;
-  return hits.length >= minimumHits ? hits.map((term) => `route_avoid:${term}`) : [];
+  const hits = new Set();
+  for (const entry of entries) {
+    // A short term (≤ 3 chars) must match a WHOLE avoid word — otherwise «ma» fires on
+    // «manger» and «ur» (from «sœur») on «sur». Longer terms keep substring recall, so
+    // «calcule» still matches «calculer» (morphology without a stemmer).
+    const hay = normalize(entry);
+    const entryTokens = new Set(routeTerms(entry));
+    const entryHits = terms.filter((term) => (term.length <= 3 ? entryTokens.has(term) : hay.includes(term)));
+    if (entryHits.length >= minimumHits) for (const term of entryHits) hits.add(term);
+  }
+  return [...hits].map((term) => `route_avoid:${term}`);
+}
+
+// Replay corpus: the authors' OWN declared phrasings (metadata.routing.examples) as route-test
+// cases — the drift guard for «formulations telles que vos utilisateurs les emploient», with a
+// scope-aware expect (an agent example asserts the agent; a process example asserts the process).
+// Pure corpus → cases; same comparator, same summary, zero new fixture format.
+export function casesFromExamples(resources) {
+  return resources.flatMap((resource) => {
+    const declared = resource.metadata?.routing?.examples;
+    if (!Array.isArray(declared)) return [];
+    const expect = resource.type === "agent" ? { agent: resource.id } : { process: resource.id };
+    return declared.filter((e) => typeof e === "string" && e.trim()).map((request) => ({ request, expect }));
+  });
 }
 
 // Router orchestration: derive a routing signal per routable resource, score candidates with the
@@ -146,7 +248,7 @@ async function rankResources(resources, terms, rank, ctx) {
     const signals = deriveRoutingSignals(resource);
     if (resource.type === "agent" && signals.agent_path) agentsByDir.set(signals.agent_path, resource);
     const { score, reasons } = await rank({ ...resource, body: "", route_text: signals.route_text }, terms, ctx);
-    const avoidReasons = routeAvoidReasons(signals.avoid_text, terms);
+    const avoidReasons = routeAvoidReasons(signals.avoid_entries, terms);
     ranked.push({
       resource,
       score: avoidReasons.length ? 0 : score,
@@ -205,5 +307,9 @@ export function summarizeRoute(actual) {
     agent: actual.agent?.id ?? null,
     process: actual.process?.id ?? null,
     fallback: actual.fallback ? { agent: actual.fallback.agent?.id ?? null, process: actual.fallback.process?.id ?? null } : null,
+    // WHY, not only WHAT: the slim shortlist (already capped at max_candidates by decideRoute) rides
+    // along so a failing fixture shows the scores and reasons the author must act on — without
+    // re-running `base route` case by case.
+    candidates: (actual.candidates ?? []).map((c) => ({ id: c.resource?.id ?? null, score: c.score, reasons: c.reasons ?? [] })),
   };
 }

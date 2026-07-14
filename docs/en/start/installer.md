@@ -1,4 +1,4 @@
-<!-- fr-synced: 49b6b9f6c88c002c82c70b70028b418d8a387f89 -->
+<!-- fr-synced: 9d7f41334a127066e47bf9678e5150b06848cbdf -->
 # Set up an AI workspace
 
 Setting up a local workspace means keeping your agents and your context in your own folder, under your control, rather than inside a web platform. To do so, you choose a tool and spend a few minutes on it. This page points you to the guide that fits your situation; each one is short and stands on its own. BASE works with most AI tools that can read your Markdown files.

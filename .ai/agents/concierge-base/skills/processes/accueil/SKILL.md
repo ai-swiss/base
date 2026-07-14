@@ -13,7 +13,6 @@ routing:
   examples:
     - Quelles sont mes options dans BASE ?
     - Montre-moi le menu d'aide BASE
-    - Par quoi je commence dans BASE ?
   avoid_when:
     - Créer un nouvel assistant métier.
     - Auditer ou nettoyer un BASE existant.

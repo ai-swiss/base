@@ -15,6 +15,7 @@ routing:
     - Construire un agent pour mon entreprise
     - J'aimerais un assistant IA pour mon activité
   avoid_when:
+    - Je ne sais pas quel choix faire en premier.
     - Audit entretien vérification publication readiness d'un BASE existant.
     - Review audit harden an existing BASE after implementation.
 argument-hint: "[description du métier ou du besoin]"
@@ -165,7 +166,7 @@ Présente un récapitulatif complet:
 
 Crée la structure dans `.ai/agents/[nom-agent]/`:
 
-1. **AGENT.md**: renseigne l'identité, la philosophie d'interaction (5 points), la table d'intentions, la doctrine agent → process → ressources, les fichiers métier, l'inventaire des skills et les garde-fous (6 points, dont le contrôle mécanique, la validation humaine et la séparation instructions/données). Pars de `.ai/agents/_template/AGENT.md`.
+1. **AGENT.md**: renseigne l'identité, la philosophie d'interaction (5 points), la doctrine agent → process → ressources, la section «Où router» (un pointeur vers l'index généré: le routage vit dans les frontmatter des SKILL.md, jamais dans une table à la main), les fichiers métier et les garde-fous (6 points, dont le contrôle mécanique, la validation humaine et la séparation instructions/données). Pars de `.ai/agents/_template/AGENT.md`.
 
 2. **skills/processes/**: un dossier par workflow identifié, chaque dossier contient un SKILL.md au format standard avec frontmatter. Si l'utilisateur veut le routage BASE ou si plusieurs workflows sont proches, ajoute `schema_version`, `id`, `type: process`, `description`, `use_when` et, si utile, `routing.examples` / `routing.avoid_when`. **Rédige `use_when`, `description` et `routing.examples` dans la langue de l'utilisateur** (le routage compare les mots de la demande à ceux-ci; en allemand, écris-les en allemand). Distingue reformulations (légères) et points de décision (avant action irréversible). Chaque process se termine par une étape Journal.
 

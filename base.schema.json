@@ -4,7 +4,12 @@
   "title": "BASE Resource",
   "description": "Progressive metadata for local-first BASE resources.",
   "type": "object",
-  "required": ["schema_version", "id", "type", "description"],
+  "required": [
+    "schema_version",
+    "id",
+    "type",
+    "description"
+  ],
   "additionalProperties": true,
   "properties": {
     "schema_version": {
@@ -16,7 +21,14 @@
     },
     "type": {
       "type": "string",
-      "enum": ["agent", "process", "competence", "tool", "template", "document"]
+      "enum": [
+        "agent",
+        "process",
+        "competence",
+        "tool",
+        "template",
+        "document"
+      ]
     },
     "title": {
       "description": "Strongly recommended for shared resources and discovery, but optional so personal Markdown can stay lightweight.",
@@ -29,17 +41,22 @@
     },
     "scope": {
       "type": "string",
-      "enum": ["personal", "team", "org", "public", "enterprise-extension"]
-    },
-    "version": {
-      "type": "string"
-    },
-    "owner": {
-      "type": "string"
+      "enum": [
+        "personal",
+        "team",
+        "org",
+        "public",
+        "enterprise-extension"
+      ]
     },
     "status": {
       "type": "string",
-      "enum": ["draft", "active", "deprecated", "archived"]
+      "enum": [
+        "draft",
+        "active",
+        "deprecated",
+        "archived"
+      ]
     },
     "review_by": {
       "description": "Date by which a human should re-read this resource (aging ontology). Consumed by `base doctor`.",
@@ -62,7 +79,13 @@
     },
     "sensitivity": {
       "type": "string",
-      "enum": ["public", "internal", "confidential", "sensitive", "restricted"]
+      "enum": [
+        "public",
+        "internal",
+        "confidential",
+        "sensitive",
+        "restricted"
+      ]
     },
     "keywords": {
       "type": "array",
@@ -106,7 +129,9 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["ref"],
+        "required": [
+          "ref"
+        ],
         "additionalProperties": true,
         "properties": {
           "ref": {
@@ -115,7 +140,11 @@
           "access": {
             "description": "Expected use of the referenced resource by this workflow. Native permissions and BASE policy still decide whether the action can actually run.",
             "type": "string",
-            "enum": ["read", "write", "execute"]
+            "enum": [
+              "read",
+              "write",
+              "execute"
+            ]
           },
           "purpose": {
             "type": "string"
@@ -138,22 +167,44 @@
       "type": "object",
       "additionalProperties": true,
       "properties": {
-        "examples": { "type": "array", "items": { "type": "string" } },
-        "avoid_when": { "type": "array", "items": { "type": "string" } }
+        "examples": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "avoid_when": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
       }
     },
     "execution": {
       "type": "object",
-      "required": ["type"],
+      "required": [
+        "type"
+      ],
       "additionalProperties": true,
       "properties": {
         "type": {
           "type": "string",
-          "enum": ["script", "http", "mcp_tool", "manual", "sdk"]
+          "enum": [
+            "script",
+            "http",
+            "mcp_tool",
+            "manual",
+            "sdk"
+          ]
         },
         "runtime": {
           "type": "string",
-          "enum": ["python", "node", "shell"]
+          "enum": [
+            "python",
+            "node",
+            "shell"
+          ]
         },
         "entrypoint": {
           "type": "string",
@@ -166,27 +217,6 @@
           "type": "boolean"
         }
       }
-    },
-    "policy": {
-      "description": "Semantic policy intent. Public BASE documents it; strict enforcement requires mediated connectors.",
-      "type": "object",
-      "additionalProperties": true
-    },
-    "trace": {
-      "description": "Trace configuration intent; business content should be off by default.",
-      "type": "object",
-      "additionalProperties": true,
-      "properties": {
-        "mode": {
-          "type": "string",
-          "enum": ["off", "minimal", "full"]
-        }
-      }
-    },
-    "governance": {
-      "description": "Documented extension point for enterprise governance; not required by the public MVP.",
-      "type": "object",
-      "additionalProperties": true
     }
   }
 }

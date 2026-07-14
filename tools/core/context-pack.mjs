@@ -203,6 +203,18 @@ export function renderContextPack(pack) {
 }
 
 /** A compact summary for run traces and UI badges: paths + notes, never the contents. */
+/**
+ * The planner surfaced to harnesses (CLI `context`, MCP `get_context_pack`): resolve the target in
+ * the given inventory (already egress-filtered by the caller when a context applies) and return the
+ * SUMMARIZED pack — paths and notes, never bodies. A planner, not a bulk read: what `renderContextPack`
+ * injects for chat stays out of reach here by construction. Null when the target is not inventoried.
+ */
+export async function packSummary(inventory, readFile, idOrPath, opts = {}) {
+  const resource = inventory.find((r) => r.id === idOrPath || r.path === idOrPath);
+  if (!resource) return null;
+  return summarizeContextPack(await buildContextPack(inventory, readFile, resource.path, opts));
+}
+
 export function summarizeContextPack(pack) {
   return {
     sections: pack.sections.map((s) => ({ path: s.path, ...(s.note ? { note: s.note } : {}) })),

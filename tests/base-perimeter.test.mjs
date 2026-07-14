@@ -107,6 +107,7 @@ describe("buildInitPlan — pure decision, exact files", () => {
     assert.deepEqual(plan.map((e) => e.path), [
       ".ai/agents/mon-cabinet/AGENT.md",
       ".ai/agents/mon-cabinet/skills/processes/importer-l-existant/SKILL.md",
+      ".gitignore",
       "base.config.json",
       ".ai/base.mjs",
       "CLAUDE.md",
@@ -183,6 +184,29 @@ describe("applyInitPlan — creation-only, end to end", () => {
       assert.deepEqual(again.created, []);
       assert.equal(again.skipped.length, plan.length);
       assert.deepEqual(again.skipped[0], { path: plan[0].path, reason: "existait déjà" });
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("proposes a .gitignore for BASE runtime data — and NEVER touches an existing one", async () => {
+    // The trust promise «local, jamais transmis» must survive the first `git push` of a fresh
+    // project: traces, pending change snapshots, feedback and machine settings stay out of the repo.
+    const plan = buildInitPlan({ type: "empty" }, { dirName: "atelier", now: NOW });
+    const gitignore = plan.find((e) => e.path === ".gitignore");
+    assert.ok(gitignore, "init proposes .gitignore");
+    for (const line of [".ai/trace/", ".ai/changes/", ".ai/feedback/", ".ai/studio.settings.json"]) {
+      assert.ok(gitignore.content.includes(line), `${line} is ignored`);
+    }
+
+    // Creation-only is absolute: a project's own .gitignore is respected, never appended.
+    const dir = await mkdtemp(path.join(tmpdir(), "perimeter-gitignore-"));
+    try {
+      await writeFile(path.join(dir, ".gitignore"), "custom\n", "utf8");
+      const { skipped } = await applyInitPlan(dir, plan);
+      assert.ok(skipped.some((s) => s.path === ".gitignore"), "the existing file is skipped, reported");
+      const { readFile } = await import("node:fs/promises");
+      assert.equal(await readFile(path.join(dir, ".gitignore"), "utf8"), "custom\n", "byte-identical: no append");
     } finally {
       await rm(dir, { recursive: true, force: true });
     }

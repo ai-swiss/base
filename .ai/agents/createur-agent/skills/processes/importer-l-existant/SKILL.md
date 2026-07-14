@@ -15,7 +15,9 @@ routing:
     - Transformer ce document en process
     - J'ai déjà un wiki, comment le réutiliser ?
   avoid_when:
-    - Créer un agent de zéro sans matériau existant (c'est créer-agent).
+    - Question de définition d'un process.
+    - Ajouter un workflow à un agent déjà en place.
+    - Créer un agent de zéro sans matériau existant.
     - Signaler un dysfonctionnement de l'assistant.
 ---
 
@@ -35,8 +37,11 @@ Demande à l'utilisateur:
 
 ### 1. Explorer le matériau
 
-Lis chaque source (`open_resource`, ou `discover_resources` si les chemins restent flous). Range
-mentalement chaque contenu:
+Commence par un survol de **métadonnées**, jamais une lecture intégrale de tout: la liste des fichiers
+(noms, dossiers, premiers titres: `discover_resources`, ou la liste du dossier), puis un ordre de
+lecture proposé; n'ouvre en entier (`open_resource`) que ce qui est retenu pour la carte. Sur un
+dossier volumineux, c'est la différence entre une analyse qui tient et un contexte saturé avant la
+première proposition. Range chaque contenu:
 - **Se suit** (étapes, checklist, procédure) → futur `process`
 - **S'apprend** (règles, conventions, savoir) → future `competence` ou `document`
 - **Se remplit** (trame, modèle de courrier) → futur `template`
@@ -51,6 +56,13 @@ candidate, ta recommandation en tête, et les vraies options (process ou compét
 scope personnel ou équipe). Garde de la souplesse: accompagne une migration **progressive** vers une structure
 exploitable par l'IA, et laisse un point ouvert «voyez-vous d'autres choses utiles à ajouter?» pour que
 la personne enrichisse la proposition, au lieu de se borner à l'accepter ou la refuser.
+
+Écris la carte validée dans un **fichier** à la racine du projet (par exemple `import-carte.md`): un
+tableau source → type BASE proposé → agent de destination, chaque ligne non tranchée portant
+`[A VALIDER]`. Un import est un process long: la carte en fichier survit à la conversation (l'ancre
+d'interruption du journal s'y applique), reste cherchable par `base markers`, et la conversion du
+lendemain reprend à la ligne où l'on s'était arrêté. Jamais de carte qui ne vive qu'en mémoire de
+conversation.
 
 ### 3. Convertir, une ressource à la fois
 

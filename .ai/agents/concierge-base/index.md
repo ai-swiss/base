@@ -9,7 +9,7 @@ Choisissez le process dont le «Quand l'utiliser» couvre la demande. Respectez 
 ## Process
 
 ### Accueil BASE — [`accueil`](skills/processes/accueil/SKILL.md)
-**Quand l'utiliser**: Quand l'utilisateur demande le menu d'aide BASE ou la liste de ses options dans BASE. — Quelles sont mes options dans BASE ? — Montre-moi le menu d'aide BASE — Par quoi je commence dans BASE ?
+**Quand l'utiliser**: Quand l'utilisateur demande le menu d'aide BASE ou la liste de ses options dans BASE. — Quelles sont mes options dans BASE ? — Montre-moi le menu d'aide BASE
 **Éviter si**: Créer un nouvel assistant métier. — Auditer ou nettoyer un BASE existant. — Question précise sur un concept BASE.
 
 ### Comprendre BASE — [`comprendre-base`](skills/processes/comprendre-base/SKILL.md)
@@ -18,10 +18,10 @@ Choisissez le process dont le «Quand l'utiliser» couvre la demande. Respectez 
 
 ### Dépannage BASE — [`depannage-base`](skills/processes/depannage-base/SKILL.md)
 **Quand l'utiliser**: Quand quelque chose ne fonctionne pas dans BASE: un agent introuvable, une mauvaise racine, le MCP non connecté, route_request qui échoue, ou un outil qui ne voit pas les fichiers. — Le MCP ne trouve pas mes agents — BASE dit aucun agent trouvé — Mauvaise racine sélectionnée — route_request échoue — Cursor ne voit pas mes fichiers
-**Éviter si**: Créer un nouvel assistant métier. — Première installation du routage à partir de zéro. — Auditer la cohérence globale d'un BASE sain.
+**Éviter si**: Question de définition sur ce qu'est une racine. — Créer un nouvel assistant métier. — Première installation du routage à partir de zéro. — Auditer la cohérence globale d'un BASE sain.
 
 ### FAQ BASE — [`faq-base`](skills/processes/faq-base/SKILL.md)
-**Quand l'utiliser**: Quand l'utilisateur pose une question simple de définition sur BASE: c'est quoi un agent, un process, une racine, un workspace, le MCP, ou si ses données sont privées. — C'est quoi un agent ? — C'est quoi un process ? — C'est quoi un agent et un process ? — C'est quoi une racine BASE ? — C'est quoi un workspace ? — Que fait le MCP ? — Mes données sont-elles privées avec BASE ? — C'est quoi BASE en deux phrases ?
+**Quand l'utiliser**: Quand l'utilisateur pose une question simple de définition sur BASE: c'est quoi un agent, un process, une racine, un workspace, le MCP, ou si ses données sont privées. — Quelle est la définition d'un agent ? — C'est quoi un process ? — C'est quoi un agent et un process ? — C'est quoi une racine BASE ? — C'est quoi un workspace ? — Que fait le MCP ? — Mes données sont-elles privées avec BASE ? — C'est quoi BASE en deux phrases ?
 **Éviter si**: Créer un nouvel assistant métier. — Auditer ou entretenir un BASE. — Installer ou configurer le routage et le MCP. — Explication longue d'architecture ou de design.
 
 ### Fiche de décision — [`fiche-de-decision`](skills/processes/fiche-de-decision/SKILL.md)
@@ -33,9 +33,9 @@ Choisissez le process dont le «Quand l'utiliser» couvre la demande. Respectez 
 **Éviter si**: Comprendre la vision ou la méthode de BASE en général.
 
 ### Par où commencer selon votre profil — [`par-ou-commencer`](skills/processes/par-ou-commencer/SKILL.md)
-**Quand l'utiliser**: Quand l'utilisateur dit qui il est (particulier, PME, indépendant, développeur, institution publique, curieux) et veut savoir par où commencer. — Je suis une PME, par où commencer avec BASE ? — Je suis développeur, comment commencer avec BASE ? — Je suis un particulier, par où commencer avec BASE ? — Je travaille dans une administration, par où commencer ?
+**Quand l'utiliser**: Quand l'utilisateur veut savoir par où commencer avec BASE, en disant ou non qui il est (particulier, PME, indépendant, développeur, institution publique, curieux); sans profil connu, la première étape le demande. — Par quoi je commence dans BASE ? — Je suis une PME, par où commencer avec BASE ? — Je suis développeur, comment commencer avec BASE ? — Je suis un particulier, par où commencer avec BASE ? — Je travaille dans une administration, par où commencer ?
 **Éviter si**: Menu général des options BASE sans profil précis. — Créer un assistant métier précis tout de suite. — Identifier quelle opportunité IA automatiser dans son activité.
 
 ### Signaler une friction — [`signaler-une-friction`](skills/processes/signaler-une-friction/SKILL.md)
 **Quand l'utiliser**: Quand l'utilisateur exprime un problème avec son assistant lui-même: «ça n'a pas marché», «mon assistant s'est trompé», «le process donne un mauvais résultat», «le barème cité est faux». — Mon assistant s'est trompé — Ça n'a pas marché comme prévu — Le process devis donne un mauvais montant — Signaler un problème avec l'assistant
-**Éviter si**: Demander de l'aide pour réaliser une tâche métier. — Créer ou améliorer un agent (c'est le créateur d'agent). — Vérifier, auditer ou publier un BASE (c'est l'entretien du créateur d'agent).
+**Éviter si**: Question de définition d'un process. — Demander de l'aide pour réaliser une tâche métier. — Créer ou améliorer un agent (c'est le créateur d'agent). — Vérifier, auditer ou publier un BASE (c'est l'entretien du créateur d'agent).

@@ -1,4 +1,4 @@
-<!-- fr-synced: dc9ea1407a2161c7220bf821619e22e2f723e725 -->
+<!-- fr-synced: f979a637d0c3ad6e186483b20d9d60114c829549 -->
 # Understanding which language BASE uses, and where
 
 If you are wondering why the documentation is in French while the specifications are in English, this page explains it in a few lines. It is for anyone discovering the project, contributing to it, or wanting to build an assistant: it says which language governs what, and why your own assistants are bound to neither one.
@@ -14,6 +14,8 @@ The engineering specifications ([`specs/`](../../../specs/current/README.md)) ar
 ## Your assistants speak the language of their users
 
 Assistants built with BASE are not bound to any particular language. The default routing is lexical: it compares the normalized words of a request to those of your own files, without relying on the grammar or lexicon of any given language. An assistant declared with German, Italian, or English keywords routes in that language. The language of the framework's documentation imposes nothing on the language of your assistants.
+
+One nuance, because lexical routing matches words: it routes in the language your signals are written in, and a request phrased in a language other than your files will not match. This is the **level zero**, deterministic and reproducible (no model, no network call): a testable floor and a confirmation, not the finest routing. As soon as a model reads your files, language stops being a constraint: in a harness, the assistant descends the index and the `AGENT.md`/`SKILL.md` files whatever the language of the request (and you can switch language along the way), and the optional semantic routing, via embeddings, crosses languages too. The language matching therefore weighs only on the deterministic lexical floor (`base route`, or the MCP tool `route_request` without embeddings), not on the model-led progressive discovery.
 
 ## Who reads what
 

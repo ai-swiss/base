@@ -1,4 +1,4 @@
-<!-- fr-synced: 4a543d24f2c73c7121a5c6bd3e424a1957ab3d87 -->
+<!-- fr-synced: aab9430421f0140308afb9c8832c2652a4e15f5b -->
 # Writing for the router
 
 When a request like "Draft a quote for Dupont SA" fails to reach the right process, your assistant stays silent or answers beside the point: it all comes down to how your files are worded. This guide is for assistant builders. It explains how the router reads your files, how to write with it in mind, and how to make sure your requests arrive where they should. No technical skill is required, apart from one terminal command for testing.

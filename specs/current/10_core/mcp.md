@@ -7,6 +7,16 @@
 ## Role
 An **adapter**, not an orchestrator (vision plane "MCP = exposure"). It exposes broker primitives to any MCP-capable platform (ChatGPT, Claude Desktop, Cursor…) plus one compatibility bootstrap. Business thinking stays in the LLM.
 
+**The routing discipline reaches the pure-MCP client** from the ONE canonical source (core
+`bootstrap.mjs`): `createServer` (async — it preloads the guidance from the dynamically-loaded core)
+passes `renderMcpInstructions()` as the server `instructions`, and the `route_request` **description**
+— the primary bearer, re-received by every client on every list/call, whatever it does with the
+optional `instructions` field — carries the route discipline (open `agent.path` then `process.path`;
+on abstention ask `next_question`, never guess; load `fallback` when present; route at task
+boundaries) and the continuity rule (can no longer cite the active process path → re-open the files
+before acting). The constants are pinned VERBATIM by tests on both sides (core + MCP), so the English
+guidance and the French body cannot drift apart silently.
+
 ## Tools (baseline - verified)
 
 | Tool | Purpose | Delegates to |
@@ -15,6 +25,7 @@ An **adapter**, not an orchestrator (vision plane "MCP = exposure"). It exposes 
 | `discover_resources` | Explainable metadata search; content stays behind `open_resource`/`access_resource` | broker `searchResources` |
 | `route_request` | Route a request to agent → process, or abstain | broker `routeRequest` |
 | `open_resource` | Open by id/path, confined, projected | broker `openResource` |
+| `get_context_pack` | Plan a process's preload: declared references as paths + notes, never bodies; read-only | broker `brokerContextPack` |
 | `access_resource` | Read a confined file/resource | broker `accessResource` |
 | `invoke_tool` | Dry-run (default) or confirmed execution | broker `invokeTool` |
 | `propose_change` | Stage a write; return a diff, write nothing | broker `proposeChange` |
@@ -23,7 +34,7 @@ An **adapter**, not an orchestrator (vision plane "MCP = exposure"). It exposes 
 | `list_markers` | List typed open markers | broker `listMarkers` |
 | `report_friction` | Field feedback: append a dated, creation-only friction entry under `.ai/feedback/` (write-gated: absent on read-only servers) | broker `reportFriction` |
 
-**FR-MCP-002 - lazy by design.** `load_agent` never bulk-loads skills/templates/data; it returns a catalogue and the platform fetches only what it needs via the other tools. The legacy `include_data` flag is a no-op kept for compatibility.
+**FR-MCP-002 - lazy by design.** `load_agent` never bulk-loads skills/templates/data; it returns a catalogue and the platform fetches only what it needs via the other tools. The legacy `include_data` flag is a no-op kept for compatibility, **formally deprecated** (CHANGELOG); it is removed in the next minor version, where old callers degrade silently (an unknown field is tolerated).
 
 **Agent discovery.** Scans the configured root and nested BASE project roots. A loadable project root is any non-skipped directory containing `.ai/agents/*/AGENT.md`; each discovered agent keeps that directory as its `projectRoot`, so resources are not merged across projects. Agent directories starting with `_` are skipped.
 
@@ -81,4 +92,4 @@ embedding-backed route can pass one without a core change.
 - `tsc --noEmit` is clean; the lazy `bundleAgentBootstrap` is the only agent loader (no bulk `bundle*`).
 - The published package embeds a copy of the broker (`scripts/bundle-core.mjs`); the copy is **stamped** (`dist/core-version.json`: root package version + commit) and the unauthenticated health route reports the stamp, so a drifted server/core pairing is visible from one curl, never invisible. `SERVER_VERSION` is read from the package's own `package.json`, not hardcoded.
 - AuthProvider: `isLoopbackHost`, `remoteExposureError` (refusal lifted when auth configured), `bearerTokenAuth` (rejects/accepts), `resolveAuthProvider` (config fn/descriptor > env bearer > NoAuth), `authMiddleware` (401/next) - all tested.
-- The ten tools (incl. the registered `route_request` handler) keep their behaviour and remain backward-compatible (NFR-CORE-002), with scope added to structured responses. Every root-scoped follow-up tool (`discover_resources`, `open_resource`, `access_resource`, `invoke_tool`, `propose_change`, `commit_change`, `promote_resource`, `list_markers`) accepts one **optional, additive** `root_id` parameter in workspace mode. Read/write/execute/promote/list operations stay confined to the selected root; an undeclared `root_id` is rejected, and omitting `root_id` is rejected when several roots are visible.
+- The tools (incl. the registered `route_request` handler) keep their behaviour and remain backward-compatible (NFR-CORE-002), with scope added to structured responses. Every root-scoped follow-up tool (`discover_resources`, `get_context_pack`, `open_resource`, `access_resource`, `invoke_tool`, `propose_change`, `commit_change`, `promote_resource`, `list_markers`) accepts one **optional, additive** `root_id` parameter in workspace mode. Read/write/execute/promote/list operations stay confined to the selected root; an undeclared `root_id` is rejected, and omitting `root_id` is rejected when several roots are visible.

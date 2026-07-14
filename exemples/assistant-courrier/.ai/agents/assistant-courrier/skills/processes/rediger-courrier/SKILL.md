@@ -17,6 +17,7 @@ routing:
   avoid_when:
     - Répondre à un message déjà reçu.
     - Paramétrage initial de l'entreprise.
+    - Configurer ou démarrer l'assistant.
 name: rediger-courrier
 keywords: [rediger, ecrire, courrier, lettre, email, relance, confirmation, remerciement, demande]
 argument-hint: "[destinataire et objet du courrier]"

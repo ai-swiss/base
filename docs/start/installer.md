@@ -1,3 +1,15 @@
+---
+schema_version: base.resource.v1
+id: installer
+type: document
+title: Installer un espace de travail IA
+description: Choisir et installer un espace de travail local où l'IA lit vos fichiers: la page d'orientation vers le guide adapté (Cursor, Claude Code, autre outil, ou serveur MCP).
+scope: public
+status: active
+sensitivity: public
+keywords: [installer, installation, espace, travail, outil, poste, local]
+---
+
 # Installer un espace de travail IA
 
 Installer un espace de travail local, c'est garder vos agents et votre contexte dans votre dossier, sous votre contrôle, plutôt que dans une plateforme web. Il vous faut pour cela choisir un outil et y consacrer quelques minutes. Cette page vous oriente vers le guide adapté à votre situation; chacun est court et se suffit à lui-même. BASE fonctionne avec la plupart des outils IA capables de lire vos fichiers Markdown.

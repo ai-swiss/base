@@ -16,6 +16,7 @@ routing:
     - faire une offre pour un prospect
   avoid_when:
     - Paramétrage initial de l'entreprise ou du catalogue.
+    - Configurer ou démarrer l'assistant.
     - Correction d'un document existant.
     - Modifier devis existant.
     - Client conteste facture envoyée.

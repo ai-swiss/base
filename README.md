@@ -6,7 +6,7 @@
 
 <sub>BASE = **Bâtir des Assistants avec une Structure d'Expertise** · *Build Assistants with Structured Expertise*</sub>
 
-[![Version](https://img.shields.io/badge/version-1.2.0-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.3.0-blue.svg)](CHANGELOG.md)
 [![CI](https://github.com/ai-swiss/base/actions/workflows/ci.yml/badge.svg)](https://github.com/ai-swiss/base/actions/workflows/ci.yml)
 [![Licence: Apache-2.0 + CC BY 4.0](https://img.shields.io/badge/licence-Apache--2.0%20%2B%20CC%20BY%204.0-blue.svg)](LICENSING.md)
 
@@ -32,7 +32,7 @@
 
 BASE est un **cadre**: une manière d'articuler votre savoir et votre savoir-faire avec l'IA, dans des fichiers texte que vous possédez. Pas un produit, pas une plateforme: un [standard ouvert que nous proposons](docs/reference/le-standard.md), avec son implémentation de référence. Ce que le standard fixe n'est pas la connaissance qu'une IA consulte, mais l'articulation du travail: quel assistant, quel process, quelles données, quelle vérification. Que vous soyez un particulier qui organise ses pensées ou une entreprise qui structure ses process, c'est de vos **interactions avec l'IA au quotidien** qu'il s'agit, pas seulement de votre travail. Un patron de PME ou un enseignant connaît son métier sur le bout des doigts; ce qui lui manque, c'est un moyen simple de donner à ce savoir une forme que l'IA peut exploiter. C'est ce moyen que BASE apporte.
 
-**L'enjeu.** La souveraineté qui compte le plus n'est pas matérielle (où tournent les modèles, les puces, les serveurs) mais **cognitive**: qui structure vos interactions avec l'IA, qui y injecte de l'information à votre place, qui vous incite à déléguer plutôt qu'à vérifier. Cette **souveraineté cognitive** a une conséquence vérifiable: avec BASE, vous pouvez **ouvrir et lire vous-même** les fichiers qui portent votre savoir-faire. Vous reprenez la main, et ce que vous bâtissez devient **essentiellement indépendant du modèle** qui l'exécute. BASE n'est pas strictement indépendant du modèle: un modèle reste meilleur ici que là, plus ou moins élégant à rédiger, plus ou moins fidèle à suivre des consignes sur de longs contextes. Mais au niveau des **marches à suivre**, les modèles avancés d'aujourd'hui suivent de façon comparable des instructions bien exprimées; vos procédures tiennent à travers eux, et une structure forte en amont abaisse la capacité nécessaire pour qu'un modèle les suive de façon fiable. **Les outils passent, le contexte reste.**
+**L'enjeu.** La souveraineté qui compte le plus n'est pas matérielle (où tournent les modèles, les puces, les serveurs) mais **cognitive**: qui structure vos interactions avec l'IA, qui y injecte de l'information à votre place, qui vous incite à déléguer plutôt qu'à vérifier. Cette **souveraineté cognitive** a une conséquence vérifiable: avec BASE, vous pouvez **ouvrir et lire vous-même** les fichiers qui portent votre savoir-faire. Vous reprenez la main, et ce que vous bâtissez devient **essentiellement indépendant du modèle** qui l'exécute. BASE n'est pas strictement indépendant du modèle: un modèle reste meilleur ici que là, plus ou moins élégant à rédiger, plus ou moins fidèle à suivre des consignes sur de longs contextes. Mais au niveau des **marches à suivre**, les modèles avancés d'aujourd'hui suivent de façon comparable des instructions bien exprimées; vos procédures tiennent à travers eux, et une structure forte en amont abaisse, selon la tâche, la capacité nécessaire pour qu'un modèle les suive de façon fiable. **Les outils passent, le contexte reste.**
 
 **Le concret.** Vous externalisez votre savoir et votre savoir-faire dans une **base que vous possédez**, organisée en deux volets:
 
@@ -130,7 +130,7 @@ D'abord, récupérez le dossier d'exemple `exemples/assistant-devis-demo/`, par 
 
 **(b) Avec un simple chat web (pour tester).** Glissez les fichiers de `catalogue/` et `clients/` dans le chat (ou attachez `regles-tarification.md` et `dupont-sa.md`), puis posez la même question. Vous verrez vite les limites: il faut **téléverser** les fichiers, sans synchronisation continue avec vos fichiers locaux, et vous versez des fichiers entiers sur une plateforme. C'est bien pour comprendre; mais la condition de base pour être vraiment maître de vos interactions, c'est de pouvoir, au minimum, lire et éditer des fichiers texte que vous possédez. → [Essayer sans installer](docs/start/essayer-sans-installer.md)
 
-> **Honnêteté sur la démo.** Ce dossier d'exemple route **directement vers un agent unique** (son `CLAUDE.md` pointe l'agent du devis): il ne livre pas d'index de routage. Pour voir le **routage progressif** lui-même, lancez `base route "<demande>" --root exemples/assistant-devis-demo` (qui régénère l'index `.ai/routing/index.md` et montre la route). La démo ne prétend donc pas embarquer un index qu'elle ne contient pas.
+> **Honnêteté sur la démo.** Ce dossier d'exemple route **directement vers un agent unique** (son `CLAUDE.md` pointe l'agent du devis): il ne livre pas d'index de routage. Pour voir le **routage progressif** lui-même, lancez `base route "<demande>" --root exemples/assistant-devis-demo` (le plancher déterministe, sans index; pour générer la carte: `base build routing-index --write --root exemples/assistant-devis-demo`). La démo ne prétend donc pas embarquer un index qu'elle ne contient pas.
 
 **Ce que vous devriez observer.** Un assistant qui suit la consigne répond **typiquement non** (la remise fidélité demande deux mandats, et `dupont-sa.md` indique «Client (1er mandat)»), cite `dupont-sa.md` et `regles-tarification.md`, pose un `[A VALIDER]`, et ne change rien à votre place.
 
@@ -168,7 +168,7 @@ BASE y répond par trois ancrages: (a) vous articulez vos interactions, avec vos
 
 Les modèles s'améliorent, bien moins vite que n'explose la quantité d'outils qui en tirent parti dans la société, mais ils s'améliorent. Et à mesure qu'ils progressent, ce qu'on attend d'eux, c'est qu'ils suivent **de plus en plus finement** les instructions qu'on leur donne, et qu'ils soient de plus en plus efficaces dans la collaboration avec nous: se comporter comme s'ils partageaient suffisamment notre représentation du monde pour que nous parlions de la même chose; susciter dans l'échange les points intermédiaires et les itérations nécessaires pour clarifier et s'aligner. Autrement dit, on attend des modèles qu'ils deviennent des **experts de l'interaction humain-IA**, posée sur les fondamentaux de toute interaction entre entités différentes, humaines ou non, selon la balance risque-bénéfice qu'on souhaite (s'il n'y avait aucun risque, on pourrait tout déléguer, mais ce n'est pas le but ici).
 
-C'est pourquoi la valeur se déplace. Dans la plupart des discours actuels, elle tient au modèle ou au produit du moment; avec BASE, elle tient à l'**articulation de votre savoir-faire**, dans une base que vous possédez. Deux actifs se capitalisent: votre **contexte** et vos **outils**. Le risque, c'est de tout lier dans une boîte que vous ne possédez pas; BASE garde la couche de contexte (et le routage, et l'index) à vous et **séparable du modèle**, de sorte que changer de fournisseur devient un simple réglage, non une migration (selon la tâche, le recalage peut demander un peu de travail, mais on ne réécrit jamais la base). Les outils passent, le contexte reste.
+C'est pourquoi la valeur se déplace. Dans la plupart des discours actuels, elle tient au modèle ou au produit du moment; avec BASE, elle tient à l'**articulation de votre savoir-faire**, dans une base que vous possédez. Deux actifs se capitalisent: votre **contexte** et vos **outils**. Le risque, c'est de tout lier dans une boîte que vous ne possédez pas; BASE garde la couche de contexte (et le routage, et l'index) à vous et **séparable du modèle**, de sorte que changer de fournisseur devient un simple réglage, non une migration (selon la tâche, le recalage peut demander un peu de travail, mais on ne réécrit jamais la base). Un modèle n'apprend pas de vos corrections d'un appel à l'autre; ce qui capitalise, c'est le texte que vous gardez et améliorez, et corriger la méthode en amont, une fois, vaut mieux que recorriger le même problème en aval à chaque fois. Les outils passent, le contexte reste.
 
 ### Pourquoi c'est durable, et non un palliatif
 
@@ -188,7 +188,7 @@ Cette méthode s'adosse à des principes éprouvés: un canal n'achemine de faç
 
 ### La vérification, une brique non optionnelle
 
-Le cœur génératif génère, mais ne **vérifie jamais**; et comme générer ne coûte presque plus rien, c'est la vérification qui porte la valeur. Une large part des usages échoue faute d'une véritable ingénierie de la vérification. Traitez chaque réponse comme une **hypothèse**: la vérification vous incombe. Pour l'essentiel du travail quotidien, le seul vérificateur, c'est vous, sauf sur des terrains formels où une vérification externe automatique est possible, comme le code ou les maths (un compilateur, une preuve). La fiabilité d'une sortie est une propriété du flux de travail qui l'a produite, pas du modèle seul. La bonne nouvelle n'est pas seulement qu'une structure forte en amont allège la vérification en aval: c'est aussi que **la structure peut inclure la vérification elle-même**, sous forme d'itération, de relecture, de réancrage dans des données fiables. BASE outille cette ingénierie avec des éléments que vous possédez (marqueurs, gate d'écriture, évaluation), assez pour rendre la sortie fiable à livrer, sans pour autant garantir qu'une réponse soit vraie.
+Le cœur génératif génère, mais ne **vérifie jamais**; et comme générer ne coûte presque plus rien, c'est la vérification qui porte la valeur. Lui demander de se vérifier lui-même, sans matériau de référence, c'est demander une autre génération, pas une vérification. Une large part des usages échoue faute d'une véritable ingénierie de la vérification. Traitez chaque réponse comme une **hypothèse**: la vérification vous incombe. Pour l'essentiel du travail quotidien, le seul vérificateur, c'est vous, sauf sur des terrains formels où une vérification externe automatique est possible, comme le code ou les maths (un compilateur, une preuve). La fiabilité d'une sortie est une propriété du flux de travail qui l'a produite, pas du modèle seul. La bonne nouvelle n'est pas seulement qu'une structure forte en amont allège la vérification en aval: c'est aussi que **la structure peut inclure la vérification elle-même**, sous forme d'itération, de relecture, de réancrage dans des données fiables. BASE outille cette ingénierie avec des éléments que vous possédez (marqueurs, gate d'écriture, évaluation), assez pour rendre la sortie fiable à livrer, sans pour autant garantir qu'une réponse soit vraie.
 
 > **Ce que vous possédez vraiment.** Des fichiers Markdown, sans format propriétaire ni dépendance captive: versionnables, lisibles par les humains comme par l'IA, librement réutilisables. Ce que vous ne possédez pas: le modèle, sa juridiction, et ce qui sort une fois la conversation engagée.
 
@@ -229,7 +229,7 @@ La vraie alternative n'est pas «un produit plutôt qu'un autre»: c'est *consom
 
 Quiconque interagit avec l'IA, du particulier curieux à l'entreprise. Les mêmes abstractions servent partout: clé en main pour démarrer, extensibles pour grandir.
 
-Concrètement, c'est le même fichier qui monte l'échelle. L'`AGENT.md` qui organise vos notes personnelles peut devenir, sans changer de format, celui qu'une équipe partage puis qu'une organisation gouverne: on ajoute au fil du besoin quelques lignes d'en-tête (une sensibilité qui active le contrôle d'egress, des signaux de routage, une évaluation qui suit la qualité), et rien n'est à migrer.
+Concrètement, c'est le même fichier qui monte l'échelle. L'`AGENT.md` qui organise vos notes personnelles peut devenir, sans changer de format, celui qu'une équipe partage puis qu'une organisation gouverne: on ajoute au fil du besoin quelques lignes d'en-tête (une sensibilité qui active le contrôle d'egress, des signaux de routage, une évaluation qui suit la qualité), et rien n'est à migrer. La souveraineté ne rétrécit pas quand l'organisation grandit: on ajoute des étages de gouvernance autour de la même base possédée, sans changer de format ni de propriétaire.
 
 | Profil | Ce que BASE apporte | Ce qui reste à votre charge |
 | --- | --- | --- |
@@ -295,7 +295,7 @@ git clone https://github.com/ai-swiss/base.git && cd base && npm ci && npm run c
 <details>
 <summary><strong>Souveraineté linguistique, et les trois plans</strong></summary>
 
-**Langue.** Les assistants fonctionnent dans n'importe quelle langue: le routage progressif, mené par le modèle, descend votre index quelle que soit la langue de la demande, sans grammaire par langue. La souveraineté est aussi linguistique. (Pour qui écrit les signaux de routage: [Écrire pour le routeur](docs/guides/ecrire-pour-le-routeur.md) dit comment servir plusieurs langues.)
+**Langue.** Les assistants fonctionnent dans n'importe quelle langue: le routage progressif, mené par le modèle, descend votre index quelle que soit la langue de la demande, sans grammaire par langue, et vous pouvez même changer de langue en cours de conversation. La souveraineté est aussi linguistique. (Pour qui écrit les signaux de routage: [Écrire pour le routeur](docs/guides/ecrire-pour-le-routeur.md) dit comment servir plusieurs langues.)
 
 **Trois plans** pour qu'un état actuel ne soit jamais confondu avec un plan: vérité = specs + code; changement = decisions + CHANGELOG; brouillon = `.plans` + `.reviews`. Détail dans [ARCHITECTURE.md](ARCHITECTURE.md).
 </details>
@@ -316,6 +316,8 @@ Quoi lire, dans quel ordre, selon votre profil: [Lire dans quel ordre](docs/star
 
 <details>
 <summary><strong>L'alternative en ligne de commande</strong> (optionnelle, pour les personnes à l'aise techniquement)</summary>
+
+Ici `base` désigne le lanceur `node .ai/base.mjs`, à la racine du dépôt (et créé par `base init` dans vos propres dossiers): voir [l'étape 0 du tutoriel](docs/tutoriel/harnais.md).
 
 ```bash
 base studio --root <dossier>      # l'atelier graphique, loopback http://127.0.0.1:5174

@@ -8,9 +8,10 @@ status: active
 sensitivity: internal
 name: par-ou-commencer
 description: "Orienter selon qui est l'utilisateur (particulier, PME, développeur, institution, curieux) vers une porte d'entrée concrète et déjà prête, en partant de ce qui compte pour lui."
-use_when: Quand l'utilisateur dit qui il est (particulier, PME, indépendant, développeur, institution publique, curieux) et veut savoir par où commencer.
+use_when: Quand l'utilisateur veut savoir par où commencer avec BASE, en disant ou non qui il est (particulier, PME, indépendant, développeur, institution publique, curieux); sans profil connu, la première étape le demande.
 routing:
   examples:
+    - Par quoi je commence dans BASE ?
     - Je suis une PME, par où commencer avec BASE ?
     - Je suis développeur, comment commencer avec BASE ?
     - Je suis un particulier, par où commencer avec BASE ?
@@ -26,7 +27,7 @@ allowed-tools: Read
 
 # Par où commencer selon votre profil
 
-Orienter une personne vers sa **porte d'entrée concrète**, selon qui elle est. Le principe: ne jamais réexpliquer ce que fait un exemple (il le montre de lui-même), mais y conduire, en partant de ce que cette personne craint ou cherche. Tu pointes vers une porte déjà prête; tu ne récris pas ce qui se trouve derrière.
+Orienter une personne vers sa **porte d'entrée concrète**, selon qui elle est. Le principe: ne jamais réexpliquer ce que fait un exemple (il le montre de lui-même), mais y conduire, en partant de ce que cette personne craint ou cherche. Tu pointes vers une porte déjà prête; tu ne récris pas ce qui se trouve derrière. La source de vérité des parcours de lecture est `docs/start/lire-dans-quel-ordre.md`: cite-la plutôt que de reconstruire un parcours de mémoire.
 
 Chaque porte ouvre sur quelque chose de **réel et déjà là**: un exemple à ouvrir, un kit, une démo. Une idée commune à tous les profils: structurer le travail ménage les moments où **vous** validez ce que produit l'IA, au lieu de signer sans regarder.
 

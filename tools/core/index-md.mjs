@@ -1,7 +1,8 @@
 // tools/core/index-md.mjs — render the routing index tree from the deterministic registry. Pure,
 // zero-dependency, no I/O: returns { <relPath>: <markdown> } for the caller to write atomically. The
-// AGENT reads this tree to route by progressive disclosure (root → agent → process); the deterministic
-// floor and the optional embeddings read registry.json. The index INVENTS NOTHING — it materialises on
+// AGENT is the only reader of this tree (progressive disclosure: root → agent → process); the
+// deterministic floor re-derives its candidates from the inventory on every request, and the optional
+// embeddings read their own cache (embeddings.json). The index INVENTS NOTHING — it materialises on
 // disk what `buildRoutingRegistry` already derives in memory (route_text, avoid_text). Deterministic
 // (sorted upstream, no timestamp), so `base build routing-index` is idempotent and CI can gate freshness.
 // A process its agent DENIES is omitted, so the agent reading this map cannot even see what the veto

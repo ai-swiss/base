@@ -107,7 +107,7 @@ describe("starter-perso and veytaux-tourisme follow the minimal harness conventi
       assert.match(claude, /@\.ai\/agents\/[\w-]+\/AGENT\.md/, `${ex}/CLAUDE.md should @import its agent`);
       assert.ok(!claude.includes("Quand router"), `${ex}/CLAUDE.md should be minimal, not the full router body`);
       // The full generated artifacts are NOT committed to examples (only the framework root carries them).
-      for (const full of ["AGENTS.md", "BASE_BOOTSTRAP.md", ".ai/tools.md"]) {
+      for (const full of ["BASE_BOOTSTRAP.md", ".ai/tools.md"]) {
         const there = await fs.access(path.join(root, full)).then(() => true, () => false);
         assert.equal(there, false, `${ex}/${full} should not be committed (examples stay minimal)`);
       }
@@ -193,7 +193,7 @@ describe("exemples: thin harness matches the README promise (shape A/B by agent 
       assert.match(claude, /@\.ai\/agents\/[\w-]+\/AGENT\.md/, `${rel(root)}/CLAUDE.md must @import its agent (shape A)`);
       assert.ok(!claude.includes("Quand router"), `${rel(root)}/CLAUDE.md must be a pointer, not the full router body`);
       assert.ok(await exists(path.join(root, ".cursor", "rules", "assistant.mdc")), `${rel(root)} must ship a .cursor rule`);
-      for (const full of ["AGENTS.md", "BASE_BOOTSTRAP.md", ".ai/tools.md"]) {
+      for (const full of ["BASE_BOOTSTRAP.md", ".ai/tools.md"]) {
         assert.equal(await exists(path.join(root, full)), false, `${rel(root)}/${full} must not be committed (examples stay minimal)`);
       }
     }
@@ -210,7 +210,7 @@ describe("exemples: thin harness matches the README promise (shape A/B by agent 
       assert.equal(cursor, renderCursorRule(), `${rel(root)} .cursor rule must equal the generated router (renderCursorRule)`);
       const launcher = await fs.readFile(path.join(root, ".ai", "base.mjs"), "utf8");
       assert.equal(launcher, LAUNCHER_SOURCE, `${rel(root)} launcher drifted from LAUNCHER_SOURCE`);
-      for (const full of ["AGENTS.md", "BASE_BOOTSTRAP.md", ".ai/tools.md"]) {
+      for (const full of ["BASE_BOOTSTRAP.md", ".ai/tools.md"]) {
         assert.equal(await exists(path.join(root, full)), false, `${rel(root)}/${full} must not be committed`);
       }
     }
@@ -227,5 +227,87 @@ describe("exemples: thin harness matches the README promise (shape A/B by agent 
       assert.ok(!/@\.ai\/agents\//.test(claude), `${rel(root)}/CLAUDE.md (workspace) has no local agents to @import`);
       assert.match(claude, /workspace/i, `${rel(root)}/CLAUDE.md should identify itself as a workspace steer`);
     }
+  });
+});
+
+describe("journal competence — the continuity sentences hold across every delivered copy", () => {
+  // The standard competences are delivered BY COPY (each root is self-contained by contract). The two
+  // continuity rules — re-read the active files when the process path can no longer be cited, and the
+  // reduced Progression entry written AT interruption (the one exception to journal-at-the-end) — must
+  // therefore hold in EVERY copy, or the workshop copy a company starts from ships without them. The
+  // set is enumerated, and floored: deleting a copy cannot silently shrink the walk.
+  it("every journal/SKILL.md copy carries the re-read trigger and the interruption anchor", async () => {
+    const roots = [path.join(repoRoot, ".ai", "agents")];
+    for (const example of (await fs.readdir(exemplesDir, { withFileTypes: true })).filter((e) => e.isDirectory())) {
+      roots.push(path.join(exemplesDir, example.name, ".ai", "agents"));
+    }
+    const copies = [];
+    for (const agentsDir of roots) {
+      let agents;
+      try {
+        agents = await fs.readdir(agentsDir, { withFileTypes: true });
+      } catch {
+        continue;
+      }
+      for (const agent of agents.filter((e) => e.isDirectory())) {
+        const file = path.join(agentsDir, agent.name, "skills", "competences", "journal", "SKILL.md");
+        try {
+          copies.push({ file, content: await fs.readFile(file, "utf8") });
+        } catch {
+          // an agent without the journal competence is legal; the floor below guards the known set
+        }
+      }
+    }
+    assert.ok(copies.length >= 11, `expected ≥ 11 journal copies, found ${copies.length}`);
+    for (const { file, content } of copies) {
+      const rel = path.relative(repoRoot, file);
+      assert.ok(content.includes("en cours de session"), `${rel}: the intra-session re-read trigger is missing`);
+      assert.ok(content.includes("rouvre l'`AGENT.md` et le `SKILL.md` actifs"), `${rel}: the re-read gesture is missing`);
+      assert.ok(content.includes("l'unique cas où le journal s'écrit hors de la dernière étape"), `${rel}: the interruption anchor is missing`);
+    }
+  });
+});
+
+describe("AGENTS.md family — every example root carries its pinned entry, coherent with the Cursor rule", () => {
+  // DELIBERATE REVERSAL of the former "examples stay minimal" rule for this ONE file: the AGENTS.md
+  // family (Codex, Copilot, Jules…) reads AGENTS.md and nothing else — without it, half the market's
+  // harnesses opened an example and found no entry point at all, while the README claims neutrality.
+  // The committed AGENTS.md is a two-line HAND-PINNED pointer (never the generated router body, never
+  // the Claude-specific @import); this test is the committed gate that keeps the three entries
+  // coherent per root, so the pointer copies cannot drift apart (the launcher hand-list already
+  // demonstrated that failure mode).
+  it("each root with CLAUDE.md ships AGENTS.md, and shape-A pointers name the same AGENT.md as the Cursor rule", async () => {
+    const roots = [];
+    for (const entry of (await fs.readdir(exemplesDir, { withFileTypes: true })).filter((e) => e.isDirectory())) {
+      roots.push(path.join(exemplesDir, entry.name));
+      const clients = path.join(exemplesDir, entry.name, "clients");
+      try {
+        for (const client of (await fs.readdir(clients, { withFileTypes: true })).filter((e) => e.isDirectory())) {
+          roots.push(path.join(clients, client.name));
+        }
+      } catch {
+        // no clients/
+      }
+    }
+    let checked = 0;
+    for (const root of roots) {
+      if (!(await exists(path.join(root, "CLAUDE.md")))) continue;
+      checked++;
+      const agentsPath = path.join(root, "AGENTS.md");
+      assert.ok(await exists(agentsPath), `${rel(root)}/AGENTS.md is missing — the AGENTS.md family gets no entry`);
+      const agents = await fs.readFile(agentsPath, "utf8");
+      assert.ok(!agents.includes("Quand router"), `${rel(root)}/AGENTS.md must be a pinned pointer, not the router body`);
+      assert.ok(!/@\.ai\/agents\//.test(agents), `${rel(root)}/AGENTS.md must not use the Claude-specific @import`);
+      // Shape-A coherence: the pointer names the SAME AGENT.md as the folder's Cursor rule.
+      const cursorPath = path.join(root, ".cursor", "rules", "assistant.mdc");
+      if (await exists(cursorPath)) {
+        const cursor = await fs.readFile(cursorPath, "utf8");
+        const m = cursor.match(/Lis `(\.ai\/agents\/[\w-]+\/AGENT\.md)`/);
+        if (m) {
+          assert.ok(agents.includes(m[1]), `${rel(root)}/AGENTS.md must name ${m[1]} (the Cursor rule does)`);
+        }
+      }
+    }
+    assert.ok(checked >= 15, `expected ≥ 15 roots with entries, checked ${checked}`);
   });
 });

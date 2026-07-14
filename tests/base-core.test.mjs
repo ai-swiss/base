@@ -1,5 +1,5 @@
 // Spec coverage: FR-CORE-001 FR-CORE-002 FR-CORE-003 FR-CORE-004 FR-CORE-005 FR-CORE-006 FR-CORE-007 RC-CONFINE-001 RC-WRITE-001 RC-WRITE-002 RC-EXEC-001 RC-TRACE-001
-// Spec coverage: FR-CORE-008 FR-CORE-009 FR-CORE-010 FR-MARKERS-001 FR-TRACE-001 FR-TRACE-002
+// Spec coverage: FR-CORE-008 FR-CORE-009 FR-CORE-010 FR-CORE-011 FR-MARKERS-001 FR-TRACE-001 FR-TRACE-002
 // Spec coverage: FR-EGRESS-001 FR-EGRESS-003
 // Spec coverage: FR-VALID-001 FR-VALID-002 FR-VALID-003 FR-VALID-004 FR-VALID-005
 // Spec coverage: FR-CHANGE-001 FR-CHANGE-002 FR-CHANGE-003 FR-PROMOTE-001
@@ -12,6 +12,7 @@ import * as path from "node:path";
 import { afterEach, beforeEach, describe, it } from "node:test";
 import {
   accessResource,
+  contextPack,
   buildArtifacts,
   checkManifestFresh,
   ROUTER_BODY,
@@ -430,6 +431,28 @@ describe("searchResources", () => {
     assert.equal("content" in results[0], false);
     assert.equal("body" in results[0], false);
   });
+
+  it("scores a natural French question on its content words, never on function words (routeTerms)", async () => {
+    // Two documents: the right one shares CONTENT words with the question; the decoy is stuffed with
+    // the function words («est», «les», «entre») that used to dominate discover's un-filtered terms.
+    await write(
+      "stabilite.md",
+      "---\nid: doc-stabilite\ntype: document\ndescription: La surface stable entre versions.\nkeywords: [stable, versions]\n---\n# Stabilité\n",
+    );
+    await write(
+      "decoy.md",
+      "---\nid: doc-decoy\ntype: document\ndescription: est les entre est les entre est les.\nkeywords: [est, les, entre]\n---\n# Leurre\n",
+    );
+
+    const results = await searchResources(tmpDir, "quelle surface est stable entre les versions ?");
+    assert.equal(results[0].id, "doc-stabilite", "the content-word match ranks first");
+    const decoy = results.find((r) => r.id === "doc-decoy");
+    assert.equal(decoy, undefined, "a resource matching ONLY function words scores zero");
+    const reasons = results.flatMap((r) => r.reasons);
+    for (const noise of ["text:est", "text:les", "text:entre"]) {
+      assert.ok(!reasons.includes(noise), `${noise} must not score: ${reasons.join(", ")}`);
+    }
+  });
 });
 
 describe("writeManifest", () => {
@@ -590,6 +613,49 @@ describe("openResource and invokeTool", () => {
 
     assert.match(metadata.content, /"id": "note-test"/);
     assert.equal(instructions.content.trim(), "# Note");
+  });
+
+  it("contextPack plans paths and notes, never bodies; locally a confidential target stays plannable", async () => {
+    await write("conditions.md", "---\nid: conditions\ntype: document\ndescription: Conditions.\n---\nSECRET-BODY-TOKEN des conditions.\n");
+    await write(
+      ".ai/agents/sales/skills/processes/devis/SKILL.md",
+      "---\nid: nouveau-devis\ntype: process\nconfidential: true\ndescription: Devis.\nuse_when: Créer un devis.\n---\n# Devis\nLire [les conditions](conditions.md).\n",
+    );
+
+    // The local human CLI passes no egress: even a confidential process plans (reads unchanged).
+    const summary = await contextPack(tmpDir, "nouveau-devis");
+    assert.ok(summary.sections.some((s) => s.path === "conditions.md"), "the declared reference resolves");
+    assert.ok(!JSON.stringify(summary).includes("SECRET-BODY-TOKEN"), "paths and notes, never bodies");
+    for (const key of ["sections", "omitted", "unresolved", "withheld"]) assert.ok(key in summary, key);
+
+    // Under a remote egress context, the confidential process is not even revealed (MCP posture).
+    await assert.rejects(
+      () => contextPack(tmpDir, "nouveau-devis", { egress: { modelLocality: "remote" } }),
+      /Resource not found/,
+    );
+  });
+
+  it("metadata is metadata-only, and costs less than full on a large body (the cheapest-clue ladder)", async () => {
+    // A deliberately large body: the metadata projection must summarize it away, never carry it.
+    const bigBody = "# Grand corps\n\n" + "Une ligne de contenu métier qui ne doit jamais voyager en métadonnées.\n".repeat(200);
+    await write("gros.md", `---\nid: gros-doc\ntype: document\ndescription: Un document volumineux.\n---\n${bigBody}`);
+
+    const metadata = await openResource(tmpDir, "gros-doc", { projection: "metadata" });
+    const full = await openResource(tmpDir, "gros-doc", { projection: "full" });
+
+    // The load-bearing assertions: no content/body key in the metadata JSON, nor on the resource
+    // sibling of ANY projection (the sibling is identification, not a second content channel).
+    const parsed = JSON.parse(metadata.content);
+    assert.ok(!("content" in parsed) && !("body" in parsed), "metadata JSON carries no content/body");
+    assert.ok(!metadata.content.includes("contenu métier"), "no body text leaks into metadata");
+    for (const result of [metadata, full]) {
+      assert.ok(!result.resource.content && !result.resource.body, "resource sibling carries no content/body");
+    }
+    // And the ladder points the right way on a body-heavy resource: metadata < full.
+    assert.ok(
+      metadata.content.length < full.content.length,
+      `metadata (${metadata.content.length}B) must cost less than full (${full.content.length}B)`,
+    );
   });
 
   it("dry-runs tools through the core router", async () => {
@@ -790,9 +856,45 @@ describe("buildArtifacts", () => {
     const claude = artifacts.find((a) => a.path === "CLAUDE.md");
     assert.doesNotMatch(claude.content, /@\.ai\/agents\//);
   });
+
+  it("pins the survival rules on the re-injected surface — PRESENCE is the mechanism, obedience stays measured", async () => {
+    // Only the entry surface survives a long conversation. These sentences are the recovery ladder:
+    // if one drops out of ROUTER_BODY, every projection loses it at the next regeneration — this
+    // test makes that a red build, not a silent regression.
+    const { ROUTER_BODY: body } = await import("../tools/base-core.mjs");
+    assert.ok(body.includes("rouvre son `SKILL.md` et l'`AGENT.md` sur disque avant d'agir"), "the re-read trigger (continuity)");
+    assert.ok(body.includes("ne lis jamais tous les corps"), "the stop condition (metadata to decide)");
+    assert.ok(body.includes("n'ouvre pas les corps des process concurrents"), "the ambiguity rule");
+    assert.ok(body.includes("précharge ce que le process déclare"), "the retrieval planner gesture");
+
+    // The MCP twin: the instructions compose the exported constants VERBATIM (one source, no re-phrasing).
+    const { renderMcpInstructions, MCP_ROUTE_DISCIPLINE, MCP_READ_DISCIPLINE, MCP_CONTINUITY } = await import("../tools/base-core.mjs");
+    const instructions = renderMcpInstructions();
+    for (const constant of [MCP_ROUTE_DISCIPLINE, MCP_READ_DISCIPLINE, MCP_CONTINUITY]) {
+      assert.ok(instructions.includes(constant), "instructions compose the constants verbatim");
+    }
+  });
 });
 
 describe("policy and trace", () => {
+  it("never writes business content to the trace: bodies and purposes stay out, args are hashed (NFR-CORE-008)", async () => {
+    // Three public pages claim this as a MECHANISM; a guarantee without a test that can fail is an
+    // intention. Sentinels ride a document body and a read purpose through open + propose; ids and
+    // paths ARE recorded by documented design (protection-des-donnees), so the sentinels avoid them.
+    const bodySentinel = "IBAN-CH93-SENTINEL-CORPS";
+    const purposeSentinel = "MOTIF-SENTINEL-PRIVE";
+    await write("clients/dossier.md", `---\nid: dossier-client\ntype: document\ndescription: Dossier.\n---\nSolde: ${bodySentinel}.\n`);
+
+    await openResource(tmpDir, "dossier-client", { purpose: `verifier ${purposeSentinel}` });
+    await proposeChange(tmpDir, "clients/dossier.md", `Solde revu: ${bodySentinel}.\n`, { purpose: purposeSentinel });
+
+    const day = new Date().toISOString().slice(0, 10);
+    const trace = await fs.readFile(path.join(tmpDir, ".ai", "trace", `${day}.jsonl`), "utf8");
+    assert.ok(trace.includes('"op":"open"') || trace.includes('"op": "open"'), "the operations were traced");
+    assert.ok(!trace.includes(bodySentinel), "no document content in the trace");
+    assert.ok(!trace.includes(purposeSentinel), "no purpose text in the trace");
+  });
+
   it("attributes trace events to an actor when one is in scope, and omits the field otherwise (FR-TRACE-001)", async () => {
     const { recordEvent, withTraceActor } = await import("../tools/base-core.mjs");
     // No actor in scope: the field is simply absent — a single-user local trace carries no ceremony.

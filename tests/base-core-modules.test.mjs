@@ -114,6 +114,34 @@ test("formatRouteResult renders the head, the chosen agent/process and candidate
   assert.match(out, /Candidats:\n- nouveau-devis \(process\) \[score 70; route:devis\] -> p\.md/);
 });
 
+test("formatRouteResult prints the PATHS on a routed result — the harness reads text, give it what to open", () => {
+  const out = formatRouteResult({
+    request: "faire un devis",
+    status: "routed",
+    reason_code: null,
+    agent: { id: "sales", path: ".ai/agents/sales/AGENT.md" },
+    process: { id: "nouveau-devis", path: ".ai/agents/sales/skills/processes/nouveau-devis/SKILL.md" },
+    candidates: [],
+  });
+  assert.match(out, /Agent: sales \(\.ai\/agents\/sales\/AGENT\.md\) -> Process: nouveau-devis \(\.ai\/agents\/sales\/skills\/processes\/nouveau-devis\/SKILL\.md\)/);
+});
+
+test("formatRouteResult never prints an unlabelled agent on competing_intents — an abstention elects nobody", () => {
+  // The decision carries the top of two too-close agents for JSON consumers; the TEXT must not name
+  // one as if chosen (a harness reading «Agent: support» loads it — guessing under an abstention).
+  const out = formatRouteResult({
+    request: "bug fonctionnalité",
+    status: "ambiguous",
+    reason_code: "competing_intents",
+    agent: { id: "support", path: ".ai/agents/support/AGENT.md" },
+    process: null,
+    candidates: [],
+    explanation: "Deux agents se disputent la demande: support et commercial.",
+  });
+  assert.doesNotMatch(out, /Agent: support/);
+  assert.match(out, /Deux agents se disputent/);
+});
+
 test("formatRouteTestResult reports pass count and lists failures", () => {
   assert.match(
     formatRouteTestResult({ ok: true, passed: 3, total: 3, failures: [] }),
@@ -128,6 +156,20 @@ test("formatRouteTestResult reports pass count and lists failures", () => {
   });
   assert.match(withFail, /Tests de routage: 1\/2 OK\./);
   assert.match(withFail, /- \[1\] "x"\n    status: attendu routed, obtenu out_of_scope/);
+
+  const withWhy = formatRouteTestResult({
+    ok: false,
+    passed: 0,
+    total: 1,
+    failures: [{
+      index: 0,
+      request: "x",
+      mismatches: ["process: attendu a, obtenu b"],
+      actual: { status: "routed", reason_code: null, agent: "sales", process: "b", candidates: [{ id: "b", score: 100, reasons: ["route:x"] }] },
+    }],
+  });
+  assert.match(withWhy, /obtenu: routed → sales \/ b/);
+  assert.match(withWhy, /candidat: b \[100; route:x\]/);
 });
 
 test("formatMaintenanceReport renders summary and recommendations", () => {

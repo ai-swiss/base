@@ -49,7 +49,7 @@ describe("renderAgentRoutingPrompt — the model sees exactly what the harness r
     assert.equal(messages[1].role, "user");
     // The system turn IS the canonical bootstrap consigne — not a paraphrase — so the eval cannot drift
     // from what the harness is told: a recognisable line of ROUTER_BODY must be present verbatim.
-    assert.ok(messages[0].content.includes("Descends racine → agent → process"), "the consigne's own descent rule is the system instruction");
+    assert.ok(messages[0].content.includes("Descends racine → index d'agent → process"), "the consigne's own descent rule is the system instruction");
     assert.ok(ROUTER_BODY.split("\n").some((line) => line && messages[0].content.includes(line)), "a ROUTER_BODY line appears verbatim");
     // The user turn carries the rendered index and the query.
     assert.ok(messages[1].content.includes("INDEX-CONTENT-HERE"), "the index content is fed to the model");
@@ -110,7 +110,7 @@ describe("makeAgentRoute — drives an injected model end to end (no network)", 
     let sawSystem = false;
     let sawIndex = false;
     const complete = async ({ messages }) => {
-      sawSystem = messages[0].role === "system" && messages[0].content.includes("Descends racine → agent → process");
+      sawSystem = messages[0].role === "system" && messages[0].content.includes("Descends racine → index d'agent → process");
       sawIndex = messages[1].content.includes("ROOT-INDEX");
       return { message: { role: "assistant", content: '{"decision":"route","agent":"commercial","process":"relance-client","next_question":null}' } };
     };

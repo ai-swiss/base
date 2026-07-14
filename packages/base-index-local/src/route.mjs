@@ -31,7 +31,10 @@ export async function routeWithIndex(index, request, deps = {}) {
     const doc = index.documents[docIndex];
     if (!doc.routable) continue;
     const { score, reasons } = await rank(toResource(doc), terms, { root, mode: "route", query: request, signal });
-    const avoidReasons = typeof routeAvoidReasons === "function" ? routeAvoidReasons(doc.avoid_text, terms) : [];
+    // Per-ENTRY veto, exactly as in-memory routing: two counter-examples must not combine into a
+    // veto neither justifies alone. An index built before avoid_entries falls back to the joined
+    // string (one entry) until its next rebuild.
+    const avoidReasons = typeof routeAvoidReasons === "function" ? routeAvoidReasons(doc.avoid_entries ?? doc.avoid_text, terms) : [];
     ranked.push({
       resource: slimResource(doc),
       score: avoidReasons.length ? 0 : score,

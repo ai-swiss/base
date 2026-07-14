@@ -106,6 +106,9 @@ export function deriveRoutingSignals(resource) {
   const avoid = Array.isArray(routing.avoid_when) ? routing.avoid_when.filter((s) => typeof s === "string" && s.trim()) : [];
   return {
     route_text: text,
+    // avoid_entries feeds the per-entry veto; avoid_text is their joined DISPLAY form (index cards,
+    // refiner prompt) — never re-split for matching.
+    avoid_entries: avoid,
     avoid_text: avoid.join(" — "),
     route_scope: routeScopeOf(resource.type),
     agent_path: agentDirOf(resource.path),
@@ -208,7 +211,7 @@ export function decideRoute(ranked, agentsByDir, options = {}) {
 
 // Deterministic registry projection: agents, their processes, and the derived route_text. Holds
 // derived signals only (no semantic scores, no file bodies, no hand-maintained mapping). Sorted and
-// timestamp-free so `base build routing-registry` is idempotent and CI can gate its freshness.
+// timestamp-free so the routing-index projection is idempotent and CI can gate its freshness.
 export function buildRoutingRegistry(resources) {
   const byAgent = new Map();
   const weakSignals = [];

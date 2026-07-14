@@ -1,3 +1,15 @@
+---
+schema_version: base.resource.v1
+id: compatibilite-harnesses
+type: document
+title: Savoir quelles garanties vous obtenez selon votre outil
+description: Les garanties BASE varient selon l'outil IA (Claude Code, Cursor, plateformes MCP, outils génériques): la table honnête de ce que chaque harness protège réellement, niveau par niveau.
+scope: public
+status: active
+sensitivity: public
+keywords: [compatibilite, harness, outil, garanties, niveaux, claude, cursor, mcp]
+---
+
 # Savoir quelles garanties vous obtenez selon votre outil
 
 Vos fichiers BASE fonctionnent dans tout outil IA capable de les lire (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code), comme dans une plateforme web IA standard via MCP (par exemple ChatGPT, Claude, Gemini), mais **les garanties varient d'un outil à l'autre**. Cette page vous dit sans détour ce que chaque harness protège réellement, afin que vous choisissiez votre niveau de confiance en connaissance de cause.

@@ -31,6 +31,19 @@ export function checkEgress({ modelLocality, rootPolicy = "any", resources }) {
   return { allowed, withheld };
 }
 
+/**
+ * One resource through the pure rule — the broker's read-chokepoint wrapper. When a caller supplies
+ * its egress context (a remote model in chat, the eval SUT, the MCP read surface), a confidential
+ * resource or a resource of a local-only root is withheld HERE, so the rule cannot be bypassed by a
+ * tool read (open/access/discover). Absent egress (the local human CLI), reads are unchanged.
+ * @returns the withheld entries, or null when nothing is withheld
+ */
+export function egressWithheld(resource, egress) {
+  if (!egress) return null;
+  const verdict = checkEgress({ modelLocality: egress.modelLocality, rootPolicy: egress.rootPolicy, resources: [resource] });
+  return verdict.withheld.length ? verdict.withheld : null;
+}
+
 /** The explicit, actionable refusal line shared by every surface (never a silent omission). */
 export function egressNotice(withheld) {
   if (!withheld.length) return "";

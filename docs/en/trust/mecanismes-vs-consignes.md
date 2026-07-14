@@ -1,4 +1,4 @@
-<!-- fr-synced: a8eea22718e978a73451232f1f7166b892cbfde9 -->
+<!-- fr-synced: 3509fb8ff1cb017dd356c93104ee356e0fc2e112 -->
 # Mechanisms vs consignes
 
 ## Why this distinction is at the heart of trustworthy AI governance
@@ -36,7 +36,7 @@ The same file thus links your expertise to the code: what must be guaranteed liv
 
 ## Closing note
 
-Outside the broker's path, everything falls back to the harness's native level. Metadata and consignes keep their usefulness as a guide and as a signal for a cooperative model, but they constrain nothing: direct access to the shell, the file system, or an external API escapes these properties. The practical rule fits in one sentence: a guarantee is real only if the action goes through the `base` CLI, through the core, or through the MCP delegating to the broker.
+Outside the broker's path, everything falls back to the harness's native level. Metadata and consignes keep their usefulness as a guide and as a signal for a cooperative model, but they constrain nothing: direct access to the shell, the file system, or an external API escapes these properties. The practical rule fits in one sentence: a guarantee is real only if the action goes through the `base` CLI, through the core, or through the MCP delegating to the broker. The full guarantee → function → test table is in [Verified mechanisms](mecanismes-verifies.md). Two measurement notes: the **session** journal (`.ai/journal/`, written by the agent at the end of a process) is an instruction, useful and fallible, distinct from the mechanical **trace** journal above; and the **presence** of an instruction on the projected surfaces is frozen by tests, while the model's **obedience** remains an instruction followed with a margin of error, and is measured today only for routing (the evaluation injects the canonical instruction verbatim).
 
 A reminder on scope: BASE is not an agent runtime, an orchestration engine, a RAG setup, a platform, or an IAM, DLP, SIEM, or RBAC system, nor a mechanism for retention or legal archiving. Nor does it guarantee the accuracy of a model's outputs. The choice of the model itself remains external to BASE.
 

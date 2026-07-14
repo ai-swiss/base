@@ -15,7 +15,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { assistantMessage, getText, getToolCalls, systemMessage } from "@ai-swiss/base-llm";
-import { inventoryResources, openResource, parseFrontmatter, searchResources } from "../base-core.mjs";
+import { inventoryResources, openResource, parseFrontmatter, resolveConfig, searchResources } from "../base-core.mjs";
 import { checkEgress, egressNotice } from "../core/egress.mjs";
 import { buildContextPack, renderContextPack } from "../core/context-pack.mjs";
 import { ApiError, proposeEdit } from "./api.mjs";
@@ -287,6 +287,8 @@ export async function chat(root, { path: docPath, memory = null, messages = [], 
   let packWithheld = [];
   if (resource.type === "process") {
     const pack = await buildContextPack(resources, (rel) => readFile(path.join(root, rel), "utf8"), resource.path, {
+      // The project's own budget when configured (contextPack.budget); else the module default.
+      budget: (await resolveConfig(root)).contextPack?.budget,
       egress: { modelLocality, rootPolicy: egressPolicy },
     });
     renderedPack = renderContextPack(pack);

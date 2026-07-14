@@ -16,7 +16,7 @@ import { applyRoutingVectors } from "../core/routing-vectors.mjs";
 import { denyFilterResources } from "../core/route-policy.mjs";
 import { agentDirOf, ROUTABLE_KINDS, buildRoutingRegistry } from "../core/routing.mjs";
 import { renderRoutingIndex } from "../core/index-md.mjs";
-import { embeddingRouter } from "../core/router.mjs";
+import { embeddingRouter, DEFAULT_ROUTING_K } from "../core/router.mjs";
 import { makeEmbeddingRetriever } from "../core/retrieve.mjs";
 import { makeLlmRefiner } from "../core/refine.mjs";
 import { makeAgentRoute, navigableCorpus } from "./route-eval-agent.mjs";
@@ -67,7 +67,7 @@ export async function makeRecallProbe(root, { embed, k = 10 }) {
  * @param {string} root @param {EmbeddingModels} models
  * @returns {Promise<(query: string) => Promise<object>>}
  */
-export async function makeEmbeddingRoute(root, { embed, complete, k = 10 }) {
+export async function makeEmbeddingRoute(root, { embed, complete, k = DEFAULT_ROUTING_K }) {
   const { precomputeRoutingVectors } = await import("../core/routing-vectors.mjs");
   const { resources } = await prepareCorpus(root);
   const { vectors } = await precomputeRoutingVectors(resources, embed);

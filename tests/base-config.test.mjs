@@ -79,6 +79,38 @@ describe("resolveConfig", () => {
     await assert.rejects(() => resolveConfig(tmpDir), /base\.config\.invalid/);
   });
 
+  it("validates contextPack.budget like the routing thresholds — one knob, loudly rejected when malformed", async () => {
+    await write("base.config.json", JSON.stringify({ contextPack: { budget: 4000 } }));
+    assert.deepEqual((await resolveConfig(tmpDir)).contextPack, { budget: 4000 });
+
+    await write("base.config.json", JSON.stringify({ contextPack: { budget: 0 } }));
+    await assert.rejects(() => resolveConfig(tmpDir), /budget.*positive integer/);
+    await write("base.config.json", JSON.stringify({ contextPack: { budget: "8000" } }));
+    await assert.rejects(() => resolveConfig(tmpDir), /budget.*positive integer/);
+    await write("base.config.json", JSON.stringify({ contextPack: { budgets: 8000 } }));
+    await assert.rejects(() => resolveConfig(tmpDir), /unknown contextPack option/);
+    // Absent → no key: buildContextPack's own module default (8000) applies downstream.
+    await write("base.config.json", JSON.stringify({}));
+    assert.equal((await resolveConfig(tmpDir)).contextPack, undefined);
+  });
+
+  it("a configured contextPack.budget bounds what the planner keeps in (omitted grows)", async () => {
+    // ~5000 estimated tokens (CHARS_PER_TOKEN=4): fits the 8000 default, exceeds a 50-token budget.
+    await write("gros-doc.md", "---\nid: gros-doc\ntype: document\ndescription: Volumineux.\n---\n" + "x".repeat(20000) + "\n");
+    await write(
+      ".ai/agents/a/skills/processes/p/SKILL.md",
+      "---\nid: proc-budget\ntype: process\ndescription: P.\nuse_when: Tester le budget.\n---\n# P\nLire [le gros doc](gros-doc.md).\n",
+    );
+    const { contextPack } = await import("../tools/base-core.mjs");
+
+    const roomy = await contextPack(tmpDir, "proc-budget");
+    assert.ok(roomy.sections.some((s) => s.path === "gros-doc.md"), "under the default budget the doc fits");
+
+    await write("base.config.json", JSON.stringify({ contextPack: { budget: 50 } }));
+    const tight = await contextPack(tmpDir, "proc-budget");
+    assert.ok(tight.omitted.includes("gros-doc.md"), "under a tight configured budget it is omitted, not truncated");
+  });
+
   it("instantiates and validates routing.fallback", async () => {
     await write("base.config.json", JSON.stringify({ routing: { fallback: { agent: "concierge-base", process: "accueil" } } }));
     const config = await resolveConfig(tmpDir);
@@ -121,17 +153,14 @@ describe("resolveConfig", () => {
     await assert.rejects(() => resolveConfig(tmpDir), /base\.config\.invalid/);
   });
 
-  it("instantiates routing.embedder (the routing-embeddings provider config) and passes provider knobs through", async () => {
-    await write("base.config.json", JSON.stringify({ routing: { embedder: { provider: "ollama", model: "nomic-embed-text", baseUrl: "http://localhost:11434" } } }));
+  it("tolerates the deprecated routing.embedder key (it shipped in v1.0.0/v1.1.0): config still loads, key inert", async () => {
+    // Stability law: base.config stays additive across minors, so a config that used the shipped
+    // routing.embedder key must keep loading. It is deprecated and inert (the single model reference
+    // is routing.embedding_model); removed in the next minor version.
+    await write("base.config.json", JSON.stringify({ routing: { embedder: { provider: "ollama", model: "nomic-embed-text" }, floor_score: 40 } }));
     const config = await resolveConfig(tmpDir);
-    assert.equal(config.routing.embedder.provider, "ollama");
-    assert.equal(config.routing.embedder.model, "nomic-embed-text");
-    assert.equal(config.routing.embedder.baseUrl, "http://localhost:11434");
-  });
-
-  it("rejects an unknown routing.embedder provider loudly", async () => {
-    await write("base.config.json", JSON.stringify({ routing: { embedder: { provider: "anthropic", model: "x" } } }));
-    await assert.rejects(() => resolveConfig(tmpDir), /base\.config\.invalid/);
+    assert.equal(config.routing.floor_score, 40, "the rest of routing still applies");
+    assert.equal(config.routing.embedder, undefined, "the deprecated key is dropped, not surfaced");
   });
 
   it("rejects an unknown descriptor type loudly", async () => {

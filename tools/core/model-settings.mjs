@@ -52,6 +52,29 @@ export function providerLocality(provider) {
   }
 }
 
+/**
+ * Where do the configured Voie 2 models RUN? Both refs on a local provider => "local"; anything
+ * else — a remote provider, an unknown provider, unreadable settings — is "remote", the fail-safe
+ * (egress then gates). The broker consumes this at the strategy gate, so the guarantee holds for
+ * callers that inject no egress context (the local CLI).
+ * @param {string} contextDir @param {{ embedding_model?: unknown, refiner_model?: unknown } | null} routing
+ * @returns {Promise<"local" | "remote">}
+ */
+export async function routingLocality(contextDir, routing) {
+  try {
+    const settings = await readSettings(contextDir);
+    const localityOf = (ref) => {
+      const s = String(ref ?? "").trim();
+      const providerId = s.includes("/") ? s.slice(0, s.indexOf("/")) : s;
+      const provider = (settings.providers ?? []).find((p) => p.id === providerId);
+      return provider ? providerLocality(provider) : "remote";
+    };
+    return localityOf(routing?.embedding_model) === "local" && localityOf(routing?.refiner_model) === "local" ? "local" : "remote";
+  } catch {
+    return "remote";
+  }
+}
+
 export function settingsPath(contextDir) {
   return path.join(contextDir, SETTINGS_SUBPATH);
 }

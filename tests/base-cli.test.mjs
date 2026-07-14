@@ -1,4 +1,4 @@
-// Spec coverage: FR-CLI-001 FR-CLI-002 FR-CLI-003 FR-CLI-004 UR-CORE-002 FR-BUILD-004 FR-BUILD-005
+// Spec coverage: FR-CLI-001 FR-CLI-002 FR-CLI-003 FR-CLI-004 UR-CORE-002 FR-BUILD-005
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import * as fs from "node:fs/promises";
@@ -235,8 +235,6 @@ describe("base CLI", () => {
     const routeTestResult = await execFileAsync("node", [cliPath, "route-test", "--root", tmpDir]);
     assert.match(routeTestResult.stdout, /1\/1 OK/);
 
-    const buildResult = await execFileAsync("node", [cliPath, "build", "routing-registry", "--root", tmpDir, "--json"]);
-    assert.match(buildResult.stdout, /base.routing.v1/);
   });
 
   it("prints entretien report", async () => {
@@ -246,6 +244,10 @@ describe("base CLI", () => {
     assert.match(stdout, /Entretien BASE/);
     assert.match(stdout, /Fichiers avec marqueurs ouverts: 1/);
     assert.match(stdout, /Fichiers avec marqueurs d'action: 1/);
+    assert.match(stdout, /fusionne dans «base doctor».*retiré dès la prochaine version mineure/, "the deprecation referral rides the text door");
+
+    const { stdout: asJson } = await execFileAsync("node", [cliPath, "entretien", "--root", tmpDir, "--json"]);
+    assert.doesNotMatch(asJson, /fusionne dans/, "the --json shape stays the 1.x contract, untouched");
   });
 
   it("opens resources and dry-runs tools", async () => {

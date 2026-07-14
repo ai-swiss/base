@@ -39,8 +39,9 @@ resources; routing does not.
 
 ## The routing signal (FR-ROUTE-001)
 
-`deriveRoutingSignals(resource)` normalises a resource into `{ route_text, avoid_text, route_scope,
-agent_path, reasons }`. It is a **plain function, not a port** (Rule of Three: it becomes configurable
+`deriveRoutingSignals(resource)` normalises a resource into `{ route_text, avoid_entries, avoid_text,
+route_scope, agent_path, reasons }` (`avoid_entries` feeds the veto; `avoid_text` is their joined
+display form for index cards and refiner prompts, never re-split for matching). It is a **plain function, not a port** (Rule of Three: it becomes configurable
 only when a second real extractor exists). `route_text` is built from the file by a fallback chain, and
 the source is reported as an explainable `route_text:<source>` reason:
 
@@ -50,8 +51,13 @@ use_when → description → title → keywords → "## Quand utiliser" section 
 
 The single recommended new field is **`use_when`** — a short sentence on *when* to use the resource.
 Optional `routing.examples` (real user phrasings) are appended to lift recall. Optional
-`routing.avoid_when` counter-examples become `avoid_text`; when a request clearly matches that text,
-the candidate is kept explainable but its score is zeroed before the structural decision. `use_when`
+`routing.avoid_when` counter-examples veto: when a request clearly matches one of them, the candidate
+is kept explainable but its score is zeroed before the structural decision. The match is judged **per
+counter-example, never across their concatenation** (two entries that each hit ONE request term must
+not combine into a veto neither justifies alone — a process whose counter-examples share its own
+nouns would otherwise veto itself out of every request); within an entry, two term hits are required
+(one suffices for a single-term request), and a short term (three characters or fewer) must match a
+whole word of the entry. `use_when`
 keeps one job (when to use); examples and counter-examples live in the structured `routing` block, not
 hidden in `use_when`. All of it is **progressive**: a resource routes from its title/description alone;
 richer fields are optional and become advisory/strict only by scope and config.
@@ -69,10 +75,17 @@ structural rules on top.
 
 ## Structural decision — never a fake confidence (FR-ROUTE-003)
 
-`routeRequest` first removes weak request terms (articles, pronouns, greetings and common filler
-words), so a request with no business signal abstains instead of manufacturing a route from noise.
-Greetings and small talk ("Bonjour, comment ça va ?") therefore abstain honestly (and reach the help
-fallback when configured) rather than scoring on stray tokens; an empty request abstains the same way.
+`routeRequest` first removes weak request terms — articles, pronouns, greetings, and the measured
+closed class of French function words (negations, interrogatives/subordinators including the inflected determiner forms quel/quelle/quels/quelles, demonstratives,
+degree adverbs, impersonal modals, polite request formulas) — so a request with no business signal
+abstains instead of manufacturing a route from noise. Greetings and small talk ("Bonjour, comment ça
+va ?") abstain honestly (and reach the help fallback when configured); so do negated
+no-content requests («ça ne marche pas» must not credit a `use_when` for containing «ne … pas», nor
+«il faut» clear the floor on its own); an empty request abstains the same way. Verb forms that carry
+signal (faire/fait, pouvoir forms) are deliberately NOT stripped — «Que fait le MCP ?» is a real
+request. Negation SEMANTICS stay beyond the lexical floor by design: «pas A mais B» credits both A
+and B (the router counts evidence, it cannot invert it) and degrades to an honest abstention whose
+candidates carry both options — the reading harness resolves it, or the user answers the question.
 
 `decideRoute(ranked, agentsByDir, thresholds)` returns one of **four statuses**, plus a `reason_code`
 that carries the fine distinction. It does **not** emit an opaque `confidence`. A `routed` result always
@@ -129,9 +142,14 @@ There is **no** `incomplete` status: "agent clear, no process" is `needs_clarifi
 }
 ```
 
+Both strategies emit this one candidate shape (the embedding strategy's `reasons` say
+`retriever:cosine` or `retriever:lexical_fallback`, from the `match` the retriever threads), but the
+`score` is **strategy-scaled** — lexical ranker points on the floor, cosine similarity on the embedding
+path — so scores compare only within a single decision, never across strategies.
+
 ## Help fallback on abstention (FR-ROUTE-009)
 
-A project may declare `routing.fallback: { agent, process }` in `base.config`. When the Router **abstains** — `out_of_scope`, or `needs_clarification` with no useful `next_question` — and the configured target resolves in the inventory, `routeRequest` attaches a `fallback` pointer. It is **separate metadata, never a route**: the `status` stays the honest abstention, so analytics and route fixtures remain truthful (`route-tests.json` can assert `fallback.agent`/`fallback.process`). The core router is **agent-agnostic**: the target is configured, never hard-coded; a missing/typo'd target attaches no fallback (graceful) and `validateBase` warns (`base.routing.fallback_unresolved`). The harness loads the fallback instead of leaving the user at a dead end; the formatter prints `Fallback: <agent> -> <process>`.
+A project may declare `routing.fallback: { agent, process }` in `base.config`. When the Router **abstains** — `out_of_scope`, or `needs_clarification` with no useful `next_question` — and the configured target resolves in the inventory, `routeRequest` attaches a `fallback` pointer **on either strategy** (the broker attaches it on the embedding path exactly as `computeRoute` does on the lexical floor: same config, same deny-filtered corpus, same eligibility). It is **separate metadata, never a route**: the `status` stays the honest abstention, so analytics and route fixtures remain truthful (`route-tests.json` can assert `fallback.agent`/`fallback.process`). The core router is **agent-agnostic**: the target is configured, never hard-coded; a missing/typo'd target attaches no fallback (graceful) and `validateBase` warns (`base.routing.fallback_unresolved`). The harness loads the fallback instead of leaving the user at a dead end; the formatter prints `Fallback: <agent> -> <process>`. The text output is as honest as the decision: on a committed agent it prints the agent/process **paths** (the harness reads text — give it what to open); on `competing_intents` it prints **no** `Agent:` line at all (the decision carries the top of two too-close agents for JSON consumers, but naming one in prose invites loading exactly what the abstention forbids).
 
 ## Routing across a workspace (multiple roots)
 
@@ -176,7 +194,14 @@ hallucination guard); a **CONSIGNE** is followed by the model, faillible, always
 classifier over the returned `candidates`, choosing *from the list* (or abstaining), never free-exploring
 the filesystem. If the index-read choice disagrees with the floor, that is an ambiguity signal: re-examine
 «Quand l'utiliser»/«Éviter si» or ask, never silently override. No LLM call lives in the zero-dependency
-core.
+core. The canonical consigne (`ROUTER_BODY`, projected into every entry point and freshness-gated)
+states the full reading discipline, each rule at its point of use: decide on candidate **metadata**,
+never by reading all bodies (`base discover`, `--projection metadata`, the frontmatter block); a
+knowledge question routes to `discover`, not to a guessed process; once routed, preload what the
+process declares via the context planner (`base context` / `get_context_pack` — paths and notes,
+never bodies); on abstention ask the returned question without opening competing bodies; and when the
+active process path can no longer be cited (a summarized long conversation), re-read the on-disk
+`SKILL.md`/`AGENT.md` before acting — the file is the source of truth, not the model's memory.
 
 **The embedding strategy — embeddings retrieve, a small LLM refines (opt-in, for scale; «Voie 2» in the user docs).** `routingStrategy(routing)` reaches
 the embedding strategy **only when an embedding model AND a refiner model are both configured** — all-or-nothing, so a
@@ -197,6 +222,21 @@ resolution failure — drops to the lexical strategy, never throws, never silent
 (`denyFilterResources`), so a denied target reaches neither the floor, the embedding recall, nor the
 refiner's list.
 
+**Egress holds at the strategy gate, whoever calls** (mechanism). The embedding branch derives where its
+own configured models run (`routingLocality`: both refs on a local provider → `local`; a remote,
+unknown or unreadable provider → `remote`, the fail-safe) and applies the root policy itself, so a
+caller that injects no egress context — the local CLI — gets the same guarantee as the MCP surface:
+a `local-only` root's request text never leaves toward a remote model (the deterministic floor answers,
+journaled `strategy_fallback` + `egress: root_local_only`); under policy `any`, a `confidential`
+resource's `route_text`/`avoid_text` never reaches the remote refiner prompt (`checkEgress` filters the
+branch corpus, journaled `routing_egress_withheld`; combined with the off-list guard, picking a
+withheld target is structurally impossible). The filter narrows **only the corpus fed to the remote
+model**: the lexical fallback that answers on any embedding-strategy error is fully local and sends
+nothing to a model, so it routes over the **whole** corpus — withholding a confidential resource from
+it would silently drop a legitimate route, a strict regression versus a plain (no-Voie-2) project.
+Idempotent over an MCP corpus already egress-filtered upstream; with local models nothing leaves, so
+nothing is withheld.
+
 **Config.** The embedding strategy's switch is the `routing` block in `.ai/studio.settings.json` — `{ embedding_model,
 refiner_model, k? }`, validated all-or-nothing at write time. This is a **distinct namespace** from
 `base.config` `routing`, which holds the lexical strategy's thresholds and the `deny` policy. Both models resolve
@@ -206,17 +246,19 @@ Voie 2» page. Defaults are illustrative, not prescriptive; see `docs/guides/voi
 
 ## Generated registry (FR-ROUTE-005, projection)
 
-`buildRoutingRegistry(resources)` is a **deterministic** projection (`schema_version:
+`buildRoutingRegistry(resources)` is a **deterministic in-memory derivation** (`schema_version:
 base.routing.v1`): agents, their processes, the derived `route_text` and per-card signal source, plus a
 `diagnostics.weak_signals` list. It holds **derived signals only** — no semantic scores, no file
-bodies, no hand-maintained mapping — so its diff is stable and `base build routing-registry` is
-idempotent.
+bodies, no hand-maintained mapping — so everything projected from it is idempotent. It is not written
+to disk itself (the former `routing-registry` disk target had no reader and was retired); its readable
+face is the routing index below, and the eval harness consumes the same derivation.
 
 Current runtime behaviour is intentionally simple and honest: `routeRequest` derives candidates in
-memory from `inventoryResources`. The on-disk registry is an opt-in projection for audit, review and
-future cache/index adapters; it is **not** read by the Router today. `base.manifest.json` is likewise a
-general discovery projection, not a routing cache. This keeps the small-project path zero-dependency
-and avoids a half-built scale abstraction.
+memory from `inventoryResources`. The derivation itself is never written to disk; its only committed
+face is the agent-readable routing **index** (`base build routing-index`), an opt-in projection for
+navigation and review, not read by the Router today. `base.manifest.json` is likewise a general
+discovery projection, not a routing cache. This keeps the small-project path zero-dependency and
+avoids a half-built scale abstraction.
 
 ### Generated index tree (FR-ROUTE-005)
 
@@ -253,10 +295,18 @@ pinned model/index. The generated `.ai/routing/` tree is excluded from inventory
 - `base route "<demande>" --root <root>` — observable, testable routing outside any harness (`--json` for the full shape).
 - `base route-test [--from fixtures.json] [--strategy lexical|production]` — runs a declarative JSON fixtures file
   (`[{ request, expect: { status?, reason_code?, agent?, process? } }]`, default
-  `.ai/routing/route-tests.json`); exits non-zero on a mismatch. Fixtures replay the **lexical floor** by default (deterministic, CI-safe); the result names both the strategy replayed and the strategy production `base route` would take (`productionStrategy`), and the CLI warns when they differ — green must never silently certify a path production does not take. `--strategy production` replays each case through `routeRequest` (model-backed when Voie 2 is configured; deliberate, per-run, not for CI). Protects business routes from
+  `.ai/routing/route-tests.json`); exits non-zero on a mismatch. Fixtures replay the **lexical floor** by default (deterministic, CI-safe); the result names both the strategy replayed and the strategy production `base route` would take (`productionStrategy`), and the CLI warns when they differ — green must never silently certify a path production does not take. `--strategy production` replays each case through `routeRequest` (model-backed when Voie 2 is configured; deliberate, per-run, not for CI). `--examples` replays the corpus's own declared
+  `routing.examples` as cases instead of a fixtures file (`casesFromExamples`, scope-aware: an agent
+  example asserts the agent, a process example asserts the process) — the drift guard for the
+  phrasings authors promised their users. An empty replay (no resource declares `routing.examples`)
+  **throws**, exactly as the fixtures path does on a missing file: a guard that certifies zero cases
+  green reads as "all promises hold" when none were made. Each failure carries the WHY next to the WHAT: the actual
+  decision and its capped candidate shortlist (`summarizeRoute`: `{ id, score, reasons }`), printed as
+  `obtenu:`/`candidat:` lines, so the author tightens `use_when`/`avoid_when`/`keywords` without
+  re-running `base route` case by case. Protects business routes from
   regressions without an academic benchmark.
 - `base build routing-index [--write]` — generates the agent-readable index tree (root + one per agent), a deterministic projection of the registry, committed to the repo and gated for freshness in CI (opt-in, not part of `build all`).
-- `base build routing-embeddings [--write]` — precomputes the routing vectors via `cfg.routing.embedder` (the shipped semantic package, dynamically imported), writing the model-specific `embeddings.json` cache (gitignored). Opt-in, model-backed. The cache is a **stamped envelope** (`base.routing_vectors.v1`): it names the embedder it was built with (`<provider>/<model>`) and each entry carries the sha256-derived hash of the `route_text` it embedded (`hashRouteText`). `confidential` resources are **never embedded** (the egress promise holds on the build path; the CLI reports the skip count). At route time, `verifyRoutingVectors` drops entries whose `route_text` drifted (journaled: `routing_vectors_stale`) and the embedding strategy strips ALL precomputed vectors when the cache's embedder model differs from `routing.embedding_model` (journaled: `routing_vectors_model_mismatch`; vectors from another model live in another space — noise, worse than no cache). A pre-v1 bare map keeps working, flagged `legacy`; `base doctor` surfaces both drifts (`stale_routing_vectors`).
+- `base build routing-embeddings [--write]` — precomputes the routing vectors with the SAME model reference the query path reads (`routing.embedding_model` from `.ai/studio.settings.json`, resolved through the shared provider registry by `resolveEmbedder` — one vocabulary, one place; the shipped semantic package is imported dynamically), writing the model-specific `embeddings.json` cache (gitignored). Opt-in, model-backed. The cache is a **stamped envelope** (`base.routing_vectors.v1`): it names the embedder it was built with (`<provider>/<model>`) and each entry carries the sha256-derived hash of the `route_text` it embedded (`hashRouteText`). `confidential` resources are **never embedded** (the egress promise holds on the build path; the CLI reports the skip count). At route time, `verifyRoutingVectors` drops entries whose `route_text` drifted (journaled: `routing_vectors_stale`) and the embedding strategy strips ALL precomputed vectors when the cache's stamp names another model than `routing.embedding_model` (journaled: `routing_vectors_model_mismatch`; vectors from another model live in another space — noise, worse than no cache; since build and query read the same reference, this only fires on a cache from an earlier model or another machine). A pre-v1 bare map keeps working, flagged `legacy`; `base doctor` surfaces both drifts (`stale_routing_vectors`).
 - MCP tool `route_request` — returns a route or an abstention; it does not load every instruction.
 
 ## Routability advisory (opt-in)
@@ -280,7 +330,7 @@ a shared (`team|org|public`) process without `use_when`. The core validator stay
   scale smoke protects routing over larger generated agent/process sets.
 - Semantic package: `@ai-swiss/base-ranker-semantic` is exercised as an async Ranker path with real
   embedding-provider semantics and no core dependency.
-- CLI: `base route`, `base route-test`, and `base build routing-registry` are exercised.
+- CLI: `base route`, `base route-test`, and `base build routing-index` are exercised.
 - MCP: the registered `route_request` tool returns a route or abstention.
 - Discovery is unchanged: `route_text` is inert without a Router (backward-compatible Ranker change).
 

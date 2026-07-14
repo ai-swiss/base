@@ -60,6 +60,9 @@ Expliquer BASE **à la bonne profondeur**, en lisant d'abord la doc canonique. C
 - Permissions / policy / frontières:
   - `docs/trust/securite-et-limites.md`
   - `specs/current/10_core/policy.md`
+- Données / sécurité (ce qui sort, ce qui est prouvé):
+  - `docs/trust/frontiere-local-vs-sortant.md`
+  - `docs/trust/mecanismes-verifies.md`
 - Racines / workspace / MCP:
   - `specs/current/10_core/cli.md`
   - `specs/current/10_core/mcp.md`

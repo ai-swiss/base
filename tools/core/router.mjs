@@ -32,6 +32,8 @@
  * @property {Array<object>} candidates
  * @property {string} explanation
  * @property {string | null} next_question  the disambiguation a strategy asks when it abstains
+ * @property {{ agent: { id: string, path: string }, process: { id: string, path: string } }} [fallback]
+ *   help target attached to an honest abstention (FR-ROUTE-009) — separate metadata, never a route
  */
 
 /**
@@ -59,15 +61,25 @@
  */
 
 /**
+ * How many candidates the retriever hands the refiner when `k` is not configured. Larger than the
+ * lexical strategy's `max_candidates` (5) on purpose: it is the refiner's input count (wide recall,
+ * the model decides), not an agent shortlist. This is the single source of that number — the Studio
+ * writer and the eval harness import it rather than re-spelling `10`, so the default is identical
+ * whoever wrote the config. It defaults INSIDE embeddingRouter (below), the one seam every caller
+ * crosses, so a hand-written config that omits `k` never leaks `undefined` down to the retriever.
+ */
+export const DEFAULT_ROUTING_K = 10;
+
+/**
  * The embedding strategy as a Pipeline: retrieve, then refine. The whole of it — `refine ∘ retrieve`.
  * Returns a `Router`. The empty-corpus and empty-candidate cases are the Refiner's to answer honestly
  * (it sees an empty list and abstains), so this composition stays a single, total expression.
  * @param {Retriever} retrieve
  * @param {Refiner} refine
- * @param {number} k
+ * @param {number} [k]  candidate count; defaults to {@link DEFAULT_ROUTING_K} when omitted/undefined
  * @returns {Router}
  */
-export function embeddingRouter(retrieve, refine, k) {
+export function embeddingRouter(retrieve, refine, k = DEFAULT_ROUTING_K) {
   return async (request, resources) => refine(request, await retrieve(request, resources, k));
 }
 

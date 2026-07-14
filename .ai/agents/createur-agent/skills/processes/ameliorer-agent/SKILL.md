@@ -88,7 +88,7 @@ Attendre la validation explicite.
 Pour chaque modification validée:
 - Crée les nouveaux SKILL.md dans `skills/processes/` ou `skills/competences/`
 - S'il s'agit de modifier un fichier existant, crée une nouvelle version plutôt que d'écraser l'ancienne
-- Mets à jour la table de routage et l'inventaire dans AGENT.md (point unique)
+- Régénère l'index (`base build routing-index --write --root .`): le routage se lit dans les frontmatter des SKILL.md; AGENT.md n'a ni table de routage ni inventaire à aligner
 - Mets à jour la configuration outil au besoin (copie les nouveaux skills au bon endroit)
 
 Présente ensuite un résumé de chaque changement.

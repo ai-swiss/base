@@ -1,4 +1,4 @@
-<!-- fr-synced: bea11fd11c6724b511bb0a3753e24409b04324fc -->
+<!-- fr-synced: 67e657a2c8df53c3d85112e36cebcf4df9365cab -->
 # Adopting public BASE: from local to team
 
 If you are an individual, a freelancer, a startup, a small or mid-sized business, or a small team, this page shows you what public BASE gives you: a way to structure your collaboration with AI without installing a heavy platform. It also explains how to adopt it in stages, staying simple on the surface without blocking your later growth.
@@ -162,7 +162,7 @@ Local search uses YAML metadata, Markdown titles, descriptions, keywords, and pl
 
 For scale, `@ai-swiss/base-index-local` provides an optional local index, derived and deletable. It does not become a source of truth and stays outside the core. See `docs/learn/comprendre-echelle.md` and `docs/guides/benchmarks-echelle.md`.
 
-The `.ai/routing/registry.json` registry can be generated, but it remains an audit and scale-readiness projection. It is not a source of truth, and the router does not depend on it today. The precise limits are listed in `docs/reference/etat-implementation.md`.
+The routing index (`base build routing-index`) can be generated, but it remains a read and scale-readiness projection. It is not a source of truth, and the router does not depend on it today. The precise limits are listed in `docs/reference/etat-implementation.md`.
 
 ## Sovereignty around the models
 

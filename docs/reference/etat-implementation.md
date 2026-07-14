@@ -1,3 +1,15 @@
+---
+schema_version: base.resource.v1
+id: etat-implementation
+type: document
+title: Ce que le cœur public de BASE fait aujourd'hui
+description: Le repère honnête de ce que le cœur public sait faire et ne fait pas aujourd'hui, avec les trois sources qui font foi (spécification, exigences, matrice de couverture).
+scope: public
+status: active
+sensitivity: public
+keywords: [etat, implementation, couverture, fonctionnalites, aujourd, hui, perimetre]
+---
+
 # Ce que le cœur public de BASE fait aujourd'hui
 
 Cette page s'adresse à qui veut savoir, aujourd'hui, ce que le cœur public de BASE sait faire et ce qu'il ne fait pas, sans avoir à le deviner. Elle offre un repère honnête et renvoie aux trois sources qui font foi plutôt que de les recopier:
@@ -23,7 +35,7 @@ En cas de divergence entre l'une de ces sources et cette page, c'est la source q
 - Écriture métier médiée: `propose_change` prépare un diff lisible sans rien écrire; `commit_change` écrit une fois la décision prise (confirmation requise par défaut, réglable ressource par ressource via `requires_confirmation`, jamais facultative pour `sensitive`/`restricted`), vérifie l'état écrit et le consigne.
 - Promotion de ressource (`promote`): met à jour `scope`, `promoted_from` et `promoted_at` via l'écriture médiée, avec diff et confirmation.
 - Liste des marqueurs ouverts (`markers`): `[A VALIDER]`, `[A COMPLETER]`, `[ATTENTION]`, `[DECISION]` dans les documents métier.
-- Projection multi-harness (`build`): génère depuis le noyau un index `AGENTS.md` (compatibilité avec la famille Codex/AGENTS.md) et une matrice d'outils (`.ai/tools.md`) qui déclare honnêtement le niveau d'enforcement réel de chaque harness. Sur demande, `base build routing-registry` produit en outre `.ai/routing/registry.json`, projection déterministe des signaux de routage. Ce sont des artefacts dérivés, jamais des sources de vérité.
+- Projection multi-harness (`build`): génère depuis le noyau un index `AGENTS.md` (compatibilité avec la famille Codex/AGENTS.md) et une matrice d'outils (`.ai/tools.md`) qui déclare honnêtement le niveau d'enforcement réel de chaque harness. Sur demande, `base build routing-index` produit en outre la carte de routage lisible par l'agent (`.ai/routing/index.md` et un index par agent), projection déterministe des signaux de routage. Ce sont des artefacts dérivés, jamais des sources de vérité.
 - Trace minimale JSONL pour les opérations médiées par BASE, sans contenu métier par défaut.
 - Entretien local: erreurs, avertissements, marqueurs ouverts, descriptions manquantes et signaux issus des traces quand elles existent.
 - Manifest dérivé et régénérable pour la découverte.

@@ -1,4 +1,4 @@
-// tools/core/routing-vectors.mjs — precompute routing embeddings, a cross-invocation cache (Phase 6b).
+// tools/core/routing-vectors.mjs — precompute routing embeddings, a cross-invocation cache (Voie 2 precompute).
 //
 // The shipped semantic ranker (@ai-swiss/base-ranker-semantic) reads `resource.embedding` when present
 // and otherwise embeds the resource text on the fly, caching it IN PROCESS. That cache does not survive

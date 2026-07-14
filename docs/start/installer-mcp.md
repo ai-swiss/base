@@ -1,3 +1,15 @@
+---
+schema_version: base.resource.v1
+id: installer-mcp
+type: document
+title: Installer le serveur MCP de BASE
+description: Brancher le serveur MCP pour rendre vos agents accessibles depuis ChatGPT, Claude Desktop et toute plateforme compatible, avec les garde-fous qui accompagnent l'exposition d'un dossier à un outil tiers.
+scope: public
+status: active
+sensitivity: public
+keywords: [mcp, serveur, installer, chatgpt, claude, plateforme, connecteur, brancher]
+---
+
 # Installer le serveur MCP de BASE
 
 Lorsque votre outil IA ne lit pas directement vos fichiers, ou lorsque vous souhaitez partager un agent au-delà de votre poste, c'est au serveur MCP (Model Context Protocol) qu'il faut recourir: il rend vos agents BASE accessibles depuis n'importe quelle plateforme compatible, sans que vous ayez à recopier votre travail à la main. En contrepartie, vous exposez un dossier de votre projet à un outil tiers, ce qui appelle quelques garde-fous (voir plus bas). Il relie vos agents BASE aux plateformes compatibles: ChatGPT, Claude Desktop et les outils IA capables de dialoguer en MCP.

@@ -17,6 +17,7 @@ routing:
     - le client dit qu'on a facturé une prestation non réalisée
   avoid_when:
     - créer un nouveau devis
+    - chiffrer ou proposer une nouvelle prestation
     - relancer un paiement en retard
 ---
 

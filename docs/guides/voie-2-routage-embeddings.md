@@ -28,12 +28,20 @@ que la configuration sélectionne.
 
 ## En avez-vous besoin?
 
-Soyez honnête avec vous-même avant la moindre installation.
+Soyez honnête avec vous-même avant la moindre installation. Le déclencheur n'est **pas la taille du
+catalogue**: mesuré sur des corpus synthétiques de 15, 150 et 600 process, le routage lexical route à
+100 % les demandes qui partagent le vocabulaire des `use_when`, quelle que soit l'échelle. Ce qui lui
+échappe, à toute échelle pareillement, ce sont les **reformulations** (des synonymes sans mot commun:
+«je veux une offre» quand le process dit «devis»); et elles se voient: chaque abstention du routeur
+est journalisée dans `.ai/feedback/abstentions.jsonl`, avec un compteur par demande récurrente.
 
-- **Petit ou moyen BASE** (quelques agents, quelques dizaines de process): la **Voie 1 suffit**. La Voie 2
-  n'apporterait rien, sinon une installation de plus à entretenir.
-- **Grand BASE** (beaucoup de process, ou un routage qui hésite parce que la liste est trop longue pour se
-  départager aux mots-clés): la Voie 2 affine le choix. C'est là qu'elle prend tout son sens.
+L'échelle de réponse, du gratuit au plus lourd:
+
+1. **Une reformulation récurrente s'abstient?** Ajoutez-la aux `routing.examples` du process visé
+   (gratuit, local, immédiat): c'est exactement ce que ce champ existe pour porter.
+2. **Les abstentions en forme de paraphrase persistent sur beaucoup de process, malgré de bons
+   examples?** C'est le signal de la Voie 2: les embeddings comblent le fossé des synonymes, le
+   raffineur tranche. C'est là qu'elle prend tout son sens, et seulement là.
 
 ## L'installation, c'est essentiellement «juste Ollama»
 

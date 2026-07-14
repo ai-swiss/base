@@ -68,6 +68,8 @@ Quand l'utilisateur revient après une interruption ("on en était où?", "bonjo
 2. Résume l'état actuel: ce qui a été fait, ce qui reste à faire
 3. Propose la suite: traiter un `[A VALIDER]`, compléter un `[A COMPLETER]`, ou commencer un nouveau process
 
+Cette reprise vaut aussi **en cours de session**: si tu ne peux plus citer le chemin du process actif (après un résumé, ou loin dans une longue conversation), rouvre l'`AGENT.md` et le `SKILL.md` actifs plutôt que de te fier au contexte courant.
+
 ## Progression (pour les processes interrompus)
 
 Si un process est interrompu en cours de route, l'entrée de journal inclut une section Progression:
@@ -82,3 +84,5 @@ Si un process est interrompu en cours de route, l'entrée de journal inclut une 
 ```
 
 Lors de la reprise, l'agent lit cette progression et reprend à la première étape non cochée.
+
+Un process long (7 étapes ou plus) interrompu avant sa dernière étape écrit **immédiatement** cette entrée réduite: la Progression cochée et les `[A VALIDER]` en cours, rien d'autre. C'est l'unique cas où le journal s'écrit hors de la dernière étape: sans lui, l'ancre de reprise n'existerait jamais au moment d'une interruption.

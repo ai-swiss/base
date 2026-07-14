@@ -1,4 +1,4 @@
-<!-- fr-synced: 669bf6d8968b0fd9bc445adb9ef17a7f6d164f51 -->
+<!-- fr-synced: 1d840c28a0343b8ef138ee290482814d0e235223 -->
 # Agent ideas for your line of work
 
 This page is for you if you want an AI assistant but don't know where to start. It brings together concrete examples, sector by sector, to offer you an idea you can pick up.

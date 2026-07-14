@@ -1,4 +1,4 @@
-<!-- fr-synced: 11a5536e7c12ed4697d0ace182058267a2abf7b1 -->
+<!-- fr-synced: bd5a966e49fba179d307251d9e33dda969943dd3 -->
 # Updating BASE without breaking your work
 
 This page is for the people who build on BASE: a freelancer, a small business, a school, or a public agency. It says what version 1.x guarantees and what may still change, so you can adopt BASE and update it without fear that a new release will break what you have built.
@@ -15,13 +15,13 @@ Starting at **1.0**, BASE follows [Semantic Versioning](https://semver.org/lang/
 
 These elements do not change in an incompatible way without a **major** increment:
 
-- **The resource format, [the `base.resource.v1` standard](le-standard.md)**: the `schema_version: base.resource.v1` frontmatter, its fields, and its `type` values. A file that is valid today stays valid.
-- **The existing CLI commands**: `validate`, `index`, `inventory`, `discover`, `route`, `route-test`, `open`, `access`, `invoke`, `propose`, `commit`, `promote`, `markers`, `trace`, `build`, and `entretien`, with their documented flags.
+- **The resource format, [the `base.resource.v1` standard](le-standard.md)**: the `schema_version: base.resource.v1` frontmatter, its fields, and its `type` values. A valid file stays valid across minor versions; the one owned exception, documented in the CHANGELOG: a value nothing consumes (no mechanism, no known file) may be removed in a minor version (1.2.0 did so for eleven speculative `type` values).
+- **The existing CLI commands**: `validate`, `index`, `inventory`, `discover`, `route`, `route-test`, `open`, `access`, `invoke`, `propose`, `commit`, `promote`, `context`, `markers`, `trace`, `build`, and `doctor`, with their documented flags (`entretien` is still present but **deprecated**, see below).
 - **The existing MCP tools**: their names and their parameters.
 - **The projection schemas**: `base.manifest.v1`, `base.routing.v1`.
-- **The extension-point contract**: `base.config` (rankers, validators, policy, auth) is purely **additive**, so your configuration keeps working.
+- **The extension-point contract**: `base.config` (rankers, validators, policy, auth) is purely **additive**, so your configuration keeps working, save for a key explicitly **deprecated** (see below).
 
-This is the **NFR-CORE-002** commitment, the "no breakage" promise: what already exists keeps working from one version to the next.
+This is the **NFR-CORE-002** commitment, the "no breakage" promise: what already exists and is not deprecated keeps working from one version to the next, and no removal happens without a prior deprecation (see below).
 
 ## What may still change
 
@@ -40,8 +40,10 @@ This is the **NFR-CORE-002** commitment, the "no breakage" promise: what already
 
 `base update` updates the framework itself. By default it follows the **stable** channel: it advances your clone to the **latest version tag** (`v1.x.y`), never beyond; what you run only changes at a release, which gives the versioning above its concrete meaning. Contributors who want the development head choose `base update --channel main`. A ZIP install has no git history: the command then honestly names the path (re-download the [latest published version](https://github.com/ai-swiss/base/releases/latest/download/base.zip) and replace the folder). Before any major update, keep a copy of your folder: your files are the one thing BASE cannot regenerate.
 
-## Deprecations
+## Deprecation before removal
 
-When a stable element must go away, it is first **deprecated** (documented in the `CHANGELOG`, kept working for at least one minor version) before being removed in a **major** version.
+This is the normal path by which a surface disappears. An element first **deprecated**, documented as such in the `CHANGELOG`, keeps working for the length of the announcement, then it is removed after that window, including in a minor version. Deprecation is the compatibility courtesy: no removal happens without it, but the removal that follows does not necessarily wait for a major version.
 
-See the [CHANGELOG](../../../CHANGELOG.md) for the history, and [Security and limits](../trust/securite-et-limites.md) for the honest boundary of the guarantees.
+Deprecated today, for removal in the next minor version: the `entretien` command (its signals live in `doctor`, the raw marker query in `markers`), the MCP `include_data` flag on `load_agent` (a no-op; an unknown field stays tolerated), and the `routing.embedder` configuration key (replaced by the single reference `routing.embedding_model`).
+
+See the [CHANGELOG](../../../CHANGELOG.md) for the history and the detail, and [Security and limits](../trust/securite-et-limites.md) for the honest boundary of the guarantees.

@@ -61,6 +61,27 @@ npm start -- --transport http --port 3100 --root /chemin/vers/votre/projet
 
 Le serveur écoute sur `http://127.0.0.1:3100/mcp` (localhost uniquement par défaut).
 
+**Depuis ChatGPT, concrètement: un tunnel HTTPS.** ChatGPT ne lance pas de processus local; il lui
+faut une URL joignable. Le geste courant (au 13.07.2026): un tunnel vers votre port local, par
+exemple `cloudflared tunnel --url http://localhost:3100` (un binaire, pas de compte) ou
+`ngrok http 3100` (l'exemple documenté par OpenAI); l'URL https obtenue, suivie de `/mcp`, se colle
+dans ChatGPT → Settings → Apps & Connectors → Developer Mode. **Deux points comptent, et ils se
+combinent:**
+
+1. **La garde anti-DNS-rebinding bloque un tunnel naïf.** Le bind restant loopback, l'endpoint refuse
+   (403, avant toute authentification) toute requête dont l'en-tête `Host` n'est pas loopback. Or un
+   tunnel transmet par défaut son hôte public (`*.trycloudflare.com`, `*.ngrok-free.app`) dans `Host`:
+   la requête est donc rejetée. Faites réécrire l'en-tête vers loopback: `ngrok http --host-header=rewrite 3100`,
+   ou `cloudflared tunnel --url http://localhost:3100 --http-host-header 127.0.0.1:3100`.
+2. **Un tunnel rend public un endpoint que le serveur croit loopback**: le refus d'exposition sans
+   authentification ne se déclenche pas (le bind reste 127.0.0.1). Définissez donc
+   `BASE_MCP_BEARER_TOKEN` **avant** d'ouvrir un tunnel; jamais «sans auth» hors d'un test jetable de
+   quelques minutes.
+
+La marche exacte côté ChatGPT évolue: vérifiez la documentation OpenAI (Apps SDK / connectors) au
+moment de brancher.
+
+
 **Exposition réseau refusée par défaut.** Par défaut, BASE MCP n'active aucune authentification. Lier une interface non-loopback (`--host 0.0.0.0`, une IP de LAN, etc.) **sans authentification** est donc **refusé au démarrage** : sinon n'importe qui sur le réseau pourrait atteindre les outils MCP exposés. En HTTP, la surface est en lecture seule par défaut, mais elle peut être élargie explicitement.
 
 **Garde anti-DNS-rebinding (loopback).** Quand le serveur écoute sur loopback (le défaut), une page web ouverte dans votre navigateur ne peut pas l'atteindre par rebinding DNS : l'endpoint MCP refuse (403) toute requête dont l'en-tête `Host` n'est pas loopback ou dont l'`Origin` est étrangère, avant toute authentification. Un client MCP local (sans `Origin`, `Host` loopback) passe normalement. Sur un bind non-loopback assumé, c'est l'authentification qui protège, et cette garde se retire.

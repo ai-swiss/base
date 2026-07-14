@@ -15,7 +15,7 @@ routing:
     - paramétrer mon modèle de compte-rendu
     - mettre à jour les informations de mon entreprise
   avoid_when:
-    - L'utilisateur veut rédiger un compte-rendu avec une entreprise déjà configurée.
+    - L'utilisateur veut rédiger la synthèse d'une séance, l'entreprise étant déjà configurée.
     - L'utilisateur veut suivre les actions en cours.
 name: configuration
 keywords: [configurer, parametrer, modele, compte-rendu, demarrer, entreprise]
