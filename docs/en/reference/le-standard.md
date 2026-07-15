@@ -1,4 +1,4 @@
-<!-- fr-synced: 5e45b2213987a5f2d02a8ab45af8ad50240b7a22 -->
+<!-- fr-synced: 343d3cf2d96697983ec96004e0026e8a012c6d9d -->
 # The BASE standard: `base.resource.v1`
 
 BASE is not yet another platform: it is an **open standard we propose**, with its reference
@@ -137,7 +137,7 @@ What the format alone does not say, and BASE adds, comes down to two boundaries.
 A neighboring knowledge format lets a runbook and a table's description coexist with the same status
 of consultable content. BASE separates them, because security and maintainability depend on it. These
 boundaries are laid down in [ARCHITECTURE.md](../../../ARCHITECTURE.md) and the
-[README](../../../README.en.md).
+[README](../../../README.md).
 
 ## The routing conventions
 

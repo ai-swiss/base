@@ -18,7 +18,7 @@ const EM_DASH = "—";
 // Authoritative French roots. Translation mirrors (.en/.de/.it.md and docs/en|de|it/) and the English
 // spec tree are excluded, so a legitimate English em-dash, German Gedankenstrich or Italian text is
 // never audited as faulty French — the translations CONTRIBUTING.md invites must pass these gates.
-const FRENCH_ROOT_FILES = ["README.md", "CONTRIBUTING.md", "MANIFESTO.md", "CHANGELOG.md"];
+const FRENCH_ROOT_FILES = ["README.fr.md", "CONTRIBUTING.md", "MANIFESTO.md", "CHANGELOG.md"];
 const FRENCH_DIRS = ["docs"];
 const EXCLUDE = (/** @type {string} */ rel) => /\.(en|de|it)\.md$/.test(rel) || /^docs\/(en|de|it)\//.test(rel) || rel.includes("/.");
 

@@ -1,11 +1,11 @@
-<!-- fr-synced: 0004d05177ae462d35a0fd746217689041687383 -->
+<!-- fr-synced: 14b558ef87b4a48bcf6fd66052b6a35e0360e650 -->
 # See BASE in action
 
-Before handing a real case to an AI, you want to know whether you can trust it. This demo shows it in under a minute: a BASE assistant that draws on your files, names the rule that justifies it, and flags a `[A VALIDER]` rather than ruling on its own, where a generic chat would improvise. Then it is up to you to judge whether that honesty makes any difference to your work.
+Before handing a real folder to an AI, watch how it behaves on a case you can check. This demo shows, in under a minute, a BASE assistant that consults two files, cites the rule it applies, and marks `[A VALIDER]` instead of treating the decision as settled.
 
 This demo draws on `exemples/assistant-devis-demo/`, already stocked with a fictional company, a service catalog, a client, and a quote.
 
-Don't have the repository on hand yet? [Try it without installing anything](essayer-sans-installer.md) walks through the simplest ways to try: its own example is the Veytaux tourist office rather than this quote, but the principle shown is the same; come back here once you have the repository.
+Don't have the repository on hand yet? [Try it without installing anything](essayer-sans-installer.md) shows the simplest ways to try, on this same example; come back here once you have the repository.
 
 ## 1. Open the demo
 
@@ -15,6 +15,8 @@ In an AI tool that can read your files, open this specific folder, not the root 
 exemples/assistant-devis-demo/
 ```
 
+Before asking the question, ask the tool to read the instructions, then to present the folder structure and the role of the main files to you.
+
 ## 2. Ask a question that requires checking
 
 In the chat, type:
@@ -23,7 +25,7 @@ In the chat, type:
 Dupont SA a-t-il droit à la remise fidélité?
 ```
 
-This is a trick question. Dupont SA's file says "Client (1er mandat)," while the loyalty rule demands two contracts. A generic chat, which knows neither your client nor your rules, may invent a plausible answer.
+This is a trick question. Dupont SA's record says "Client (1er mandat)," while the loyalty rule requires two contracts. Without these two pieces of information, a model has no basis on which to decide.
 
 ## 3. Read the reply
 
@@ -31,24 +33,24 @@ The assistant should consult two of your files and answer in this spirit:
 
 > According to `catalogue/regles-tarification.md`, the loyalty discount (-5%) applies to clients who have already signed two contracts. The file `clients/dupont-sa.md` says "Client (1er mandat)." So Dupont SA is not yet entitled to it. **[A VALIDER]** confirm the client's status before applying a discount.
 
-Look at what just happened. The assistant read your files instead of guessing. It told you the truth, even when disappointing, rather than an accommodating "yes." And it handed the decision back to you, paired with a marker you'll be able to find again.
+Check what just happened: the reply draws on the two expected files, lays out the reasoning, and leaves the validation visible. This result does not prove that every future reply will be correct; it shows a method you can inspect.
 
 ## What you just saw
 
-- **It reads your reality.** The reply cites `regles-tarification.md` and `dupont-sa.md`, your files, not a generic memory.
-- **It doesn't flatter.** When the honest answer is "no," it says "no" and shows the rule that justifies it.
-- **It stops at the right moment.** The `[A VALIDER]` leaves the decision to you and stays findable with a single search, even six months from now.
-- **It proves instead of promising.** On a quote, the amounts are not "roughly right": the `calculer-devis` tool recomputes the VAT and totals deterministically, and the assistant flags a discrepancy rather than asserting it.
-- **Nothing moved.** No file written, nothing sent by BASE (your AI tool, for its part, processes the conversation under its own terms). You stay in control.
+- **The sources are visible.** The reply cites `regles-tarification.md` and `dupont-sa.md`.
+- **The conclusion can be checked.** You can reread the rule and verify the client's status.
+- **The decision stays findable.** The `[A VALIDER]` marker turns up with a simple search.
+- **The calculations can leave the model.** The `calculer-devis` tool recomputes the VAT and totals with code; the assistant can then flag a discrepancy.
+- **The demo writes nothing.** No file is changed and no quote is sent to the client. The AI tool does, however, process the conversation and the files under its own terms.
 
-## The second round: what a generic chat cannot do
+## The second round: an instruction and a mechanism are not equivalent
 
-The first round showed honesty. The second shows a guarantee that a model's good will could never offer. Mark a resource `confidential` (for example a discount grid) and have the assistant work **through the broker** (MCP server or Studio chat): if it has to call a remote model, BASE **checks before sending** and holds back that resource. It does not leave. This is not a *consigne* the model could forget, it is a **mechanism**, guaranteed by tested code (`tools/core/egress.mjs`, `tests/base-egress.test.mjs`).
+The first round shows a readable method. The second shows a protection enforced by code. Mark a resource `confidential: true` (for example a discount grid) and have the assistant work **through the broker** (MCP server or Studio chat): before a remote call, BASE holds back that resource and replaces it with a notice. This protection does not depend on the model's good will; it is tested in `tools/core/egress.mjs` and `tests/base-egress.test.mjs`.
 
-The scope is precise: this hold operates **through the broker** (MCP, Studio, evaluation); in a direct editor agent, the same confinement is only a consigne. The example `exemples/agence-multi-clients/` shows its scale: one agency, several clients, each assistant confined to its root, the confidential grid consulted to set the price without ever being copied into the offer.
+The scope is precise: this hold operates **through the broker** (MCP, Studio, evaluation). In a direct editor agent, asking for the same confinement stays an instruction. The example `exemples/agence-multi-clients/` shows how to separate several client folders. When the action passes through the broker, each assistant stays within its root and confidential resources are held back before the remote call.
 
 ## Going further
 
 - **See a finished document:** ask "Show me quote DEV-2026-001." It already exists in `devis/DEV-2026-001.md`.
-- **Create your own:** copy `exemples/assistant-devis/`, then say "Hello, I'd like to set up my business." This version starts from a blank page and guides you step by step.
+- **Create your own:** copy `exemples/assistant-devis/`, then say: "Hello, I'd like to set up my business." This template contains the structure to customize and guides you step by step.
 - **Know what to read next:** follow [Where to start](lire-dans-quel-ordre.md).

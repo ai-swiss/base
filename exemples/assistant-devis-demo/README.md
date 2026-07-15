@@ -2,26 +2,27 @@
 
 ## Essayez en 30 secondes
 
-1. Ouvrez **ce dossier** (pas la racine du dépôt) dans Claude Code ou Cursor.
-2. Demandez, mot pour mot: **«Dupont SA a-t-il droit à la remise fidélité?»**
-3. L'assistant lit `catalogue/regles-tarification.md` et `clients/dupont-sa.md`, répond non (la remise fidélité demande deux mandats, Dupont SA en est à son premier), cite sa source et pose un `[A VALIDER]`. Rien n'est écrit ni envoyé sans vous.
+1. Ouvrez **ce dossier** (pas la racine du dépôt) dans un outil d'IA qui lit vos fichiers, par exemple Claude Code, Codex, Cursor, GitHub Copilot ou OpenCode. BASE n'en privilégie aucun.
+2. Demandez d'abord à l'outil de lire les instructions, puis de vous présenter la structure du dossier et le rôle des principaux fichiers.
+3. Demandez, mot pour mot: **«Dupont SA a-t-il droit à la remise fidélité?»**
+4. Vérifiez que la réponse consulte `catalogue/regles-tarification.md` et `clients/dupont-sa.md`, conclut «non» (la remise exige deux mandats, Dupont SA en est à son premier) et pose un `[A VALIDER]`. Cette question ne demande aucune écriture et la démo n'envoie rien au client.
 
-**Le moyen le plus rapide de voir BASE en action.** Ce dossier est déjà rempli avec les données d'une entreprise fictive, **Atelier Léman Sàrl**, un studio de design lausannois, et contient un devis tout prêt.
+Ce dossier contient déjà les données d'une entreprise fictive, **Atelier Léman Sàrl**, un studio de design lausannois, ainsi qu'un devis d'exemple.
 
 ## Voir un résultat fini en 60 secondes
 
-1. **Ouvrez** ce dossier dans Cursor ou Claude Code.
+1. **Ouvrez** ce dossier dans votre outil d'IA.
 2. **Dites**: «Montre-moi le devis DEV-2026-001».
 
-Vous obtenez un devis professionnel complet (prestations, TVA 8.1 %, acompte); voir [`devis/DEV-2026-001.md`](devis/DEV-2026-001.md). Aucune configuration n'est nécessaire: l'assistant lit les données déjà présentes.
+L'outil doit retrouver le devis existant dans [`devis/DEV-2026-001.md`](devis/DEV-2026-001.md), avec ses prestations, sa TVA et son acompte. Vérifiez qu'il montre ce fichier plutôt que d'en recréer un.
 
 ## Ensuite, essayez d'en créer un
 
 > «Nouveau devis pour Dupont SA: 2 jours de conseil et un site web vitrine.»
 
-L'assistant connaît déjà le catalogue ([`catalogue/services.json`](catalogue/services.json)), les tarifs et les conditions. Il propose un devis; **vous validez** avant tout envoi (cherchez le marqueur `[A VALIDER]`).
+Les fichiers contiennent déjà le catalogue ([`catalogue/services.json`](catalogue/services.json)), les tarifs et les conditions. Le process demande à l'assistant de proposer un devis et de marquer `[A VALIDER]` avant tout envoi. Cette consigne reste à contrôler dans l'outil que vous utilisez.
 
-La démo partage le même modèle structurel que `assistant-devis`: l'agent peut être chargé directement, et BASE peut router une demande vers le process `nouveau-devis` ou `configuration`. Les ressources utiles (catalogue, conditions, templates et outils) sont ouvertes ensuite par le process.
+La démo reprend la structure d'`assistant-devis`: l'agent peut être chargé directement, et BASE peut router une demande vers le process `nouveau-devis` ou `configuration`. Le process indique ensuite les ressources utiles à ouvrir: catalogue, conditions, templates et outils.
 
 ## Ce que contient la démo
 
@@ -31,12 +32,12 @@ La démo partage le même modèle structurel que `assistant-devis`: l'agent peut
 | `catalogue/` | 5 services avec prix + règles de tarification |
 | `clients/` | Fiche client Dupont SA |
 | `devis/` | Un devis déjà généré (`DEV-2026-001`) |
-| `.ai/agents/assistant-devis/` | L'intelligence de l'agent (workflows, compétences, outils) |
+| `.ai/agents/assistant-devis/` | Le rôle, les process, les compétences et les outils de l'agent |
 | `.ai/routing/` | Fixtures de routage agent → process |
 
 ## Pour démarrer avec **vos** données
 
-Cette démo sert à **voir** le résultat. Pour construire le vôtre à partir d'une page blanche, copiez plutôt le dossier voisin `assistant-devis` (au même niveau que ce dossier) et dites «Bonjour, je voudrais configurer mon activité»: l'assistant vous guide pour saisir votre entreprise, vos services et vos tarifs.
+Cette démo sert à **voir** le résultat. Pour construire le vôtre à partir d'un gabarit à personnaliser, copiez plutôt le dossier voisin `assistant-devis` et dites: «Bonjour, je voudrais configurer mon activité.» Son process est conçu pour recueillir votre entreprise, vos services et vos tarifs.
 
 ## Avertissement
 

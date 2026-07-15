@@ -1,7 +1,7 @@
-<!-- fr-synced: 55001e67152f344e4fa84f00972827cf0f9e3fc8 -->
+<!-- fr-synced: 20a81cfddc1f3418ae911f5443be396ff024cfc0 -->
 # Knowing which guarantees you get depending on your tool
 
-Your BASE files work in any AI tool that can read them (for example GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code), as in a standard web AI platform via MCP (for example ChatGPT, Claude, Gemini), but **the guarantees vary from one tool to the next**. This page tells you, plainly, what each harness actually protects, so you can choose your level of trust with full knowledge of the facts.
+Your BASE files work in any AI tool that can read them (for example GitHub Copilot, Codex, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code), as in a standard web AI platform via MCP (for example ChatGPT, Claude, Gemini), but **the guarantees vary from one tool to the next**. This page tells you, plainly, what each harness actually protects, so you can choose your level of trust with full knowledge of the facts.
 
 > Honesty rule: a guarantee is **strict** only for actions that go through BASE (its CLI, its broker, its MCP server, or a controlled connector). An action that **bypasses** BASE, such as an agent writing directly into a file, stays at the harness's native level.
 

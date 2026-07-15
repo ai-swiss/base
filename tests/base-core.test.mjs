@@ -1059,7 +1059,7 @@ describe("specification v0 contract", () => {
   it("documents audiences and publication discipline", async () => {
     const audiences = await fs.readFile(path.resolve("docs/audiences/pour-qui.md"), "utf8");
     const diffusion = await fs.readFile(path.resolve("docs/guides/diffusion.md"), "utf8");
-    const readme = await fs.readFile(path.resolve("README.md"), "utf8");
+    const readme = await fs.readFile(path.resolve("README.fr.md"), "utf8");
     const readingOrder = await fs.readFile(path.resolve("docs/start/lire-dans-quel-ordre.md"), "utf8");
     const framework = await fs.readFile(path.resolve("docs/reference/framework-public.md"), "utf8");
     const claude = await fs.readFile(path.resolve("CLAUDE.md"), "utf8");
@@ -1084,8 +1084,8 @@ describe("specification v0 contract", () => {
     assert.match(readingOrder, /source de vérité des parcours de lecture/);
     assert.match(framework, /Trois couches à ne pas confondre/);
     assert.match(claude, /point d'entrée pour Claude Code/);
-    assert.match(readme, /Pourquoi BASE existe/);
-    assert.match(readme, /délibérément minimale/);
+    assert.match(readme, /Pourquoi ça compte/);
+    assert.match(readme, /La structure peut rester simple/);
     assert.match(readme, /Apache-2\.0/);
     assert.match(diffusion, /double licence/);
     assert.match(license, /Apache License 2\.0/);
@@ -1104,13 +1104,13 @@ describe("specification v0 contract", () => {
   });
 
   it("documents the behavioral collaboration thesis without anthropomorphic overclaims", async () => {
-    const readme = await fs.readFile(path.resolve("README.md"), "utf8");
+    const readme = await fs.readFile(path.resolve("README.fr.md"), "utf8");
     const comprendre = await fs.readFile(path.resolve("docs/learn/comprendre.md"), "utf8");
     const audiences = await fs.readFile(path.resolve("docs/audiences/pour-qui.md"), "utf8");
     const diffusion = await fs.readFile(path.resolve("docs/guides/diffusion.md"), "utf8");
     const combined = [readme, comprendre, audiences, diffusion].join("\n");
 
-    assert.match(readme, /ne se comporte pas comme un logiciel numérique classique/);
+    assert.match(readme, /ne fonctionne donc pas comme un logiciel ordinaire/);
     assert.match(comprendre, /collègue venu d'ailleurs, amnésique: il a une représentation riche du monde, mais pas du vôtre/);
     assert.doesNotMatch(combined, /junior brillant/, "rejected model metaphor must not return");
     assert.match(audiences, /charge mentale au lieu de la réduire/);
@@ -1120,14 +1120,14 @@ describe("specification v0 contract", () => {
 
   it("documents the two control-retention principles consistently", async () => {
     const pratiques = await fs.readFile(path.resolve("docs/learn/pratiques-co-pensee.md"), "utf8");
-    const readme = await fs.readFile(path.resolve("README.md"), "utf8");
+    const readme = await fs.readFile(path.resolve("README.fr.md"), "utf8");
     const comprendre = await fs.readFile(path.resolve("docs/learn/comprendre.md"), "utf8");
 
     assert.match(pratiques, /Gardez le contrôle dans la durée/);
     assert.match(pratiques, /Gardez une intuition suffisante pour vérifier/);
     assert.match(pratiques, /Gardez la souveraineté sur votre dispositif/);
     assert.match(pratiques, /seize principes/);
-    assert.match(readme, /pertes de contrôle/); // the README frames control-retention as the losses to avoid (souveraineté, compréhension, durée, vérification, among others)
+    assert.match(readme, /formes de perte de contrôle/); // §4 opens by naming the forms of control at stake (method, understanding, what survives a tool change, verification) that the sub-sections then address
     assert.match(comprendre, /Déléguer la granularité ne doit pas faire perdre la capacité de juger/);
     assert.equal(readme.includes("14 principes"), false, "README must not keep the stale principle count");
   });

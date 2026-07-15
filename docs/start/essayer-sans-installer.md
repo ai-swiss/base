@@ -2,56 +2,52 @@
 schema_version: base.resource.v1
 id: essayer-sans-installer
 type: document
-title: Essayer BASE sans rien installer de nouveau
-description: Saisir BASE en le lisant, puis essayer un assistant sans rien installer côté BASE: le plus simple, un chat IA web où vous collez le pack d'un exemple, ou le plus complet, un outil IA qui ouvre le dossier.
+title: Essayer BASE sans installer BASE
+description: Tester le même exemple dans un chat web ou dans un outil capable d'ouvrir un dossier local, puis vérifier la conclusion, les sources et la décision laissée visible.
 scope: public
 status: active
 sensitivity: public
 license: CC-BY-4.0
 compatibility: [navigateur, cli]
-keywords: [essayer, sans installation, zip, cursor, chatgpt, claude, debutant, navigateur]
+keywords: [essayer, sans installation, zip, cursor, chatgpt, claude, debutant, navigateur, devis, dupont-sa]
 audience: [beginner]
 learning_level: beginner
 ---
 
-# Essayer BASE sans rien installer de nouveau
+# Essayer BASE sans installer BASE
 
-Le plus rapide pour saisir BASE n'est pas de l'installer, c'est de le lire: [Pourquoi BASE](../learn/co-penser-avec-lia.md) en montre la méthode et la profondeur en quelques minutes. Quand vous voudrez le voir à l'œuvre, cette page propose deux façons d'essayer un véritable assistant sans rien installer côté BASE. Un seul outil IA vous suffit: celui dont vous vous servez déjà.
+Avant de confier un vrai dossier à une IA, essayez BASE sur un exemple dont vous pouvez vérifier la réponse. Cette page propose deux chemins sans installation côté BASE. Un seul outil d'IA vous suffit, celui dont vous vous servez déjà.
 
-Les deux façons montrent le même exemple: l'office du tourisme de Veytaux, un cas d'école.
+Les deux façons montrent le même exemple: l'assistant devis pré-rempli, avec une question qui demande de vérifier plutôt que de deviner.
 
-## Le plus simple: un chat IA dans le navigateur
+## Le plus simple: un chat d'IA dans le navigateur
 
-Si vous disposez déjà d'un assistant IA dans un navigateur (ChatGPT, Claude, ou un autre), rien à installer: un assistant BASE est un ensemble de fichiers texte qui structure votre collaboration (savoir-faire, savoir, données); ce n'est pas une simple documentation, et c'est lui que vous donnez comme contexte.
+Si vous disposez déjà d'un outil d'IA dans un navigateur, comme ChatGPT ou Claude, rien à installer. L'objectif ici est de voir comment un assistant BASE est fait, et comment il se comporte. Le pack rassemble dans un seul document le rôle, les process et les conventions de l'assistant.
 
-1. Téléchargez le pack prêt à coller de l'exemple: **[veytaux-tourisme.pack.md](https://github.com/ai-swiss/base/releases/latest/download/veytaux-tourisme.pack.md)**. Tout l'assistant tient dans ce seul fichier: rien à chercher dans des dossiers cachés.
-2. Ouvrez-le avec un éditeur de texte (Bloc-notes, TextEdit), copiez tout, et collez-le dans une nouvelle conversation. Mieux, si votre outil le permet: créez un espace qui garde ce contexte (un Projet, un assistant personnalisé).
-3. Adressez-vous à lui: «Bonjour, quelles activités proposez-vous cet après-midi?»
+1. Téléchargez le pack prêt à coller de l'exemple: **[assistant-devis-demo.pack.md](https://github.com/ai-swiss/base/releases/latest/download/assistant-devis-demo.pack.md)**.
+2. Ouvrez-le dans un éditeur de texte pour en observer la structure, puis joignez-le à une nouvelle conversation. Si votre outil ne permet pas de joindre un fichier, collez son contenu.
+3. Posez la question: «Que dois-tu me faire valider avant de créer ou de modifier un devis?»
 
-Le seul point à retenir: un chat web ne parcourt pas un dossier de lui-même, vous lui remettez le pack une fois pour toutes. C'est la voie la plus accessible pour voir la méthode à l'œuvre. Chaque exemple peut avoir son pack: `npm run browser-pack` le génère depuis n'importe quel dossier BASE.
+Vérifiez que la réponse distingue ce que l'assistant peut préparer de ce que vous devez décider. La remise fidélité, elle, croise deux sources absentes du pack, une règle tarifaire et une fiche client: elle se teste plus bas, dans un outil qui ouvre le dossier.
 
-## Le plus complet: un outil IA qui ouvre le dossier
+Un chat web ne maintient aucun dossier structuré par BASE sur votre ordinateur. Les fichiers lui donnent le contexte de cette conversation, mais les corrections ne reviennent pas automatiquement dans votre dossier. Pour générer un pack depuis la racine du projet: `npm run browser-pack -- --root exemples/assistant-devis-demo --out assistant-devis-demo.pack.md`.
 
-Pour que l'assistant travaille de l'intérieur, en lisant tout le dossier et en agissant sous votre regard, il faut un outil IA capable d'ouvrir un dossier et d'en lire les fichiers (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code; certains s'emploient dans une fenêtre, d'autres au terminal, comme [Claude Code](installer-claude-code.md)). Choisissez celui où vous êtes déjà à l'aise.
+## Le plus complet: un outil d'IA qui ouvre le dossier
 
-1. Installez-le depuis son site officiel et connectez-vous; un modèle gratuit suffit pour essayer.
-2. Téléchargez tout BASE en un clic, **[base.zip](https://github.com/ai-swiss/base/releases/latest/download/base.zip)** (la dernière version publiée), puis décompressez-le (Windows: clic droit sur le fichier, **Extraire tout**, un double-clic ne suffit pas; Mac: double-clic). Vous obtenez un dossier **`base`**.
-3. Ouvrez-y le dossier **`base/exemples/veytaux-tourisme`** (souvent *File → Open Folder*), en **mode Agent** pour qu'il lise les fichiers.
-4. Demandez «Quelles activités proposez-vous cet après-midi?». L'assistant suit la méthode décrite dans les fichiers; poursuivez avec le [tutoriel pas à pas](../tutoriel/index.md).
+Pour lire les fichiers séparément et conserver vos modifications dans le dossier, utilisez un outil d'IA capable d'ouvrir un dossier, par exemple Claude Code, Codex, Cursor, GitHub Copilot ou OpenCode. Certains s'emploient dans une fenêtre, d'autres au terminal. BASE n'en privilégie aucun.
 
-> **Panne courante**: si l'assistant vous parle de «routage» ou de «BASE» au lieu de Veytaux, vous avez ouvert la racine `base`, qui est le cadre. Rouvrez le sous-dossier `exemples/veytaux-tourisme`.
+1. Installez l'outil choisi depuis son site officiel et connectez-vous. Les modèles disponibles, leurs coûts et leurs limites dépendent de cet outil.
+2. Téléchargez le projet BASE en un clic, **[base.zip](https://github.com/ai-swiss/base/releases/latest/download/base.zip)** (la dernière version publiée), puis décompressez-le (Windows: clic droit sur le fichier, **Extraire tout**, un double-clic ne suffit pas; Mac: double-clic). Vous obtenez un dossier **`base`**.
+3. Ouvrez-y le dossier **`base/exemples/assistant-devis-demo`** (souvent *File → Open Folder*), en **mode Agent** pour qu'il lise les fichiers.
+4. Demandez-lui de lire les instructions, puis de vous présenter la structure du dossier et le rôle des principaux fichiers.
+5. Posez la question qui demande de vérifier: «Dupont SA a-t-il droit à la remise fidélité?» C'est une question piège: la fiche indique «Client (1er mandat)», alors que la règle de fidélité exige deux mandats. La réponse attendue est «non». Vérifiez la conclusion, les deux sources citées et le marqueur `[A VALIDER]`; poursuivez avec le [tutoriel pas à pas](../tutoriel/index.md).
+
+> Si l'assistant vous parle de «routage» ou de «BASE» au lieu du devis, vous avez probablement ouvert la racine `base`, qui contient le cadre lui-même. Rouvrez le sous-dossier `exemples/assistant-devis-demo`.
 
 ## Votre propre dossier
 
-Pour partir de VOS données: copiez `base/exemples/starter-perso` où bon vous semble (vos
-Documents), renommez-le, puis rouvrez CE dossier dans votre outil. Ou demandez à votre assistant:
-«copie le dossier starter-perso vers mes Documents».
+Pour partir de vos données: copiez `base/exemples/starter-perso` où bon vous semble (vos Documents), renommez-le, puis rouvrez ce dossier dans votre outil. Ou demandez à votre outil d'IA: «Copie le dossier starter-perso vers mes Documents.» Pour créer votre propre assistant devis à partir d'un gabarit à personnaliser, copiez plutôt `exemples/assistant-devis` et dites: «Configure mon activité.»
 
-## Le palier honnête, et l'étape d'après
+## Ce que cet essai ne garantit pas
 
-Ici, c'est le **modèle** qui route en suivant des consignes (`CLAUDE.md`,
-`.cursor/rules/assistant.mdc`): pratique, mais il peut déborder. Pour les **garanties
-mécaniques** (routage déterministe, écritures validées, confinement), passez par
-[la lettre à votre IA](installer-par-votre-ia.md) (5 minutes), ou voir
-[Installer](installer.md) et [Sécurité et limites](../trust/securite-et-limites.md) pour la
-frontière entre *consigne* (suivie) et *mécanisme* (appliqué).
+Dans cet essai, le modèle suit les consignes de `CLAUDE.md` ou des règles de l'éditeur; il peut se tromper. Pour utiliser les mécanismes de BASE, comme le routage sans modèle ou les écritures médiées, passez par [la lettre à votre IA](installer-par-votre-ia.md), puis consultez [Installer](installer.md) et [Sécurité et limites](../trust/securite-et-limites.md). Une garantie ne vaut que lorsque l'action passe par le composant qui l'applique.

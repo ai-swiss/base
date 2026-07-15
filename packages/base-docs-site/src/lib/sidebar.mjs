@@ -176,7 +176,7 @@ const INSTALLER_LABELS = { fr: "Installer votre outil", en: "Install your tool" 
  */
 const EXCLUDED_PATHS = new Set([
   "README.md",
-  "README.en.md",
+  "README.fr.md",
   "MANIFESTO.en.md",
   "MANIFESTO.de.md",
   "MANIFESTO.it.md",
