@@ -4,7 +4,13 @@ Tous les changements notables de BASE sont documentés ici. Le format suit l'esp
 
 À partir de la 1.0, BASE suit le [Semantic Versioning](https://semver.org/lang/fr/): la surface publique stable (format des ressources, commandes CLI, outils MCP, schémas de projection, contrat des points d'extension) ne casse pas sans incrément majeur, hors dépréciation annoncée au préalable (un élément déprécié est retiré après sa fenêtre d'annonce, y compris en mineure). Détail: [Versions et stabilité](docs/reference/versions-et-stabilite.md).
 
-## [Unreleased]
+## [1.3.1] - 2026-07-16
+
+Le README s'ouvre à l'international, sans toucher à la surface publique. L'anglais devient la langue par défaut; le français reste la source qui fait foi. La refonte resserre l'entrée en matière et le parcours de démarrage.
+
+### Modifié
+- Le README s'affiche désormais en anglais par défaut (`README.md`), pour l'ouverture internationale; sa source française, qui fait foi, vit dans `README.fr.md` (l'ancien `README.en.md` disparaît). Le README est aussi refondu: ouverture par la question de possession, démarrage en trois portes, section «Pourquoi ça compte», et deux ajouts, un standard qui reste sobre et que votre outil d'IA comme le cadre construisent et entretiennent avec vous, et une évaluation qui mesure aussi la portabilité de vos process d'un modèle à l'autre. La page [Langues](docs/reference/langues.md) décrit ce choix.
+- Le parcours de démonstration (`docs/start/`) et l'exemple `assistant-devis-demo` parlent d'un même client (Dupont SA); la liste des outils compatibles cite Codex.
 
 ## [1.3.0] - 2026-07-14
 

@@ -1,11 +1,11 @@
-<!-- fr-synced: f979a637d0c3ad6e186483b20d9d60114c829549 -->
+<!-- fr-synced: 1e05c53cc771cafc0be6ce41f1e1a004d9993f68 -->
 # Understanding which language BASE uses, and where
 
 If you are wondering why the documentation is in French while the specifications are in English, this page explains it in a few lines. It is for anyone discovering the project, contributing to it, or wanting to build an assistant: it says which language governs what, and why your own assistants are bound to neither one.
 
 ## French for the method
 
-The public documentation (`docs/`, [README](../../../README.md), [Manifesto](../../../MANIFESTO.md)) is in French. It is the language of the method: the one in which BASE explains why to structure collaboration with AI, how to verify, and how to keep sovereignty over your files. In a multilingual country, writing the method in a national language brings it closer to its readers.
+The public documentation (`docs/`, [Manifesto](../../../MANIFESTO.md)) is in French. It is the language of the method: the one in which BASE explains why to structure collaboration with AI, how to verify, and how to keep sovereignty over your files. In a multilingual country, writing the method in a national language brings it closer to its readers. The README is the exception: it is shown in English by default on GitHub, for international reach, and its authoritative French source lives in [README.fr.md](../../../README.fr.md).
 
 ## English for the technical contract
 
@@ -21,14 +21,14 @@ One nuance, because lexical routing matches words: it routes in the language you
 
 | Profile | Language | Entry point |
 | ------ | ------ | -------------- |
-| User, assistant creator, decision-maker | French | [README](../../../README.md), [What to read, in what order](../start/lire-dans-quel-ordre.md) |
+| User, assistant creator, decision-maker | French | [README](../../../README.fr.md), [What to read, in what order](../start/lire-dans-quel-ordre.md) |
 | Compliance officer, institution | French | [Sovereignty, trust, and compliance](../trust/souverainete-et-confiance.md) |
 | Developer, integrator, technical auditor | English | [Current specification](../../../specs/current/README.md) |
 | Framework contributor | Both | [CONTRIBUTING](../../../CONTRIBUTING.md) |
 
 ## Translations
 
-Already available: the [README in English](../../../README.en.md), the **full English mirror of the documentation** (`docs/en/`, every page synced to its French source through an `fr-synced` fingerprint verified in continuous integration), as well as the manifesto in [English](../../../MANIFESTO.en.md), [German](../../../MANIFESTO.de.md), and [Italian](../../../MANIFESTO.it.md). The other translations (a `README.de.md`, a `docs/de/` folder per language) are among the most welcome contributions of all. The convention is set out in [CONTRIBUTING](../../../CONTRIBUTING.md): keep the restraint of the original, do not translate technical identifiers, and note at the top of the file that **the French version is authoritative**.
+Already available: the README, shown in English by default ([README.md](../../../README.md)) and sourced in French in [README.fr.md](../../../README.fr.md); the **full English mirror of the documentation** (`docs/en/`, every page synced to its French source through an `fr-synced` fingerprint verified in continuous integration); as well as the manifesto in [English](../../../MANIFESTO.en.md), [German](../../../MANIFESTO.de.md), and [Italian](../../../MANIFESTO.it.md). The other translations (a `README.de.md`, a `docs/de/` folder per language) are among the most welcome contributions of all. The convention is set out in [CONTRIBUTING](../../../CONTRIBUTING.md): keep the restraint of the original, do not translate technical identifiers, and note at the top of the file that **the French version is authoritative**.
 
 ---
 

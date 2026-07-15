@@ -22,7 +22,7 @@ const HEAD_LINES = 8;
 
 // Each translation and the French source it mirrors.
 const TRANSLATIONS = [
-  { file: "README.en.md", source: "README.md" },
+  { file: "README.md", source: "README.fr.md" },
   { file: "MANIFESTO.en.md", source: "MANIFESTO.md" },
   { file: "MANIFESTO.de.md", source: "MANIFESTO.md" },
   { file: "MANIFESTO.it.md", source: "MANIFESTO.md" },

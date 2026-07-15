@@ -130,7 +130,7 @@ describe("docs site sidebar projection", () => {
         title: "Reference",
         items: [
           item("readme", "BASE", "README.md", "front-door"),
-          item("readme-en", "BASE", "README.en.md"),
+          item("readme-fr", "BASE", "README.fr.md"),
           item("manifeste", "Manifeste BASE", "MANIFESTO.md"),
           item("manifesto-en", "BASE Manifesto", "MANIFESTO.en.md"),
           item("manifest-de", "BASE-Manifest", "MANIFESTO.de.md"),

@@ -284,7 +284,7 @@ describe("changelog-sync gate: a visible change leaves a trace", () => {
   it("recognises the public surface, visible docs, and changelog files", () => {
     assert.equal(isPublicSurface("docs/start/quickstart.md"), true);
     assert.equal(isPublicSurface("README.md"), true);
-    assert.equal(isPublicSurface("README.en.md"), true);
+    assert.equal(isPublicSurface("README.fr.md"), true);
     assert.equal(isPublicSurface("base.schema.json"), true);
     assert.equal(isPublicSurface("packages/base-llm/index.mjs"), true);
     assert.equal(isPublicSurface("tools/core/egress.mjs"), false, "internal code is spec-sync's job, not changelog-sync");

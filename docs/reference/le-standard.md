@@ -156,7 +156,7 @@ Ce que le format seul ne dit pas, et que BASE ajoute, tient en deux frontières.
 Un format de connaissance voisin fait cohabiter un mode opératoire et la description d'une table avec
 le même statut de contenu consultable. BASE les sépare, parce que la sécurité et la maintenabilité en
 dépendent. Ces frontières sont posées dans [ARCHITECTURE.md](../../ARCHITECTURE.md) et le
-[README](../../README.md).
+[README](../../README.fr.md).
 
 ## Les conventions de routage
 

@@ -1,4 +1,4 @@
-<!-- fr-synced: e4707340f451dc1aebbefdc498657410d15426a4 -->
+<!-- fr-synced: 74c5a78f9142639dc5e899affa65ab831d4847ab -->
 # Making the case for BASE: sovereignty, trust, compliance
 
 Adopting BASE often means winning someone over first: a client worried about their data, an IT department, a compliance officer. Here, in one place, is what you need to defend that choice without dodging the hard questions: data sovereignty, data protection, security, license, and governance. Written for any organization evaluating BASE, from the freelancer to the institution, this page points to the reference documents rather than replacing them.

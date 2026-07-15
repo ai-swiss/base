@@ -22,7 +22,7 @@ Au-delà de cette souveraineté d'hébergement, celle qui pèse à long terme es
 - Toute fonction susceptible de faire sortir des données (routage sémantique avancé, fournisseur d'embeddings, API externe) est **désactivée par défaut** et ne s'active que par un choix explicite, une option locale (Ollama) étant documentée.
 - Vos fichiers restent portables (Markdown): vous pouvez changer d'outil IA sans rien perdre de votre structure.
 
-Détail: [Sécurité et données du routage](securite-donnees-routage.md), section «Souveraineté des données» du [README](../../README.md).
+Détail: [Sécurité et données du routage](securite-donnees-routage.md), section «Souveraineté des données» du [README](../../README.fr.md).
 
 ## Protection des données (nLPD / revLPD, RGPD)
 

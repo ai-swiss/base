@@ -139,14 +139,30 @@ export function loadRenderedSource(
   return { type: "html", content: marked.parse(body, { async: false }) as string, headings, translated, title };
 }
 
-/** The file to render for a resource in a locale: the locale mirror when present, else the French source. */
+/**
+ * Root files that are English-default by exception: the base path (README.md) holds the English
+ * rendering readers see first, while the authoritative French source lives at the `.fr.md` sibling.
+ * This inverts the project-wide convention (base path = French) for these files alone, so the site
+ * resolves French from the sibling and renders the base path as-is for every other locale. Add a
+ * name here if another root file later goes English-default.
+ */
+const ENGLISH_DEFAULT_ROOT_FILES = new Set(["README.md"]);
+
+/** The file to render for a resource in a locale: the locale mirror when present, else the source. */
 function translatedSourcePath(resourcePath: string, locale: Locale, root: string): string {
+  if (ENGLISH_DEFAULT_ROOT_FILES.has(resourcePath)) {
+    if (locale === "fr") {
+      const french = resourcePath.replace(/\.md$/, ".fr.md");
+      return fs.existsSync(path.join(root, french)) ? french : resourcePath;
+    }
+    return resourcePath; // the base path already holds the default (English) rendering
+  }
   if (locale === "fr") return resourcePath;
   let candidate: string | null = null;
   if (resourcePath.startsWith("docs/")) {
     candidate = `docs/${locale}/${resourcePath.slice("docs/".length)}`;
   } else if (/^[^/]+\.md$/.test(resourcePath)) {
-    candidate = resourcePath.replace(/\.md$/, `.${locale}.md`); // a root file: README.md -> README.en.md
+    candidate = resourcePath.replace(/\.md$/, `.${locale}.md`); // a root file: MANIFESTO.md -> MANIFESTO.en.md
   }
   if (candidate && fs.existsSync(path.join(root, candidate))) return candidate;
   return resourcePath;

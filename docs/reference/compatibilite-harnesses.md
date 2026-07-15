@@ -12,7 +12,7 @@ keywords: [compatibilite, harness, outil, garanties, niveaux, claude, cursor, mc
 
 # Savoir quelles garanties vous obtenez selon votre outil
 
-Vos fichiers BASE fonctionnent dans tout outil IA capable de les lire (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code), comme dans une plateforme web IA standard via MCP (par exemple ChatGPT, Claude, Gemini), mais **les garanties varient d'un outil à l'autre**. Cette page vous dit sans détour ce que chaque harness protège réellement, afin que vous choisissiez votre niveau de confiance en connaissance de cause.
+Vos fichiers BASE fonctionnent dans tout outil IA capable de les lire (par exemple GitHub Copilot, Codex, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code), comme dans une plateforme web IA standard via MCP (par exemple ChatGPT, Claude, Gemini), mais **les garanties varient d'un outil à l'autre**. Cette page vous dit sans détour ce que chaque harness protège réellement, afin que vous choisissiez votre niveau de confiance en connaissance de cause.
 
 > Règle d'honnêteté: une garantie n'est **stricte** que pour les actions qui passent par BASE (sa CLI, son broker, son serveur MCP ou un connecteur contrôlé). Une action qui **contourne** BASE, par exemple un agent qui écrit directement dans un fichier, reste au niveau natif du harness.
 
