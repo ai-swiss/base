@@ -1,4 +1,4 @@
-<!-- fr-synced: d8aa81ec54824146d1e057b883419a259112f741 -->
+<!-- fr-synced: 41c9498379539d2f63f01d376a9d1acc0c7214ec -->
 # Understanding BASE and shaping how you work with AI
 
 Working seriously with AI means accepting that it produces fast, but sometimes errs with aplomb: what is at stake is keeping mastery of what you sign your name to, without giving up speed. This page shows how BASE structures that collaboration so quality holds over time, whether you are an independent professional, an SME, or a public service. You will see **why** this structure is necessary, **how** an agent works, and **how to build one** for your line of work.
@@ -345,7 +345,7 @@ All of BASE fits into one compass, blueprints that must **never be conflated**:
 > **Text = truth · Router = choice · Broker = guarantees · Index = scale · MCP = exposure · LLM = orchestration.**
 
 - **Text = truth.** Your Markdown/JSON files are the source of truth: readable by a human, versioned, yours.
-- **Router = choice.** The router chooses *which* agent and *which* process to follow, or abstains honestly. It spares you the mental load of hunting for the right process. The mechanism stays rudimentary but effective, and extends through adapters. It classifies according to inspectable rules; it enforces nothing and never invents a route.
+- **Router = choice.** The router chooses *which* agent and *which* process to follow, or abstains honestly. It spares you the mental load of hunting for the right process. In an AI tool, the model decides from the "when to use it"; a deterministic floor, simple but effective and extensible through adapters, serves use with no model and classifies according to inspectable rules. It enforces nothing and never invents a route.
 - **Broker = guarantees.** The broker is the only place that enforces the invariants (confinement, policy, trace). **A guarantee is only real for an action that passes through it.**
 - **Index = scale.** The manifest, the routing registry, the search index are **projections**, never an authority. They can always be regenerated from the text, or deleted.
 - **MCP = exposure.** The MCP server exposes the broker's primitives to the platforms; it orchestrates no business logic.

@@ -1,4 +1,4 @@
-<!-- fr-synced: 880f50347498a159893af3efe35f53e43717e33f -->
+<!-- fr-synced: 9d3a20733690bddaa79a07b03c6a4d67bff3bfbf -->
 
 # BASE
 
@@ -14,7 +14,7 @@ Some tools already record your instructions in files you can open and edit. BASE
 
 <sub>BASE = **Build Assistants with Structured Expertise** · *Bâtir des Assistants avec une Structure d'Expertise*</sub>
 
-[![Version](https://img.shields.io/badge/version-1.3.1-blue.svg)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](CHANGELOG.md)
 [![CI](https://github.com/ai-swiss/base/actions/workflows/ci.yml/badge.svg)](https://github.com/ai-swiss/base/actions/workflows/ci.yml)
 [![License: Apache-2.0 + CC BY 4.0](https://img.shields.io/badge/license-Apache--2.0%20%2B%20CC%20BY%204.0-blue.svg)](LICENSING.md)
 

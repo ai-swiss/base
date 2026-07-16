@@ -6,6 +6,17 @@ Tous les changements notables de BASE sont documentés ici. Le format suit l'esp
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-07-16
+
+Le routage devient plus explicable de bout en bout. `route_request` renvoie la carte des agents et de leurs process, chacun avec son «Quand l'utiliser»: c'est de cette carte que le modèle décide, le résultat déterministe n'étant qu'une indication à vérifier, jamais un ordre. Le serveur MCP guide un exécuteur distant sans lui dicter le mode opératoire; deux outils en lecture seule et une commande `base changes` rendent visible ce qui est proposé et ce qui a été écrit, le reçu de commit portant un `content_hash` vérifiable. Docs et specs disent partout le même partage: le standard définit les signaux de routage, l'implémentation de référence fournit le plancher qui sert les appels sans modèle.
+
+### Ajouté
+- Le serveur MCP guide un exécuteur distant pas à pas, sans mode opératoire dicté à la main: `route_request` renvoie `next_actions` (les étapes légales suivantes) et, sur une route trouvée, `guidance` (le corps du process choisi, injecté; retenu si le process est confidentiel). Deux outils en lecture seule, `list_pending_changes` et `get_change_status`, plus une commande `base changes [<id>]`, permettent de vérifier ce qui est proposé et si une écriture a réellement eu lieu, sur vos fichiers locaux comme via MCP. Rien de tout cela ne modifie le texte des process: le cadre livre les mots de l'auteur et applique les rails.
+- `route_request` renvoie aussi une `routing_map`: la carte des agents et de leurs process, chacun avec son «Quand l'utiliser» et son «Éviter si». C'est de cette carte que le modèle décide; le résultat déterministe l'accompagne comme une indication à vérifier, jamais comme un ordre. Le plancher lexical garde son rôle exact, servir les appels sans modèle (script, intégration, CI) et fixer les routes de `route-test`, sans être la couche qui tranche dans un outil d'IA. La documentation reflète partout ce partage: le standard définit les signaux de routage, l'implémentation de référence fournit le plancher.
+
+### Modifié
+- Le reçu de `commit_change` porte désormais `content_hash`, la preuve vérifiable qu'une écriture a bien eu lieu. Les descriptions des outils MCP deviennent des contrats opérationnels (précondition, postcondition), et un `commit_change` sans `propose_change` préalable échoue avec un message qui nomme le geste manquant.
+
 ### Corrigé
 - Le frontmatter des pages de documentation est désormais valide pour un lecteur YAML strict: une valeur contenant un deux-points suivi d'une espace (fréquent dans les descriptions) passe entre guillemets, ce qui supprime la bannière «Error in user YAML» que GitHub affichait en tête d'une trentaine de pages. Le lecteur de BASE retire ces guillemets à la lecture: le contenu des ressources est inchangé. Un nouveau gate `check-frontmatter-yaml`, dans `npm run check`, empêche toute régression.
 - Le sérialiseur de frontmatter émet à son tour du YAML strictement valide: un scalaire contenant un deux-points suivi d'une espace est protégé par des guillemets. L'atelier d'écriture (Studio, propose-commit) et le gate appliquent donc la même règle. Le lecteur reste tolérant et le contrat de round-trip est inchangé (loi de Postel: tolérant en lecture, conservateur en écriture).

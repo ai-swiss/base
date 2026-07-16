@@ -51,6 +51,7 @@ import {
   brokerReportFriction,
 } from "./base-core-adapter.js";
 import { createLogger } from "./logger.js";
+import { withRouteGuidance, registerChangeStatusTools } from "./route-guidance.js";
 import { parseArgs, remoteExposureError, dnsRebindingGuard } from "./transport.js";
 export { parseArgs, isLoopbackHost, remoteExposureError, crossOriginError } from "./transport.js";
 
@@ -571,7 +572,8 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
         const selected = selectServerRoot(await rootChoices(), root_id);
         const result = await routeRequest(selected.path, request, limit);
         await journal(selected.path, result);
-        return { content: [{ type: "text" as const, text: json({ root: rootScope(selected), ...result }, scope) }] };
+        const augmented = await withRouteGuidance(selected.path, { root: rootScope(selected), ...result }, openResource);
+        return { content: [{ type: "text" as const, text: json(augmented, scope) }] };
       }
       const roots = await rootChoices();
       const result = roots.length > 1
@@ -580,7 +582,10 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
           ? { root: rootScope(roots[0]), ...await routeRequest(roots[0].path, request, limit) }
           : await routeRequest(rootDir, request, limit);
       if (roots.length <= 1) await journal(roots[0]?.path ?? rootDir, result as { status: string; next_question?: string | null });
-      return { content: [{ type: "text" as const, text: json(result, roots.length > 1 ? routeScope ?? scope : scope) }] };
+      // Guidance is read from the single-root path; for a cross-root win it degrades gracefully
+      // (openResource throws on the wrong root -> next_actions still carries the sequence).
+      const augmented = await withRouteGuidance(roots[0]?.path ?? rootDir, result as Record<string, unknown>, openResource);
+      return { content: [{ type: "text" as const, text: json(augmented, roots.length > 1 ? routeScope ?? scope : scope) }] };
     },
   );
 
@@ -636,7 +641,7 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
 
   server.tool(
     "access_resource",
-    "Read ANY project file by relative path with BASE path confinement. Superset of open_resource: an inventoried resource opens identically; any other file (e.g. business data listed by load_agent) gets a confined raw read.",
+    "Read a project file by relative path, with BASE path confinement. Superset of open_resource: an inventoried resource opens identically; any other file (e.g. business data listed by load_agent) gets a confined raw read. Prefer routing first (route_request) so you read only what the chosen process needs.",
     {
       path: z.string().describe("Resource id, resource path, or relative path inside the BASE project."),
       purpose: z.string().optional().describe("Why this resource is needed. Logged or enforced by stricter adapters."),
@@ -661,6 +666,10 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
       }
     },
   );
+
+  // Change-status reads (read-only, registered in every mode): verify what is staged and whether a
+  // claimed write actually happened, against server truth rather than the model's narration.
+  registerChangeStatusTools(server, { effectiveRoot, scopeForRoot, json, clientError });
 
   // Write & execute tools. In read-only mode (recommended for shared/remote deployments) they are
   // not registered at all, so the surface is provably read-only — there is no tool to reach a write.
@@ -740,9 +749,9 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
     server.tool(
       "propose_change",
       [
-        "Prepare a mediated write to a local file, confined to the project. Writes NOTHING:",
-        "returns a change_id, a readable diff, and the access decision.",
-        "Call commit_change to actually write it after the human has seen the diff.",
+        "Prepare a mediated write to a local file, confined to the project. This is the ONLY way to change",
+        "a file, and it writes NOTHING yet: it returns a change_id, a readable diff, and the access decision.",
+        "Then call commit_change. Never report a file as written without a commit_change receipt.",
       ].join(" "),
       {
         target: z.string().describe("Relative path of the file to create or modify."),
@@ -770,9 +779,10 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
     server.tool(
       "commit_change",
       [
-        "Apply a previously proposed change by its change_id. Confined to the project, verifies the",
-        "written state, and records a trace. Sensitive/restricted targets and the default policy",
-        "require confirmed=true; a resource can opt out via requires_confirmation: false.",
+        "Apply a change previously staged by propose_change, by its change_id (call propose_change first;",
+        "there is no other write path). Confined to the project, verifies the written state, records a trace,",
+        "and returns a receipt: { written, target, content_hash }. Sensitive/restricted targets and the default",
+        "policy require confirmed=true (a human approval); a resource can opt out via requires_confirmation: false.",
       ].join(" "),
       {
         change_id: z.string().describe("The change_id returned by propose_change."),

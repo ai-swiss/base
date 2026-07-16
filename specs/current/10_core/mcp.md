@@ -23,18 +23,22 @@ guidance and the French body cannot drift apart silently.
 |---|---|---|
 | `load_agent` | Lazy bootstrap: list agents (no name) or return one agent's `AGENT.md` + resource catalogue + data references | `discoverAgents` + `bundleAgentBootstrap` |
 | `discover_resources` | Explainable metadata search; content stays behind `open_resource`/`access_resource` | broker `searchResources` |
-| `route_request` | Route a request to agent → process, or abstain | broker `routeRequest` |
+| `route_request` | Returns a compact `routing_map` (agents → processes with use_when + avoid) for the MODEL to decide from, plus `next_actions` and (on the lexical hint's routed result) `guidance`; the deterministic lexical decision is a labelled hint, not the router on the model path | broker `routeRequest` + `buildRoutingRegistry` |
 | `open_resource` | Open by id/path, confined, projected | broker `openResource` |
 | `get_context_pack` | Plan a process's preload: declared references as paths + notes, never bodies; read-only | broker `brokerContextPack` |
 | `access_resource` | Read a confined file/resource | broker `accessResource` |
 | `invoke_tool` | Dry-run (default) or confirmed execution | broker `invokeTool` |
 | `propose_change` | Stage a write; return a diff, write nothing | broker `proposeChange` |
-| `commit_change` | Apply a staged write (re-checked, verified) | broker `commitChange` |
+| `commit_change` | Apply a staged write (re-checked, verified); returns a receipt with `content_hash` | broker `commitChange` |
 | `promote_resource` | Propose a scope promotion | broker `promoteResource` |
 | `list_markers` | List typed open markers | broker `listMarkers` |
+| `list_pending_changes` | List staged-but-uncommitted writes (read-only, registered in every mode) | broker `listPendingChanges` |
+| `get_change_status` | Report a `change_id` as pending / absent / invalid (read-only, registered in every mode) | broker `getChangeStatus` |
 | `report_friction` | Field feedback: append a dated, creation-only friction entry under `.ai/feedback/` (write-gated: absent on read-only servers) | broker `reportFriction` |
 
 **FR-MCP-002 - lazy by design.** `load_agent` never bulk-loads skills/templates/data; it returns a catalogue and the platform fetches only what it needs via the other tools. The legacy `include_data` flag is a no-op kept for compatibility, **formally deprecated** (CHANGELOG); it is removed in the next minor version, where old callers degrade silently (an unknown field is tolerated).
+
+**Server-led sequencing (remote-executor robustness).** So a stateless remote client follows the protocol without external scaffolding, the server leads at each step. `route_request` returns a compact `routing_map` (agents → processes, each with its use_when + avoid) for the MODEL to decide from: the deterministic lexical decision is a labelled hint, authoritative only for no-model/headless callers, never the router on the model path. It also returns `next_actions` (the next legal steps) and, on a routed hint, `guidance` (the chosen process's own body, inlined so a client that skips `open_resource` still follows the author's instructions; withheld under egress for a confidential process). Both are framework-derived and carry no authored process text of their own. Two read-only tools, `list_pending_changes` and `get_change_status`, let a caller verify what is staged and whether a claimed write landed against server truth (the authoritative proof is the `commit_change` receipt, `{ written, target, content_hash }`). None of this requires editing authored process text.
 
 **Agent discovery.** Scans the configured root and nested BASE project roots. A loadable project root is any non-skipped directory containing `.ai/agents/*/AGENT.md`; each discovered agent keeps that directory as its `projectRoot`, so resources are not merged across projects. Agent directories starting with `_` are skipped.
 
@@ -52,7 +56,7 @@ Security posture by transport:
 - `stdio` keeps the full broker surface by default for local desktop clients.
 - `http` is read-only by default. Write and execute tools are not registered unless the operator explicitly passes `--read-write` or sets `BASE_MCP_READ_ONLY=0`. Note that `discover_resources` and `route_request` **remain registered even when read-only** (they are reads).
   `route_request` additionally journals every honest abstention (`out_of_scope` / `ambiguous` / `needs_clarification`)
-  to `.ai/feedback/abstentions.jsonl`: adapter-side telemetry (the broker stays pure), shared verbatim with the CLI `base route`. `route_request` returns agent/process identifiers, paths and candidate scores; this routing metadata is therefore part of the read-only surface by design. Content still stays behind `open_resource`/`access_resource`.
+  to `.ai/feedback/abstentions.jsonl`: adapter-side telemetry (the broker stays pure), shared verbatim with the CLI `base route`. `route_request` returns the `routing_map` (agent/process metadata with use_when + avoid) and the deterministic hint's identifiers, paths and candidate scores; this routing metadata is part of the read-only surface by design. Content still stays behind `open_resource`/`access_resource`.
 - `--read-only` or `BASE_MCP_READ_ONLY=1` force a read-only surface.
 - HTTP still refuses non-loopback exposure without auth, because even a read-only MCP surface can expose project data, and operators may enable write/execute explicitly.
 - On a loopback bind (the default), `/mcp` also refuses cross-origin / DNS-rebinding requests (a non-loopback `Host`, or a foreign `Origin`) with 403 *before* auth (`crossOriginError`, transport.ts), mirroring the Studio's guard. A local MCP client (no `Origin`, loopback `Host`) passes; on a deliberate non-loopback bind, auth is the control and the guard is skipped.

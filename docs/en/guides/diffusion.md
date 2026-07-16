@@ -1,4 +1,4 @@
-<!-- fr-synced: ddcafed548cb7bfb6d30ccb6556fe6b54d5ce6ca -->
+<!-- fr-synced: dce54944bd9d411833205d26a066f15e4cb2b2d4 -->
 # Releasing BASE as open source
 
 Releasing BASE as open source means letting others pick up and adapt a structure of work that is their own, without depending on a vendor or a platform. The point is not to show off a finished product, but to make this foundation reusable and honest about what it does, so anyone can try it, criticize it, and help it grow. This guide brings together what you need to decide, check, and write so that this release keeps its promise.
@@ -102,7 +102,7 @@ For a conference or a workshop:
 3. Introduce files as durable memory.
 4. Show the workflows and the competences.
 5. Explain the decision points and the verification debt.
-6. Show the router/broker once the concrete need is established: rudimentary but effective, extensible through adapters, it spares you the effort of finding the right process.
+6. Show the router/broker once the concrete need is established: simple but effective, extensible through adapters, it spares you the effort of finding the right process.
 7. Close on sovereignty: the durable capital is not the model, but the structure of the expertise.
 
 For a non-technical person:

@@ -112,7 +112,7 @@ On part rarement d'une page blanche. Deux portes, un même résultat:
 
 Ensuite, pour convertir vos documents en process et en compétences, demandez à votre assistant:
 «importer mes procédures existantes». Le routeur l'enverra sur `importer-l-existant`, qui
-propose chaque conversion sous forme de diff. Ce routeur reste rudimentaire mais efficace, et extensible par
+propose chaque conversion sous forme de diff. Ce routage reste simple mais efficace, et extensible par
 adaptateurs. Il vous épargne la recherche du bon process.
 
 ---

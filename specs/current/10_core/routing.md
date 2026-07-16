@@ -187,13 +187,11 @@ Ports & Adapters (the models are injected adapters; the core imports no model cl
 `tools/core/router.mjs`; the broker (`route-broker.mjs`) wires the real resolvers. The distinction that
 governs both: a **MECHANISM** is code-guaranteed by a test (the floor, the deny veto, the refiner's
 hallucination guard); a **CONSIGNE** is followed by the model, faillible, always bounded by a mechanism
-(reading the index).
+(reading the index). The lexical floor is a reference-implementation mechanism, **not part of the
+`base.resource.v1` standard**: the standard defines only the routing SIGNAL (`use_when`), and any router
+— the model reading the map, embeddings, or the floor — consumes it.
 
-**The lexical strategy — the deterministic floor + the consigne (default; «Voie 1» in the user docs).** The harness LLM reads the generated index
-(the consigne) and chooses; under it, `computeRoute → decideRoute` is the offline floor — a constrained
-classifier over the returned `candidates`, choosing *from the list* (or abstaining), never free-exploring
-the filesystem. If the index-read choice disagrees with the floor, that is an ambiguity signal: re-examine
-«Quand l'utiliser»/«Éviter si» or ask, never silently override. No LLM call lives in the zero-dependency
+**The default strategy — the model reads the map; a deterministic floor for callers without a model («Voie 1»).** When a model is present (an AI tool, or the MCP `route_request` client), the model reads the generated index / `routing_map` and chooses: it is the router. `computeRoute → decideRoute` is the deterministic **floor** — the router for no-model/headless callers (`base route` in scripts, CI, integrations), the `route-test` oracle, and honest abstention — a constrained classifier over the returned `candidates`, choosing *from the list* (or abstaining), never free-exploring the filesystem. When a model is present the floor is a labelled hint, not co-authoritative (word-overlap is brittle on paraphrase). If the model's choice disagrees with the floor, re-examine «Quand l'utiliser»/«Éviter si» or ask; never invent an id. No LLM call lives in the zero-dependency
 core. The canonical consigne (`ROUTER_BODY`, projected into every entry point and freshness-gated)
 states the full reading discipline, each rule at its point of use: decide on candidate **metadata**,
 never by reading all bodies (`base discover`, `--projection metadata`, the frontmatter block); a
@@ -307,7 +305,7 @@ pinned model/index. The generated `.ai/routing/` tree is excluded from inventory
   regressions without an academic benchmark.
 - `base build routing-index [--write]` — generates the agent-readable index tree (root + one per agent), a deterministic projection of the registry, committed to the repo and gated for freshness in CI (opt-in, not part of `build all`).
 - `base build routing-embeddings [--write]` — precomputes the routing vectors with the SAME model reference the query path reads (`routing.embedding_model` from `.ai/studio.settings.json`, resolved through the shared provider registry by `resolveEmbedder` — one vocabulary, one place; the shipped semantic package is imported dynamically), writing the model-specific `embeddings.json` cache (gitignored). Opt-in, model-backed. The cache is a **stamped envelope** (`base.routing_vectors.v1`): it names the embedder it was built with (`<provider>/<model>`) and each entry carries the sha256-derived hash of the `route_text` it embedded (`hashRouteText`). `confidential` resources are **never embedded** (the egress promise holds on the build path; the CLI reports the skip count). At route time, `verifyRoutingVectors` drops entries whose `route_text` drifted (journaled: `routing_vectors_stale`) and the embedding strategy strips ALL precomputed vectors when the cache's stamp names another model than `routing.embedding_model` (journaled: `routing_vectors_model_mismatch`; vectors from another model live in another space — noise, worse than no cache; since build and query read the same reference, this only fires on a cache from an earlier model or another machine). A pre-v1 bare map keeps working, flagged `legacy`; `base doctor` surfaces both drifts (`stale_routing_vectors`).
-- MCP tool `route_request` — returns a route or an abstention; it does not load every instruction.
+- MCP tool `route_request` — returns a compact `routing_map` (agents → processes with «Quand l'utiliser»/«Éviter si») for the model to decide from, plus `next_actions` and (on the lexical hint's routed result) `guidance`; the deterministic decision is a labelled hint, authoritative only for no-model/headless callers. It does not load every instruction.
 
 ## Routability advisory (opt-in)
 

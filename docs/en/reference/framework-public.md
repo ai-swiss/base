@@ -1,4 +1,4 @@
-<!-- fr-synced: 67e657a2c8df53c3d85112e36cebcf4df9365cab -->
+<!-- fr-synced: 68ad1b0c92d12783ed054c585962a38d2d50e6ac -->
 # Adopting public BASE: from local to team
 
 If you are an individual, a freelancer, a startup, a small or mid-sized business, or a small team, this page shows you what public BASE gives you: a way to structure your collaboration with AI without installing a heavy platform. It also explains how to adopt it in stages, staying simple on the surface without blocking your later growth.
@@ -104,7 +104,7 @@ Enterprise = governed integration + internal policies + additional technical con
 
 These concepts need not all appear in the beginner UX. Their purpose is to keep the structure from having to be thrown away when an organization grows.
 
-**Language.** None of these abstractions is tied to French. Routing is lexical and language-independent (a comparison of normalized words, with no grammar and no lexicon of any given language), and an assistant declared with German or Italian keywords routes in that language. The framework's documentation begins in French; the assistants you build, for their part, speak their users' language.
+**Language.** None of these abstractions is tied to French. The routing signal (the "when to use it") lives in your resources, hence in your users' language: an assistant declared in German or Italian routes in that language. In an AI tool, the model reads this signal and grasps its meaning; the reference implementation's deterministic floor compares normalized words (with no grammar of any given language) for calls with no model. The framework's documentation begins in French; the assistants you build, for their part, speak their users' language.
 
 In this table, `access` does not mean BASE replaces native permissions. A connector is the mechanism that attempts to read or write a source. Actual success always depends on the rights of the system involved: filesystem, Drive, API, token, user account, network, or harness.
 
@@ -147,8 +147,10 @@ The public broker, shared by the CLI and the MCP, provides:
 
 - a resource inventory;
 - explainable local search;
-- agent-to-process routing with structured abstention (`base route`, `route_request`);
+- agent-to-process routing with structured abstention: `route_request` returns a map (agents → processes, each with its "when to use it") that the model reads to decide, `base route` being the deterministic floor for calls with no model;
 - domain routing tests (`base route-test`);
+- mediated propose-then-commit writing (`base propose`/`base commit`, `propose_change`/`commit_change`), the commit receipt carrying a verifiable `content_hash`;
+- read-only inspection of write state (`base changes`, `list_pending_changes`, `get_change_status`);
 - confined resource opening with a `metadata`, `instructions`, or `full` projection;
 - local access to files or resources;
 - invocation of a tool (script) in dry-run by default, with confirmation when needed;

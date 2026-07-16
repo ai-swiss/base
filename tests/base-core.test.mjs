@@ -18,6 +18,8 @@ import {
   ROUTER_BODY,
   canAccessResource,
   commitChange,
+  getChangeStatus,
+  listPendingChanges,
   confineToRoot,
   writeArtifacts,
   createMaintenanceReport,
@@ -763,6 +765,27 @@ describe("proposeChange and commitChange", () => {
     await fs.writeFile(path.join(tmpDir, "doc.md"), "v1-modifie\n", "utf8");
 
     await assert.rejects(() => commitChange(tmpDir, proposed.change_id, { confirmed: true }), /changed since/);
+  });
+
+  it("returns a content_hash receipt on commit, lists pending changes, and status flips pending -> absent", async () => {
+    const proposed = await proposeChange(tmpDir, "notes2.md", "salut\n");
+    const pending = await listPendingChanges(tmpDir);
+    assert.ok(pending.some((c) => c.change_id === proposed.change_id && c.target === "notes2.md"));
+    assert.equal((await getChangeStatus(tmpDir, proposed.change_id)).status, "pending");
+
+    const committed = await commitChange(tmpDir, proposed.change_id, { confirmed: true });
+    assert.equal(committed.written, true);
+    assert.ok(typeof committed.content_hash === "string" && committed.content_hash.length >= 8, "commit returns a verifiable content_hash");
+
+    assert.equal((await getChangeStatus(tmpDir, proposed.change_id)).status, "absent");
+    assert.equal((await listPendingChanges(tmpDir)).some((c) => c.change_id === proposed.change_id), false);
+  });
+
+  it("commit without a prior propose fails with a message that names the fix", async () => {
+    await assert.rejects(
+      () => commitChange(tmpDir, "chg_deadbeef0000", { confirmed: true }),
+      /No pending change[\s\S]*propose_change first/,
+    );
   });
 });
 

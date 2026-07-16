@@ -71,11 +71,19 @@ interface BrokerModule {
   inventoryResources(rootDir: string, options?: { egress?: EgressContext }): Promise<BrokerResource[]>;
   searchResources(rootDir: string, query: string, options?: { limit?: number; egress?: EgressContext }): Promise<BrokerResource[]>;
   routeRequest(rootDir: string, request: string, options?: { limit?: number; egress?: EgressContext }): Promise<BrokerRouteResult>;
+  buildRoutingRegistry(resources: BrokerResource[]): {
+    agents: Array<{
+      agent: { id: string; title: string | null; route_text?: string } | null;
+      processes: Array<{ id: string; title: string | null; route_text?: string; avoid_text?: string; path: string }>;
+    }>;
+  };
   openResource(rootDir: string, idOrPath: string, options?: { projection?: "metadata" | "instructions" | "full"; purpose?: string; confirmed?: boolean; grantToken?: string; egress?: EgressContext }): Promise<BrokerOpenResult>;
   accessResource(rootDir: string, idOrPath: string, options?: { projection?: "metadata" | "instructions" | "full"; purpose?: string; confirmed?: boolean; grantToken?: string; egress?: EgressContext }): Promise<BrokerOpenResult>;
   invokeTool(rootDir: string, idOrPath: string, args?: string[], options?: { dryRun?: boolean; confirmed?: boolean; grantToken?: string; egress?: EgressContext }): Promise<BrokerInvokeResult>;
   proposeChange(rootDir: string, target: string, content: string, options?: { purpose?: string; confirmed?: boolean; grantToken?: string; egress?: EgressContext }): Promise<BrokerProposeResult>;
   commitChange(rootDir: string, changeId: string, options?: { confirmed?: boolean; grantToken?: string }): Promise<BrokerCommitResult>;
+  listPendingChanges(rootDir: string): Promise<BrokerPendingChange[]>;
+  getChangeStatus(rootDir: string, changeId: string): Promise<BrokerChangeStatus>;
   promoteResource(rootDir: string, idOrPath: string, toScope: string, options?: { purpose?: string; confirmed?: boolean; grantToken?: string; egress?: EgressContext }): Promise<BrokerPromoteResult>;
   listMarkers(rootDir: string, options?: { egress?: EgressContext }): Promise<BrokerMarker[]>;
   contextPack(rootDir: string, idOrPath: string, options?: { budget?: number; egress?: EgressContext }): Promise<BrokerContextPackSummary>;
@@ -137,6 +145,24 @@ export interface BrokerCommitResult {
   written: boolean;
   target: string;
   decision: { decision: string; reason: string };
+  content_hash?: string;
+}
+
+export interface BrokerPendingChange {
+  change_id: string;
+  target: string;
+  created_at: string;
+  purpose: string | null;
+  exists: boolean;
+}
+
+export interface BrokerChangeStatus {
+  change_id: string;
+  status: "pending" | "absent" | "invalid";
+  target?: string;
+  created_at?: string;
+  purpose?: string | null;
+  note?: string;
 }
 
 interface RouteWorkspaceModule {
@@ -318,6 +344,47 @@ export async function brokerRouteRequest(rootDir: string, request: string, limit
   return broker.routeRequest(rootDir, request, typeof limit === "number" ? { limit, egress } : { egress });
 }
 
+export interface BrokerRoutingMapProcess {
+  id: string;
+  title: string | null;
+  use_when: string | null;
+  avoid: string | null;
+  path: string;
+}
+export interface BrokerRoutingMapAgent {
+  id: string;
+  title: string | null;
+  use_when: string | null;
+  processes: BrokerRoutingMapProcess[];
+}
+
+// The compact routing map a model reads to route: agents (with their use_when) and their processes
+// (with use_when + avoid), egress-filtered. It is the SAME derivation the generated index is built
+// from (buildRoutingRegistry), so the thin-client MCP path and file-capable agents route on one map.
+export async function brokerRoutingMap(rootDir: string): Promise<BrokerRoutingMapAgent[]> {
+  const broker = await loadBroker();
+  const resources = await broker.inventoryResources(rootDir, { egress: await mcpEgress(broker, rootDir) });
+  const registry = broker.buildRoutingRegistry(resources);
+  return registry.agents
+    .map((a) =>
+      a.agent
+        ? {
+            id: a.agent.id,
+            title: a.agent.title ?? null,
+            use_when: a.agent.route_text ?? null,
+            processes: a.processes.map((p) => ({
+              id: p.id,
+              title: p.title ?? null,
+              use_when: p.route_text ?? null,
+              avoid: p.avoid_text ?? null,
+              path: p.path,
+            })),
+          }
+        : null,
+    )
+    .filter((a): a is BrokerRoutingMapAgent => a !== null);
+}
+
 export async function brokerOpenResource(
   rootDir: string,
   idOrPath: string,
@@ -396,6 +463,16 @@ export async function brokerCommitChange(
 ): Promise<BrokerCommitResult> {
   const broker = await loadBroker();
   return broker.commitChange(rootDir, changeId, { confirmed, grantToken });
+}
+
+export async function brokerListPendingChanges(rootDir: string): Promise<BrokerPendingChange[]> {
+  const broker = await loadBroker();
+  return broker.listPendingChanges(rootDir);
+}
+
+export async function brokerGetChangeStatus(rootDir: string, changeId: string): Promise<BrokerChangeStatus> {
+  const broker = await loadBroker();
+  return broker.getChangeStatus(rootDir, changeId);
 }
 
 export async function brokerPromoteResource(

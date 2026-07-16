@@ -356,7 +356,7 @@ Tout BASE tient dans une boussole, des plans qui ne doivent **jamais se confondr
 > **Texte = vérité · Routeur = choix · Broker = garanties · Index = échelle · MCP = exposition · LLM = orchestration.**
 
 - **Texte = vérité.** Vos fichiers Markdown/JSON sont la source de vérité: lisibles par un humain, versionnés, à vous.
-- **Routeur = choix.** Le routeur choisit *quel* agent et *quel* process suivre, ou s'abstient honnêtement. Il vous épargne la charge mentale de chercher le bon process. Le mécanisme reste rudimentaire mais efficace, et s'étend par adaptateurs. Il classe selon des règles inspectables; il n'applique rien et n'invente jamais une route.
+- **Routeur = choix.** Le routeur choisit *quel* agent et *quel* process suivre, ou s'abstient honnêtement. Il vous épargne la charge mentale de chercher le bon process. Dans un outil d'IA, le modèle décide d'après le «Quand l'utiliser»; un plancher déterministe, simple mais efficace et extensible par adaptateurs, sert l'usage sans modèle et classe selon des règles inspectables. Il n'applique rien et n'invente jamais une route.
 - **Broker = garanties.** Le broker est le seul endroit qui applique les invariants (confinement, policy, trace). **Une garantie n'est réelle que pour une action qui passe par lui.**
 - **Index = échelle.** Le manifeste, le registre de routage, l'index de recherche sont des **projections**, jamais une autorité. On peut toujours les régénérer depuis le texte, ou les supprimer.
 - **MCP = exposition.** Le serveur MCP expose les primitives du broker aux plateformes; il n'orchestre aucune logique métier.

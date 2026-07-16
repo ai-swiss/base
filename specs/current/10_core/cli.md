@@ -31,7 +31,8 @@ Zero dependencies: runs with bare `node` (NFR-CORE-001).
 | `doctor` | Corpus health: dead links, orphans, stale evals, due reviews, expired reference data, open frictions — pure projection, mandatory fix hint per finding, `--json` | `tools/doctor/diagnose.mjs` |
 | `trace` | Trace summary | `summarizeTrace` |
 | `propose <target>` | Stage a write; show a diff, write nothing | `proposeChange` |
-| `commit <change-id>` | Apply a staged write (re-checked, verified) | `commitChange` |
+| `commit <change-id>` | Apply a staged write (re-checked, verified); returns a `content_hash` receipt | `commitChange` |
+| `changes [<change-id>]` | List staged-but-uncommitted writes; with an id, that change's status (pending/absent/invalid) | `listPendingChanges`/`getChangeStatus` |
 | `promote <id> --to <scope>` | Propose a scope promotion (frontmatter) | `promoteResource` |
 | `markers` | List typed open markers (business files) | `listMarkers` |
 | `build [target]` | Project derived artifacts (`AGENTS.md`, tool matrix, `routing-index`) | `buildArtifacts` |

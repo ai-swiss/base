@@ -1,4 +1,4 @@
-<!-- fr-synced: b3f9e4f359f3922df1ec753b0f38a432c342286d -->
+<!-- fr-synced: 48f1909ff4f0b530fb1b0494baa85047be65f410 -->
 # Shape your first assistant
 
 In a few minutes, you hand off a task you repeat by hand to an assistant that takes it on, with no code and without giving up any control: it proposes, you approve. Concretely, you copy an example into an AI tool that can read your files, you say what you want to do, and the assistant does the rest.
@@ -93,7 +93,7 @@ You rarely start from a blank page. Two doors, same result:
 - **CLI**: `base init --root my-folder` shows exactly which files would be created (a minimal agent, or a workspace file if the folder already contains several BASE roots); `--yes` creates them: never an overwrite.
 - **Studio**: launch the workshop on the folder (`base studio --root my-folder`): the Welcome screen shows the same plan, in readable form, with a "Create these files" button. The app then switches to normal mode without restarting. Your AI tool stays the day-to-day experience; Studio serves as the workshop, and your files stay at the center, with the AI tool of your choice.
 
-Then, to turn your documents into processes and competences, ask your assistant: "import my existing procedures." The router will send it to `importer-l-existant`, which proposes each conversion as a diff. The router stays rudimentary but effective, and extensible through adapters. It saves you from hunting for the right process yourself.
+Then, to turn your documents into processes and competences, ask your assistant: "import my existing procedures." The router will send it to `importer-l-existant`, which proposes each conversion as a diff. The routing stays simple but effective, and extensible through adapters. It saves you from hunting for the right process yourself.
 
 ---
 

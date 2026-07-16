@@ -1,4 +1,4 @@
-<!-- fr-synced: 259bd98d5b41c775e1c52331ca008f5889c34f0b -->
+<!-- fr-synced: 7f65221af9a47a2af871c09e83313bef3ca45f3c -->
 # Routing a request to the right process (and opening the right resources)
 
 A misrouted request loads everything, mixes everything together, and drowns the decisions that matter under a wall of instructions. BASE avoids this by distinguishing three gestures that AI tools often conflate: choosing an agent, routing to a process, opening the resources. Keeping them apart keeps what is actually being decided in plain sight. If you are building or using a BASE and want to know how a request finds its way, this page shows it.
@@ -23,9 +23,9 @@ When several workflows are possible, BASE can route a request to the right proce
 base route "I need to prepare a client quote" --root <base-folder>
 ```
 
-The router picks an agent → process pair, or abstains with a readable reason. It does not load every instruction, and it does not search freely across the whole repository. Its mechanism stays rudimentary but effective, and it extends through adapters. Above all, it takes the mental load of hunting for the right process off the user.
+The router picks an agent → process pair, or abstains with a readable reason. It does not load every instruction, and it does not search freely across the whole repository. In an AI tool, the model reads the map (the generated index) and decides; the deterministic floor, for its part, stays deliberately simple but effective, and it extends through adapters. Above all, it takes the mental load of hunting for the right process off the user.
 
-**Two layers, one source.** Day to day, your AI tool routes **progressively**: it reads the generated index (`.ai/routing/index.md`) and chooses by understanding the "when to use it". The `base route` command (and the MCP tool `route_request`) is the **deterministic floor**: with no model, by plain lexical overlap, it confirms that choice, serves as a fallback (script, integration, offline), and pins the routes in `route-test`. Both derive from the same `use_when`: that is what carries the intent, not a list of keywords.
+**Two layers, one source.** Day to day, your AI tool routes **progressively**: it reads the generated index (`.ai/routing/index.md`), or the map the MCP tool `route_request` returns, and chooses by understanding the "when to use it". The `base route` command is the **deterministic floor**: with no model, by plain lexical overlap, it serves calls with no model (script, integration, offline), pins the routes in `route-test`, and hands `route_request` a suggestion to verify. Both derive from the same `use_when`: that is what carries the intent, not a list of keywords.
 
 This limit is deliberate. A process answers the question:
 
