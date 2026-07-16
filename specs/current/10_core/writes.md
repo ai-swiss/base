@@ -32,7 +32,12 @@ commit  ─▶ re-check decision + base_hash ─▶ write target ─▶ verify �
 4. **TOCTOU guard:** hash the target *now*; if it `!== record.base_hash`, fail (`"Target changed since the change was proposed; re-propose…"`).
 5. Write `record.content`; **verify** by re-hashing the written file (fail on mismatch).
 6. Delete the change record; trace `op:"commit", action:"write", status:"ok"`.
-7. Return `{ written:true, target, decision }`.
+7. Return `{ written:true, target, decision, content_hash }` — `content_hash` is the verified hash of the file as written (the unfakeable proof the write landed).
+
+### Reading the staged/committed state
+Two read-only queries make the flow verifiable against server truth (not a client's narration), and back the `base changes` CLI + the MCP `list_pending_changes` / `get_change_status` tools:
+- `listPendingChanges(root)` → the staged-but-uncommitted records under `.ai/changes/` (`{ change_id, target, created_at, purpose, exists }`).
+- `getChangeStatus(root, change_id)` → `pending` (record present), `absent` (committed and consumed, or never proposed), or `invalid` (not a `chg_` id). A committed change is consumed on commit, so `absent` after a claimed commit means either it landed (confirm via the commit receipt) or it never existed.
 
 ### Change record shape (`.ai/changes/<change_id>.json`)
 ```js

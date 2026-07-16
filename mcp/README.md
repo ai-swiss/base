@@ -59,27 +59,33 @@ make check   # build + tests
 npm start -- --transport http --port 3100 --root /chemin/vers/votre/projet
 ```
 
-Le serveur écoute sur `http://127.0.0.1:3100/mcp` (localhost uniquement par défaut).
+Le serveur écoute sur `http://127.0.0.1:3100/mcp` (localhost uniquement, et en lecture seule, par défaut).
 
-**Depuis ChatGPT, concrètement: un tunnel HTTPS.** ChatGPT ne lance pas de processus local; il lui
-faut une URL joignable. Le geste courant (au 13.07.2026): un tunnel vers votre port local, par
-exemple `cloudflared tunnel --url http://localhost:3100` (un binaire, pas de compte) ou
-`ngrok http 3100` (l'exemple documenté par OpenAI); l'URL https obtenue, suivie de `/mcp`, se colle
-dans ChatGPT → Settings → Apps & Connectors → Developer Mode. **Deux points comptent, et ils se
-combinent:**
+**Depuis ChatGPT, concrètement.** ChatGPT ne lance pas de processus local: dans Settings → Connectors
+(Developer Mode), vous ajoutez un connecteur personnalisé en **collant une URL** vers votre serveur,
+suivie de `/mcp`. Comme le serveur écoute en loopback, cette URL publique vient en général d'un
+**tunnel** vers votre port local, par exemple `cloudflared tunnel --url http://localhost:3100` (un
+binaire, pas de compte) ou `ngrok http 3100` (l'exemple documenté par OpenAI). **Trois points comptent:**
 
-1. **La garde anti-DNS-rebinding bloque un tunnel naïf.** Le bind restant loopback, l'endpoint refuse
-   (403, avant toute authentification) toute requête dont l'en-tête `Host` n'est pas loopback. Or un
-   tunnel transmet par défaut son hôte public (`*.trycloudflare.com`, `*.ngrok-free.app`) dans `Host`:
-   la requête est donc rejetée. Faites réécrire l'en-tête vers loopback: `ngrok http --host-header=rewrite 3100`,
+1. **Réécrivez l'en-tête `Host` vers loopback.** La garde anti-DNS-rebinding refuse (403, avant toute
+   authentification) toute requête dont l'`Host` n'est pas loopback, et un tunnel transmet par défaut
+   son hôte public (`*.trycloudflare.com`, `*.ngrok-free.app`). Utilisez `ngrok http --host-header=rewrite 3100`,
    ou `cloudflared tunnel --url http://localhost:3100 --http-host-header 127.0.0.1:3100`.
-2. **Un tunnel rend public un endpoint que le serveur croit loopback**: le refus d'exposition sans
-   authentification ne se déclenche pas (le bind reste 127.0.0.1). Définissez donc
-   `BASE_MCP_BEARER_TOKEN` **avant** d'ouvrir un tunnel; jamais «sans auth» hors d'un test jetable de
-   quelques minutes.
+2. **Posez un jeton avant d'exposer.** Un tunnel rend public un endpoint que le serveur croit loopback,
+   donc le refus d'exposition sans authentification ne se déclenche pas. Définissez `BASE_MCP_BEARER_TOKEN`
+   **avant** d'ouvrir le tunnel (et renseignez ce jeton côté ChatGPT); «sans authentification» ne vaut
+   que pour un test jetable de quelques minutes sur un tunnel maîtrisé.
+3. **Pour écrire, démarrez en lecture-écriture.** En HTTP le serveur est en lecture seule par défaut
+   (les outils d'écriture ne sont même pas enregistrés). Pour permettre `propose_change`/`commit_change`,
+   démarrez avec `--read-write` (ou `BASE_MCP_READ_ONLY=0`), en gardant le jeton:
+   `BASE_MCP_BEARER_TOKEN=... npm start -- --transport http --read-write --root /chemin/vers/votre/projet`
 
-La marche exacte côté ChatGPT évolue: vérifiez la documentation OpenAI (Apps SDK / connectors) au
-moment de brancher.
+> **BASE ne vise pas à tenir à jour une documentation pour chaque outil.** Ce guide ChatGPT n'est
+> qu'un exemple, pour rendre le branchement concret. Ces étapes sont exactes au moment de l'écriture
+> (16.07.2026) et l'interface ChatGPT évolue vite: vérifiez toujours la documentation officielle
+> d'OpenAI (Apps SDK / connecteurs), ou mieux, demandez à votre outil d'IA d'aller la lire en ligne et
+> de faire la configuration avec vous. En cas de doute, la source qui fait foi est la doc d'OpenAI, pas
+> cette page.
 
 
 **Exposition réseau refusée par défaut.** Par défaut, BASE MCP n'active aucune authentification. Lier une interface non-loopback (`--host 0.0.0.0`, une IP de LAN, etc.) **sans authentification** est donc **refusé au démarrage** : sinon n'importe qui sur le réseau pourrait atteindre les outils MCP exposés. En HTTP, la surface est en lecture seule par défaut, mais elle peut être élargie explicitement.
@@ -168,14 +174,16 @@ Le serveur MCP est un adaptateur. Il expose les primitives publiques du broker B
 
 - `load_agent` : charge seulement `AGENT.md`, le catalogue des ressources et les références de données; il ne charge pas tous les skills, templates, tools ou données métier.
 - `discover_resources` : recherche locale explicable dans les ressources BASE. La réponse est limitée aux métadonnées de découverte; ouvrez ensuite une ressource avec `open_resource` ou `access_resource` pour lire son contenu sous policy BASE.
-- `route_request` : route une demande vers le bon agent et process, ou s'abstient honnêtement (statut + candidats + raisons). Si le projet a configuré `routing.fallback`, une abstention porte un `fallback` (agent → process d'aide) à charger pour ne pas laisser l'utilisateur sans suite. C'est une métadonnée séparée, jamais une fausse route.
+- `route_request` : retourne une carte de routage (`routing_map`: agents → process, chacun avec «Quand l'utiliser»/«Éviter si») que le modèle lit pour décider, plus `next_actions` et, sur une route suggérée, `guidance` (le corps du process). Le résultat lexical déterministe est une suggestion à vérifier, pas le routeur sur le chemin conversationnel; il ne fait autorité que pour les appelants sans modèle. Si le projet a configuré `routing.fallback`, une abstention porte un `fallback` (agent → process d'aide), une métadonnée séparée, jamais une fausse route.
 - `open_resource` : ouvre une ressource par ID ou chemin relatif.
 - `access_resource` : lit un fichier local confiné au projet, sous policy BASE. Le fichier doit aussi être accessible par les droits natifs de l'environnement.
 - `invoke_tool` : prépare ou exécute une tool locale, avec dry-run par défaut et confirmation explicite avant exécution.
-- `propose_change` : prépare une écriture médiée et retourne un diff sans écrire le fichier cible.
-- `commit_change` : applique une proposition après confirmation et vérification.
+- `propose_change` : prépare une écriture médiée et retourne un diff sans écrire le fichier cible (le seul chemin d'écriture).
+- `commit_change` : applique une proposition après confirmation et vérification, et retourne un reçu `{ written, target, content_hash }` (la preuve vérifiable que l'écriture a eu lieu).
 - `promote_resource` : prépare la promotion d'une ressource vers un scope plus large via le même flux médié.
 - `list_markers` : liste les marqueurs ouverts (`[A VALIDER]`, `[A COMPLETER]`, `[ATTENTION]`, `[DECISION]`).
+- `list_pending_changes` : liste les écritures proposées mais non encore committées (lecture seule, enregistré dans tous les modes).
+- `get_change_status` : indique si un `change_id` est encore en attente ou absent (committé et consommé, ou jamais proposé); avec le reçu `content_hash` de `commit_change`, il permet de vérifier qu'une écriture a bien eu lieu au lieu de croire une affirmation du modèle.
 
 `load_agent` découvre les agents du root configuré et des sous-projets BASE imbriqués. Un sous-projet est un dossier qui contient `.ai/agents/*/AGENT.md`; ses ressources restent lues depuis ce dossier, pas depuis le root parent. Cette règle permet de placer librement plusieurs assistants dans des dossiers métier sans fusionner leurs inventaires.
 
@@ -195,7 +203,7 @@ Le serveur MCP est un adaptateur. Il expose les primitives publiques du broker B
 
 > «Je dois préparer un devis client»
 
-→ La plateforme appelle `route_request(request: "Je dois préparer un devis client")` → retourne l'agent et le process proposés, ou une question si le choix est ambigu.
+→ La plateforme appelle `route_request(request: "Je dois préparer un devis client")` → retourne une carte de routage (agents → process avec «Quand l'utiliser») que le modèle lit pour choisir le bon process, plus une suggestion déterministe à vérifier; si rien ne correspond, le modèle le dit au lieu d'inventer.
 
 > «Trouve les ressources liées aux devis clients»
 
@@ -217,7 +225,7 @@ Le serveur MCP est un adaptateur. Il expose les primitives publiques du broker B
 
 > «J'ai relu, applique ce changement»
 
-→ La plateforme appelle `commit_change(change_id: "...", confirmed: true)` → re-vérifie la décision, protège contre les modifications concurrentes, écrit puis vérifie le résultat.
+→ La plateforme appelle `commit_change(change_id: "...", confirmed: true)` → re-vérifie la décision, protège contre les modifications concurrentes, écrit puis vérifie le résultat, et retourne un reçu `{ written, target, content_hash }`. Pour vérifier après coup, `get_change_status(change_id)` indique si le changement est encore en attente ou a été appliqué.
 
 ## Spécifications
 

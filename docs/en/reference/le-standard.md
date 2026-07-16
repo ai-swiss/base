@@ -1,4 +1,4 @@
-<!-- fr-synced: 343d3cf2d96697983ec96004e0026e8a012c6d9d -->
+<!-- fr-synced: 086ae56b486808025b82155b3a7fd94fb128c95e -->
 # The BASE standard: `base.resource.v1`
 
 BASE is not yet another platform: it is an **open standard we propose**, with its reference
@@ -141,9 +141,11 @@ boundaries are laid down in [ARCHITECTURE.md](../../../ARCHITECTURE.md) and the
 
 ## The routing conventions
 
-A standard that describes a unit of work must say how to choose it. BASE routes to a **whole agent
-and process**, deterministically and explainably, or abstains; it does not retrieve fragments by
-similarity. The signals live in the file itself:
+A standard that describes a unit of work must say how to choose it. The standard defines the
+**routing signals** (below); a request chooses a **whole agent and process**, or abstains, without
+retrieving fragments by similarity. In an AI tool, the model decides from these signals; the reference
+implementation also provides a deterministic, explainable floor for calls with no model. The signals
+live in the file itself:
 
 - `use_when`: a short sentence on *when* to use the resource, the strongest signal.
 - `routing.examples`: real user phrasings, to improve recall.
@@ -225,8 +227,9 @@ A BASE resource is already readable by the neighboring open formats (AGENTS.md, 
 CLAUDE.md, Open Knowledge Format): it is a plain Markdown file with frontmatter. A BASE's `CLAUDE.md`,
 `AGENTS.md` and Cursor rules are **generated adapters** from the source you own (`base build`), and
 `SKILL.md` is the native format of processes. Where a knowledge format describes what an agent can
-consult, BASE articulates how a human and an AI work: it adds the two separations, deterministic
-routing, egress control, mediated writing, and the human-verification loop. The full positioning
+consult, BASE articulates how a human and an AI work: it adds the two separations, routing to a
+whole agent and process (guided by the "when to use it"), egress control, mediated writing, and the
+human-verification loop. The full positioning
 against these formats: [Positioning](positionnement.md). Other export targets are not implemented to
 date and are not presented as a given.
 

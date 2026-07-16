@@ -34,9 +34,9 @@ Quand plusieurs workflows sont possibles, BASE peut router une demande vers le b
 base route "je dois préparer un devis client" --root <dossier-base>
 ```
 
-Le routeur choisit un couple agent → process, ou s'abstient en donnant une raison lisible. Il ne charge pas toutes les instructions et ne fouille pas librement le dépôt entier. Son mécanisme reste rudimentaire, mais efficace, et s'étend par adaptateurs. Il épargne surtout à l'utilisateur la charge mentale de chercher le bon process.
+Le routage choisit un couple agent → process, ou s'abstient en donnant une raison lisible. Il ne charge pas toutes les instructions et ne fouille pas librement le dépôt entier. Dans un outil d'IA, le modèle lit la carte (l'index généré) et décide; le plancher déterministe, lui, reste volontairement simple mais efficace, et s'étend par adaptateurs. Il épargne surtout à l'utilisateur la charge mentale de chercher le bon process.
 
-**Deux couches, une seule source.** Au quotidien, votre outil d'IA route de façon **progressive**: il lit l'index généré (`.ai/routing/index.md`) et choisit en comprenant le «quand l'utiliser». La commande `base route` (et l'outil MCP `route_request`) est le **plancher déterministe**: sans modèle, par simple recouvrement lexical, elle confirme ce choix, sert de repli (script, intégration, hors-ligne) et fixe les routes dans `route-test`. Les deux dérivent du même `use_when`: c'est lui qui porte l'intention, pas une liste de mots-clés.
+**Deux couches, une seule source.** Au quotidien, votre outil d'IA route de façon **progressive**: il lit l'index généré (`.ai/routing/index.md`), ou la carte que retourne l'outil MCP `route_request`, et choisit en comprenant le «Quand l'utiliser». La commande `base route` est le **plancher déterministe**: sans modèle, par simple recouvrement lexical, elle sert les appels sans modèle (script, intégration, hors-ligne), fixe les routes dans `route-test`, et fournit à `route_request` une suggestion à vérifier. Les deux dérivent du même `use_when`: c'est lui qui porte l'intention, pas une liste de mots-clés.
 
 Cette limite est volontaire. Un process répond à la question:
 

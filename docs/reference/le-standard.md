@@ -160,9 +160,11 @@ dépendent. Ces frontières sont posées dans [ARCHITECTURE.md](../../ARCHITECTU
 
 ## Les conventions de routage
 
-Un standard qui décrit une unité de travail doit dire comment la choisir. BASE route vers un **agent
-et un process entiers**, de façon déterministe et explicable, ou s'abstient; il ne récupère pas des
-fragments par similarité. Les signaux vivent dans le fichier lui-même:
+Un standard qui décrit une unité de travail doit dire comment la choisir. Le standard définit les
+**signaux de routage** (ci-dessous); une demande choisit un **agent et un process entiers**, ou
+s'abstient, sans récupérer des fragments par similarité. Dans un outil d'IA, le modèle décide d'après
+ces signaux; l'implémentation de référence fournit aussi un plancher déterministe et explicable pour
+les appels sans modèle. Les signaux vivent dans le fichier lui-même:
 
 - `use_when`: une phrase courte sur *quand* utiliser la ressource, le signal le plus fort.
 - `routing.examples`: de vraies formulations d'utilisateur, pour améliorer le rappel.
@@ -246,7 +248,7 @@ CLAUDE.md, Open Knowledge Format): c'est un simple fichier Markdown à frontmatt
 `AGENTS.md` et règles Cursor d'un BASE sont des **adaptateurs générés** depuis la source que vous
 possédez (`base build`), et le `SKILL.md` est le format natif des process. Là où un format de
 connaissance décrit ce qu'un agent peut consulter, BASE articule comment un humain et une IA
-travaillent: il ajoute les deux séparations, le routage déterministe, le contrôle d'egress, l'écriture
+travaillent: il ajoute les deux séparations, le routage vers un agent et un process entiers (guidé par le «Quand l'utiliser»), le contrôle d'egress, l'écriture
 médiée et la boucle de vérification par l'humain. Le positionnement complet face à ces formats:
 [Positionnement](positionnement.md). D'autres cibles d'export ne sont pas implémentées à ce jour et ne
 sont pas présentées comme acquises.

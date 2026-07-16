@@ -133,9 +133,13 @@ export function createBrokerWrites({ decide, recordEvent, inventoryResources, ch
   async function commitChange(rootDir, changeId, { confirmed = false, grantToken, config } = {}) {
     const start = Date.now();
     const root = path.resolve(rootDir);
-    if (!/^chg_[a-z0-9]+$/.test(changeId)) throw new Error(`Invalid change id: ${changeId}`);
+    if (!/^chg_[a-z0-9]+$/.test(changeId)) {
+      throw new Error(`Invalid change id "${changeId}": expected the chg_... id returned by propose_change.`);
+    }
     const recordPath = path.join(root, changesDir, `${changeId}.json`);
-    if (!(await pathExists(recordPath))) throw new Error(`Change not found: ${changeId}`);
+    if (!(await pathExists(recordPath))) {
+      throw new Error(`No pending change ${changeId}: nothing to commit. A change_id exists only after propose_change stages it; call propose_change first, then commit_change with the id it returns.`);
+    }
     const record = JSON.parse(await fs.readFile(recordPath, "utf8"));
 
     await confineToRoot(root, record.target); // validate containment
@@ -189,7 +193,7 @@ export function createBrokerWrites({ decide, recordEvent, inventoryResources, ch
       args_hash: hashArgs([changeId]),
     });
 
-    return { written: true, target: record.target, decision };
+    return { written: true, target: record.target, decision, content_hash: writtenHash };
   }
 
   /**
@@ -234,5 +238,50 @@ export function createBrokerWrites({ decide, recordEvent, inventoryResources, ch
     return { ...proposal, id: resource.id, from: fromScope, to: toScope };
   }
 
-  return { proposeChange, commitChange, promoteResource };
+  /**
+   * List the changes staged by propose_change but not yet committed (records under .ai/changes/).
+   * Local-first: `base changes` and the MCP list_pending_changes tool both read this. Read-only.
+   * @param {string} rootDir
+   */
+  async function listPendingChanges(rootDir) {
+    const root = path.resolve(rootDir);
+    const dir = path.join(root, changesDir);
+    let names;
+    try { names = (await fs.readdir(dir)).filter((n) => n.endsWith(".json")); }
+    catch { return []; }
+    const out = [];
+    for (const name of names.sort()) {
+      try {
+        const rec = JSON.parse(await fs.readFile(path.join(dir, name), "utf8"));
+        out.push({ change_id: rec.change_id, target: rec.target, created_at: rec.created_at, purpose: rec.purpose ?? null, exists: rec.exists });
+      } catch { /* skip a partial/unreadable record rather than fail the whole listing */ }
+    }
+    return out;
+  }
+
+  /**
+   * Report whether a change_id is still pending (staged, awaiting commit) or absent (committed and
+   * consumed, or never proposed). The unfakeable proof that a write LANDED is the commit_change
+   * receipt ({ written: true, content_hash }); this query is the pending-side view. Read-only.
+   * @param {string} rootDir
+   * @param {string} changeId
+   */
+  async function getChangeStatus(rootDir, changeId) {
+    if (!/^chg_[a-z0-9]+$/.test(changeId)) {
+      return { change_id: changeId, status: "invalid", note: "Not a change id: expected chg_... from propose_change." };
+    }
+    const root = path.resolve(rootDir);
+    const recordPath = path.join(root, changesDir, `${changeId}.json`);
+    if (await pathExists(recordPath)) {
+      const rec = JSON.parse(await fs.readFile(recordPath, "utf8"));
+      return { change_id: changeId, status: "pending", target: rec.target, created_at: rec.created_at, purpose: rec.purpose ?? null };
+    }
+    return {
+      change_id: changeId,
+      status: "absent",
+      note: "No pending change with this id: it was either committed (the record is consumed on commit; a successful commit_change returns written:true with a content_hash) or never proposed.",
+    };
+  }
+
+  return { proposeChange, commitChange, promoteResource, listPendingChanges, getChangeStatus };
 }

@@ -520,6 +520,25 @@ describe("base CLI", () => {
     );
   });
 
+  it("`base changes` lists pending mediated writes and reports one change's status", async () => {
+    await write(".ai/agents/demo/AGENT.md", "---\nid: demo\ntype: agent\ndescription: Demo.\n---\n# Demo\n");
+    await write("src.md", "bonjour\n");
+
+    const proposed = await execFileAsync("node", [cliPath, "propose", "notes.md", "--from", "src.md", "--root", tmpDir, "--json"]);
+    const change = JSON.parse(proposed.stdout);
+    assert.match(change.change_id, /^chg_/);
+
+    const list = await execFileAsync("node", [cliPath, "changes", "--root", tmpDir, "--json"]);
+    assert.ok(JSON.parse(list.stdout).some((c) => c.change_id === change.change_id && c.target === "notes.md"));
+
+    const one = await execFileAsync("node", [cliPath, "changes", change.change_id, "--root", tmpDir, "--json"]);
+    assert.equal(JSON.parse(one.stdout).status, "pending");
+
+    await execFileAsync("node", [cliPath, "commit", change.change_id, "--confirmed", "--root", tmpDir]);
+    const after = await execFileAsync("node", [cliPath, "changes", "--root", tmpDir, "--json"]);
+    assert.deepEqual(JSON.parse(after.stdout), []);
+  });
+
   it("prints help on `help` and on no command", async () => {
     const viaHelp = await execFileAsync("node", [cliPath, "help"]);
     assert.match(viaHelp.stdout, /base validate/);

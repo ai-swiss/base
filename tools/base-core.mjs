@@ -571,13 +571,13 @@ export async function invokeTool(rootDir, idOrPath, args = [], { dryRun = true, 
 // The mediated-write flow (propose/commit/promote) lives in core/writes.mjs as a small module over
 // injected orchestration deps. Bound here and re-exported with byte-identical signatures, so the
 // MCP broker bundle and CLI keep importing proposeChange/commitChange/promoteResource unchanged.
-const { proposeChange, commitChange, promoteResource } = createBrokerWrites({
+const { proposeChange, commitChange, promoteResource, listPendingChanges, getChangeStatus } = createBrokerWrites({
   decide,
   recordEvent,
   inventoryResources,
   changesDir: CHANGES_DIR,
 });
-export { proposeChange, commitChange, promoteResource };
+export { proposeChange, commitChange, promoteResource, listPendingChanges, getChangeStatus };
 
 /**
  * @param {string} rootDir

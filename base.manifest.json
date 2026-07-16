@@ -2581,7 +2581,7 @@
       "id": "ecrire-pour-le-routeur",
       "type": "document",
       "title": "Écrire pour le routeur",
-      "description": "Formuler use_when, routing.examples et avoid_when pour que le routeur lexical trouve le bon process, puis vérifier et figer le comportement avec des fixtures.",
+      "description": "Formuler use_when, routing.examples et avoid_when pour que le routage trouve le bon process, puis vérifier et figer le comportement avec des fixtures.",
       "path": "docs/guides/ecrire-pour-le-routeur.md",
       "scope": "public",
       "status": "active",
@@ -2605,8 +2605,8 @@
         "document",
         "formuler",
         "routing",
-        "lexical",
-        "trouve"
+        "trouve",
+        "bon"
       ],
       "requires": [],
       "may_use": [],

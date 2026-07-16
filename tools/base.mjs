@@ -7,6 +7,8 @@ import {
   buildArtifacts,
   checkManifestFresh,
   commitChange,
+  getChangeStatus,
+  listPendingChanges,
   createMaintenanceReport,
   formatMaintenanceReport,
   formatMarkers,
@@ -48,7 +50,7 @@ import { reportProgress } from "./core/progress.mjs";
 import { loadCompanion } from "./core/companion.mjs";
 import { formatDocsModelSummary, validateDocsModel, writeDocsModel } from "./docs/model.mjs";
 import { parseArgs } from "./cli/parse-args.mjs";
-import { describeDetection, formatBuildPlan, formatPromoteResult, formatProposeResult, projectValidationResult } from "./cli/format.mjs";
+import { describeDetection, formatBuildPlan, formatChangeStatus, formatPendingChanges, formatPromoteResult, formatProposeResult, projectValidationResult } from "./cli/format.mjs";
 import { formatRegistration, frameworkDir, registerFramework, update, whereis } from "./cli/framework.mjs";
 
 // Which planned paths are TOOL artifacts (vs the BASE's own files) — display grouping only.
@@ -313,6 +315,15 @@ const COMMANDS = {
     if (!changeId) throw new Error("Usage: base commit <change-id> [--confirmed] [--root path]");
     const result = await commitChange(rootDir, changeId, { confirmed: args.confirmed, grantToken: args.grantToken });
     output(args.json ? result : `Changement applique: ${result.target} (${result.decision.decision})`, args.json, context);
+    return;
+  },
+
+  "changes": async ({ args, context, rootDir }) => {
+    // Local-first view of the mediated-write flow (pending proposals, or one change_id's status). The
+    // unfakeable proof a write LANDED is commit's content_hash; this is the pending-side view.
+    const id = args.positional[0];
+    const result = id ? await getChangeStatus(rootDir, id) : await listPendingChanges(rootDir);
+    output(args.json ? result : id ? formatChangeStatus(result) : formatPendingChanges(result), args.json, context);
     return;
   },
 
@@ -609,6 +620,7 @@ function help() {
     " base invoke <tool-id> [args...] [--execute --confirmed] [--grant-token token] [--root path] [--json]",
     " base propose <target> [--from file] [--purpose reason] [--confirmed] [--grant-token token] [--root path] [--json]",
     " base commit <change-id> [--confirmed] [--grant-token token] [--root path] [--json]",
+    " base changes [<change-id>] [--root path] [--json] (changements proposés en attente de commit; avec un id: l'état de ce changement)",
     " base promote <id-or-path> --to <scope> [--confirmed] [--grant-token token] [--root path] [--json]",
     " base markers [--root path] [--json]",
     " base build [all|agents-md|tools|bootstrap|routing-index|routing-embeddings] [--write] [--root path] [--json]",

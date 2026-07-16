@@ -1,11 +1,11 @@
-<!-- fr-synced: aab9430421f0140308afb9c8832c2652a4e15f5b -->
+<!-- fr-synced: 356fc048e6df62cb402e6705b3c6d73e16922885 -->
 # Writing for the router
 
 When a request like "Draft a quote for Dupont SA" fails to reach the right process, your assistant stays silent or answers beside the point: it all comes down to how your files are worded. This guide is for assistant builders. It explains how the router reads your files, how to write with it in mind, and how to make sure your requests arrive where they should. No technical skill is required, apart from one terminal command for testing.
 
 ## How the router reads your files
 
-The router doesn't grasp the meaning of your text: it **compares words**. For each process, it assembles a routing text from the `use_when` (the strongest signal), supplemented by the `routing.examples`; lacking those, it leans on the description, then the title, then the keywords. A request routes well when its words overlap that text. In practice, your `use_when` should above all echo **the words your users would use**, rather than an elegant turn of phrase.
+Your `use_when` serves two readers. In an AI tool, the model reads it and grasps its meaning; the deterministic floor, for its part, does not grasp meaning and **compares words**. Writing for the floor, the more literal of the two, also satisfies the model. For each process, the floor assembles a routing text from the `use_when` (the strongest signal), supplemented by the `routing.examples`; lacking those, it leans on the description, then the title, then the keywords. A request routes well when its words overlap that text. In practice, your `use_when` should above all echo **the words your users would use**, rather than an elegant turn of phrase.
 
 ## Writing a good `use_when`
 
@@ -72,7 +72,7 @@ The command replays every route and fails the moment any one of them gives way. 
 
 ## An honest limit
 
-The default lexical router is rudimentary but effective; it stays sensitive to wording, because absent words match nothing, however close the meaning. That's the price of explainability: every score is justified by inspectable reasons, with no network and no dependency. Adapters, moreover, let you extend it. For tricky corpora (many close processes, highly varied vocabulary), an optional semantic ranker exists: see the [Semantic routing quickstart](routage-semantique-quickstart.md).
+The lexical floor is rudimentary but effective; it stays sensitive to wording, because absent words match nothing, however close the meaning. That's the price of explainability: every score is justified by inspectable reasons, with no network and no dependency. Adapters, moreover, let you extend it. For tricky corpora (many close processes, highly varied vocabulary), an optional semantic ranker exists: see the [Semantic routing quickstart](routage-semantique-quickstart.md).
 
 ---
 

@@ -115,7 +115,7 @@ Entreprise = intégration gouvernée + politiques internes + contrôles techniqu
 
 Ces concepts n'ont pas tous vocation à apparaître dans l'expérience du débutant. Ils servent à éviter que la structure soit à jeter lorsqu'une organisation grandit.
 
-**Langue.** Aucune de ces abstractions n'est liée au français. Le routage est lexical et indépendant de la langue (comparaison de mots normalisés, sans grammaire ni lexique propres à une langue donnée), et un assistant déclaré avec des mots-clés allemands ou italiens route dans cette langue. La documentation du cadre commence en français; les assistants que vous construisez, eux, parlent la langue de leurs utilisateurs.
+**Langue.** Aucune de ces abstractions n'est liée au français. Le signal de routage (le «Quand l'utiliser») vit dans vos ressources, donc dans la langue de vos utilisateurs: un assistant déclaré en allemand ou en italien route dans cette langue. Dans un outil d'IA, le modèle lit ce signal et en comprend le sens; le plancher déterministe de l'implémentation de référence compare des mots normalisés (sans grammaire propre à une langue) pour les appels sans modèle. La documentation du cadre commence en français; les assistants que vous construisez, eux, parlent la langue de leurs utilisateurs.
 
 Dans cette table, `accès` ne signifie pas que BASE remplace les permissions natives. Un connecteur est le mécanisme qui tente de lire ou d'écrire une source. La réussite effective dépend toujours des droits du système concerné: filesystem, Drive, API, token, compte utilisateur, réseau ou harness.
 
@@ -158,8 +158,10 @@ Le broker public, partagé par la CLI et le MCP, fournit:
 
 - inventaire des ressources;
 - recherche locale explicable;
-- routage agent → process avec abstention structurée (`base route`, `route_request`);
+- routage agent → process avec abstention structurée: `route_request` retourne une carte (agents → process avec «Quand l'utiliser») que le modèle lit pour décider, `base route` étant le plancher déterministe des appels sans modèle;
 - tests de routage métier (`base route-test`);
+- écriture médiée propose-puis-commit (`base propose`/`base commit`, `propose_change`/`commit_change`), le reçu de commit portant un `content_hash` vérifiable;
+- vérification de l'état des écritures en lecture seule (`base changes`, `list_pending_changes`, `get_change_status`);
 - ouverture de ressource confinée avec projection `metadata`, `instructions` ou `full`;
 - accès local aux fichiers ou ressources;
 - invocation d'un outil (script) en dry-run par défaut, avec confirmation quand nécessaire;

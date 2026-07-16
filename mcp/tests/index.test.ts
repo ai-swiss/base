@@ -759,6 +759,52 @@ describe("createServer integration", () => {
     await expect(fs.access(path.join(one, "docs/note.md"))).rejects.toThrow();
   });
 
+  it("funnels a weak remote executor: next_actions + guidance on route, helpful error on commit-before-propose, verifiable receipts", async () => {
+    const root = path.join(tmpDir, "biz");
+    await fs.mkdir(path.join(root, ".ai/agents/sales/skills/processes/quote"), { recursive: true });
+    await fs.writeFile(path.join(root, ".ai/agents/sales/AGENT.md"), "---\nid: sales\ntype: agent\ndescription: Sales.\n---\n# Sales\n");
+    await fs.writeFile(
+      path.join(root, ".ai/agents/sales/skills/processes/quote/SKILL.md"),
+      "---\nid: prepare-quote\ntype: process\ndescription: Prepare a quote.\nuse_when: Quand l'utilisateur veut préparer un devis client.\n---\n# Prepare a quote\n\nPropose the quote, wait for approval, never invent prices.\n",
+    );
+
+    const server = await createServer(root) as any;
+    const callTool = server.server._requestHandlers.get("tools/call");
+    const call = async (name: string, args: Record<string, unknown>) =>
+      callTool({ method: "tools/call", params: { name, arguments: args } }, {});
+
+    // On route, the server hands the model its next steps AND the process's own instructions inline.
+    const routed = JSON.parse((await call("route_request", { request: "préparer un devis pour un client" })).content[0].text);
+    expect(routed.status).toBe("routed");
+    expect(Array.isArray(routed.next_actions)).toBe(true);
+    expect(routed.next_actions.join(" ")).toMatch(/propose_change/);
+    expect(routed.guidance).toContain("never invent prices");
+    // The model routes on the returned map: agents + their processes with use_when, egress-filtered.
+    expect(Array.isArray(routed.routing_map)).toBe(true);
+    const salesAgent = routed.routing_map.find((a: { id: string }) => a.id === "sales");
+    expect(salesAgent.processes.some((p: { id: string; use_when: string | null }) => p.id === "prepare-quote" && (p.use_when ?? "").length > 0)).toBe(true);
+
+    // Weak move: commit before proposing. Refused with a message that names the fix.
+    const badCommit = await call("commit_change", { change_id: "chg_deadbeef0000", confirmed: true });
+    expect(badCommit.isError).toBe(true);
+    expect(badCommit.content[0].text).toMatch(/propose_change first/);
+
+    // Proper flow: propose -> verify pending -> commit -> unfakeable receipt.
+    const proposal = JSON.parse((await call("propose_change", { target: "devis/x.md", content: "# Devis\n" })).content[0].text);
+    expect(proposal.change_id).toMatch(/^chg_/);
+
+    const pending = JSON.parse((await call("list_pending_changes", {})).content[0].text);
+    expect(pending.some((c: { change_id: string }) => c.change_id === proposal.change_id)).toBe(true);
+    expect(JSON.parse((await call("get_change_status", { change_id: proposal.change_id })).content[0].text).status).toBe("pending");
+
+    const committed = JSON.parse((await call("commit_change", { change_id: proposal.change_id, confirmed: true })).content[0].text);
+    expect(committed.written).toBe(true);
+    expect(typeof committed.content_hash).toBe("string");
+
+    // A claimed-but-consumed change is verifiable as absent, not a silent "done".
+    expect(JSON.parse((await call("get_change_status", { change_id: proposal.change_id })).content[0].text).status).toBe("absent");
+  });
+
   it("routes across nested project roots discovered from a container root", async () => {
     const nestedRoot = path.join(tmpDir, "collaborations", "innovaud");
     await fs.mkdir(path.join(nestedRoot, ".ai/agents/workshop/skills/processes/atelier"), { recursive: true });

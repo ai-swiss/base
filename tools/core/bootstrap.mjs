@@ -117,9 +117,9 @@ export function renderAgentsMd(resources) {
 // discipline; tests pin the constants verbatim (in renderMcpInstructions AND in the route_request
 // description), the freshness gate pins the French projections — neither side can drift silently.
 export const MCP_ROUTE_DISCIPLINE =
-  "On `routed`: open the returned agent.path, then process.path (open_resource), and follow that process. " +
-  "On an abstention (`ambiguous`, `needs_clarification`, `out_of_scope`): ask the returned next_question, never guess; " +
-  "if the result carries `fallback`, load it the same way. Do not re-route on every message: route at task boundaries.";
+  "route_request returns a `routing_map` (agents -> processes, each with its «Quand l'utiliser»/«Éviter si») to DECIDE from: the deterministic result is a hint to verify, not an order. " +
+  "Choose the process whose «Quand l'utiliser» covers the request; open the chosen agent.path then process.path (open_resource) and follow it. " +
+  "If nothing fits, ask the returned next_question (or say so), never guess or invent an id; if the result carries `fallback`, load it the same way. Do not re-route on every message: route at task boundaries.";
 
 export const MCP_READ_DISCIPLINE =
   "Decide on candidate metadata, never by reading all bodies (discover_resources, or open_resource with projection \"metadata\"). " +

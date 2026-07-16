@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: ecrire-pour-le-routeur
 type: document
 title: Écrire pour le routeur
-description: Formuler use_when, routing.examples et avoid_when pour que le routeur lexical trouve le bon process, puis vérifier et figer le comportement avec des fixtures.
+description: Formuler use_when, routing.examples et avoid_when pour que le routage trouve le bon process, puis vérifier et figer le comportement avec des fixtures.
 scope: public
 status: active
 sensitivity: public
@@ -16,7 +16,7 @@ Lorsqu'une demande telle que «Prépare un devis pour Dupont SA» n'atteint pas 
 
 ## Comment le routeur lit vos fichiers
 
-Le routeur ne saisit pas le sens de votre texte: il **compare des mots**. Pour chaque process, il compose un texte de routage à partir du `use_when` (le signal le plus fort), complété par les `routing.examples`; faute de quoi, il s'appuie sur la description, le titre, puis les mots-clés. Une demande route bien quand ses mots recoupent ce texte. En pratique, votre `use_when` doit avant tout reprendre **les mots qu'emploieraient vos utilisateurs**, plutôt qu'une formule élégante.
+Votre `use_when` sert deux lecteurs. Dans un outil d'IA, le modèle le lit et en comprend le sens; le plancher déterministe, lui, ne saisit pas le sens et **compare des mots**. Écrire pour le plancher, le plus littéral des deux, satisfait aussi le modèle. Pour chaque process, le plancher compose un texte de routage à partir du `use_when` (le signal le plus fort), complété par les `routing.examples`; faute de quoi, il s'appuie sur la description, le titre, puis les mots-clés. Une demande route bien quand ses mots recoupent ce texte. En pratique, votre `use_when` doit avant tout reprendre **les mots qu'emploieraient vos utilisateurs**, plutôt qu'une formule élégante.
 
 ## Formuler un bon `use_when`
 
@@ -83,7 +83,7 @@ La commande rejoue toutes les routes et échoue dès que l'une d'elles cède. Vo
 
 ## Une limite honnête
 
-Le routeur lexical par défaut est rudimentaire, mais efficace; il reste sensible à la formulation, car des mots absents ne correspondent à rien, le sens fût-il proche. C'est la rançon de l'explicabilité: chaque score se justifie par des raisons inspectables, sans réseau ni dépendance. Des adaptateurs permettent au demeurant de l'étendre. Pour les corpus délicats (process nombreux et voisins, vocabulaire très varié), un ranker sémantique facultatif existe: voir le [Quickstart routage sémantique](routage-semantique-quickstart.md).
+Le plancher lexical est rudimentaire, mais efficace; il reste sensible à la formulation, car des mots absents ne correspondent à rien, le sens fût-il proche. C'est la rançon de l'explicabilité: chaque score se justifie par des raisons inspectables, sans réseau ni dépendance. Des adaptateurs permettent au demeurant de l'étendre. Pour les corpus délicats (process nombreux et voisins, vocabulaire très varié), un ranker sémantique facultatif existe: voir le [Quickstart routage sémantique](routage-semantique-quickstart.md).
 
 La **négation** est la limite la plus nette: le routeur compte des mots, il ne les inverse pas. «Ne
 crée pas un devis, annule-le» crédite créer ET annuler (les particules ne/pas ne scorent plus, mais

@@ -46,6 +46,19 @@ export function formatProposeResult(result) {
   ].join("\n");
 }
 
+export function formatPendingChanges(pending) {
+  if (!pending.length) return "Aucun changement en attente de commit.";
+  return [
+    `${pending.length} changement(s) en attente de commit:`,
+    ...pending.map((c) => ` - ${c.change_id} (cible: ${c.target}${c.purpose ? `, ${c.purpose}` : ""})`),
+  ].join("\n");
+}
+
+export function formatChangeStatus(status) {
+  if (status.status === "pending") return `${status.change_id}: en attente, cible ${status.target} (propose le ${status.created_at}).`;
+  return `${status.change_id}: ${status.status}.${status.note ? " " + status.note : ""}`;
+}
+
 export function formatBuildPlan(artifacts) {
   return [
     "Projection BASE (dry-run; ajoutez --write pour ecrire):",

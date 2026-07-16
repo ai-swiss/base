@@ -1,4 +1,4 @@
-<!-- fr-synced: d609ec0bd51ca7c794dd81453f33ba793d00d29f -->
+<!-- fr-synced: 6f19128646c3d0c51c3571ea19abceafb78205e2 -->
 # Why BASE
 
 > **The question is not where your servers are, but who structures your interactions with AI.**
@@ -122,7 +122,7 @@ Some tasks can be delegated; others, fundamentally, cannot. Beyond the risk of w
 
 A good collaboration spares you the search. Just as a *process* must give the AI the information that matters, BASE must give *you* what matters, without your having to ask:
 
-- the **welcome** (concierge) orients you the moment you are lost; a **router**, rudimentary but effective and extensible through adapters, takes away the mental load of finding the right process; even its honest abstention sends you back to the welcome rather than into the void;
+- the **welcome** (concierge) orients you the moment you are lost; a **router** takes away the mental load of finding the right process (the model decides from the "when to use it", with a deterministic floor, simple but effective and extensible through adapters, for use with no model); even its honest abstention sends you back to the welcome rather than into the void;
 - each process highlights what you must verify or decide, and flags the decision points (`[A VALIDER]`, `[ATTENTION]`) before a problem arises.
 
 You should never have to dig to reach what matters.

@@ -127,7 +127,7 @@ Certaines tâches se délèguent; d'autres, fondamentalement, pas. Au risque des
 
 Une bonne collaboration épargne la recherche. Tout comme un *process* doit donner à l'IA l'information qui compte, BASE doit vous donner, à *vous*, ce qui compte, sans que vous ayez à le demander:
 
-- l'**accueil** (concierge) vous oriente dès que vous êtes perdu; un **routeur**, rudimentaire mais efficace et extensible par adaptateurs, vous enlève la charge mentale de chercher le bon process; même son abstention honnête vous renvoie vers l'accueil plutôt que vers le vide;
+- l'**accueil** (concierge) vous oriente dès que vous êtes perdu; un **routeur** vous enlève la charge mentale de chercher le bon process (le modèle décide d'après le «Quand l'utiliser», avec un plancher déterministe, simple mais efficace et extensible par adaptateurs, pour l'usage sans modèle); même son abstention honnête vous renvoie vers l'accueil plutôt que vers le vide;
 - chaque process met en avant ce que vous devez vérifier ou décider, et signale les points de décision (`[A VALIDER]`, `[ATTENTION]`) avant qu'un problème ne survienne.
 
 Vous ne devriez jamais avoir à creuser pour atteindre ce qui compte.
