@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: visuels-officiels
 type: document
 title: Visuels officiels de BASE à télécharger
-description: Les visuels officiels de BASE sous licence ouverte: le schéma de structure prêt à l'emploi pour illustrer un article, une présentation ou une publication.
+description: "Les visuels officiels de BASE sous licence ouverte: le schéma de structure prêt à l'emploi pour illustrer un article, une présentation ou une publication."
 scope: public
 status: active
 sensitivity: public

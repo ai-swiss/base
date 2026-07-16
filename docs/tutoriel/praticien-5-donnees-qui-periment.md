@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: docs-tutoriel-praticien-5-donnees-qui-periment
 type: document
 title: Les données qui périment
-description: L'agenda du moment porte une date dépassée: base doctor le signale, vous corrigez, le signal s'éteint. Le cycle de vie d'une expertise, vécu.
+description: "L'agenda du moment porte une date dépassée: base doctor le signale, vous corrigez, le signal s'éteint. Le cycle de vie d'une expertise, vécu."
 scope: public
 status: active
 sensitivity: public

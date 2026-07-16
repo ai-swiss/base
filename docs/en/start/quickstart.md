@@ -1,4 +1,4 @@
-<!-- fr-synced: d2b539560df3179131b09a1fa6e758f5ffb78b21 -->
+<!-- fr-synced: b3f9e4f359f3922df1ec753b0f38a432c342286d -->
 # Shape your first assistant
 
 In a few minutes, you hand off a task you repeat by hand to an assistant that takes it on, with no code and without giving up any control: it proposes, you approve. Concretely, you copy an example into an AI tool that can read your files, you say what you want to do, and the assistant does the rest.

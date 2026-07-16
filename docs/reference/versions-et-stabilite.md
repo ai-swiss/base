@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: versions-et-stabilite
 type: document
 title: Mettre à jour BASE sans casser votre travail
-description: Ce que la version 1.x garantit et ce qui peut évoluer: la surface stable (format, commandes, outils MCP, schémas), la règle des dépréciations, et comment base update suit les versions publiées.
+description: "Ce que la version 1.x garantit et ce qui peut évoluer: la surface stable (format, commandes, outils MCP, schémas), la règle des dépréciations, et comment base update suit les versions publiées."
 scope: public
 status: active
 sensitivity: public

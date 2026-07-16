@@ -1,4 +1,4 @@
-<!-- fr-synced: 7765f7ee96615c4dabd8f29a3dbd631a2f0a08fb -->
+<!-- fr-synced: b9163ff5519e89b189a43bd7f7bcf0fcb4632bb4 -->
 # Where to start
 
 At first glance, the repository can look dense, because it brings together three things at once: a usable framework, domain examples, and a verifiable technical foundation. This page saves you from reading everything: it gives you the reading order suited to your situation, whether you are on your own, in an SMB, in a large enterprise, or in the public sector.

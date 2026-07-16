@@ -1,4 +1,4 @@
-<!-- fr-synced: 14b558ef87b4a48bcf6fd66052b6a35e0360e650 -->
+<!-- fr-synced: 1a983e7c25059311b6b5ddf334ecc9bc5989704c -->
 # See BASE in action
 
 Before handing a real folder to an AI, watch how it behaves on a case you can check. This demo shows, in under a minute, a BASE assistant that consults two files, cites the rule it applies, and marks `[A VALIDER]` instead of treating the decision as settled.

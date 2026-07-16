@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: compatibilite-harnesses
 type: document
 title: Savoir quelles garanties vous obtenez selon votre outil
-description: Les garanties BASE varient selon l'outil IA (Claude Code, Cursor, plateformes MCP, outils génériques): la table honnête de ce que chaque harness protège réellement, niveau par niveau.
+description: "Les garanties BASE varient selon l'outil IA (Claude Code, Cursor, plateformes MCP, outils génériques): la table honnête de ce que chaque harness protège réellement, niveau par niveau."
 scope: public
 status: active
 sensitivity: public

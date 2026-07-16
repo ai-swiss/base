@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: installer-par-votre-ia
 type: document
 title: Faites installer BASE par votre IA
-description: Un seul bloc à coller dans un outil IA capable d'exécuter des commandes (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code): il installe BASE, crée votre espace de travail et vous dit quand c'est prêt.
+description: "Un seul bloc à coller dans un outil IA capable d'exécuter des commandes (par exemple GitHub Copilot, Antigravity, Claude Code ou Cowork, OpenCode, Kilo Code): il installe BASE, crée votre espace de travail et vous dit quand c'est prêt."
 scope: public
 status: active
 sensitivity: public

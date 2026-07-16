@@ -1,4 +1,4 @@
-<!-- fr-synced: 765c75b12443ffaa25fe4cc888c12800e735b13e -->
+<!-- fr-synced: 386edd8c8291f6fca9f3b1d1a02aae7e8341b00a -->
 # What you can do with BASE
 
 You have the right to copy, adapt, and redistribute BASE, including for commercial use. Here is precisely what that allows, and under what conditions. Whether you come from the public sector or work independently, start with this: BASE rests on a dual license, one for the code and one for the content, and those rights do not cover quite the same scope from one file to the next.

@@ -7,7 +7,7 @@ scope: team
 status: active
 sensitivity: internal
 description: Convertir des documents existants (notes, modes d'emploi Word, wikis, checklists) en ressources BASE (process, compétences, documents, templates), proposées via le gate, jamais écrites d'office.
-use_when: Quand l'utilisateur veut partir de ses documents existants: «importe mes procédures», «transforme ce mode d'emploi en process», «j'ai déjà tout dans un wiki».
+use_when: "Quand l'utilisateur veut partir de ses documents existants: «importe mes procédures», «transforme ce mode d'emploi en process», «j'ai déjà tout dans un wiki»."
 keywords: [import, migration, conversion, existant, onboarding]
 routing:
   examples:

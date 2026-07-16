@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: quickstart
 type: document
 title: Façonnez votre premier assistant
-description: Le démarrage rapide: copier un exemple dans un outil IA qui lit vos fichiers, dire ce que vous voulez faire, et valider ce que l'assistant propose. Premier succès en quelques minutes, sans code.
+description: "Le démarrage rapide: copier un exemple dans un outil IA qui lit vos fichiers, dire ce que vous voulez faire, et valider ce que l'assistant propose. Premier succès en quelques minutes, sans code."
 scope: public
 status: active
 sensitivity: public

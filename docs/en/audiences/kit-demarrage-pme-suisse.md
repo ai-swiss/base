@@ -1,4 +1,4 @@
-<!-- fr-synced: 0d58186fa20e049497fd9ffa2752dc6824352129 -->
+<!-- fr-synced: ececa9237cabc981c37acfd4bd6eb6e947d3b665 -->
 # Getting started with BASE in a Swiss SME
 
 Getting a small Swiss team to work with AI without going off the rails or rolling out a heavyweight platform: that is the challenge. This kit pulls together the bare essentials to start cleanly with BASE and frame a first, controlled use. It stands in for neither legal advice, nor a security policy, nor document governance.

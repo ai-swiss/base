@@ -1,4 +1,4 @@
-<!-- fr-synced: 7714a85b064ad3cf169b27da13aa0153672da334 -->
+<!-- fr-synced: 047de31130cee65d8aeaff316612f8d98b1e6c69 -->
 # BASE's gates
 
 BASE's discipline rests on controls, not on trust. This page catalogs them so that, when something
@@ -20,6 +20,7 @@ the regenerated artifacts, the doctor, the smoke pack, and the MCP and Studio su
 | `check-markers` | The closed set of markers (`[A VALIDER]`, `[ATTENTION]`, `[A COMPLETER]`, `[DECISION]`) stays consistent. | Use only these four markers. |
 | `check-statusless` | Reference pages are in the present tense, statusless. | Rephrase in the present tense; remove the status. |
 | `check-emdash` | No em-dash in French content (`docs/`, README, CONTRIBUTING, MANIFESTO). | Replace with a colon, parentheses, or a single hyphen. |
+| `check-frontmatter-yaml` | Frontmatter stays valid for a strict YAML reader (GitHub, Astro): an unquoted value must not contain a colon followed by a space. | Wrap the value in straight double quotes (`description: "text with a colon: here"`). |
 | `check-punctuation` | Tight Swiss-French punctuation in the French (`docs/`, `exemples/`, README, CONTRIBUTING, MANIFESTO): no space before `: ; ! ?`, tight quotes, no em-dash in the examples. | Tighten the punctuation; an exception is declared on the line with `[PUNCT-OK: reason]`. |
 | `check-lexique` | No banned phrasing appears in the French prose. | Rephrase; an exception is declared on the line with `[LEXIQUE-OK: reason]`. |
 | `check-translations` | Translations name French as the reference version. | Add the mention of the French source. |

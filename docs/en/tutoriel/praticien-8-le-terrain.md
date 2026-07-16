@@ -1,4 +1,4 @@
-<!-- fr-synced: 8ed499cb67add6318c2446d9a6e1baa9d5af647d -->
+<!-- fr-synced: 7cc0dbad55b437285920db02da80551aa3bd6eed -->
 # The field: a friction comes up
 
 *⏱ ~10 min · module 8/9, Practitioner track*

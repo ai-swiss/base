@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: securite-donnees-routage
 type: document
 title: Garder vos données sous contrôle quand le routage utilise un provider
-description: Pour les équipes techniques: savoir quelles chaînes partent vers un provider d'embeddings, comment réduire l'exposition, brancher un proxy interne et journaliser sans contenu métier.
+description: "Pour les équipes techniques: savoir quelles chaînes partent vers un provider d'embeddings, comment réduire l'exposition, brancher un proxy interne et journaliser sans contenu métier."
 scope: public
 status: active
 sensitivity: public

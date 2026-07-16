@@ -22,6 +22,7 @@ import { changelogSyncVerdict, isChangelog, isPublicSurface } from "../tools/spe
 import { missingMarkers } from "../tools/spec/check-markers.mjs";
 import { BUSINESS_MARKERS, scanMarkers } from "../tools/core/markers.mjs";
 import { emDashLines } from "../tools/docs/check-emdash.mjs";
+import { offendingScalars, frontmatterLines } from "../tools/docs/check-frontmatter-yaml.mjs";
 import { linksToSource, recordedSyncHash } from "../tools/docs/check-translations.mjs";
 
 // Build IDs without ever writing a full literal (e.g. "FR" + "-FOO-001").
@@ -320,6 +321,14 @@ describe("French house-style and authority gates", () => {
     assert.deepEqual(emDashLines("Un texte, avec virgule."), []);
     assert.deepEqual(emDashLines("```\ncode — fenced\n```"), [], "a fenced em-dash is not prose");
     assert.deepEqual(emDashLines("ligne — tolérée [EMDASH-OK: citation]"), []);
+  });
+  it("frontmatter-yaml gate flags an unquoted value with a colon, accepts quoted, ignores URL schemes", () => {
+    const bad = frontmatterLines("---\ntitle: Foo\ndescription: A thing: with a colon\n---\nbody\n");
+    assert.deepEqual(offendingScalars(bad).map((h) => h.key), ["description"]);
+    const good = frontmatterLines('---\ntitle: Foo\ndescription: "A thing: with a colon"\n---\nbody\n');
+    assert.deepEqual(offendingScalars(good), [], "a quoted value is valid strict YAML");
+    const url = frontmatterLines("---\nhomepage: https://example.com/x\n---\nbody\n");
+    assert.deepEqual(offendingScalars(url), [], "a scheme colon with no following space is not a mapping");
   });
   it("translations gate: a translation head must link its French source; opt-in sync hash is read", () => {
     assert.equal(linksToSource("> This is a translation. The [French version](README.md) is authoritative.", "README.md"), true);

@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: docs-tutoriel-equipe-2-perimetres-et-egress
 type: document
 title: Périmètres et gouvernance d'egress
-description: Sur une vraie ressource confidentielle, choisissez un modèle distant et voyez BASE refuser la fuite AVANT tout appel: la règle d'egress se DIT, elle ne fuit pas en silence.
+description: "Sur une vraie ressource confidentielle, choisissez un modèle distant et voyez BASE refuser la fuite AVANT tout appel: la règle d'egress se DIT, elle ne fuit pas en silence."
 scope: public
 status: active
 sensitivity: public

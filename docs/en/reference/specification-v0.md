@@ -1,4 +1,4 @@
-<!-- fr-synced: abfdf77b9bf8b291e51cb13e588f2a135c5aee68 -->
+<!-- fr-synced: b8bea5eca069a43f67e2b5c2d09ebce7e8925539 -->
 # BASE Spec v0: founding principle and where to read the current spec
 
 This page is a landmark for anyone looking for the BASE specification. It states the founding principle and points to the up-to-date engineering specification, so you don't end up working from a stale text.

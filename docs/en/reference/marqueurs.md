@@ -1,4 +1,4 @@
-<!-- fr-synced: 3ba01f030419d4bea38396de878f9084d136180e -->
+<!-- fr-synced: fec6e4fb553ec8b47b34572ff202bc73afe87e25 -->
 # BASE markers and when to place them
 
 A marker placed badly, or understood differently by the human, the agent, and the tooling, loses track of the real state of the work. To prevent that, the vocabulary is defined once, here: which markers exist, what each one means, and when to place it. A marker is a searchable text cue, written in brackets inside a document, that makes that state visible without leaving the file. It serves as a shared reference for anyone writing or reviewing in BASE, as well as for the agent assisting them.

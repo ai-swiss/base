@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: licence
 type: document
 title: Ce que vous pouvez faire avec BASE
-description: Vos droits de réutilisation sous la double licence BASE: Apache-2.0 pour le code, CC BY 4.0 pour les contenus.
+description: "Vos droits de réutilisation sous la double licence BASE: Apache-2.0 pour le code, CC BY 4.0 pour les contenus."
 scope: public
 status: active
 sensitivity: public

@@ -1,4 +1,4 @@
-<!-- fr-synced: 10badb7e816316bef2ee23d61913aae9e8e27ecd -->
+<!-- fr-synced: f274aedacaf481156b027003950067b18af9bc52 -->
 # Official BASE visuals to download
 
 This page gathers the official BASE visuals, ready to use and released under an open license. Journalists, partners, and authors will find here the structure diagram to illustrate an article, a presentation, or a publication without having to redraw it.

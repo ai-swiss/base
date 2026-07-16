@@ -1,4 +1,4 @@
-<!-- fr-synced: e93108f753b7538c90f7764144e816f382396030 -->
+<!-- fr-synced: acb1031208d9fac5579c81f3210a8a945ce57d9f -->
 # Track 2, embedding-based routing (optional, for scale)
 
 BASE routes in two ways, and configuration is what decides. Track 1 is the default setting and is enough

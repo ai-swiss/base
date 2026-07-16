@@ -1,4 +1,4 @@
-<!-- fr-synced: aca2ff4e8e764e15ef89d1d769ae40277d9bfe07 -->
+<!-- fr-synced: 8e88202fc58acbc34ee70e2c6272761c97b96a77 -->
 # Change a rule, watch it obey
 
 *⏱ ~10 min · module 2/3, Discovery track*

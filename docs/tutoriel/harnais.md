@@ -2,7 +2,7 @@
 schema_version: base.resource.v1
 id: docs-tutoriel-harnais
 type: document
-title: Étape 0: brancher votre outil IA
+title: "Étape 0: brancher votre outil IA"
 description: Installer et connecter votre outil (Claude Code, Cursor, ou un autre), et vérifier qu'il répond DANS le dossier d'exemple avant de commencer.
 scope: public
 status: active

@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: kit-demarrage-pme-suisse
 type: document
 title: Démarrer avec BASE en PME suisse
-description: Le minimum praticable pour faire travailler une petite équipe suisse avec BASE: premier workflow, données autorisées, validation, versionner simplement, entretien et limites.
+description: "Le minimum praticable pour faire travailler une petite équipe suisse avec BASE: premier workflow, données autorisées, validation, versionner simplement, entretien et limites."
 scope: public
 status: active
 sensitivity: public

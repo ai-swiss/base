@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: kit-administration-secteur-public
 type: document
 title: Évaluer et utiliser BASE de façon responsable dans le secteur public
-description: Checklist pour décider si et comment déployer BASE dans une institution publique: données citoyens, classification, rétention, accessibilité, marchés publics, politique fournisseur de modèle.
+description: "Checklist pour décider si et comment déployer BASE dans une institution publique: données citoyens, classification, rétention, accessibilité, marchés publics, politique fournisseur de modèle."
 scope: public
 status: active
 sensitivity: public

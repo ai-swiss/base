@@ -1,4 +1,4 @@
-<!-- fr-synced: 125dfaf1a8f21df09a67919096b79b78a9e77139 -->
+<!-- fr-synced: b3dbec9898b06628ed495355ac97b2f2c442a111 -->
 # Distribute to a team
 
 *⏱ ~20 min · module 3/3, Team track*

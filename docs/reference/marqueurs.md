@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: marqueurs-registre
 type: document
 title: Les marqueurs de BASE et quand les poser
-description: Le registre unique du vocabulaire des marqueurs inline de BASE. Deux niveaux: les marqueurs métier des documents utilisateurs et les marqueurs du plan de spécification. Source canonique fermée dont dérivent le scanner, l'exigence FR-CORE-010 et la compétence marqueurs de chaque agent.
+description: "Le registre unique du vocabulaire des marqueurs inline de BASE. Deux niveaux: les marqueurs métier des documents utilisateurs et les marqueurs du plan de spécification. Source canonique fermée dont dérivent le scanner, l'exigence FR-CORE-010 et la compétence marqueurs de chaque agent."
 scope: public
 status: active
 sensitivity: public

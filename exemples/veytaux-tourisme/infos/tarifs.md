@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: tarifs
 type: document
 title: Les tarifs
-description: Les tarifs de l'office du tourisme de Veytaux: taxe de séjour, visites guidées et barème de groupe.
+description: "Les tarifs de l'office du tourisme de Veytaux: taxe de séjour, visites guidées et barème de groupe."
 scope: team
 status: active
 sensitivity: internal
