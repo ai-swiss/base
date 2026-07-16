@@ -1,4 +1,4 @@
-<!-- fr-synced: bd5a966e49fba179d307251d9e33dda969943dd3 -->
+<!-- fr-synced: 472225d844e27fe109b07fb3cc2b66e266be5dd0 -->
 # Updating BASE without breaking your work
 
 This page is for the people who build on BASE: a freelancer, a small business, a school, or a public agency. It says what version 1.x guarantees and what may still change, so you can adopt BASE and update it without fear that a new release will break what you have built.

@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: voie-2-routage-embeddings
 type: document
 title: Voie 2, le routage par embeddings (optionnel, pour l'échelle)
-description: La Voie 2 du routage de BASE: optionnelle, pour les grands catalogues, des embeddings retrouvent quelques candidats et un petit modèle local raffine. Local et souverain, c'est essentiellement «juste Ollama».
+description: "La Voie 2 du routage de BASE: optionnelle, pour les grands catalogues, des embeddings retrouvent quelques candidats et un petit modèle local raffine. Local et souverain, c'est essentiellement «juste Ollama»."
 scope: public
 status: active
 sensitivity: public

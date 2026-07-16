@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: docs-tutoriel-equipe-3-distribuer
 type: document
 title: Distribuer à une équipe
-description: Versionnez votre BASE par git, puis levez vraiment le serveur MCP et connectez un outil: routage déterministe et écritures médiées, pour toute l'équipe.
+description: "Versionnez votre BASE par git, puis levez vraiment le serveur MCP et connectez un outil: routage déterministe et écritures médiées, pour toute l'équipe."
 scope: public
 status: active
 sensitivity: public

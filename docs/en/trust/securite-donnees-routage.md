@@ -1,4 +1,4 @@
-<!-- fr-synced: 73ea169fd21cee77250778c04ac7f4c2a520a748 -->
+<!-- fr-synced: ae5a0106bf2c918ac31496f9b4efa633032aeb77 -->
 # Keeping your data under control when routing uses a provider
 
 The moment BASE's semantic routing relies on an embeddings provider, text leaves your machine, and you then need to say precisely which text, and how to keep it in check. Written for teams wiring up this routing, this page lays out what actually goes out, how to reduce exposure, how to go through an internal proxy, and how to log without ever revealing domain content.

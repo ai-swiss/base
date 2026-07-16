@@ -45,8 +45,12 @@ describe("frontmatter serialize — golden round-trips (the tricky cases)", () =
     });
   });
 
-  it("strings with colons and commas as bareword (allowed inside a value)", () => {
+  it("a value with ': ' is quoted for strict YAML; a URL scheme colon stays bareword", () => {
     roundTrip({ title: "a: b, c: d", url: "http://example.test/x" });
+    // Emission is strict-YAML valid: the ": " value is wrapped; the "://" scheme colon needs no wrap.
+    const out = serializeFrontmatter({ title: "a: b", url: "http://example.test/x" });
+    assert.match(out, /title: "a: b"/, "a colon+space value is quoted");
+    assert.match(out, /url: http:\/\/example\.test\/x/, "a scheme colon (no following space) stays bareword");
   });
 
   it('strings containing double quotes (literal wrap, parser does slice without unescape)', () => {

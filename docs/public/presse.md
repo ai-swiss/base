@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: presse
 type: document
 title: Dossier de presse
-description: Le dossier de presse de BASE pour journalistes et rédactions: ce qu'est le cadre, le problème qu'il traite, son origine, sa licence et ses limites.
+description: "Le dossier de presse de BASE pour journalistes et rédactions: ce qu'est le cadre, le problème qu'il traite, son origine, sa licence et ses limites."
 scope: public
 status: active
 sensitivity: public

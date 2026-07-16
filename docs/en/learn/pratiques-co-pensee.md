@@ -1,4 +1,4 @@
-<!-- fr-synced: 3b5e908fbba2b03e9eb8b3ac5691c2f9473155f2 -->
+<!-- fr-synced: c25127736ca7fa427e31824c0062314c3b1e2275 -->
 # Human-AI co-thinking in practice
 
 Producing with AI now takes little effort; defending it takes a lot. The point, then, is not to write the perfect prompt, but to **stay the one who keeps control**: frame, delegate, evaluate, adjust, and know, in the end, what one signs off on. This page brings together what it takes to get there, from the simplest to the most complete: the loop that sets the rhythm of every exchange, five practices to make it light, then the sixteen principles that ground them. One can stop after the practices and already work well; going all the way down to the principles is how you hold the method over time.

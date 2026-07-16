@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: demo-60-secondes
 type: document
 title: Voir BASE en action
-description: En moins d'une minute, observer un assistant BASE sur un cas vérifiable: deux sources à consulter, une règle à appliquer et une décision à laisser visible.
+description: "En moins d'une minute, observer un assistant BASE sur un cas vérifiable: deux sources à consulter, une règle à appliquer et une décision à laisser visible."
 scope: public
 status: active
 sensitivity: public

@@ -1,4 +1,4 @@
-<!-- fr-synced: 27046fac15b56463425b5876dfec8d76adb86f82 -->
+<!-- fr-synced: f66795da8484168c63849485279ea31651324270 -->
 # Press Kit
 
 Producing text takes almost no effort anymore; staying in control of what you publish takes as much as ever. BASE, an open source, local-first framework backed by AI Swiss, structures that control. This kit gathers the stable public materials; quotes, visuals, and demonstrations not present in this repository can be requested from AI Swiss.

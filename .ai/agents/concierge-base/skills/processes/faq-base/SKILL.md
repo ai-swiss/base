@@ -8,7 +8,7 @@ status: active
 sensitivity: internal
 name: faq-base
 description: "Répondre brièvement à une question de base sur BASE (un agent, un process, une racine, un workspace, le MCP, la confidentialité), en lisant la doc canonique avant de répondre."
-use_when: Quand l'utilisateur pose une question simple de définition sur BASE: c'est quoi un agent, un process, une racine, un workspace, le MCP, ou si ses données sont privées.
+use_when: "Quand l'utilisateur pose une question simple de définition sur BASE: c'est quoi un agent, un process, une racine, un workspace, le MCP, ou si ses données sont privées."
 routing:
   examples:
     - Quelle est la définition d'un agent ?

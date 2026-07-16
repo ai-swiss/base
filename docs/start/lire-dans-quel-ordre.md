@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: lire-dans-quel-ordre
 type: document
 title: Par où commencer
-description: Le parcours de lecture à suivre selon votre profil: personne seule, PME, grande entreprise ou institution publique, pour ne lire que ce qui vous concerne.
+description: "Le parcours de lecture à suivre selon votre profil: personne seule, PME, grande entreprise ou institution publique, pour ne lire que ce qui vous concerne."
 scope: public
 status: active
 sensitivity: public

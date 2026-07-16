@@ -1,4 +1,4 @@
-<!-- fr-synced: 1a5093423e0ba18489c24df663c597c11f7f0feb -->
+<!-- fr-synced: c6bbadbb05c8b8e8a0020011dde50afc296ad0da -->
 # Step 0: connect your AI tool
 
 **You will** make your AI tool able to read a BASE folder and respond from it; a simple question, at

@@ -8,7 +8,7 @@ status: active
 sensitivity: internal
 name: depannage-base
 description: "Aider quand BASE ne se comporte pas comme prévu: agent introuvable, mauvaise racine, MCP non connecté, routage qui échoue, outil qui ne voit pas les fichiers. Lire la doc, donner un contrôle concret, passer la main à l'installation si besoin."
-use_when: Quand quelque chose ne fonctionne pas dans BASE: un agent introuvable, une mauvaise racine, le MCP non connecté, route_request qui échoue, ou un outil qui ne voit pas les fichiers.
+use_when: "Quand quelque chose ne fonctionne pas dans BASE: un agent introuvable, une mauvaise racine, le MCP non connecté, route_request qui échoue, ou un outil qui ne voit pas les fichiers."
 routing:
   examples:
     - Le MCP ne trouve pas mes agents

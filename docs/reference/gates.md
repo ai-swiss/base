@@ -1,6 +1,6 @@
 ---
 title: Les gates de BASE
-description: Le catalogue des contrôles qui protègent BASE. Une ligne par gate: ce qu'elle vérifie, où elle tourne (hook local, npm run check, ou CI seulement) et comment la corriger.
+description: "Le catalogue des contrôles qui protègent BASE. Une ligne par gate: ce qu'elle vérifie, où elle tourne (hook local, npm run check, ou CI seulement) et comment la corriger."
 keywords: [gates, controles, ci, check, contribution, qualite, discipline]
 ---
 
@@ -25,6 +25,7 @@ les artefacts régénérés, le doctor, le smoke pack ainsi que les suites MCP e
 | `check-markers` | Le jeu fermé de marqueurs (`[A VALIDER]`, `[ATTENTION]`, `[A COMPLETER]`, `[DECISION]`) reste cohérent. | N'employer que ces quatre marqueurs. |
 | `check-statusless` | Les pages de référence sont rédigées au présent, sans statut. | Reformuler au présent; retirer le statut. |
 | `check-emdash` | Aucun tiret cadratin dans le contenu français (`docs/`, README, CONTRIBUTING, MANIFESTO). | Remplacer par deux-points, parenthèses ou tiret simple. |
+| `check-frontmatter-yaml` | Le frontmatter reste valide pour un lecteur YAML strict (GitHub, Astro): une valeur non protégée par des guillemets ne contient pas de deux-points suivi d'une espace. | Encadrer la valeur de guillemets droits (`description: "texte avec un deux-points: ici"`). |
 | `check-punctuation` | Ponctuation serrée romande dans le français (`docs/`, `exemples/`, README, CONTRIBUTING, MANIFESTO): pas d'espace avant `: ; ! ?`, guillemets serrés, pas de tiret cadratin dans les exemples. | Resserrer la ponctuation; une exception se déclare sur la ligne avec `[PUNCT-OK: raison]`. |
 | `check-lexique` | Aucune formulation bannie n'apparaît dans la prose française. | Reformuler; une exception se déclare sur la ligne avec `[LEXIQUE-OK: raison]`. |
 | `check-translations` | Les traductions nomment le français comme version de référence. | Ajouter la mention de la source française. |

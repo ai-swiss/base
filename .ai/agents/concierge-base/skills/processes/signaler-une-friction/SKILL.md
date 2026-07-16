@@ -7,7 +7,7 @@ scope: team
 status: active
 sensitivity: internal
 description: Consigner un dysfonctionnement vécu avec l'assistant (process qui déraille, donnée périmée, étape impossible) dans le journal de friction, pour qu'il devienne un amendement de process.
-use_when: Quand l'utilisateur exprime un problème avec son assistant lui-même: «ça n'a pas marché», «mon assistant s'est trompé», «le process donne un mauvais résultat», «le barème cité est faux».
+use_when: "Quand l'utilisateur exprime un problème avec son assistant lui-même: «ça n'a pas marché», «mon assistant s'est trompé», «le process donne un mauvais résultat», «le barème cité est faux»."
 keywords: [friction, dysfonctionnement, erreur, feedback, terrain]
 routing:
   examples:

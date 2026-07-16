@@ -1,6 +1,6 @@
 ---
 title: La co-pensée en pratique
-description: Garder la main quand on produit avec l'IA: la boucle du quotidien, cinq pratiques concrètes, et les seize principes qui les fondent. Du geste de tous les jours à la méthode complète.
+description: "Garder la main quand on produit avec l'IA: la boucle du quotidien, cinq pratiques concrètes, et les seize principes qui les fondent. Du geste de tous les jours à la méthode complète."
 keywords: [co-pensee, pratiques, principes, verification, methode, collaboration humain-IA, responsabilite, souverainete, fiche de decision, marqueurs]
 ---
 

@@ -1,4 +1,4 @@
-<!-- fr-synced: 5c0f4a968466166d43378ab9196eb8ee962a9692 -->
+<!-- fr-synced: d0d0d306810420bd5bbff99bef678388407a09f7 -->
 # Have your AI install BASE
 
 Installing BASE can fall to your AI rather than to you: you walk away with a ready-to-use

@@ -1,6 +1,6 @@
 ---
 title: L'adoption dans une organisation
-description: Une organisation adopte l'IA quand deux mouvements de sens contraire se rencontrent: l'appropriation qui monte du terrain et les flux assistés qui descendent par le haut.
+description: "Une organisation adopte l'IA quand deux mouvements de sens contraire se rencontrent: l'appropriation qui monte du terrain et les flux assistés qui descendent par le haut."
 keywords: [adoption, appropriation, process d'equipe, flux assistes, gouvernance, super-utilisateur, promotion, remontee, deux moteurs, role de l'IT, outils]
 ---
 

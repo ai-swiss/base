@@ -1,6 +1,6 @@
 ---
 title: Justifier le choix de BASE (souveraineté, confiance, conformité)
-description: Tout ce qu'il faut pour défendre le choix de BASE devant un client, un service informatique ou un responsable conformité, rassemblé sur une page: souveraineté des données, protection des données, sécurité, licence et gouvernance.
+description: "Tout ce qu'il faut pour défendre le choix de BASE devant un client, un service informatique ou un responsable conformité, rassemblé sur une page: souveraineté des données, protection des données, sécurité, licence et gouvernance."
 keywords: [souverainete, confiance, conformite, nLPD, revLPD, RGPD, securite, licence, gouvernance, donnees, evaluation]
 ---
 

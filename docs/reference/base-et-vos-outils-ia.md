@@ -1,6 +1,6 @@
 ---
 title: Garder vos outils IA, posséder l'intelligence qu'ils exécutent
-description: Comment BASE se combine avec vos outils IA sans les remplacer: périmètre par tâche, texte que vous possédez, agents planifiés sous validation humaine, et aide pour intégrer votre outil précis.
+description: "Comment BASE se combine avec vos outils IA sans les remplacer: périmètre par tâche, texte que vous possédez, agents planifiés sous validation humaine, et aide pour intégrer votre outil précis."
 keywords: [outils, plateforme, suite, integration, interoperabilite, mcp, souverainete, execution, agents planifies, valides]
 ---
 

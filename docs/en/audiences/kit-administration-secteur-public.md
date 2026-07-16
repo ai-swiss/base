@@ -1,4 +1,4 @@
-<!-- fr-synced: 4707719e45b951c5a08f01c7b88bb2bfc37a1115 -->
+<!-- fr-synced: b5233f5f100aaa83b241d478273269fd430b72cb -->
 # Evaluating and using BASE responsibly in the public sector
 
 Deploying BASE in a public institution puts citizen data, a legal basis, and public procurement on the line: deciding whether and how to do it without taking on needless risk calls for clear bearings. This checklist provides those concrete bearings and flags the decisions that remain yours (legal counsel, data protection officer, archives, procurement); it is not a substitute for legal advice.

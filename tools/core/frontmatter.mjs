@@ -11,6 +11,12 @@
 // mode), so the round-trip serializer contract and the fuzz corpus stay stable. Do not move value
 // strictness into this file without first deciding that policy explicitly. (Audit 2026-06-09.)
 //
+// EMITTER strict-YAML validity (decided 2026-07-16): distinct from the reader's tolerance above, the
+// serializer quotes a scalar carrying ": " (colon + space) or a trailing ":", so its output parses
+// under a strict YAML reader (GitHub, Jekyll, Astro), not only under BASE's tolerant reader. Postel's
+// law: tolerant in, conservative out. The round-trip contract is unchanged (a quoted value round-trips);
+// the authoring-time gate is check-frontmatter-yaml. See serializeString + spec 10_core/frontmatter.md.
+//
 // Returns { data, body, raw, errors }. errors = [{ line, code, message }] (frontmatter-relative line).
 
 import { CODES } from "./codes.mjs";
@@ -301,7 +307,10 @@ function isBarewordSafe(s) {
 
 function serializeString(s, path) {
   if (/[\n\r]/.test(s)) throw new FrontmatterSerializeError("multi-line strings are not representable", path);
-  if (isBarewordSafe(s)) return s;
+  // Bareword only if it round-trips (isBarewordSafe) AND is a valid unquoted STRICT-YAML scalar: a
+  // value with ": " (colon+space) or a trailing ":" is quoted, so GitHub/Jekyll/Astro accept it too
+  // (they read the 2nd ": " as a nested mapping). Emission-only; reader stays tolerant. (See PARSER POLICY.)
+  if (isBarewordSafe(s) && !/:(\s|$)/.test(s)) return s;
   // Literal double-quote wrap. The parser unquotes with `slice(1, -1)` and does NO escape
   // processing, so `"` + s + `"` round-trips ANY single-line string, including one that contains
   // quotes. (Do NOT JSON-escape: the parser would not unescape it.)

@@ -1,4 +1,4 @@
-<!-- fr-synced: ebb18efd717e4e9588414f516da4dfe181ad5990 -->
+<!-- fr-synced: c6f86fd4484d8caa69f19efdfc0b10646f68aba4 -->
 # Adoption in an organization
 
 AI does not get installed in an organization the way software does: by decree, all at once, for everyone. An organization can check every technical box and end up, six months later, with nothing but a handful of isolated uses that nobody shares. Adoption that lasts rests on two movements running in opposite directions, and on their meeting. From the bottom, people take ownership of the dialogue with AI and structure their work in their own way. From the top, the organization makes available, AI-assisted, the few flows that block everyone. The first engine surfaces what works; the second pushes down what is common.

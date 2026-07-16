@@ -4,6 +4,12 @@ Tous les changements notables de BASE sont documentés ici. Le format suit l'esp
 
 À partir de la 1.0, BASE suit le [Semantic Versioning](https://semver.org/lang/fr/): la surface publique stable (format des ressources, commandes CLI, outils MCP, schémas de projection, contrat des points d'extension) ne casse pas sans incrément majeur, hors dépréciation annoncée au préalable (un élément déprécié est retiré après sa fenêtre d'annonce, y compris en mineure). Détail: [Versions et stabilité](docs/reference/versions-et-stabilite.md).
 
+## [Unreleased]
+
+### Corrigé
+- Le frontmatter des pages de documentation est désormais valide pour un lecteur YAML strict: une valeur contenant un deux-points suivi d'une espace (fréquent dans les descriptions) passe entre guillemets, ce qui supprime la bannière «Error in user YAML» que GitHub affichait en tête d'une trentaine de pages. Le lecteur de BASE retire ces guillemets à la lecture: le contenu des ressources est inchangé. Un nouveau gate `check-frontmatter-yaml`, dans `npm run check`, empêche toute régression.
+- Le sérialiseur de frontmatter émet à son tour du YAML strictement valide: un scalaire contenant un deux-points suivi d'une espace est protégé par des guillemets. L'atelier d'écriture (Studio, propose-commit) et le gate appliquent donc la même règle. Le lecteur reste tolérant et le contrat de round-trip est inchangé (loi de Postel: tolérant en lecture, conservateur en écriture).
+
 ## [1.3.1] - 2026-07-16
 
 Le README s'ouvre à l'international, sans toucher à la surface publique. L'anglais devient la langue par défaut; le français reste la source qui fait foi. La refonte resserre l'entrée en matière et le parcours de démarrage.

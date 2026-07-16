@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: mon-assistant
 type: agent
 title: Mon assistant
-description: Votre assistant de travail personnel: précisez son rôle au fil de l'usage.
+description: "Votre assistant de travail personnel: précisez son rôle au fil de l'usage."
 use_when: Quand le travail concerne votre activité personnelle.
 scope: personal
 status: active

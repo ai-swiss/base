@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: docs-tutoriel-praticien-7-premiere-evaluation
 type: document
 title: La première évaluation
-description: Lancez une évaluation de l'office du tourisme de Veytaux: un utilisateur simulé joue un scénario, un juge note. Vous lisez le verdict et une piste de correction.
+description: "Lancez une évaluation de l'office du tourisme de Veytaux: un utilisateur simulé joue un scénario, un juge note. Vous lisez le verdict et une piste de correction."
 scope: public
 status: active
 sensitivity: public

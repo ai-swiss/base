@@ -1,4 +1,4 @@
-<!-- fr-synced: 18ac90e8410869eaea0f8b167e45e4ad61c78a97 -->
+<!-- fr-synced: 0dde1631f557ff101fa3105a3c5e858f74733056 -->
 # Perimeters and egress governance
 
 *⏱ ~15 min · module 2/3, Team track*

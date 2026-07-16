@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: installer-cursor
 type: document
 title: Installer Cursor pour vos agents BASE
-description: Installer Cursor pas à pas pour faire travailler vos agents BASE: ouvrir un exemple, formuler la première demande, réagir si quelque chose bloque. Cursor est une porte d'entrée parmi d'autres.
+description: "Installer Cursor pas à pas pour faire travailler vos agents BASE: ouvrir un exemple, formuler la première demande, réagir si quelque chose bloque. Cursor est une porte d'entrée parmi d'autres."
 scope: public
 status: active
 sensitivity: public

@@ -2,7 +2,7 @@
 schema_version: base.resource.v1
 id: docs-tutoriel-praticien-8-le-terrain
 type: document
-title: Le terrain: une friction remonte
+title: "Le terrain: une friction remonte"
 description: Copiez une friction d'exemple dans la pile Terrain, lisez-la, et résolvez-la par le gate propose puis commit. Le terrain nourrit l'expertise.
 scope: public
 status: active

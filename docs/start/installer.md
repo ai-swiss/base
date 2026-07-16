@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: installer
 type: document
 title: Installer un espace de travail IA
-description: Choisir et installer un espace de travail local où l'IA lit vos fichiers: la page d'orientation vers le guide adapté (Cursor, Claude Code, autre outil, ou serveur MCP).
+description: "Choisir et installer un espace de travail local où l'IA lit vos fichiers: la page d'orientation vers le guide adapté (Cursor, Claude Code, autre outil, ou serveur MCP)."
 scope: public
 status: active
 sensitivity: public

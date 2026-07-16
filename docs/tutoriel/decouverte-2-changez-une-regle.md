@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: docs-tutoriel-decouverte-2-changez-une-regle
 type: document
 title: Changez une règle, voyez-le obéir
-description: Modifiez un tarif dans le fichier des tarifs, enregistrez, ouvrez une nouvelle conversation, redemandez: l'assistant suit le fichier. Le déclic: l'expertise est un fichier.
+description: "Modifiez un tarif dans le fichier des tarifs, enregistrez, ouvrez une nouvelle conversation, redemandez: l'assistant suit le fichier. Le déclic: l'expertise est un fichier."
 scope: public
 status: active
 sensitivity: public
