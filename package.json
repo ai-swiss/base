@@ -132,9 +132,9 @@
     "docs:test": "npm run docs:build && node --test tests/docs-site-render.mjs"
   },
   "devDependencies": {
-    "@types/node": "^22.19.20",
-    "fast-check": "^4.8.0",
-    "typescript": "^5.7.2"
+    "@types/node": "^26.1.1",
+    "fast-check": "^4.9.0",
+    "typescript": "^7.0.2"
   },
   "peerDependencies": {
     "@ai-swiss/base-ranker-semantic": "1.x",
