@@ -107,6 +107,12 @@ Une version d'affermissement de la 1.0, additive et sans rupture (le format des 
 - Cohérence de présentation: la page des langues reconnaît le miroir anglais intégral de la documentation (73 pages, synchronisées en CI); le README débouche sur les dix pages de démarrage et sur «Lire dans quel ordre» (la source de vérité des parcours); la liste d'outils n'est énumérée en toutes lettres qu'aux endroits où l'on choisit un outil; «association à but non lucratif» retrouve sa négation correcte; «process» désigne partout l'objet BASE.
 - Voie 2 durcie, pour que le cache de vecteurs ne dégrade jamais en silence: `embeddings.json` devient une enveloppe estampillée (`base.routing_vectors.v1`: embedder, dimension, empreinte du `route_text` par entrée); au routage, un vecteur périmé est écarté et journalisé, un cache bâti avec un autre modèle d'embedding est intégralement ignoré (espaces vectoriels incompatibles), et `base doctor` signale les deux dérives (`stale_routing_vectors`). Les ressources `confidential` ne sont jamais embarquées au build (la promesse d'egress vaut aussi sur ce chemin). `base route-test` dit quel chemin il certifie: plancher lexical par défaut avec avertissement quand la Voie 2 est active, `--strategy production` pour rejouer le chemin réel de `base route`.
 
+## [Unreleased]
+
+### Corrigé
+- **base init**: sur un workspace existant, les artefacts d'outils manquants (ex. `CLAUDE.md`) n'étaient pas proposés. Le healing ne couvrait que `detection.type === "root"`; étendu à `"workspace"` pour respecter FR-INIT-004. (Fixes #12)
+- **base-docs-site**: le frontmatter YAML s'affichait en clair dans le corps des pages sur Windows. `stripFrontmatter()` testait `startsWith("---\n")` sans tenir compte des fins de ligne CRLF (`\r\n`). Corrigé en acceptant les deux, et en splittant sur `/\r?\n/` pour éviter les `\r` parasites dans le contenu rendu. (Fixes #10)
+
 ## [1.0.0] - 2026-06-25
 
 Première version publique de BASE: un cadre local-first et ouvert pour structurer la collaboration humain-IA. Le savoir métier vit dans des fichiers Markdown que vous possédez; un cœur zéro dépendance (Node 18 ou plus) médie les actions sensibles; et tout ce qui sort vers un outil tiers reste un choix explicite.

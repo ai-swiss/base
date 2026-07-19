@@ -212,8 +212,8 @@ function escapeAttribute(value: string): string {
 }
 
 function stripFrontmatter(content: string): string {
-  if (!content.startsWith("---\n")) return content;
-  const lines = content.split("\n");
+  if (!content.startsWith("---\n") && !content.startsWith("---\r\n")) return content;
+  const lines = content.split(/\r?\n/);
   const end = lines.findIndex((line, index) => index > 0 && line.trim() === "---");
   return end === -1 ? content : lines.slice(end + 1).join("\n");
 }

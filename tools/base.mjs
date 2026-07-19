@@ -99,7 +99,7 @@ async function runInit(args) {
   const { applyInitPlan, buildInitPlan, detectPerimeter } = await import("./core/perimeter.mjs");
   const detection = await detectPerimeter(rootDir);
   let plan;
-  if (detection.type === "root") {
+  if (detection.type === "root" || detection.type === "workspace") {
     const missing = [];
     for (const artifact of await buildArtifacts(rootDir)) {
       if (await fs.access(path.join(rootDir, artifact.path)).then(() => true, () => false)) continue;
