@@ -5,14 +5,17 @@
 
 import { watch as nodeWatch } from "node:fs";
 import path from "node:path";
-import { UNIVERSAL_SKIP_DIRS } from "../core/walk-policy.mjs";
+import { UNIVERSAL_SKIP_DIRS, isUnder } from "../core/walk-policy.mjs";
 
 const SKIP_NAMES = [...UNIVERSAL_SKIP_DIRS].map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|");
 const IGNORED = new RegExp(`(?:^|/)(?:${SKIP_NAMES})(?:/|$)|/\\.ai/(?:trace|changes|index|experiments)/`);
 
 // `watch` is injectable so the debounce/relevance/close logic is unit-testable without the OS watcher
 // (which can be unavailable — EMFILE on constrained/sandboxed hosts). Defaults to node:fs `watch`.
-export function createResourceWatcher(root, onChange, { debounceMs = 150, watch = nodeWatch } = {}) {
+// `exclude`: the root's `inventory.exclude` — events under those prefixes never trigger a refresh
+// (a root's scratch/build/runtime trees can emit events continuously; without this the UI would
+// refetch the whole tree in a loop).
+export function createResourceWatcher(root, onChange, { debounceMs = 150, watch = nodeWatch, exclude = [] } = {}) {
   let timer = null;
   const trigger = () => {
     if (timer) clearTimeout(timer);
@@ -24,8 +27,10 @@ export function createResourceWatcher(root, onChange, { debounceMs = 150, watch 
 
   const relevant = (filename) => {
     if (!filename) return true; // no name → be safe, refresh
-    const rel = `/${String(filename).split(path.sep).join("/")}`;
+    const posix = String(filename).split(path.sep).join("/");
+    const rel = `/${posix}`;
     if (IGNORED.test(rel)) return false;
+    if (exclude.some((p) => isUnder(posix, p))) return false;
     return rel.endsWith(".md") || rel.includes("/.ai/") || rel.endsWith(".json");
   };
 

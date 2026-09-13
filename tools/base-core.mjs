@@ -18,7 +18,8 @@ import { SCHEMA_VERSION } from "./core/schema.mjs";
 import { coreSchemaValidator, runValidators } from "./core/validators.mjs";
 import { normalize, lexicalRanker, composeRankers } from "./core/rankers.mjs";
 import { advisoryPolicy, resolvePolicy } from "./core/policy.mjs";
-import { buildRoutingRegistry } from "./core/routing.mjs";
+import { buildRoutingRegistry, agentDirOf, ROUTABLE_KINDS } from "./core/routing.mjs";
+import { denyFilterResources } from "./core/route-policy.mjs";
 import { createRouteBroker } from "./core/route-broker.mjs";
 import { readSettings, resolveEmbedder, resolveModel, routingLocality } from "./core/model-settings.mjs";
 import { renderRoutingIndex } from "./core/index-md.mjs";
@@ -102,6 +103,7 @@ export { strictPolicy } from "./core/policy.mjs";
 // Router: derives a route (agent → process) from the files, scores via the Ranker contract, and
 // abstains by inspectable rules. The base.routing.v1 registry is a generated, deterministic projection.
 export { deriveRoutingSignals, decideRoute, buildRoutingRegistry, ROUTING_DEFAULTS, ROUTABLE_KINDS } from "./core/routing.mjs";
+export { resolveEffectivePolicy, isAllowed } from "./core/route-policy.mjs";
 export { routeTerms, routeAvoidReasons } from "./core/route-service.mjs";
 export { ROUTER_BODY, ROUTER_INTRO, renderClaudeMd, renderBootstrapMd, renderCursorRule, renderMcpInstructions, MCP_ROUTE_DISCIPLINE, MCP_READ_DISCIPLINE, MCP_CONTINUITY } from "./core/bootstrap.mjs";
 
@@ -259,7 +261,11 @@ const DEFAULT_BUILD = ["agents-md", "tools", "bootstrap"];
 // Router derives candidates in memory for small projects; the on-disk face is a scale optimisation
 // behind the same model, not a file every project carries.
 const PROJECTIONS = {
-  "agents-md": (resources) => [{ path: "AGENTS.md", content: renderAgentsMd(resources) }],
+  "agents-md": async (resources, root) => {
+    const rootDeny = (await resolveConfig(root)).routing?.policy?.deny ?? [];
+    const routable = denyFilterResources(resources, { rootDeny, routableKinds: ROUTABLE_KINDS, agentDirOf });
+    return [{ path: "AGENTS.md", content: renderAgentsMd(routable) }];
+  },
   tools: () => [{ path: ".ai/tools.md", content: renderToolMatrix() }],
   // One canonical router body (core/bootstrap.mjs) projected into every harness entry point so they cannot drift.
   bootstrap: () => [
@@ -823,7 +829,9 @@ export const routeRequest = routeBroker.routeRequest;
 export async function runRouteTests(rootDir, { fixturesPath, config, strategy = "lexical", examples = false } = {}) {
   const root = path.resolve(rootDir);
   const cfg = config ?? await resolveConfig(root);
-  const resources = await inventoryResources(root);
+  const resources = denyFilterResources(await inventoryResources(root), {
+    rootDeny: cfg.routing?.policy?.deny ?? [], routableKinds: ROUTABLE_KINDS, agentDirOf,
+  });
   let cases;
   if (examples) {
     cases = casesFromExamples(resources); // replay the authors' declared phrasings, no fixtures file

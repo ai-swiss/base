@@ -6,6 +6,10 @@ Tous les changements notables de BASE sont documentés ici. Le format suit l'esp
 
 ## [Unreleased]
 
+### Corrigé
+- La liste d'exclusion `routing.policy.deny` est désormais respectée partout où le routage se mesure ou se projette: `route-test` (fixtures et `--examples`) ne rejoue que les cibles atteignables, et `AGENTS.md` ne liste que les agents routables. Un projet qui met de côté la plus grande partie de son organigramme n'embarque plus un catalogue d'agents inaccessibles dans chaque session (mesuré sur une racine de 224 agents dont 222 exclus: 63 Ko → 5 Ko).
+- Le repli d'aide `routing.fallback` s'attache à toute abstention honnête, y compris une clarification qui porte déjà une question et une ambiguïté entre agents; la question est conservée, le statut reste l'abstention.
+
 ## [1.4.0] - 2026-07-16
 
 Le routage devient plus explicable de bout en bout. `route_request` renvoie la carte des agents et de leurs process, chacun avec son «Quand l'utiliser»: c'est de cette carte que le modèle décide, le résultat déterministe n'étant qu'une indication à vérifier, jamais un ordre. Le serveur MCP guide un exécuteur distant sans lui dicter le mode opératoire; deux outils en lecture seule et une commande `base changes` rendent visible ce qui est proposé et ce qui a été écrit, le reçu de commit portant un `content_hash` vérifiable. Docs et specs disent partout le même partage: le standard définit les signaux de routage, l'implémentation de référence fournit le plancher qui sert les appels sans modèle.

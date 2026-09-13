@@ -73,10 +73,13 @@ interface BrokerModule {
   routeRequest(rootDir: string, request: string, options?: { limit?: number; egress?: EgressContext }): Promise<BrokerRouteResult>;
   buildRoutingRegistry(resources: BrokerResource[]): {
     agents: Array<{
+      agent_dir?: string;
+      deny?: string[];
       agent: { id: string; title: string | null; route_text?: string } | null;
       processes: Array<{ id: string; title: string | null; route_text?: string; avoid_text?: string; path: string }>;
     }>;
   };
+  isAllowed(targetId: string, deny?: string[], targetType?: string): boolean;
   openResource(rootDir: string, idOrPath: string, options?: { projection?: "metadata" | "instructions" | "full"; purpose?: string; confirmed?: boolean; grantToken?: string; egress?: EgressContext }): Promise<BrokerOpenResult>;
   accessResource(rootDir: string, idOrPath: string, options?: { projection?: "metadata" | "instructions" | "full"; purpose?: string; confirmed?: boolean; grantToken?: string; egress?: EgressContext }): Promise<BrokerOpenResult>;
   invokeTool(rootDir: string, idOrPath: string, args?: string[], options?: { dryRun?: boolean; confirmed?: boolean; grantToken?: string; egress?: EgressContext }): Promise<BrokerInvokeResult>;
@@ -365,24 +368,28 @@ export async function brokerRoutingMap(rootDir: string): Promise<BrokerRoutingMa
   const broker = await loadBroker();
   const resources = await broker.inventoryResources(rootDir, { egress: await mcpEgress(broker, rootDir) });
   const registry = broker.buildRoutingRegistry(resources);
+  const config = (await broker.resolveConfig(rootDir).catch(() => null)) as { routing?: { policy?: { deny?: string[] } } } | null;
+  const rootDeny: string[] = Array.isArray(config?.routing?.policy?.deny) ? config.routing.policy.deny : [];
+  const isAllowed = (targetId: string, deny?: string[], targetType?: string): boolean => broker.isAllowed(targetId, deny, targetType);
+
   return registry.agents
-    .map((a) =>
-      a.agent
-        ? {
-            id: a.agent.id,
-            title: a.agent.title ?? null,
-            use_when: a.agent.route_text ?? null,
-            processes: a.processes.map((p) => ({
-              id: p.id,
-              title: p.title ?? null,
-              use_when: p.route_text ?? null,
-              avoid: p.avoid_text ?? null,
-              path: p.path,
-            })),
-          }
-        : null,
-    )
-    .filter((a): a is BrokerRoutingMapAgent => a !== null);
+    .filter((a) => a.agent && a.agent_dir !== "(orphan)" && isAllowed(a.agent.id, rootDeny, "agent"))
+    .map((a) => {
+      const deny = [...rootDeny, ...((a as { deny?: string[] }).deny ?? [])];
+      const allowedProcesses = a.processes.filter((p) => isAllowed(p.id, deny, "process"));
+      return {
+        id: a.agent!.id,
+        title: a.agent!.title ?? null,
+        use_when: a.agent!.route_text ?? null,
+        processes: allowedProcesses.map((p) => ({
+          id: p.id,
+          title: p.title ?? null,
+          use_when: p.route_text ?? null,
+          avoid: p.avoid_text ?? null,
+          path: p.path,
+        })),
+      };
+    });
 }
 
 export async function brokerOpenResource(
@@ -517,4 +524,9 @@ export async function brokerMcpGuidance(): Promise<BrokerMcpGuidance> {
 export async function brokerContextPack(rootDir: string, idOrPath: string): Promise<BrokerContextPackSummary> {
   const broker = await loadBroker();
   return broker.contextPack(rootDir, idOrPath, { egress: await mcpEgress(broker, rootDir) });
+}
+
+export async function brokerIsAllowed(targetId: string, deny?: string[], targetType?: string): Promise<boolean> {
+  const broker = await loadBroker();
+  return broker.isAllowed(targetId, deny, targetType);
 }

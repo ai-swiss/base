@@ -149,7 +149,7 @@ path — so scores compare only within a single decision, never across strategie
 
 ## Help fallback on abstention (FR-ROUTE-009)
 
-A project may declare `routing.fallback: { agent, process }` in `base.config`. When the Router **abstains** — `out_of_scope`, or `needs_clarification` with no useful `next_question` — and the configured target resolves in the inventory, `routeRequest` attaches a `fallback` pointer **on either strategy** (the broker attaches it on the embedding path exactly as `computeRoute` does on the lexical floor: same config, same deny-filtered corpus, same eligibility). It is **separate metadata, never a route**: the `status` stays the honest abstention, so analytics and route fixtures remain truthful (`route-tests.json` can assert `fallback.agent`/`fallback.process`). The core router is **agent-agnostic**: the target is configured, never hard-coded; a missing/typo'd target attaches no fallback (graceful) and `validateBase` warns (`base.routing.fallback_unresolved`). The harness loads the fallback instead of leaving the user at a dead end; the formatter prints `Fallback: <agent> -> <process>`. The text output is as honest as the decision: on a committed agent it prints the agent/process **paths** (the harness reads text — give it what to open); on `competing_intents` it prints **no** `Agent:` line at all (the decision carries the top of two too-close agents for JSON consumers, but naming one in prose invites loading exactly what the abstention forbids).
+A project may declare `routing.fallback: { agent, process }` in `base.config`. When the Router **abstains** — `out_of_scope`, `needs_clarification` (with or without a `next_question`, which is preserved), or `ambiguous` — and the configured target resolves in the inventory, `routeRequest` attaches a `fallback` pointer **on either strategy** (the broker attaches it on the embedding path exactly as `computeRoute` does on the lexical floor: same config, same deny-filtered corpus, same eligibility). It is **separate metadata, never a route**: the `status` stays the honest abstention, so analytics and route fixtures remain truthful (`route-tests.json` can assert `fallback.agent`/`fallback.process`). The core router is **agent-agnostic**: the target is configured, never hard-coded; a missing/typo'd target attaches no fallback (graceful) and `validateBase` warns (`base.routing.fallback_unresolved`). The harness loads the fallback instead of leaving the user at a dead end; the formatter prints `Fallback: <agent> -> <process>`. The text output is as honest as the decision: on a committed agent it prints the agent/process **paths** (the harness reads text — give it what to open); on `competing_intents` it prints **no** `Agent:` line at all (the decision carries the top of two too-close agents for JSON consumers, but naming one in prose invites loading exactly what the abstention forbids).
 
 ## Routing across a workspace (multiple roots)
 
@@ -177,6 +177,9 @@ class), or by a trailing-`*` glob; the veto removes, never reorders. Proven by `
 and an agent the **root** denies, are now omitted from the index (`renderRoutingIndex` with the root
 policy, `tests/route-index.test.mjs`), so the agent reading the index cannot see them; only **direct
 resource loads** remain deferred.
+
+
+The same pre-filter governs every place routing is **measured or projected**: `runRouteTests` (fixtures and `--examples`) replays only reachable targets, and the `agents-md` projection renders only routable agents, so a project that denies most of its org board ships no catalogue of unreachable agents in `AGENTS.md`.
 
 ## Two strategies, one port (FR-ROUTE-010..013)
 

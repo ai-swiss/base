@@ -18,6 +18,7 @@ import {
   searchResources,
 } from "../base-core.mjs";
 import { confineToRoot, pathExists } from "../core/confine.mjs";
+import { resolveConfig } from "../core/config.mjs";
 import { walkTree } from "../core/fswalk.mjs";
 import { applyInitPlan, buildInitPlan, detectPerimeter } from "../core/perimeter.mjs";
 import { resolveBaseContext, selectWorkspaceRoot, WORKSPACE_FILENAME } from "../core/roots.mjs";
@@ -336,8 +337,21 @@ export function rootPathFor(context, rootId = "") {
  * tools/core/fswalk.mjs walker; this endpoint only ANNOTATES resource files with
  * { type, id, hasErrors } from one inventory pass (non-resources carry resource: null).
  */
+/**
+ * The root's own `inventory.exclude` (base.config.json), or [] when the config is absent or
+ * malformed — the explorer and the watcher must keep working on a root the inventory only
+ * degrades on (same tolerance as resolveConfigSafe in base-core).
+ */
+export async function inventoryExcludeFor(root) {
+  try {
+    return (await resolveConfig(root)).inventory.exclude;
+  } catch {
+    return [];
+  }
+}
+
 export async function tree(root) {
-  const resources = await inventoryResources(root);
+  const [resources, exclude] = await Promise.all([inventoryResources(root), inventoryExcludeFor(root)]);
   const byPath = new Map(resources.map((r) => [r.path, r]));
   const annotate = (node) => ({
     name: node.name,
@@ -348,7 +362,7 @@ export async function tree(root) {
       return { ...f, resource: r ? { type: r.type, id: r.id, hasErrors: (r.frontmatter_errors?.length ?? 0) > 0 } : null };
     }),
   });
-  return annotate(await walkTree(root));
+  return annotate(await walkTree(root, { exclude }));
 }
 
 // ---------------------------------------------------------------------------

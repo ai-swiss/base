@@ -149,6 +149,7 @@ export const STOPWORDS = new Set([
   "sous",
   "chez",
   "entre",
+  "selon",
   // Degree adverbs:
   "tres",
   "bien",
@@ -262,14 +263,12 @@ async function rankResources(resources, terms, rank, ctx) {
 }
 
 // Attach a configured help fallback to an HONEST abstention — never to a routed result, so analytics
-// and route tests stay truthful. Eligible: out_of_scope (nothing above the floor), or a
-// needs_clarification with no useful question. Target ids are resolved against the live inventory; a
+// and route tests stay truthful. Every abstention may carry the configured help target;
+// an existing clarification question is preserved. Target ids resolve against the live inventory; a
 // missing/typo'd target yields no fallback (graceful degradation), which `validateBase` warns about.
 export function resolveFallback(configured, resources, decision) {
   if (!configured) return null;
-  const eligible =
-    decision.status === "out_of_scope" ||
-    (decision.status === "needs_clarification" && !decision.next_question);
+  const eligible = ["out_of_scope", "needs_clarification", "ambiguous"].includes(decision.status);
   if (!eligible) return null;
   const agent = resources.find((r) => r.type === "agent" && r.id === configured.agent);
   const process = resources.find((r) => r.type === "process" && r.id === configured.process);
