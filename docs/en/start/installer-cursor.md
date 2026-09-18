@@ -1,4 +1,4 @@
-<!-- fr-synced: c9bc7b69f484581d110e1fa896f084f40e15c9a1 -->
+<!-- fr-synced: 8cebca431229fcaec18a88629733222df64167ff -->
 # Install Cursor for your BASE agents
 
 To put your BASE agents to work, you need a workstation where the AI reads your files, writes files, and runs commands under your control: this page sets one up with Cursor, ready to go. By the end, you will have opened an example, made your first request, and you will know how to respond if something stalls. This calls for installing software and creating an account with the vendor. Cursor is just one entry point: other AI tools that can read your files work just as well (GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code, for instance); go with the one that suits you.
@@ -95,4 +95,6 @@ Cursor excels at iterative work on files. For deep web research (Deep Research, 
 
 ---
 
-BASE is a framework by [AI Swiss](https://a-i.swiss). Use case in partnership with [Innovaud](https://innovaud.ch).
+**Next action:** continue with the [quickstart](quickstart.md) to create your first verifiable quote.
+
+BASE is an open convention with a reference implementation, maintained by [AI Swiss](https://a-i.swiss). Use case in partnership with [Innovaud](https://innovaud.ch).

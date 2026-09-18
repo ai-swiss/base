@@ -163,7 +163,7 @@
             "null"
           ],
           "additionalProperties": true,
-          "description": "DEPRECATED (shipped v1.0.0/v1.1.0): the Voie 2 embedder now has a single reference, `routing.embedding_model` (Studio → Routage). Tolerated so an existing config still loads; inert; removed in the next minor version.",
+          "description": "Unsupported compatibility marker. Runtime loading rejects this key and names `routing.embedding_model` (Studio → Routage) as the supported reference.",
           "properties": {
             "provider": {
               "enum": [
@@ -181,6 +181,36 @@
               "description": "Deprecated: provider base URL override."
             }
           }
+        }
+      }
+    },
+    "mcp": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "description": "What this deployment exposes over MCP. `tools` and `agents` are allow-lists: absent, the whole surface; present, only what they name. An unknown tool name is refused at startup rather than narrowing nothing.",
+      "properties": {
+        "tools": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Names of the MCP tools to register. Every name must be one the server offers (load_agent, discover_resources, route_request, open_resource, get_context_pack, access_resource, list_pending_changes, get_change_status, report_friction, invoke_tool, propose_change, commit_change, promote_resource, list_markers)."
+        },
+        "agents": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": "Names of the agents `load_agent` may list and load. Resolved against the root's live inventory."
+        },
+        "attribution_prefix": {
+          "type": "boolean",
+          "description": "When true, every read of a resource returns the `attribution` line declared on the nearest folder README.md card, so a collection's rule of use travels with the content into any client."
         }
       }
     },
@@ -228,6 +258,11 @@
     "framework_dir": {
       "type": "string",
       "description": "Path to the BASE framework install (where the engine lives); written by `base init` so the launcher finds tools/base.mjs."
+    },
+    "language": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Language of the files BASE writes into this root (entry points, tool matrix, routing index, init scaffold); written by `base init --language`. Normalized to its primary subtag, lowercased (`de-CH` → `de`), since a language table is per language and not per region. Default `fr`. Unlike `tools`, an UNKNOWN value is NOT an error: it is recorded, the artifacts render in French (per-key fallback), and the CLI says so in one line. A tool id decides which FILE is written; a language decides only which words are in it, so a root must never become unloadable for having named a language this build has not been taught."
     },
     "contextPack": {
       "type": [

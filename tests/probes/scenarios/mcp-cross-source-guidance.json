@@ -1,0 +1,74 @@
+{
+  "schema_version": "base.probe-scenario.v1",
+  "id": "mcp-cross-source-guidance",
+  "title": "Une équipe compare deux garanties à partir de plusieurs passages",
+  "mcp": true,
+  "setup": {
+    "kind": "package"
+  },
+  "prompt": "Utilise uniquement les outils BASE MCP et la documentation de ce dossier. Notre université hésite entre laisser l'outil IA lire directement les fichiers et le connecter par MCP. Compare précisément ce que BASE peut protéger dans chaque cas, puis recommande le point de départ le plus prudent. Cite les passages qui fondent la comparaison.",
+  "rubric": [
+    {
+      "id": "accurate-boundary-comparison",
+      "criterion": "La réponse distingue explicitement une consigne écrite d'un contrôle technique et explique que l'accès direct aux fichiers peut contourner les restrictions offertes par l'interface MCP."
+    },
+    {
+      "id": "evidence-based-recommendation",
+      "criterion": "La recommandation prudente découle explicitement des passages cités et tient compte des limites restantes."
+    },
+    {
+      "id": "no-absolute-egress-promise",
+      "criterion": "La réponse ne promet jamais que BASE empêche à lui seul toute sortie de données par tous les chemins possibles."
+    }
+  ],
+  "expect": {
+    "required": [
+      {
+        "type": "tool_call",
+        "name_ends_with": "discover_resources",
+        "includes": "\"grain\":\"section\""
+      },
+      {
+        "type": "tool_call",
+        "name_ends_with": "open_resource",
+        "matches": "\"id_or_path\":\"(?:securite-et-limites|docs-trust-mecanismes-vs-consignes)(?:#[^\"]+)?\""
+      },
+      {
+        "type": "tool_call",
+        "name_ends_with": "open_resource",
+        "matches": "\"id_or_path\":\"(?:compatibilite-harnesses|installer-mcp)(?:#[^\"]+)?\""
+      },
+      {
+        "type": "tool_call",
+        "name_ends_with": "open_resource",
+        "matches": "\"id_or_path\":\"[^\"]+#[^\"]+\""
+      },
+      {
+        "type": "final_answer",
+        "matches": "lecture directe|lit directement|acc[eè]s direct"
+      },
+      {
+        "type": "final_answer",
+        "matches": "\\bMCP\\b"
+      },
+      {
+        "type": "final_answer",
+        "includes": "securite-et-limites#porte-1-votre-outil-ia-lit-les-fichiers-directement"
+      },
+      {
+        "type": "final_answer",
+        "includes": "compatibilite-harnesses#ce-que-cela-implique"
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "tool_call",
+        "name": "Read"
+      },
+      {
+        "type": "tool_call",
+        "name": "Bash"
+      }
+    ]
+  }
+}

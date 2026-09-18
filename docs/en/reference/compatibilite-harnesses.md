@@ -1,4 +1,4 @@
-<!-- fr-synced: 7fd89a856a299f6eff0cc4de1e50601f66a66539 -->
+<!-- fr-synced: 7464d43b1c69b69114e3da751b0e7d8e1f582cef -->
 # Knowing which guarantees you get depending on your tool
 
 Your BASE files work in any AI tool that can read them (for example GitHub Copilot, Codex, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code), as in a standard web AI platform via MCP (for example ChatGPT, Claude, Gemini), but **the guarantees vary from one tool to the next**. This page tells you, plainly, what each harness actually protects, so you can choose your level of trust with full knowledge of the facts.
@@ -31,7 +31,10 @@ This matrix is **generated** from the core (`base build tools`), which keeps it 
 
 - **For personal use**, advisory mode is enough: you review and validate anyway.
 - **For a team or an organization**, route sensitive actions through the broker (CLI, MCP) or a hook, and configure a strict policy (`base.config`). That is where the guarantees become real.
-- **The MCP server** offers the tightest enforcement, since the agent only has access to tools and never directly to files; it is also the one that demands the most setup; see [MCP server](../../mcp/).
+- **The MCP server** offers the tightest enforcement when the agent receives only its tools: file
+  access then goes through the mediated operations exposed by the server. Any other access to the
+  same disk remains outside that guarantee. This mode also requires the most setup; see
+  [MCP server](../../../mcp/).
 
 For the engineering detail (the `PolicyEnforcer` port, the exact boundary), see `specs/current/10_core/policy.md`.
 

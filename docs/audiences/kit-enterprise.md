@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: kit-enterprise
 type: document
 title: Déployer BASE en organisation
-description: Ce que BASE apporte en contexte organisation et ce qu'il ne remplace pas, un exemple de configuration stricte, et les modes de déploiement.
+description: Ce que les fichiers, le routeur et le composant de médiation de BASE apportent en organisation, leurs limites, une configuration stricte et les modes de déploiement.
 scope: public
 status: active
 sensitivity: public
@@ -12,11 +12,17 @@ keywords: [entreprise, gouvernance, strict, policy, validators, deploiement, con
 
 # Déployer BASE en organisation
 
-Déployer BASE en organisation, c'est décider qui peut faire quoi avec vos assistants et garder la main sur les actions sensibles, sans céder votre savoir-faire à une plateforme. L'enjeu, pour une équipe ou une DSI: maîtriser ce que le cadre applique réellement, savoir le verrouiller et choisir un mode de déploiement à la mesure de vos exigences. BASE complète votre socle sur deux points: un langage de l'expertise dans des fichiers qui vous appartiennent, et une médiation honnête des actions sensibles, que l'on branche sans toucher au cœur du système. Ce n'est pas pour autant une plateforme de conformité: BASE ne remplace ni IAM, ni SSO, ni RBAC, ni DLP, ni SIEM, ni rétention réglementaire (voir [Sécurité et limites](../trust/securite-et-limites.md)).
+Déployer un dossier BASE en organisation, c'est décider qui peut faire quoi avec vos assistants et garder la main sur les actions sensibles, sans céder votre savoir-faire à une plateforme. L'enjeu, pour une équipe ou une DSI: maîtriser ce que chaque fichier, outil et intégration applique réellement, puis choisir un mode de déploiement à la mesure de vos exigences. Les fichiers apportent un langage de l'expertise; le broker, composant de médiation de BASE, peut médier certaines actions sensibles. Ni l'un ni l'autre ne remplace IAM, SSO, RBAC, DLP, SIEM ou la rétention réglementaire (voir [Sécurité et limites](../trust/securite-et-limites.md)).
+
+Avant de choisir les contrôles, reprenez la distinction entre méthode, structure, référence approuvée et exécution dans le [diagnostic de la carte des publics](pour-qui.md).
 
 ## Ce qui est réellement appliqué
 
-Les règles ne s'appliquent qu'aux actions qui passent par le broker, la CLI, le MCP ou un connecteur contrôlé. Là, BASE fournit: le confinement des chemins, le mode propose puis commit avec diff et validation, le dry-run par défaut des tools, des traces minimales et des points d'extension (validateurs, politique, ranker, auth) configurés via `base.config.{json,mjs}`. Le routeur, lui, choisit le workflow adapté à la demande et épargne à l'utilisateur la recherche du bon process: il n'applique pas les permissions.
+Les règles mécaniques ne s'appliquent qu'aux actions qui passent par le broker, la CLI, le MCP ou un connecteur contrôlé. Selon ce chemin, le code applique le confinement des chemins, le flux proposer puis acter, le dry-run des outils, des traces minimales ou une politique configurée via `base.config.{json,mjs}`. Le routeur propose le workflow adapté ou s'abstient; il n'applique pas les permissions.
+
+Les fichiers peuvent rester locaux alors qu'un outil en projette des extraits vers un modèle distant. Sur les chemins médiés, l'égress est permissif par défaut (`any`): le broker retient une ressource seulement si elle est marquée `confidential: true` ou si sa racine est `local-only`. Le champ `sensitivity` sert à classer; il ne déclenche pas cette retenue. Un accès direct aux fichiers contourne ces contrôles.
+
+La séparation entre instructions et contenu facilite la revue, mais elle ne prévient pas à elle seule l'injection de prompt. Une défense réelle combine réduction du contexte, contrôles techniques, permissions et validation humaine.
 
 ## Exemple de configuration stricte
 
@@ -29,7 +35,7 @@ export default {
   // et une confirmation explicite pour les écritures et invocations.
   policy: { type: "strict", grants: ["devis:nouveau-devis"] },
 
-  // Validateurs d'organisation, appliqués par `base validate` et `base entretien`.
+  // Validateurs d'organisation, appliqués par `node .ai/base.mjs validate --root .`.
   validators: [
     { type: "requireSchemaVersion" },
     { type: "requireFields", fields: ["owner", "review_date"], whenScope: "team" },
@@ -48,7 +54,9 @@ export default {
 };
 ```
 
-Le fallback ci-dessus suppose que la racine déployée contient `concierge-base` et son process `accueil`. Si vous ne copiez qu'un assistant métier, pointez le fallback vers un accueil local équivalent, ou copiez aussi le concierge.
+Le fallback ci-dessus cherche `concierge-base` dans la racine déployée, puis dans le cadre BASE
+installé. Si vous distribuez une copie autonome sans ce cadre, pointez-le vers un accueil local
+équivalent.
 
 Pour le MCP, ajoutez un descripteur `auth` (jeton porteur ou `AuthProvider` maison): le serveur MCP refuse de toute façon toute exposition non-loopback dépourvue d'authentification (voir [`mcp/`](../../mcp/)).
 
@@ -62,10 +70,6 @@ Pour le MCP, ajoutez un descripteur `auth` (jeton porteur ou `AuthProvider` mais
 | MCP authentifié | Lecture seule par défaut, écritures explicites, auth requise hors loopback | Intégration multi-clients |
 | Politique stricte (`policy: { type: "strict" }`) | Grants de lecture et confirmations explicites sur les actions médiées | Organisation, gouvernance fine |
 
-## Pour aller plus loin
+## Votre prochaine action
 
-- Garanties et hors-périmètre: [Sécurité et limites](../trust/securite-et-limites.md).
-- Souveraineté et confiance (DSI, conformité): [Souveraineté et confiance](../trust/souverainete-et-confiance.md).
-- Modèles locaux et suisses (Ollama, Infomaniak): [Modèles souverains et locaux](../guides/modeles-souverains.md).
-- Contrat d'ingénierie et points d'extension: [`specs/current/README.md`](../../specs/current/README.md).
-- Stabilité de la surface publique: [Versions et stabilité](../reference/versions-et-stabilite.md).
+Faites relire [Sécurité et limites](../trust/securite-et-limites.md) par les responsables métier, sécurité et conformité, puis consignez le mode de déploiement et les contrôles externes exigés avant tout essai avec des données réelles.

@@ -1,394 +1,107 @@
-<!-- fr-synced: c25127736ca7fa427e31824c0062314c3b1e2275 -->
+<!-- fr-synced: 5ebdcdd0ecd7fea52d09c5d4aa30c601c3626849 -->
 # Human-AI co-thinking in practice
 
-Producing with AI now takes little effort; defending it takes a lot. The point, then, is not to write the perfect prompt, but to **stay the one who keeps control**: frame, delegate, evaluate, adjust, and know, in the end, what one signs off on. This page brings together what it takes to get there, from the simplest to the most complete: the loop that sets the rhythm of every exchange, five practices to make it light, then the sixteen principles that ground them. One can stop after the practices and already work well; going all the way down to the principles is how you hold the method over time.
+Producing with AI takes little effort. Defending the result can take much more. Co-thinking helps you retain control through a short loop: **FRAME → DELEGATE → EVALUATE → ADJUST**.
 
-> [Why BASE: co-thinking with AI](./co-penser-avec-lia.md) explains *why* cognitive sovereignty carries everything, and where verification fits as one brick. This page shows *how*.
+An answer is a proposal to check, not an established conclusion. Several iterations do not indicate a communication failure: they allow you to refine the goal from a concrete result. [Why BASE](co-penser-avec-lia.md) explains the reason for this method; this page helps apply it.
 
-## The loop: frame, delegate, evaluate, adjust
+## Five practices
 
-Working with AI most often follows the same cycle, **FRAME → DELEGATE → EVALUATE → ADJUST**, which you then take up again. This is not a sign of inefficiency, it is the method: good results are born from a few turns of this loop, never from a single perfect request. The five practices below lighten each step. None requires expertise: they serve the person in a hurry as much as the one who wants to dig in.
+### 1. Frame the expected result
 
-### 1. Frame clearly
+State the goal, constraints, authoritative sources, and success criterion.
 
-Before generating, spell out the goal, the constraints, and what a good answer looks like. A clean frame up front lightens verification downstream.
+> "Write a calm, factual reply. Promise no refund. Propose a meeting and rely on the attached policy."
 
-> *"Draft a reply to this dissatisfied customer. Tone: calm and factual. Constraints: no commitment to a refund, propose a meeting instead. A good reply acknowledges the problem without promising what we can't deliver."*
+A useful frame also states how far AI may proceed alone and which action requires a decision. Check that the result satisfies every constraint, not only the tone.
 
-**What you check:** the tone, and that no unauthorized promise slipped in.
-Full example: `exemples/assistant-courrier/`.
+### 2. Verify against an appropriate source
 
-### 2. Verify against reality
+Ask what supports every important fact. Use an external verifier when one exists, such as a calculator, schema, or test. Otherwise, compare the proposal with facts and domain judgment proportionate to the risk.
 
-Whoever produces cannot judge their own work. The AI proposes, you check it against your facts, your files, your rules. This is the verification debt: it does not disappear, you make it visible and small.
+> "Quote the passage in my files that supports this amount."
 
-> *"What are you basing this figure on? Cite the source in my files."*
+A review by the same model may reveal a problem, but it is not independent verification.
 
-**What you check:** that the source exists and actually says what it is being made to say.
-Full example: `exemples/assistant-devis/`, where the pricing scale comes from your files, not the model's memory.
+Checking a citation means opening the passage and confirming that it actually supports the claim. The presence of a link or file name is not enough.
 
-### 3. Ask for a decision sheet
+### 3. Group decisions
 
-When several choices open up at once, the thread of the conversation tangles up. Ask for a **decision sheet**: the AI lays out each point with its recommendation placed up front, you record your agreement and your comments, then it handles the whole thing in a single move. You decide, the sheet structures the decision.
+When several choices are related, ask for a decision sheet presenting each option, a justified recommendation, and space to respond. You decide; the document prevents decisions from getting lost in the conversation or being reopened without reason.
 
-> *"Several choices are open. Make me a decision sheet: one point per card, your recommendation first, and I'll give you my answers back."*
+A good sheet separates independent choices, shows their consequences, and distinguishes what is recommended from what has already been decided.
 
-- **When:** as soon as there are two or more decisions to make together.
-- **What you obtain:** a clear document where you settle the matter point by point, without the AI deciding in your place.
-- **What you check:** that each recommendation is justified, and that no already-settled point gets reopened.
+### 4. Make uncertainty visible
 
-Full example: `exemples/assistant-reflexion/`, which knows how to clarify a decision and prepare a decision note.
+Use the four canonical business markers according to their definitions in the [marker registry](../reference/marqueurs.md). `[A COMPLETER]`, `[A VALIDER]`, `[ATTENTION]`, and `[DECISION]` are the only markers recognized by the scanner.
 
-### 4. Make assumptions visible
+An agent may add domain annotations, such as `[HYPOTHESE]`, but they do not thereby become canonical markers and are not returned by `base markers`.
 
-A good exchange does not bury what matters. Ask the AI to flag what remains to be confirmed rather than presenting it as settled. The markers `[A VALIDER]`, `[HYPOTHESE]`, and `[A COMPLETER]` stand out at a glance, for you and for your tools.
+The goal is not to cover the text with labels. Mark uncertainties that would change a decision, amount, commitment, or next step.
 
-> *"Mark `[A VALIDER]` on everything that isn't confirmed, and `[HYPOTHESE]` on the points where you're assuming."*
+### 5. Adjust through small differences
 
-**What you check:** that the zones of uncertainty are flagged, not hidden.
+Generate a first version, name the difference precisely, then verify the correction. The number of iterations varies by task; no universal speed is promised.
 
-### 5. Iterate, don't chase the perfect prompt
+> "Shorten the second paragraph and replace the jargon with common words."
 
-Effectiveness comes down to fine adjustment. Rather than rewriting the instruction ten times, let it generate a first version, react precisely, adjust. Friction is fruitful: each round-trip brings you closer to the goal, and you keep your grasp of what is changing.
+Ask for one change at a time when the differences interact. This makes the change visible and prevents one quiet correction from undoing another.
 
-> *"That's almost it. Make the second paragraph shorter and cut the jargon."*
+## Sixteen principles
 
-**What you check:** that each version gets closer to the goal, and that you still understand what is changing.
+These principles complement the five practices. They replace neither professional duties nor applicable legal frameworks. They help decide what to delegate, how to check it, and what you must continue to understand yourself.
 
-These practices are calibrated, not hostile to automation: they keep you able to verify, without slowing anything down. What they put into practice are the sixteen principles that follow.
+### Carry responsibility
 
----
+1. **Be yourself where it matters.** Keep control of your voice, vision, and values. AI can help structure a position without becoming the author of what personally commits you.
+2. **Be human where it matters.** Lived empathy and moral judgment cannot be delegated to the model. For a conflict, difficult announcement, or ethical decision, AI may help you prepare, but conduct the exchange yourself.
+3. **Use AI selectively.** Do not use it when another method is safer or simpler. A deterministic calculation, form, or checklist may fit better than generation.
+4. **Verify against reality.** The model cannot test its claims in your environment by itself. A plausible quote must still match your prices, a cited rule the applicable version, and a recommendation the lived situation.
+5. **Weigh risks, costs, and alternatives.** Include confidentiality, intellectual property, compliance, energy, review time, and cognitive dependency. The right criterion is the net benefit for this task, not merely the tool's availability.
 
-## The sixteen principles
+### Know reliability constraints
 
-The practices above are the short version of it; here is the full method. Many regulatory and ethical frameworks govern the use of AI. These principles do not replace them: they offer operational landmarks for excelling within those frameworks, while staying effective and responsible. They are organized into six categories: carrying your responsibility, knowing your reliability constraints, knowing how to interact, avoiding common traps, putting method before tools, and keeping control over time.
+6. **Respect the task's intrinsic complexity.** Traversing information, retaining intermediate steps, or applying a calculation requires the corresponding data, working memory, and operations, regardless of the executor. If you would need to search, take notes, or follow a procedure, give the setup the means to do so as well. AI may shift or reduce this effort, but it cannot remove the problem's dependencies.
+7. **Use dedicated algorithms for guarantees.** Entrust calculations, schemas, tests, and formalizable rules to suitable verifiers. External checks exist only for some tasks; design the rest around human review proportionate to the consequences.
 
-### I. Carry your responsibility
+### Know how to interact
 
-#### 1. Be yourself where it matters
+8. **Treat communication as a practice.** Rephrase and correct instead of seeking a perfect request. Name the observed difference, then ask for a new version that lets you check the correction.
+9. **Provide useful knowledge.** Make sources findable at the right granularity. A short rule with its context is better than a whole folder loaded without distinction.
+10. **Shape the way of working.** Describe expected steps, tools, checks, and decisions. An intent can then lead to the useful know-how and knowledge, loaded as needed, without turning the whole corpus into agents in advance.
 
-Tasks that engage what makes you singular (your voice, your style, your vision, or your values) must remain in your hands.
+### Avoid traps
 
-Examples: strategic vision, company philosophy, brand identity, architectural signature.
+11. **Do not confuse ease of asking with result quality.** Instant production often shifts effort to framing, source selection, and verification.
+12. **Do not confuse fluency with accuracy.** Confident prose can contain an invented number, distorted citation, or decision incompatible with your constraints.
+13. **Demand evidence for marketing claims.** Ask which component enforces each guarantee, under what conditions, and with what limits. No generative model abolishes hallucination, injection, or the need for external security by itself.
 
-*Ask yourself: does this task require what makes me unique?*
+### Keep control
 
-#### 2. Be human where it matters
+14. **Do not let the tool dictate the method.** Start from intent and the real work, then organize the necessary entry points. Do not divide expertise into agents merely because an interface presents the world that way. Definitions of skill, process, competence, agent, and assistant are in the [glossary](../reference/glossaire.md).
+15. **Retain enough intuition to judge.** Periodically revisit part of the work in depth. If you can no longer explain the assumptions, recognize an order of magnitude, or defend the result, delegation has exceeded your ability to check it.
+16. **Remain sovereign over your setup.** Know which files guide the work, which data is sent, and which components enforce the rules. Files are portable, but changing environments may require adapters, permissions, and tests.
 
-Tasks that call for human experience (empathy, embodied understanding, moral intuition) must be conducted by a human being.
+## Three quick decisions
 
-Examples: a delicate message to a colleague, mediating a conflict, an ethical decision, a sensitive customer complaint.
+### Is AI the right choice?
 
-*Ask yourself: can this really be done without knowing what it feels like to be human?*
+First ask whether the task commits your distinctive identity or requires human experience. Then weigh the benefit against risks, costs, and alternatives. If AI remains appropriate, provide the sources, way of working, and expected check.
 
-#### 3. Use AI effectively
+### Should you keep iterating?
 
-Once the decision to use AI is made, do it well. Reduce useless iterations, vague instructions, and needless back-and-forth. Structure your requests, verify the results, and give up on AI for tasks it cannot perform reliably.
+Continue when important information is missing, a proposal still awaits confirmation, or an alert remains untreated. Move forward when the result has been compared with the relevant source or reality, not merely when it sounds convincing.
 
-*Ask yourself: am I using AI in a targeted, productive way, or am I wasting time and resources?*
+### Can you delegate more?
 
-#### 4. Verify against reality
+Look for an external check, low consequences, and independent steps. The more a task affects people, rights, amounts, or an overall view that is hard to reconstruct, the closer the human decision point should remain.
 
-AI simulates, predicts, and emits hypotheses, but it cannot put its claims to the test in the real world. Formulating and testing hypotheses against physical reality falls to your responsibility.
+## Data and confidentiality
 
-Examples: a quote may look correct while displaying a price that is unrealistic for your market. A job posting may seem professional while ignoring your local constraints. You alone can verify what matches your reality.
+A model does not "understand" your confidentiality in the sense of an enforceable policy. A contract defines the provider's obligations, responsibilities, and remedies; it does not technically block a transmission. Only mechanisms actually placed on the data path, such as access control, an egress holdback, or a policy enforced by a connector, can prevent the operation. Before transmitting sensitive data, follow the canonical [Data protection](../trust/protection-des-donnees.md) page.
 
-#### 5. Weigh risks, costs, and alternatives
+Access rights, rules, and classifications hold only in the component that enforces them. Direct reading or writing can bypass BASE mechanisms; [Security and limits](../trust/securite-et-limites.md) describes these boundaries.
 
-Generative AI is not always the right choice. Before each use, weigh:
+## Next action
 
-- **Risks:** confidentiality, bias, intellectual property, authenticity, data sovereignty, regulatory compliance.
-- **Costs:** energy, money, time, quality trade-offs, cognitive dependence.
-- **Alternatives:** deterministic algorithms, specialized tools, established methods, human expertise alone.
-
-*Ask yourself: does generative AI bring a net benefit here, or would another approach be safer, less costly, or more effective?*
-
-*Common practices on these points are detailed in the [appendix](#appendix-common-practices-for-principle-5).*
-
-### II. Know your reliability constraints
-
-#### 6. Be aware of the complexity inherent in the task
-
-Some tasks by nature require a certain number of steps, a certain amount of memory, or traversing a certain mass of information. With or without AI, they are not accomplished reliably without those resources. These are not weaknesses of AI, but properties of the problem: what would cost you intermediate steps costs the AI, and any system in the world, the same. In other words, AI will never work magic: no business result without the effort that produces it, no revolution in every field without the resources it demands. At best, AI lightens or shifts the effort; it does not remove it.
-
-Why these limits belong to the problem and not to AI, down to the Church-Turing thesis: see [Why BASE](co-penser-avec-lia.md), section "The task's limits, AI shares them".
-
-Examples: extracting information within several documents, checking consistency between sources, drawing out common points over large volumes.
-
-*Ask yourself: if I had to do it myself, would I need to go through many documents? To stop and think? To take notes? To follow a precise process? If so, AI cannot simply "guess" the answer in one go. It too needs resources (time and/or context capacity).*
-
-This is why BASE turns to **structured workflows**: they break complex tasks into manageable steps, with regular checkpoints.
-
-#### 7. Turn to dedicated algorithms for guarantees
-
-By nature, language models could not provide strict guarantees. For that, turn to dedicated algorithms (verifiers, tools, error-correction processes).
-
-Examples: compliance checkers, document parsers, code checkers, VAT calculators.
-
-*Ask yourself: what is my balance between risks and benefits? For which elements do I need external verifiers?*
-
-### III. Know how to interact
-
-#### 8. Treat human-AI communication as a competence in its own right
-
-The one-shot perfect prompt solves little. What matters is careful, structured communication over several steps, where a "sixth sense" is gradually forged for spotting what, in the AI's responses, does not resemble what a human interlocutor would produce.
-
-*Ask yourself: how does the AI react to different phrasings? How often do I need to step in to keep my project on track?*
-
-#### 9. Provide the knowledge that matters most
-
-Don't let the AI fill its own memory from vague heuristics and shallow searches alone. Of your world, the model recovers only what you have made findable, at the grain where you stored it. Structure your knowledge and designate the essentials as soon as you can. And at the right granularity: chunks fine enough that you can pick the right one without dragging the rest along, large enough that they keep their meaning.
-
-Examples: refer to extracted requirements rather than a stack of meeting minutes, to design choices rather than scattered documentation, to a targeted task list rather than the whole of your files.
-
-*Ask yourself: how do I structure the information so I always have at hand what I need, even when picking the work back up in two months?*
-
-This is exactly the role of the **domain files** in BASE: your identity, your activity, your catalog, your terms, structured and always up to date.
-
-#### 10. Shape how the AI works
-
-The steps your AI follows by default don't suit you? Its behavior displeases you? Shape them. Specify exactly what to do, when, with what information or what tools.
-
-This is precisely the role of the **AGENT.md** and the **skills** in BASE: they shape the AI's behavior so it weds your domain.
-
-### IV. Avoid common traps
-
-#### 11. Don't fall into the trap of ease
-
-Querying an AI is easy; getting quality results rarely is. Think, structure. Stay in charge of the process.
-
-Examples: unverified drafts, off-the-cuff legal advice, unchecked financial projections.
-
-*Ask yourself: is it better to get something fast and pay for it later in corrections and opacity, or to structure for ensuring success and transparency?*
-
-#### 12. Don't fall into the trap of appearance
-
-AI-produced results most often have a fine look, which does not make them correct for all that. The quality of the writing guarantees neither the accuracy of the facts nor the soundness of the recommendations.
-
-Examples: a plausible but wrong diagnosis, a seemingly solid financial analysis, a professional contract with errors in it, a well-formatted quote with invented prices.
-
-Every claim admitted without scrutiny creates a **verification debt**: untested assumptions that pile up and can collapse at the first critical look from a client or a partner.
-
-#### 13. Don't fall into the trap of hype
-
-Vendors often put forward spectacular promises that misrepresent what AI really does. Learn to decode them:
-
-- *"Our model doesn't hallucinate"*: language models produce plausible text with no internal mechanism for factual verification. Verification remains always necessary.
-- *"Our model is trained on your data"*: training a model from zero costs millions. "Trained on your data" generally denotes fine-tuning, which adapts the model's behavior without removing the fundamental risk of hallucination.
-- *"Our model is fully secure"*: prompt injection (bending the model's behavior through unwanted instructions) is a structural vulnerability of these systems. Security external to the model remains always indispensable.
-
-*Ask yourself: does this claim reflect how language models really work? Does it promise what the technology, by nature, cannot hold to?*
-
-### V. Method before tools
-
-#### 14. Don't let the tool dictate the process
-
-Most AI products are not made to help you uphold principles 1 through 13. Actively resist that. Adopt tools that serve your method. Design tools that set the bar higher.
-
-BASE is built around this principle: your skills, templates, and domain data are your real capital. They encode your know-how, your expertise, your processes, and they pass from one tool to another. Tools change fast. A well-ordered knowledge structure will serve you for years on end.
-
-One special case deserves to be named: **the grammar of agents.** Many tools invite you to carve up your work in advance into "agents", into roles, and into hand-offs, within their interface. Yet the bulk of the work consists of following, without a hitch, the thread of your own thinking, not of pre-articulating it into agents. Keeping the freedom to think any process at all, including a simple conversation over the right files, is part of "not letting the tool dictate the process". *(BASE uses the word "agent" to stay executable on these tools, which know it, but a BASE agent is only your Markdown, readable and optional. See [Why BASE: co-thinking with AI](co-penser-avec-lia.md).)*
-
-### VI. Keep control over time
-
-The preceding principles help you produce well with AI, here and now. The next two protect something slower to lose and harder to rebuild: your ability to stay at the controls over the months.
-
-#### 15. Keep enough intuition to verify
-
-You can delegate granularity to the AI, never the ability to judge what it produces. Verification (principle 4) assumes you still understand what you are verifying. With repeated delegation, the fine intuition of the work is gradually lost, and verification then degrades into surface-level validation, without your noticing, because the result "looks correct" (principle 12).
-
-So keep, at all times, enough intuition to remain a capable verifier. You can lose detail; you must not lose your grip. This may require deliberately investing time to reconstruct the big picture in your own head: reading in depth, discussing as a team what was produced and why, redoing a fragment of the work yourself now and then.
-
-*Ask yourself: if AI disappeared tomorrow, would I still understand enough of what it produced to defend it in front of a client? Is my intuition still up to the level of what I'm signing off on?*
-
-**A tension to know about.** BASE seeks to make verification *light* (strong structure up front → light verification downstream). That is an asset, but pushed to the extreme, it is also the mechanism by which you drift away from the material. The structure should lighten verification, never empty it of meaning.
-
-#### 16. Keep sovereignty over your setup
-
-Working with AI means steering a setup made of several layers: your files, which you control, and the instructions injected by the tool (system prompt, rules, vendor policies) that you don't always see. Losing sovereignty means steering an AI shaped by external instructions with no knowledge of what truly structures your exchange.
-
-BASE makes you sovereign over *your* layer: your AGENT.md, skills, and data are readable, portable, and yours (principle 14). Stay clear-eyed about the layers you don't write: demand transparency about what the tool injects, prefer auditable setups, and keep your knowledge in files you can take elsewhere. Portability conditions your sovereignty: it lets you leave the day the tool stops suiting you.
-
-*Ask yourself: do I know what, in this setup, steers the AI's behavior? If the tool changed its invisible rules tomorrow, would I know it, and could I leave?*
-
----
-
-## The co-thinking loop
-
-Working effectively with AI most often follows the same cycle:
-
-```
-    ┌──────────────┐
-    │  1. FRAME    │  State clearly what you want,
-    │              │  with the necessary context
-    └──────┬───────┘  (principles 1, 2, 5, 9, 10)
-           │
-    ┌──────▼───────┐
-    │ 2. DELEGATE  │  The AI generates within the defined frame,
-    │              │  up to the next checkpoint
-    └──────┬───────┘  (principles 3, 6)
-           │
-    ┌──────▼───────┐
-    │ 3. EVALUATE  │  You verify: is it correct?
-    │              │  Does it match my reality?
-    └──────┬───────┘  (principles 4, 7, 8, 11, 12)
-           │
-    ┌──────▼───────┐
-    │  4. ADJUST   │  You refine, correct, enrich
-    │              │  → back to step 2
-    └──────────────┘
-```
-
-**The key principle:** strong structure up front → light verification downstream. Weak structure up front → explosive verification debt.
-
-Principles 15 and 16 attach to no specific phase of the loop. They protect your ability to hold it over time: keeping enough intuition for the *Evaluate* step to remain real, and keeping sovereignty over the setup that runs the whole loop.
-
----
-
-## In summary
-
-| # | Principle | In one sentence |
-|---|----------|---------------|
-| | **I. Carry your responsibility** | |
-| 1 | Be yourself where it matters | Your voice, your vision, your values are irreplaceable |
-| 2 | Be human where it matters | Empathy and moral intuition demand human experience |
-| 3 | Use AI effectively | Structure your requests, don't waste resources |
-| 4 | Verify against reality | AI emits hypotheses, only you can test in the real world |
-| 5 | Weigh risks, costs, and alternatives | AI is not always the right choice |
-| | **II. Know your constraints** | |
-| 6 | Complexity inherent in the task | Complex task = resources needed, not a single request |
-| 7 | Dedicated algorithms for guarantees | Language models cannot guarantee accuracy |
-| | **III. Know how to interact** | |
-| 8 | Communication as a competence | The single perfect prompt does not exist, iterate |
-| 9 | Provide the knowledge that matters | Structure at the right grain and point, don't let the AI guess |
-| 10 | Shape how it works | Define the process, the behavior, the steps |
-| | **IV. Avoid the traps** | |
-| 11 | Trap of ease | Asking is easy, getting a good result is demanding |
-| 12 | Trap of appearance | Fluent text ≠ correct text |
-| 13 | Trap of hype | Decode the marketing promises |
-| | **V. Method before tools** | |
-| 14 | The tool does not dictate the process | Your knowledge structure is your real capital |
-| | **VI. Keep control over time** | |
-| 15 | Keep enough intuition to verify | Delegate granularity, never the ability to judge |
-| 16 | Keep sovereignty over your setup | Know what shapes the AI; keep a way out |
-
----
-
-## Decision guides
-
-These guides translate the principles above into concrete situations.
-
-### Guide 1: "Is AI the right choice?" (Principles 1, 2, 5)
-
-Four questions, in this order:
-
-1. **Does this task require what makes me unique?** (my voice, my style, my vision, my values)
-   → If yes: **do it yourself.** AI can structure, not replace, your identity. *(Principle 1)*
-
-2. **Does this task demand human experience?** (empathy, intuition, moral judgment)
-   → If yes: **lead it yourself.** AI can prepare, not feel. *(Principle 2)*
-
-3. **Does the benefit justify the risks and costs?** (confidentiality, reliability, verification time)
-   → If no: **use an alternative.** A spreadsheet, an existing template, a proven method. *(Principle 5)*
-
-4. → If yes: **use AI with structure.** Structure the request, provide the knowledge, verify the result. *(Principles 3, 6, 9, 10)*
-
-### Guide 2: "When to iterate or move on" (Principles 8, 11, 12)
-
-If you use the BASE markers in your documents:
-
-- **`[A VALIDER]` present** → iterate. A proposal has not been confirmed.
-- **`[A COMPLETER]` present** → iterate. A piece of information is missing.
-- **`[ATTENTION]` present** → assess the risk. Can you move on despite the alert, or does it need handling?
-- **No markers, result verified** → move on. The work is complete.
-
-Without markers, the same logic holds: move on when you have verified against reality *(Principle 4)*, not when the text "looks good" *(Principle 12)*.
-
-### Guide 3: "Evaluating the quality of an agent" (Principle 10)
-
-| Criterion | Basic | Good | Excellent |
-|---------|---------|-----|-----------|
-| **Routing** | The agent understands 1-2 intents | Covers all common intents | Handles ambiguous intents with clarifying questions |
-| **Workflows** | Steps listed | Decision points before each irreversible action | Frequent rephrasings + rare, precise decision points + log |
-| **Knowledge** | Generic information | Precise figures, exact terminology, up-to-date rules | Updated regularly with real domain data |
-| **Data** | Everything still to fill in | Identity and terms filled in | Catalog, clients, and history up to date |
-
----
-
-## Appendix: when your practice grows
-
-### Multi-agent
-
-If you run several distinct activities, one agent per activity often proves more effective than one do-it-all agent. Signal: as soon as an agent exceeds 5 workflows, consider splitting it.
-
-### Shared knowledge
-
-The standard competences (communication, markers, log) are identical from one agent to another. Other knowledge can be shared between agents through relative paths (for example, company information).
-
-### Working as a team
-
-If several people use the same agent:
-- Version the files with Git to make changes visible and discussable
-- Share the workflows and knowledge that genuinely need to be common
-- Separate domain data when roles, clients, countries, legal entities, or sensitivity levels require it
-- The log lets you see what other sessions have produced
-
-In a large organization, this level remains a mere working convention. It must be accompanied by the official mechanisms for access rights, classification, audit, retention, and compliance review.
-
-### Signals of complexity
-
-- More than 5 workflows → split the agent
-- More than 3 agents → consider a shared router
-- Workflows that run more than 10 steps → break into sub-workflows
-- Knowledge that exceeds 200 lines → break into sub-domains
-
----
-
-## Adapting across models
-
-AI models evolve fast, and there are several families of them. A workflow finely tuned for one may call for adjustments for another. The points that vary the most:
-- Context length (how many files can be loaded at once)
-- The tendency to follow instructions or to improvise
-- The quality of calculations and formatting
-
-**Rule of thumb:** if the result disappoints, the culprit is rarely the model: it is most often a workflow that is too poorly structured. Add dialogue examples, specify the expected formats, break into shorter steps.
-
----
-
-## Appendix: common practices for principle 5
-
-**Risks inherent in generative AI** (stemming from its statistical nature):
-
-- **Confidentiality:** AI grasps the distinction between private and public, but cannot know what, in your data, is private to you. Never expose sensitive data to uncontrolled systems.
-- **Bias:** AI learns patterns drawn from training data. Scrutinize the results, especially those that concern people.
-- **Intellectual property:** AI models may have been trained on protected content. Check licenses and rights before distributing generated content.
-- **Authenticity:** AI output resembles, by design, human content. Disclose the recourse to AI when authenticity or traceability matter.
-- **Data sovereignty:** your exchanges may serve to train the models. Check the data-protection policies and turn off reuse options where needed.
-- **Regulatory compliance:** make sure your usage respects the regulations in force and your organization's guidelines.
-
-**Costs** (direct and indirect):
-
-- Energy, financial costs, time spent designing the instructions and verifying, quality loss calling for corrections, cognitive dependence.
-
-**Alternatives** (often more reliable or efficient):
-
-- Deterministic algorithms for search, calculation, verification.
-- Specialized tools designed for the task.
-- Established methods (checklists, templates, processes).
-- Human expertise alone when it suffices.
-
----
-
-## Going further
-
-- **Understand the approach**: [Understanding BASE and shaping the interaction with AI](comprendre.md), the anatomy of an agent, why it works, portability.
-- **Spread it through an organization**: [Adoption in an organization](adoption-organisation.md), how an individual practice becomes a team, then an institutional usage.
-- **Get started in practice**: the ["Learning by doing" tutorial](../tutoriel/index.md), step by step.
-- **Gallery of ideas**: [idees-agents.md](../guides/idees-agents.md), dozens of examples of agents by profession.
-- **Create your own assistant**: open an assistant's folder in an AI tool able to read your files and say "I'd like to create an assistant for [your profession]".
-
----
-
-*Adapted from AI Swiss's [human-AI co-thinking principles](https://a-i.swiss).*
-
-BASE is a framework by [AI Swiss](https://a-i.swiss). Use cases in partnership with [Innovaud](https://innovaud.ch).
+Take a recent AI output and add four lines: the goal, authoritative source, remaining uncertainty, and check performed. Do not deliver it while one of these lines remains empty for an important point.

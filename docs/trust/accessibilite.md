@@ -28,12 +28,10 @@ Cet engagement est une cible de conception. Il oriente nos choix d'interface et 
 
 ## Distinction importante: mécanisme et consigne
 
-Partout, BASE distingue ce qui s'applique mécaniquement de ce qui relève d'une consigne suivie de bonne foi. L'accessibilité obéit à la même grille.
+Le [glossaire](../reference/glossaire.md) fixe la distinction entre mécanisme et consigne. Pour l'accessibilité, elle s'applique ainsi:
 
-- Mécanisme: une vérification automatisée d'accessibilité s'exécute au sein de la suite de tests Playwright (end-to-end) de Studio. Elle tourne à chaque passage de la suite et échoue dès qu'elle détecte des violations graves ou critiques. Elle pèse ainsi d'une contrainte réelle sur l'interface de Studio, et non d'une simple intention.
+- Mécanisme, dans la portée testée: une vérification automatisée d'accessibilité s'exécute au sein de la suite Playwright (end-to-end) de Studio. Elle échoue lorsqu'elle détecte des violations graves ou critiques sur les vues et critères couverts.
 - Consigne: la cible WCAG 2.1 AA et eCH-0059, comme le soin apporté à la structure des pages, aux contrastes et à la navigation au clavier, relèvent d'une discipline de conception. À eux seuls, ils ne constituent pas une garantie vérifiée.
-
-Voir aussi la page [Sécurité et limites](securite-et-limites.md), qui pose cette même distinction pour les garde-fous de BASE.
 
 ## La preuve dont nous disposons
 

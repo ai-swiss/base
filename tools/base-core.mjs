@@ -4,41 +4,40 @@
 // projections). The public surface of this facade never changes during an extraction.
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
-import { AsyncLocalStorage } from "node:async_hooks";
-import * as crypto from "node:crypto";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { confineToRoot, pathExists } from "./core/confine.mjs";
-import { isRuntimeArtifact } from "./core/runtime-artifacts.mjs";
+import { isGeneratedProjection, isRuntimeArtifact } from "./core/runtime-artifacts.mjs";
 import { composeMarkdown, FrontmatterSerializeError, parseFrontmatter, serializeFrontmatter } from "./core/frontmatter.mjs";
 import { resolveConfig } from "./core/config.mjs";
 import { compareByCodePoint } from "./core/ordering.mjs";
-import { scanMarkers, isDocumentationMarkerPath, isMarkerReferencePath } from "./core/markers.mjs";
+import { scanMarkers, isMarkerReferencePath } from "./core/markers.mjs";
 import { SCHEMA_VERSION } from "./core/schema.mjs";
 import { coreSchemaValidator, runValidators } from "./core/validators.mjs";
 import { normalize, lexicalRanker, composeRankers } from "./core/rankers.mjs";
 import { advisoryPolicy, resolvePolicy } from "./core/policy.mjs";
-import { buildRoutingRegistry } from "./core/routing.mjs";
 import { createRouteBroker } from "./core/route-broker.mjs";
 import { readSettings, resolveEmbedder, resolveModel, routingLocality } from "./core/model-settings.mjs";
-import { renderRoutingIndex } from "./core/index-md.mjs";
 import { applyRoutingVectors, loadRoutingVectors, verifyRoutingVectors } from "./core/routing-vectors.mjs";
 import { routingStrategy } from "./core/router.mjs";
-import { renderAgentsMd, renderBootstrapMd, renderToolMatrix, renderClaudeMd, renderCursorRule } from "./core/bootstrap.mjs";
 import { WORKSPACE_FILENAME } from "./core/roots.mjs";
-import { computeRoute, compareRoute, summarizeRoute, STOPWORDS, routeTerms, casesFromExamples } from "./core/route-service.mjs";
+import { computeRoute, compareRoute, summarizeRoute, STOPWORDS, routeTerms, casesFromExamples, fallbackResolvesIn, selfVetoedPhrasings, scaffoldRouteCases } from "./core/route-service.mjs";
+import { resolveFrameworkRoot } from "./core/framework-root.mjs";
 import { hashArgs } from "./core/hashing.mjs";
-import { writeFileAtomic } from "./core/atomic.mjs";
 import { createBrokerWrites } from "./core/writes.mjs";
 import { createManifest } from "./core/manifest.mjs";
+import { createProjections } from "./core/projections.mjs";
 import { egressNotice, egressWithheld, rootEgressPolicy } from "./core/egress.mjs";
+import { searchSectionsIn } from "./core/sections-search.mjs";
+import { applySectionProjection } from "./core/sections.mjs";
+import { editionReport, pickEdition, sourceProjection } from "./core/editions.mjs";
 import { packSummary } from "./core/context-pack.mjs";
 import { reportProgress } from "./core/progress.mjs";
+import { recordEvent } from "./core/trace.mjs";
 export { rootEgressPolicy };
 
 export { SCHEMA_VERSION };
 export const MANIFEST_FILENAME = "base.manifest.json";
-export const TRACE_DIR = path.join(".ai", "trace");
 export const CHANGES_DIR = path.join(".ai", "changes");
 export const ROUTE_TESTS_FILENAME = path.join(".ai", "routing", "route-tests.json");
 
@@ -49,11 +48,10 @@ const RESOURCE_EXTENSIONS = new Set([".md", ".json"]);
 // Validate announces a single stage line always; a per-resource [i/N] counter only above this size,
 // below which (today's corpus is ~147) a counter would be noise, not reassurance.
 const VALIDATE_COUNTER_THRESHOLD = 300;
-const MAINTENANCE_TOKEN_PATTERN = /\b(?:TODO|FIXME|PLACEHOLDER)\b/g;
 // The base.resource.v1 controlled vocabulary lives in core/schema.mjs (used by core/validators.mjs).
 const execFileAsync = promisify(execFile);
 
-/** @typedef {{ projection?: string, purpose?: string, confirmed?: boolean, grantToken?: string, resources?: any[], config?: any, signal?: AbortSignal, limit?: number, dryRun?: boolean, fixturesPath?: string, strategy?: "lexical" | "production", examples?: boolean, egress?: { modelLocality: "local" | "remote", rootPolicy?: "local-only" | "any" }, embeddingStrategy?: { readRouting?: () => Promise<any>, resolveEmbedder?: (root: string, ref: string) => Promise<any>, resolveModel?: (root: string, ref: string) => Promise<any> } }} BrokerOptions */
+/** @typedef {{ projection?: string, purpose?: string, confirmed?: boolean, grantToken?: string, resources?: any[], config?: any, signal?: AbortSignal, limit?: number, grain?: "resource" | "section", scope?: string, section?: string, lang?: string, dryRun?: boolean, fixturesPath?: string, strategy?: "lexical" | "production", examples?: boolean, egress?: { modelLocality: "local" | "remote", rootPolicy?: "local-only" | "any" }, embeddingStrategy?: { readRouting?: () => Promise<any>, resolveEmbedder?: (root: string, ref: string) => Promise<any>, resolveModel?: (root: string, ref: string) => Promise<any> } }} BrokerOptions */
 
 import { skipsDirName, skipsPath } from "./core/walk-policy.mjs";
 
@@ -76,9 +74,10 @@ import { DEFAULTS } from "./core/config.mjs";
 export { resolveConfig, DEFAULTS, mergeConfig } from "./core/config.mjs";
 export { appendAbstention, isAbstention, normalizeQuery, reportFriction } from "./core/feedback.mjs";
 export { CODES, codeMessage } from "./core/codes.mjs";
+// The operational journal (record, read back, retention) lives in core/trace.mjs.
+export { recordEvent, summarizeTrace, pruneTrace, withTraceActor, TRACE_DIR } from "./core/trace.mjs";
 export { compareByCodePoint } from "./core/ordering.mjs";
 export {
-  formatMaintenanceReport,
   formatMarkers,
   formatRouteResult,
   formatRouteTestResult,
@@ -250,57 +249,9 @@ const { buildManifest, checkManifestFresh, writeManifest } = createManifest({
 });
 export { buildManifest, checkManifestFresh, writeManifest };
 
-// `build all` expands to the always-on projections; opt-in targets are absent from it (see PROJECTIONS).
-const DEFAULT_BUILD = ["agents-md", "tools", "bootstrap"];
-
-// Build projections, one table instead of a per-target if-chain (the orchestration ratchet's "extract
-// the projections"): target → (resources, root) => [{ path, content }] (sync or async). The opt-in target
-// routing-index is absent from DEFAULT_BUILD, so `build all` keeps every project's tree minimal — the
-// Router derives candidates in memory for small projects; the on-disk face is a scale optimisation
-// behind the same model, not a file every project carries.
-const PROJECTIONS = {
-  "agents-md": (resources) => [{ path: "AGENTS.md", content: renderAgentsMd(resources) }],
-  tools: () => [{ path: ".ai/tools.md", content: renderToolMatrix() }],
-  // One canonical router body (core/bootstrap.mjs) projected into every harness entry point so they cannot drift.
-  bootstrap: () => [
-    { path: "CLAUDE.md", content: renderClaudeMd() },
-    { path: "BASE_BOOTSTRAP.md", content: renderBootstrapMd() },
-    { path: ".cursor/rules/assistant.mdc", content: renderCursorRule() },
-  ],
-  // Agent-readable face of the registry (root + per-agent index.md), committed and CI-gated (routing.md).
-  "routing-index": async (resources, root) => {
-    const deny = (await resolveConfig(root)).routing?.policy?.deny;
-    return Object.entries(renderRoutingIndex(buildRoutingRegistry(resources), { rootDeny: Array.isArray(deny) ? deny : [] })).map(([path, content]) => ({ path, content }));
-  },
-};
-
-export async function buildArtifacts(rootDir, { targets = ["all"] } = {}) {
-  const root = path.resolve(rootDir);
-  const resources = await inventoryResources(root);
-  const want = targets.includes("all") ? DEFAULT_BUILD : targets;
-  return (await Promise.all(want.map(async (t) => ((await PROJECTIONS[t]?.(resources, root)) ?? []).map((a) => ({ target: t, ...a }))))).flat();
-}
-
-export async function writeArtifacts(rootDir, artifacts) {
-  const start = Date.now();
-  const root = path.resolve(rootDir);
-  const written = [];
-  for (const artifact of artifacts) {
-    const full = await confineToRoot(root, artifact.path);
-    await fs.mkdir(path.dirname(full), { recursive: true });
-    await writeFileAtomic(full, artifact.content);
-    written.push(artifact.path);
-  }
-  await recordEvent(root, {
-    op: "build",
-    action: "write",
-    decision: "allow",
-    status: "ok",
-    duration_ms: Date.now() - start,
-    metadata: { artifacts: written.length },
-  });
-  return written;
-}
+// The build projections (which entry points, and never overwriting a hand-owned file) live in
+// core/projections.mjs; the facade binds them to the real inventory, config and recorder.
+export const { buildArtifacts, writeArtifacts } = createProjections({ inventoryResources, resolveConfig, recordEvent });
 
 function findResource(resources, idOrPath) {
   return resources.find((item) => item.id === idOrPath || item.path === idOrPath);
@@ -321,11 +272,18 @@ export async function contextPack(rootDir, idOrPath, { budget, egress } = {}) {
  * @param {string} idOrPath
  * @param {BrokerOptions} [options]
  */
-export async function openResource(rootDir, idOrPath, { projection = "full", purpose = "", confirmed = false, grantToken, resources, config, egress } = {}) {
+export async function openResource(rootDir, idOrPath, { projection = "full", section, lang, purpose = "", confirmed = false, grantToken, resources, config, egress } = {}) {
   const start = Date.now();
+  // `id#anchor` is ONE citable reference, so it opens as one: a ref copied out of a section hit works
+  // wherever an id works, with no caller left to take it apart. An explicit `section` option wins.
+  const hash = String(idOrPath).indexOf("#");
+  const target = hash === -1 ? idOrPath : String(idOrPath).slice(0, hash);
+  const anchor = section ?? (hash === -1 ? undefined : String(idOrPath).slice(hash + 1) || undefined);
   const resourceList = resources ?? await inventoryResources(rootDir);
-  const resource = findResource(resourceList, idOrPath);
-  if (!resource) throw new Error(`Resource not found: ${idOrPath}`);
+  const asked = findResource(resourceList, target);
+  if (!asked) throw new Error(`Resource not found: ${target}`);
+  const edition = pickEdition(resourceList, asked, lang); // the edition in `lang` if it exists, else the canonical, said so
+  const resource = edition.resource;
 
   const decision = await decide(rootDir, resource, "read", { projection, purpose, confirmed, grantToken }, config);
   if (decision.decision === "deny") {
@@ -346,6 +304,10 @@ export async function openResource(rootDir, idOrPath, { projection = "full", pur
     const fullPath = await confineToRoot(rootDir, resource.path);
     const raw = await fs.readFile(fullPath, "utf8");
     const parsed = parseFrontmatter(raw);
+    // The verdict comes FIRST, because everything derived from the body below is computed only on the
+    // branch where the resource may travel. An outline IS the table of contents of the document it
+    // describes: computing it and deleting it afterwards would leave the leak one early return away.
+    const withheld = egressWithheld(resource, egress);
     const result = {
       // The sibling is identification, never a second content channel: strip content/body — consumers
       // (the MCP handler) serialize the whole result; the body travels ONLY in `content`.
@@ -353,7 +315,6 @@ export async function openResource(rootDir, idOrPath, { projection = "full", pur
       policy: decision,
       content: projectResourceContent(resource, raw, parsed.body, projection),
     };
-    const withheld = egressWithheld(resource, egress);
     if (withheld) {
       result.content = egressNotice(withheld);
       result.withheld = true;
@@ -362,6 +323,13 @@ export async function openResource(rootDir, idOrPath, { projection = "full", pur
       // file, and consumers (the MCP handler) serialize the whole result object. Reduce it to the
       // identifiers the caller already supplied so no confidential field leaves on this path either.
       result.resource = { id: resource.id, type: resource.type, path: resource.path, withheld: true };
+      for (const key of ["outline", "section", "images", "source", "edition"]) delete result[key]; // the guard, should one ever be computed above
+    } else {
+      // Section grain: one passage, or the table of contents, instead of the whole body.
+      applySectionProjection(result, parsed.body, { section: anchor, projection, resourceId: resource.id, superseded: resource.metadata?.superseded_anchors });
+      if (lang) result.edition = editionReport(edition, asked.id);
+      // Originals: the source record, the citation, and the printed pages, read only on this branch.
+      if (projection === "source") Object.assign(result, await sourceProjection(resource.metadata, async (rel) => fs.readFile(await confineToRoot(rootDir, rel))));
     }
     await recordEvent(rootDir, {
       op: "open",
@@ -617,6 +585,17 @@ export async function validateBase(rootDir, { config } = {}) {
       ids.set(resource.id, resource.path);
     }
 
+    // A card that vetoes its own declared phrasings is caught here, at writing time, rather than by
+    // the user whose request it refuses: the check replays those phrasings through the router's own
+    // veto (selfVetoedPhrasings), so the warning states what will happen.
+    for (const { phrasing, terms } of selfVetoedPhrasings(resource)) {
+      warnings.push({
+        path: resource.path,
+        code: "base.route.self_veto",
+        message: `«${phrasing}», votre propre exemple, est écartée par votre «éviter si» (mots partagés: ${terms.join(", ")}). Écrivez «éviter si» avec les mots du cas à exclure, pas avec ceux de ce process.`,
+      });
+    }
+
     const notification = runValidators(resource, validators, { root, config: cfg });
     for (const e of notification.errors) errors.push({ path: e.path, message: e.message, code: e.code });
     for (const w of notification.warnings) warnings.push({ path: w.path, message: w.message, code: w.code });
@@ -663,17 +642,19 @@ export async function validateBase(rootDir, { config } = {}) {
     }
   }
 
-  // Fail loudly (but don't break routing): a configured help fallback whose target is not in the
-  // inventory will silently never attach. Warn so a typo is caught at validate time.
+  // Fail loudly (but don't break routing): a configured help fallback whose target is nowhere the
+  // router will look silently never attaches. Warn so a typo is caught at validate time. The router
+  // looks in the root first, then in the framework this root belongs to (FR-ROUTE-009), so validate
+  // asks the same two corpora, in the same order, and stays silent when either answers.
   const fb = cfg.routing?.fallback;
-  if (fb) {
-    const hasAgent = resources.some((r) => r.type === "agent" && r.id === fb.agent);
-    const hasProcess = resources.some((r) => r.type === "process" && r.id === fb.process);
-    if (!hasAgent || !hasProcess) {
+  if (fb && !fallbackResolvesIn(fb, resources)) {
+    const frameworkRoot = await resolveFrameworkRoot(root, cfg);
+    const inFramework = frameworkRoot ? fallbackResolvesIn(fb, await inventoryResources(frameworkRoot)) : false;
+    if (!inFramework) {
       warnings.push({
         path: "base.config.json",
         code: "base.routing.fallback_unresolved",
-        message: `routing.fallback cible "${fb.agent}/${fb.process}" introuvable dans l'inventaire; aucun repli ne sera attaché.`,
+        message: `routing.fallback cible "${fb.agent}/${fb.process}" introuvable, ni dans cet inventaire ni dans le cadre BASE; aucun repli ne sera attaché.`,
       });
     }
   }
@@ -731,8 +712,8 @@ function commandForRuntime(runtime, entrypoint, args) {
 
 function projectResourceContent(resource, raw, body, projection) {
   // `metadata` must COST LESS than the body it summarizes: serialize the stripped projection
-  // (no content/body), never the raw inventory record — else the cheapest-clue-first ladder inverts
-  // (asking for metadata used to return MORE bytes than `full`).
+  // (no content/body), never the raw inventory record. The `metadata` projection must cost fewer
+  // bytes than `full`, or the cheapest-clue-first ladder breaks.
   if (projection === "metadata") return JSON.stringify(projectResourceMetadata(resource), null, 2);
   if (projection === "instructions") return body;
   return raw;
@@ -743,7 +724,7 @@ function projectResourceContent(resource, raw, body, projection) {
  * @param {string} query
  * @param {BrokerOptions} [options]
  */
-export async function searchResources(rootDir, query, { limit = 10, config, signal, egress } = {}) {
+export async function searchResources(rootDir, query, { limit = 10, grain = "resource", scope, config, signal, egress } = {}) {
   const start = Date.now();
   const root = path.resolve(rootDir);
   // The SAME tokenization as routing (STOPWORDS stripped): a natural question is scored on its
@@ -752,16 +733,26 @@ export async function searchResources(rootDir, query, { limit = 10, config, sign
   try {
     const cfg = config ?? await resolveConfig(root);
     const rank = composeRankers([lexicalRanker, ...(cfg.rankers ?? [])]);
-    const resources = await inventoryResources(root);
+    // Both per-resource skips are decided ONCE, before the grain, because a grain is a unit of
+    // answer and neither rule is about units. Egress: a confidential / local-only resource is not
+    // even revealed in discovery to a remote model — withholding its existence is stricter than
+    // withholding its content, and correct here; cutting it into passages would hand out the same
+    // content in smaller pieces. Generated projection: it summarises the resources it points at, so
+    // it competes with them on their own words and wins, and a reader searching for a fact opens a
+    // table of contents; its headings are the map's own, which is worse at section grain than at
+    // resource grain. Both stay open-able by path; neither is a hit.
+    const resources = (await inventoryResources(root)).filter((resource) => !egressWithheld(resource, egress) && !isGeneratedProjection(resource.body));
     const ranked = [];
 
-    for (const resource of resources) {
-      // Egress: a confidential / local-only resource is not even revealed in discovery to a remote
-      // model — withholding its existence is stricter than withholding its content, and correct here.
-      if (egressWithheld(resource, egress)) continue;
-      const { score, reasons } = await rank(resource, terms, { root, mode: "discover", query, signal });
-      if (score > 0) {
-        ranked.push({ ...projectResourceMetadata(resource), score, reasons: [...new Set(reasons)] });
+    if (grain === "section") {
+      // Section grain: passages instead of whole resources. The ranking lives in core/sections-search.mjs.
+      ranked.push(...searchSectionsIn(resources, terms, { limit, scope }));
+    } else {
+      for (const resource of resources) {
+        const { score, reasons } = await rank(resource, terms, { root, mode: "discover", query, signal });
+        if (score > 0) {
+          ranked.push({ ...projectResourceMetadata(resource), score, reasons: [...new Set(reasons)] });
+        }
       }
     }
 
@@ -812,10 +803,34 @@ const routeBroker = createRouteBroker({
   hashArgs,
 });
 export const routeRequest = routeBroker.routeRequest;
+// The help target alone, without routing anything: what a caller that decides for itself opens when
+// nothing on the routing map fits. Same resolution as an abstention's (root corpus, then framework).
+export const routingFallback = routeBroker.routingFallback;
 
-// Run a routing fixtures file (declarative, zero-dep JSON): each case has a `request` and an
-// `expect` of { status?, reason_code?, agent?, process? }. Protects business routes from regressions
-// without an academic benchmark. Returns { ok, total, passed, failures[] }.
+/**
+ * Draft a first fixtures file from the corpus (`base route-test --scaffold`). CREATION-ONLY: an
+ * existing file belongs to its author and is never rewritten, the same rule as `base init`'s files.
+ * @param {string} rootDir @param {{ out?: string }} [options]
+ * @returns {Promise<{ path: string, cases: number }>}
+ */
+export async function scaffoldRouteTests(rootDir, { out } = {}) {
+  const root = path.resolve(rootDir);
+  // The path the caller asked for, kept verbatim for every message: a root reached through a symlink
+  // (macOS /tmp) would otherwise be told about a path it never typed.
+  const relative = typeof out === "string" && out.trim() ? out.trim() : ROUTE_TESTS_FILENAME;
+  const target = await confineToRoot(root, relative);
+  if (await pathExists(target)) throw new Error(`${relative} existe déjà: ce fichier vous appartient. Passez --out <fichier> pour en écrire un autre.`);
+  const cases = scaffoldRouteCases(await inventoryResources(root));
+  if (cases.length === 0) throw new Error("Aucun process routable: rien à rédiger. Créez d'abord un process avec un «Quand utiliser».");
+  await fs.mkdir(path.dirname(target), { recursive: true });
+  await fs.writeFile(target, JSON.stringify(cases, null, 2) + "\n", { encoding: "utf8", flag: "wx" }); // raw-write-ok: creation-only scaffold, never an overwrite
+  await recordEvent(root, { op: "route-test", action: "write", decision: "allow", status: "ok", path: relative, metadata: { cases: cases.length } });
+  return { path: relative, cases: cases.length };
+}
+
+// Run the author's routing guarantees: a fixtures file (declarative, zero-dep JSON, each case a
+// `request` plus an `expect` of { status?, reason_code?, agent?, process? }) and the phrasings the
+// cards declare. Protects business routes from regressions without an academic benchmark.
 /**
  * @param {string} rootDir
  * @param {BrokerOptions} [options]
@@ -824,27 +839,51 @@ export async function runRouteTests(rootDir, { fixturesPath, config, strategy = 
   const root = path.resolve(rootDir);
   const cfg = config ?? await resolveConfig(root);
   const resources = await inventoryResources(root);
-  let cases;
-  if (examples) {
-    cases = casesFromExamples(resources); // replay the authors' declared phrasings, no fixtures file
-    // Fail LOUDLY on an empty replay, exactly as the fixtures path does on a missing file: a drift
-    // guard that certifies zero cases green is worse than no guard — it reads as "all promises hold"
-    // when none were made. A project with no declared examples must know it is guarding nothing.
-    if (cases.length === 0) {
+
+  // TWO suites, side by side, because they certify two different promises. The FIXTURES say "these
+  // requests must keep routing here" (the author's contract with their users, in their words). The
+  // declared EXAMPLES say "every phrasing I wrote on a card still reaches that card" (the drift guard
+  // on the corpus itself). Running one and calling the result "routing is fine" hides the other.
+  // Explicit intent narrows: `--from <file>` runs that fixtures file alone, `--examples` the examples
+  // alone. With neither flag, both run when they exist, and the report names what was absent.
+  const wantFixtures = !examples;
+  const wantExamples = !fixturesPath && (examples || true);
+  const suites = [];
+
+  if (wantFixtures) {
+    // The path the caller asked for, kept verbatim in the report (a root reached through a symlink
+    // would otherwise be told about a path it never typed).
+    const requested = fixturesPath ?? ROUTE_TESTS_FILENAME;
+    const target = await confineToRoot(root, requested);
+    if (await pathExists(target)) {
+      let cases;
+      try {
+        cases = JSON.parse(await fs.readFile(target, "utf8"));
+      } catch (error) {
+        throw new Error(`Invalid routing fixtures JSON: ${String(error.message ?? error)}`);
+      }
+      if (!Array.isArray(cases)) throw new Error("Routing fixtures must be a JSON array of { request, expect } cases.");
+      suites.push({ source: "fixtures", path: requested, cases });
+    } else if (fixturesPath) {
+      // A file the caller NAMED must exist: a silent skip would certify nothing while looking green.
+      throw new Error(`Routing fixtures not found: ${requested} (create it or pass --from).`);
+    }
+  }
+
+  if (wantExamples) {
+    const cases = casesFromExamples(resources);
+    if (cases.length) suites.push({ source: "examples", path: null, cases });
+    else if (examples) {
+      // Same rule as a named fixtures file: an explicit `--examples` with nothing to replay certifies
+      // zero cases green, which reads as "all promises hold" when none were made.
       throw new Error("No declared routing.examples to replay (add routing.examples to a SKILL.md/AGENT.md frontmatter, or drop --examples to run the JSON fixtures).");
     }
-  } else {
-    const target = await confineToRoot(root, fixturesPath ?? ROUTE_TESTS_FILENAME);
-    if (!(await pathExists(target))) {
-      throw new Error(`Routing fixtures not found: ${path.relative(root, target)} (create it or pass --from).`);
-    }
-    try {
-      cases = JSON.parse(await fs.readFile(target, "utf8"));
-    } catch (error) {
-      throw new Error(`Invalid routing fixtures JSON: ${String(error.message ?? error)}`);
-    }
-    if (!Array.isArray(cases)) throw new Error("Routing fixtures must be a JSON array of { request, expect } cases.");
   }
+
+  if (suites.length === 0) {
+    throw new Error(`Nothing to certify: no fixtures at ${ROUTE_TESTS_FILENAME} and no routing.examples declared. Run \`base route-test --scaffold\` to draft a fixtures file from your corpus.`);
+  }
+
   // Which strategy PRODUCTION `base route` would use right now, so a green run says honestly WHICH
   // path it certifies: replay defaults to the lexical floor (deterministic, CI-safe);
   // `strategy: "production"` replays through routeRequest, the exact `base route` path.
@@ -852,143 +891,42 @@ export async function runRouteTests(rootDir, { fixturesPath, config, strategy = 
   try {
     productionStrategy = routingStrategy((await readSettings(root)).routing ?? null);
   } catch { /* unreadable settings → the lexical default, as in routing */ }
-  const failures = [];
-  for (const [index, testCase] of cases.entries()) {
-    const request = testCase?.request;
-    const expect = testCase?.expect ?? {};
-    if (typeof request !== "string") {
-      failures.push({ index, request: request ?? null, mismatches: ["case has no string `request`"] });
-      continue;
+
+  const runSuite = async (suite) => {
+    const failures = [];
+    for (const [index, testCase] of suite.cases.entries()) {
+      const request = testCase?.request;
+      const expect = testCase?.expect ?? {};
+      if (typeof request !== "string") {
+        failures.push({ source: suite.source, index, request: request ?? null, mismatches: ["case has no string `request`"] });
+        continue;
+      }
+      const actual = strategy === "production"
+        ? await routeRequest(root, request, { config: cfg })
+        : { request, ...(await computeRoute(root, request, resources, cfg)) };
+      const mismatches = compareRoute(expect, actual);
+      if (mismatches.length) failures.push({ source: suite.source, index, request, mismatches, actual: summarizeRoute(actual) });
     }
-    const actual = strategy === "production"
-      ? await routeRequest(root, request, { config: cfg })
-      : { request, ...(await computeRoute(root, request, resources, cfg)) };
-    const mismatches = compareRoute(expect, actual);
-    if (mismatches.length) failures.push({ index, request, mismatches, actual: summarizeRoute(actual) });
-  }
+    return { source: suite.source, path: suite.path, total: suite.cases.length, passed: suite.cases.length - failures.length, failures };
+  };
+
+  const ran = [];
+  for (const suite of suites) ran.push(await runSuite(suite));
+  const failures = ran.flatMap((s) => s.failures);
+  // What a DEFAULT run could not certify, because the source does not exist here (never what a flag
+  // deliberately narrowed away): the report says it, so a green line is not read as more than it is.
+  const absent = examples || fixturesPath ? [] : ["fixtures", "examples"].filter((s) => !ran.some((r) => r.source === s));
 
   return {
     ok: failures.length === 0,
-    total: cases.length,
-    passed: cases.length - failures.length,
+    total: ran.reduce((n, s) => n + s.total, 0),
+    passed: ran.reduce((n, s) => n + s.passed, 0),
     failures,
+    suites: ran,
+    absent,
     strategy: strategy === "production" ? productionStrategy : "lexical",
     productionStrategy,
   };
-}
-
-// Static, owner-run structural insights: things that can drift silently, found without running
-// anything and without watching usage. This is a private lens the owner runs on their own BASE,
-// not telemetry. It reads structure, never behaviour.
-function computeStructuralInsights(resources) {
-  // The portion of a path that an agent/process body would reference (relative to the agent dir).
-  const bodyRef = (p) => {
-    const m = p.match(/(?:skills|templates)\/.+$/);
-    return m ? m[0] : p;
-  };
-  const containerBodies = resources
-    .filter((resource) => resource.type === "agent" || resource.type === "process")
-    .map((resource) => resource.content);
-
-  const weakRouting = [];
-  const orphans = [];
-
-  for (const resource of resources) {
-    // A user-facing process routes on use_when + routing examples. With neither, its routing is a
-    // weak signal that can drift silently (the case route fixtures exist to catch).
-    if (resource.type === "process") {
-      const hasUseWhen = typeof resource.use_when === "string" && resource.use_when.trim().length > 0;
-      const examples = resource.metadata?.routing?.examples;
-      const hasExamples = Array.isArray(examples) && examples.length > 0;
-      if (!hasUseWhen && !hasExamples) weakRouting.push(resource.path);
-    }
-    // A competence or template referenced by no agent and no process is either dead weight or a
-    // missing link. Either way the owner should see it.
-    if (resource.type === "competence" || resource.type === "template") {
-      const ref = bodyRef(resource.path);
-      if (!containerBodies.some((body) => body.includes(ref))) orphans.push(resource.path);
-    }
-  }
-  return { weak_routing: weakRouting, orphans };
-}
-
-// An open marker is a pending human decision. When the file carrying it has not been touched for
-// this long, the marker has likely stopped being a decision point and become decor ("verification
-// theater"). mtime is an approximation (any edit resets it), which is exactly the honest signal we
-// want: "nobody has even opened this file in a month".
-const STALE_MARKER_DAYS = 30;
-
-export async function createMaintenanceReport(rootDir) {
-  const start = Date.now();
-  const validation = await validateBase(rootDir);
-  const resources = validation.resources;
-  const placeholders = [];
-  const missingDescriptions = [];
-  const traceSummary = await summarizeTrace(rootDir);
-  const structural = computeStructuralInsights(resources);
-
-  for (const resource of resources) {
-    if (isMarkerReferencePath(resource.path)) continue;
-    const markers = scanMarkers(resource.content, resource.path).map((marker) => marker.raw);
-    const tokens = resource.content.match(MAINTENANCE_TOKEN_PATTERN) ?? [];
-    const matches = [...markers, ...tokens];
-    if (matches.length > 0) {
-      placeholders.push({ path: resource.path, markers: [...new Set(matches)] });
-    }
-    if (!resource.description && ["agent", "process", "tool"].includes(resource.type)) {
-      missingDescriptions.push(resource.path);
-    }
-  }
-
-  const staleMarkers = [];
-  const staleCutoffMs = Date.now() - STALE_MARKER_DAYS * 24 * 60 * 60 * 1000;
-  for (const item of placeholders) {
-    if (isDocumentationMarkerPath(item.path)) continue;
-    try {
-      const stat = await fs.stat(path.join(path.resolve(rootDir), item.path));
-      if (stat.mtimeMs < staleCutoffMs) {
-        staleMarkers.push({
-          path: item.path,
-          markers: item.markers,
-          days: Math.floor((Date.now() - stat.mtimeMs) / (24 * 60 * 60 * 1000)),
-        });
-      }
-    } catch {
-      // unreadable mtime: no age signal, never an error
-    }
-  }
-  structural.stale_markers = staleMarkers;
-
-  const report = {
-    ok: validation.ok,
-    summary: {
-      resources: resources.length,
-      errors: validation.errors.length,
-      warnings: validation.warnings.length,
-      placeholders: placeholders.length,
-      actionable_placeholders: placeholders.filter((item) => !isDocumentationMarkerPath(item.path)).length,
-      missing_descriptions: missingDescriptions.length,
-      weak_routing: structural.weak_routing.length,
-      orphans: structural.orphans.length,
-      stale_markers: staleMarkers.length,
-      trace_events: traceSummary.events,
-    },
-    validation,
-    placeholders,
-    missing_descriptions: missingDescriptions,
-    structural,
-    trace: traceSummary,
-    recommendations: buildMaintenanceRecommendations(validation, placeholders, missingDescriptions, structural),
-  };
-  await recordEvent(rootDir, {
-    op: "entretien",
-    action: "maintain",
-    decision: "not_applicable",
-    status: report.ok ? "ok" : "error",
-    duration_ms: Date.now() - start,
-    metadata: { placeholders: placeholders.length, trace_events: traceSummary.events },
-  });
-  return report;
 }
 
 export async function listMarkers(rootDir, { egress } = /** @type {BrokerOptions} */ ({})) {
@@ -1018,154 +956,11 @@ export async function listMarkers(rootDir, { egress } = /** @type {BrokerOptions
   return markers;
 }
 
-/**
- * @param {any} validation
- * @param {any[]} placeholders
- * @param {string[]} missingDescriptions
- * @param {{ weak_routing: string[], orphans: string[], stale_markers?: any[] }} [structural]
- */
-function buildMaintenanceRecommendations(validation, placeholders, missingDescriptions, structural = { weak_routing: [], orphans: [] }) {
-  const recommendations = [];
-  if (validation.errors.length > 0) recommendations.push("Corriger les erreurs de validation avant de promouvoir ou partager ce BASE.");
-  if (validation.warnings.length > 0) recommendations.push("Relire les avertissements pour ameliorer la decouvrabilite sans bloquer l'usage.");
-  if (placeholders.length > 0) recommendations.push("Verifier les marqueurs ouverts et transformer les decisions validees en contenu stable.");
-  if (missingDescriptions.length > 0) recommendations.push("Ajouter des descriptions courtes aux agents, processes et tools exposes.");
-  if (structural.weak_routing.length > 0) recommendations.push("Ajouter use_when ou des exemples de routage aux processes a signal faible: sans cela leur routage peut deriver sans alerte.");
-  if (structural.orphans.length > 0) recommendations.push("Relier ou retirer les competences et templates orphelins: aucun agent ni process ne les reference.");
-  if ((structural.stale_markers ?? []).length > 0) recommendations.push(`Traiter les marqueurs dormants (fichiers non touches depuis ${STALE_MARKER_DAYS} jours ou plus): un marqueur qui ne declenche plus de decision est du theatre de verification.`);
-  if (recommendations.length === 0) recommendations.push("Aucune action critique detectee; le BASE est coherent pour un usage local.");
-  return recommendations;
-}
-
 // The PolicyEnforcer logic (advisoryPolicy / strictPolicy) lives in core/policy.mjs.
 // `decide` resolves the configured policy (default advisory) and applies it. Swap via base.config.policy.
 async function decide(rootDir, resource, action, context = {}, config) {
   const cfg = config ?? await resolveConfig(rootDir);
   return resolvePolicy(cfg)(resource, action, context);
-}
-
-// The actor context: WHO performs the traced operations, when a deployment can know it. Two doors,
-// no per-call threading: a server wraps each authenticated request (the MCP wraps handleRequest in
-// withTraceActor with the AuthProvider's principal), and a CLI session may set BASE_TRACE_ACTOR.
-// Absent both, the field is simply omitted — a single-user local trace carries no ceremony.
-const traceActorStorage = new AsyncLocalStorage();
-/**
- * Run `fn` with `actor` attached to every recordEvent call it (transitively) makes.
- * @template T @param {unknown} actor @param {() => T} fn @returns {T}
- */
-export function withTraceActor(actor, fn) {
-  return actor ? traceActorStorage.run({ actor: String(actor) }, fn) : fn();
-}
-
-export async function recordEvent(rootDir, event) {
-  const root = path.resolve(rootDir);
-  const traceDir = path.join(root, TRACE_DIR);
-  const ts = new Date().toISOString();
-  const entry = {
-    ts,
-    trace_id: event.trace_id ?? crypto.randomUUID(),
-    op: event.op,
-    resource_id: event.resource_id ?? null,
-    path: event.path ?? null,
-    action: event.action ?? null,
-    decision: event.decision ?? "not_applicable",
-    status: event.status ?? "ok",
-    duration_ms: event.duration_ms ?? null,
-    args_hash: event.args_hash ?? null,
-    error: event.error ?? null,
-    metadata: event.metadata ?? undefined,
-  };
-  const actor = event.actor ?? traceActorStorage.getStore()?.actor ?? process.env.BASE_TRACE_ACTOR;
-  if (actor) entry.actor = String(actor);
-
-  try {
-    await fs.mkdir(traceDir, { recursive: true });
-    const filePath = path.join(traceDir, `${ts.slice(0, 10)}.jsonl`);
-    await fs.appendFile(filePath, JSON.stringify(entry) + "\n", "utf8"); // raw-write-ok: append-only trace journal, not a mediated business resource
-  } catch {
-    // Tracing must never break the user's actual work.
-  }
-}
-
-export async function summarizeTrace(rootDir) {
-  const traceDir = path.join(path.resolve(rootDir), TRACE_DIR);
-  const summary = {
-    events: 0,
-    by_operation: {},
-    by_resource: {},
-    denied: 0,
-    errors: 0,
-  };
-
-  let files = [];
-  try {
-    files = await fs.readdir(traceDir);
-  } catch {
-    return summary;
-  }
-
-  for (const file of files.filter((item) => item.endsWith(".jsonl")).sort()) {
-    const content = await fs.readFile(path.join(traceDir, file), "utf8");
-    for (const line of content.split("\n")) {
-      if (!line.trim()) continue;
-      try {
-        const event = JSON.parse(line);
-        summary.events++;
-        if (event.op) summary.by_operation[event.op] = (summary.by_operation[event.op] ?? 0) + 1;
-        if (event.resource_id) summary.by_resource[event.resource_id] = (summary.by_resource[event.resource_id] ?? 0) + 1;
-        if (event.decision === "deny") summary.denied++;
-        if (event.status === "error") summary.errors++;
-      } catch {
-        summary.errors++;
-      }
-    }
-  }
-
-  return summary;
-}
-
-// Trace is an append-only, local, git-ignored journal (daily `YYYY-MM-DD.jsonl` files). It is useful
-// — `base trace` and the entretien report read it back — but it grows without bound. This gives the
-// user explicit control over its retention, instead of silently pruning behind their back. Default
-// keeps the last 30 days; `{ all: true }` clears everything; `before` (a YYYY-MM-DD cutoff) is the
-// deterministic seam for tests. Filenames are dated, so a lexicographic compare is enough.
-export async function pruneTrace(rootDir, { keepDays = 30, all = false, before = null } = {}) {
-  const traceDir = path.join(path.resolve(rootDir), TRACE_DIR);
-  let files = [];
-  try {
-    files = await fs.readdir(traceDir);
-  } catch {
-    return { removed: [], removed_count: 0, kept: 0, cutoff: null };
-  }
-
-  let cutoff = null;
-  if (!all) {
-    if (before) {
-      cutoff = before;
-    } else {
-      const day = new Date();
-      day.setUTCDate(day.getUTCDate() - keepDays);
-      cutoff = day.toISOString().slice(0, 10);
-    }
-  }
-
-  const removed = [];
-  let kept = 0;
-  for (const file of files.filter((item) => item.endsWith(".jsonl")).sort()) {
-    const dated = /^\d{4}-\d{2}-\d{2}$/.test(file.slice(0, 10)) ? file.slice(0, 10) : null;
-    if (all || (dated !== null && cutoff !== null && dated < cutoff)) {
-      try {
-        await fs.rm(path.join(traceDir, file), { force: true });
-        removed.push(file);
-      } catch {
-        // Best-effort: a file we cannot remove is simply kept; pruning never throws into the workflow.
-      }
-    } else {
-      kept++;
-    }
-  }
-
-  return { removed, removed_count: removed.length, kept, cutoff };
 }
 
 function extractMarkdownTitle(content) {

@@ -45,8 +45,8 @@ schema_version: base.resource.v1
 
 La vérité machine est [`base.schema.json`](../../base.schema.json), sous l'identifiant stable
 `https://a-i.swiss/base/schemas/base.resource.v1.json`. Cet identifiant ne change qu'avec une version
-**majeure** du format. Le format suit le versionnage sémantique (voir [Sa promesse de stabilité](#sa-promesse-de-stabilite)):
-un ajout rétrocompatible reste `base.resource.v1`; une rupture incrémenterait le `v`.
+**majeure** du format. Le format suit la [politique de compatibilité de BASE](#sa-promesse-de-stabilite):
+un ajout rétrocompatible reste `base.resource.v1`; une rupture du schéma incrémenterait le `v`.
 
 `base.resource.v1` est le schéma qu'un auteur écrit. Il appartient à une petite famille versionnée:
 `base.config.v1` et `base.workspace.v1` décrivent la configuration d'un BASE, `base.manifest.v1` et
@@ -200,16 +200,16 @@ La spécification est [`validator.md`](../../specs/current/10_core/validator.md)
 
 ## Sa promesse de stabilité
 
-Le format suit le versionnage sémantique: aucun changement incompatible sans dépréciation préalable
-et incrément majeur. C'est l'engagement **NFR-CORE-002**, dit «pas de rupture», détaillé dans
+Le format suit la politique de compatibilité de BASE: aucun changement incompatible sans dépréciation
+préalable; une rupture qui ne suit pas cette voie exige un incrément majeur. C'est l'engagement
+**NFR-CORE-002**, dit «pas de rupture», détaillé dans
 [Versions et stabilité](versions-et-stabilite.md). L'identifiant `base.resource.v1` ne change qu'avec
 une version majeure du format. Un élément stable qui doit disparaître est d'abord déprécié, maintenu
 fonctionnel sur au moins une version mineure, avant tout retrait. Un standard jeune assume une taille
 de plus: une valeur que rien ne consomme (aucun mécanisme derrière elle, aucun fichier connu ne s'y
-appuie) peut être retirée en version mineure, dite telle quelle dans le CHANGELOG: la 1.2.0 l'a fait
-pour onze valeurs de `type` spéculatives. La surface stable englobe le format et ses six `type`, les
-commandes CLI et outils MCP existants, et les schémas des projections (`base.manifest.v1`,
-`base.routing.v1`).
+appuie) peut être retirée en version mineure, à condition que ce retrait soit documenté dans le
+CHANGELOG. La surface stable englobe le format et ses six `type`, les commandes CLI et outils MCP
+existants, et les schémas des projections (`base.manifest.v1`, `base.routing.v1`).
 
 ## L'implémentation de référence, et les autres
 

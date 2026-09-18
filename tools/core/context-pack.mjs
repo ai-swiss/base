@@ -16,14 +16,42 @@ const CHARS_PER_TOKEN = 4; // the usual rough estimate; the budget is a guardrai
 const RANKER_CONFIDENCE_FLOOR = 60; // below this, a fuzzy match is a guess — leave it to the tools
 
 /**
+ * Strip fenced code blocks (``` or ~~~), keeping the line count so that line-based callers are
+ * unaffected. A fenced sample that illustrates a folder layout, a README or a frontmatter block is
+ * prose showing what something looks like, not a set of links to follow: the paths in it may not
+ * exist, and must not be reported as broken (an illustrated tree cost a real corpus six false
+ * dead-link errors). The closing fence must be at least as long as the opening one and of the same
+ * character, so a ```` ``` ```` shown inside a ```` ```` ```` block does not end it.
+ */
+export function stripFencedBlocks(text) {
+  let fence = null;
+  return String(text)
+    .split("\n")
+    .map((line) => {
+      const opened = line.match(/^\s*(`{3,}|~{3,})/);
+      if (fence) {
+        if (opened && opened[1][0] === fence[0] && opened[1].length >= fence.length) fence = null;
+        return "";
+      }
+      if (opened) {
+        fence = opened[1];
+        return "";
+      }
+      return line;
+    })
+    .join("\n");
+}
+
+/**
  * Markdown links only: `[label](path)`, local targets. These are the deliberate links a reader
  * (or a dead-link check) follows. Illustrative `code` paths are NOT links — see extractReferences.
  */
 export function extractLinks(body) {
   const refs = new Set();
-  // Strip inline code-spans first: a whole `[label](path)` wrapped in backticks is illustrative
-  // prose, not a link. A link whose label is a code-span, [`label`](path), keeps its target.
-  const text = String(body).replace(/`[^`\n]*`/g, " ");
+  // Fenced blocks first, then inline code-spans: a whole `[label](path)` wrapped in backticks is
+  // illustrative prose, not a link. A link whose label is a code-span, [`label`](path), keeps its
+  // target.
+  const text = stripFencedBlocks(body).replace(/`[^`\n]*`/g, " ");
   // [label](path) or [label](path "title") — keep the local target only.
   for (const m of text.matchAll(/\[[^\]]*\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g)) {
     const target = m[1];
@@ -55,7 +83,7 @@ function estimateTokens(text) {
   return Math.ceil(String(text).length / CHARS_PER_TOKEN);
 }
 
-// Resolve a declared ref against the inventory: exact → folder → ranker. Paths are tried as
+// Resolve a declared ref against the inventory: exact id/path → folder → ranker. Paths are tried as
 // root-relative AND relative to the process file's directory (`../tarifs/x.md`).
 function resolveRef(ref, inventory, processDir) {
   const candidates = new Set();
@@ -70,6 +98,9 @@ function resolveRef(ref, inventory, processDir) {
     }
     candidates.add(stack.join("/"));
   }
+
+  const exactId = inventory.find((r) => r.id === clean);
+  if (exactId) return { type: "exact", path: exactId.path };
 
   for (const candidate of candidates) {
     const exact = inventory.find((r) => r.path === candidate);
@@ -120,7 +151,24 @@ export async function buildContextPack(inventory, readFile, processPath, { budge
   const injected = new Set([processPath]); // never re-inject the process itself
   let spent = 0;
 
-  for (const ref of extractReferences(processEntry.body ?? processEntry.content ?? "")) {
+  const metadata = processEntry.metadata ?? processEntry;
+  const required = Array.isArray(metadata.requires)
+    ? metadata.requires
+      .filter((item) => item && typeof item === "object" && typeof item.ref === "string" && item.ref.trim())
+      .map((item) => ({
+        ref: item.ref.trim(),
+        purpose: typeof item.purpose === "string" ? item.purpose.trim().replace(/\s+/g, " ") : "",
+      }))
+    : [];
+  const declaredRefs = new Set(required.map((item) => item.ref));
+  const references = [
+    ...required,
+    ...extractReferences(processEntry.body ?? processEntry.content ?? "")
+      .filter((ref) => !declaredRefs.has(ref))
+      .map((ref) => ({ ref, purpose: "" })),
+  ];
+
+  for (const { ref, purpose } of references) {
     const resolution = resolveRef(ref, inventory, processDir);
 
     if (resolution.type === "unresolved") {
@@ -130,7 +178,9 @@ export async function buildContextPack(inventory, readFile, processPath, { budge
     if (resolution.type === "dir-list") {
       // A folder without README: its file list is the cheapest faithful injection.
       const content = resolution.paths.map((p) => `- ${p}`).join("\n");
-      sections.push({ path: `${resolution.dir}/`, content, note: `dossier ${resolution.dir}/ (liste)` });
+      const notes = [`dossier ${resolution.dir}/ (liste)`];
+      if (purpose) notes.push(`purpose: ${purpose}`);
+      sections.push({ path: `${resolution.dir}/`, content, note: notes.join(" · ") });
       spent += estimateTokens(content);
       continue;
     }
@@ -163,6 +213,7 @@ export async function buildContextPack(inventory, readFile, processPath, { budge
     }
     spent += cost;
     const notes = [];
+    if (purpose) notes.push(`purpose: ${purpose}`);
     if (resolution.type === "dir") notes.push(`dossier ${resolution.dir}/`);
     if (resolution.type === "fuzzy") notes.push(`référence imparfaite: ${ref} ≈ ${resolution.path}`);
     // Aging ontology: an expired reference is injected WITH its expiry on its face.

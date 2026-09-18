@@ -1,4 +1,4 @@
-<!-- fr-synced: 68ad1b0c92d12783ed054c585962a38d2d50e6ac -->
+<!-- fr-synced: 9f3cb6eda349130f379e19a9fc37f7e1ad031a52 -->
 # Adopting public BASE: from local to team
 
 If you are an individual, a freelancer, a startup, a small or mid-sized business, or a small team, this page shows you what public BASE gives you: a way to structure your collaboration with AI without installing a heavy platform. It also explains how to adopt it in stages, staying simple on the surface without blocking your later growth.
@@ -17,7 +17,7 @@ The reading path by profile (solo person, SMB, large enterprise) is maintained i
 | ------ | ------- | -------------------- |
 | Usage | `README.md`, `docs/start/quickstart.md`, `exemples/` | Get started without understanding the whole architecture |
 | Structure | `.ai/agents/`, `docs/reference/le-standard.md`, `docs/reference/framework-public.md`, `base.schema.json` | Stabilize agents, skills, resources, and workflows |
-| Integration | `tools/`, `mcp/`, `tests/`, `docs/reference/specification-v0.md` | Verify, connect, and audit without locking BASE inside one tool |
+| Integration | `tools/`, `mcp/`, `tests/`, `specs/current/README.md` | Verify, connect, and audit without locking BASE inside one tool |
 
 `CLAUDE.md` and `.cursor/rules/` are harness adapters. They help Claude Code and Cursor load the right context, but they are not the conceptual source of the framework. As a convenience, never a requirement, two optional local interfaces exist: Studio (`npm run studio -- <dossier>`, on `127.0.0.1:5174`) to browse and edit resources in propose-then-commit mode, and the documentation served locally (`npm run docs:serve`).
 
@@ -54,7 +54,7 @@ Goal: share without bureaucracy.
 - minimal frontmatter recommended;
 - `base validate --root <dossier>` before sharing;
 - `base index --root <dossier>` to generate the manifest;
-- `base entretien --root <dossier>` to spot broken links, open markers, and missing descriptions;
+- `base doctor --root <folder>` to spot broken links, dormant markers, missing descriptions and processes with a weak routing signal;
 - controlled promotion of personal resources to the team.
 
 The right organizational starting point is `docs/audiences/kit-demarrage-pme-suisse.md`: allowed data, validation owner, simple versioning, and a monthly ritual. That is often enough before adding heavier controls.
@@ -90,6 +90,8 @@ Enterprise = governed integration + internal policies + additional technical con
 ```
 
 ## Stable abstractions
+
+These terms have plain-language definitions in the [glossary](glossaire.md).
 
 | Concept | For the user | Durable role |
 |---------|--------------------|--------------|
@@ -147,8 +149,8 @@ The public broker, shared by the CLI and the MCP, provides:
 
 - a resource inventory;
 - explainable local search;
-- agent-to-process routing with structured abstention: `route_request` returns a map (agents → processes, each with its "when to use it") that the model reads to decide, `base route` being the deterministic floor for calls with no model;
-- domain routing tests (`base route-test`);
+- agent-to-process routing with structured abstention: `route_request` returns a map (agents → processes, each with its "when to use it") that the model reads to decide; `base route` runs the configured production strategy;
+- domain routing tests (`base route-test`), on the lexical strategy by default or on the production strategy with `--strategy production`;
 - mediated propose-then-commit writing (`base propose`/`base commit`, `propose_change`/`commit_change`), the commit receipt carrying a verifiable `content_hash`;
 - read-only inspection of write state (`base changes`, `list_pending_changes`, `get_change_status`);
 - confined resource opening with a `metadata`, `instructions`, or `full` projection;
@@ -160,11 +162,21 @@ The router chooses among the agents and processes derived from the files. It doe
 
 BASE could evolve toward broader routing, for example to find a competence or a tool directly. The public core does not do this by default: routing an action and retrieving context are two different responsibilities, and keeping them separate makes the system more readable and testable.
 
-Local search uses YAML metadata, Markdown titles, descriptions, keywords, and plain local text. The core also ships a zero-dependency `semanticHybridRanker` that can be enabled by config. For real embeddings, BASE provides the separate official package `@ai-swiss/base-ranker-semantic`, without adding any model or cloud SDK to the core. It accepts an explicit provider, ships an OpenAI-compatible connector, and offers an optional Ollama helper (`createOllamaEmbedder`, model `nomic-embed-text`) for teams that want a simple local path. See `docs/guides/routage-semantique-quickstart.md`, `docs/guides/choisir-provider-embeddings.md`, and `docs/trust/securite-donnees-routage.md`.
+Local search uses YAML metadata, Markdown titles, descriptions, keywords, and plain local text. The
+core also ships a zero-dependency `semanticHybridRanker`, enabled in `base.config`. The separate
+`@ai-swiss/base-ranker-semantic` package adds embedding rankers without activating the `embedding`
+routing strategy; that strategy depends on the two models declared in `.ai/studio.settings.json`.
+See [Setting up semantic routing](../guides/routage-semantique-quickstart.md),
+[Choosing your embeddings provider](../guides/choisir-provider-embeddings.md), and
+[Routing data security](../trust/securite-donnees-routage.md).
 
-For scale, `@ai-swiss/base-index-local` provides an optional local index, derived and deletable. It does not become a source of truth and stays outside the core. See `docs/learn/comprendre-echelle.md` and `docs/guides/benchmarks-echelle.md`.
+For scale, `@ai-swiss/base-index-local` provides an optional local index, derived and deletable. It
+does not become a source of truth and stays outside the core. See
+[Understanding scale](../learn/comprendre-echelle.md) and [Scale benchmarks](../guides/benchmarks-echelle.md).
 
-The routing index (`base build routing-index`) can be generated, but it remains a read and scale-readiness projection. It is not a source of truth, and the router does not depend on it today. The precise limits are listed in `docs/reference/etat-implementation.md`.
+The routing index (`base build routing-index`) can be generated, but it remains a read and
+scale-readiness projection. It is not a source of truth, and the router does not depend on it today.
+The precise limits are listed in [Implementation status](etat-implementation.md).
 
 ## Sovereignty around the models
 

@@ -58,4 +58,4 @@ When `current/` is reviewed and stable, set the version in `current/CHANGELOG.md
 | `base.schema.json` (repo root) | machines | canonical resource schema (referenced from `30_schemas/`, never copied) |
 | `.temp/` (gitignored) | us, during dev | working plans, audits, scratch |
 
-`docs/reference/specification-v0.md` is **superseded by this folder** and now serves as a short public pointer here.
+`docs/reference/specification-v0.md` is the short public reading map for this engineering contract.

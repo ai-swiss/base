@@ -19,7 +19,7 @@ ci-dessus dès que son rôle se dessine; c'est ce que lit le routeur pour décid
 ## Les prochaines étapes
 
 - Donnez-lui un métier: remplacez la description et le `use_when` par votre activité réelle.
-- Ajoutez un process: un dossier `skills/processes/<nom>/SKILL.md` décrit une tâche que
+- Ajoutez une procédure: un dossier `skills/processes/<nom>/SKILL.md` décrit une tâche que
   l'assistant sait mener, étape par étape.
 - Convertissez vos documents existants: demandez «importer mes procédures existantes».
 

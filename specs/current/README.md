@@ -34,10 +34,11 @@ Start at `00_overview/vision.md` for the *why* and the scope boundary, then `10_
 | `10_core/egress.md` | Egress control: confidential / local-only never reaches a remote model; MCP remote-by-default |
 | `10_core/writes.md` | Mediated writes (propose→commit, TOCTOU) and promotion |
 | `10_core/build.md` | Derived artifacts: `AGENTS.md` index + honest tool matrix |
-| `10_core/maintenance.md` | Maintenance report (`entretien`) and typed-marker query |
+| `10_core/maintenance.md` | Corpus health (`doctor`) and typed-marker query |
 | `10_core/docs.md` | Documentation model, local/public builds, metadata discipline |
 | `10_core/cli.md` | CLI command contract (flags, projections, exit codes) |
 | `10_core/mcp.md` | MCP tools, transports, agent discovery, auth |
+| `10_core/probes.md` | Manual live-model probes of the packed CLI and MCP release surfaces |
 | `10_core/trace.md` | Trace event schema and guarantees |
 | `30_schemas/` | `base.resource.v1` (canonical), `base.config.v1`, `base.manifest.v1`, `base.routing.v1`, `base.trace_event.v1`, `base.workspace.v1` |
 

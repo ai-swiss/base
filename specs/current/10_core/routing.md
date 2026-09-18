@@ -49,6 +49,11 @@ the source is reported as an explainable `route_text:<source>` reason:
 use_when → description → title → keywords → "## Quand utiliser" section → path
 ```
 
+The section heading is matched in the languages BASE generates for: `Quand utiliser`,
+`When to use`, `Wann verwenden`, `Quando usare` (accent-insensitive, substring). A corpus is
+written in the language of its users, so a process that states its trigger as a body section
+rather than in `use_when` is routable whatever that language is.
+
 The single recommended new field is **`use_when`** — a short sentence on *when* to use the resource.
 Optional `routing.examples` (real user phrasings) are appended to lift recall. Optional
 `routing.avoid_when` counter-examples veto: when a request clearly matches one of them, the candidate
@@ -138,7 +143,7 @@ There is **no** `incomplete` status: "agent clear, no process" is `needs_clarifi
   candidates: [{ resource: { id, type, title, path }, score, reasons, route_scope }],
   explanation: string,
   next_question: string | null,          // a clarifying question on abstention
-  fallback?: { agent: { id, path }, process: { id, path } }  // help target on an honest abstention (FR-ROUTE-009)
+  fallback?: { agent: { id, path }, process: { id, path }, source: "root" | "framework", root?: string }  // help target on an honest abstention (FR-ROUTE-009)
 }
 ```
 
@@ -147,9 +152,13 @@ Both strategies emit this one candidate shape (the embedding strategy's `reasons
 `score` is **strategy-scaled** — lexical ranker points on the floor, cosine similarity on the embedding
 path — so scores compare only within a single decision, never across strategies.
 
+## A card that vetoes itself (FR-ROUTE-017)
+
+The avoid veto zeroes a candidate's score, so a counter-example written with the process's own words removes the process from the race for the requests it exists for. `selfVetoedPhrasings(resource)` replays the author's DECLARED phrasings (`routing.examples`, real requests in their words) through the same per-entry veto the router applies, and `validateBase` warns once per phrasing the card would discard (`base.route.self_veto`), naming the phrasing, the shared words and what to rewrite. It states what will happen rather than a resemblance: same rule, same inputs as the router. A card with no declared examples raises nothing, there being no phrasing to judge; a sentence carries far more words than a request, and two shared words are enough to veto, so a synthesised phrasing would flag well-written cards.
+
 ## Help fallback on abstention (FR-ROUTE-009)
 
-A project may declare `routing.fallback: { agent, process }` in `base.config`. When the Router **abstains** — `out_of_scope`, or `needs_clarification` with no useful `next_question` — and the configured target resolves in the inventory, `routeRequest` attaches a `fallback` pointer **on either strategy** (the broker attaches it on the embedding path exactly as `computeRoute` does on the lexical floor: same config, same deny-filtered corpus, same eligibility). It is **separate metadata, never a route**: the `status` stays the honest abstention, so analytics and route fixtures remain truthful (`route-tests.json` can assert `fallback.agent`/`fallback.process`). The core router is **agent-agnostic**: the target is configured, never hard-coded; a missing/typo'd target attaches no fallback (graceful) and `validateBase` warns (`base.routing.fallback_unresolved`). The harness loads the fallback instead of leaving the user at a dead end; the formatter prints `Fallback: <agent> -> <process>`. The text output is as honest as the decision: on a committed agent it prints the agent/process **paths** (the harness reads text — give it what to open); on `competing_intents` it prints **no** `Agent:` line at all (the decision carries the top of two too-close agents for JSON consumers, but naming one in prose invites loading exactly what the abstention forbids).
+A project may declare `routing.fallback: { agent, process }` in `base.config`. When the Router **abstains** — `out_of_scope`, or `needs_clarification` with no useful `next_question` — and the configured target resolves in the inventory, `routeRequest` attaches a `fallback` pointer **on either strategy** (the broker attaches it on the embedding path exactly as `computeRoute` does on the lexical floor: same config, same deny-filtered corpus, same eligibility). It is **separate metadata, never a route**: the `status` stays the honest abstention, so analytics and route fixtures remain truthful (`route-tests.json` can assert `fallback.agent`/`fallback.process`). The core router is **agent-agnostic**: the target is configured, never hard-coded; a missing/typo'd target attaches no fallback (graceful) and `validateBase` warns (`base.routing.fallback_unresolved`). **Two corpora, in order.** The target is looked for in the root's own inventory first. A root may name a help target it does not own, typically the framework's welcome process, so when the root does not hold it the router asks the framework this root belongs to: `framework_dir` from `base.config.json` if declared, else the directory of the engine executing the route, and only if that directory carries `.ai/agents/` (`framework-root.mjs`). Nothing is copied into the root, so no copy can fall behind. The framework corpus is read ONLY when a fallback is configured, the decision is eligible, and the root does not hold the target, so a root that owns its help target never walks a second tree. `source` says which corpus answered; a framework path is ABSOLUTE and `root` names the framework root it belongs to, the file lying outside the routed root (the MCP reads it from there to inline the help process, since a remote client cannot). `validateBase` asks the same two corpora in the same order before warning. **The target alone, without routing anything**: `routingFallback(root)` (facade, over the same `resolveFallback` + framework corpus) answers a caller that decides for itself and needs only the door to open when nothing on the map fits (the MCP `get_routing_map`, FR-MCP-008). It is the abstention case by construction, so the eligibility and the two corpora are the same ones; a second read of `routing.fallback` would instead report a borrowed help target as no target at all. The harness loads the fallback instead of leaving the user at a dead end; the formatter prints `Fallback[ (cadre BASE)]: <agent> -> <process> (<path>)`. The text output is as honest as the decision: on a committed agent it prints the agent/process **paths** (the harness reads text — give it what to open); on `competing_intents` it prints **no** `Agent:` line at all (the decision carries the top of two too-close agents for JSON consumers, but naming one in prose invites loading exactly what the abstention forbids).
 
 ## Routing across a workspace (multiple roots)
 
@@ -266,8 +275,36 @@ disclosure**. `.ai/routing/index.md` lists the agents; each `.ai/agents/<agent>/
 agent's processes with their `route_text` («Quand l'utiliser») and `avoid_text` («Éviter si»), linked
 to the `SKILL.md`. It **invents nothing** — it materialises what `buildRoutingRegistry` already derives;
 only the rendering is new. Sorted and **timestamp-free**, so regeneration is byte-identical and CI gates
-freshness. Orphans are skipped. The agent's reading is a **consigne** bounded by the floor and the veto;
-the generation is the **mechanism**.
+freshness. Orphans are skipped.
+
+One thing the index adds is the **configured help target** (`routing.fallback`, FR-ROUTE-009), named at
+the foot of the root index with a link. A reader who walks the map never calls the router, so the
+anti-dead-end door has to be ON the map; otherwise it exists only for callers of `route` /
+`route_request`. It is resolved through the same two corpora as the router (this root, then the framework
+the root belongs to), and a framework target is linked by its absolute path, lying outside this root.
+
+This index is what the model reads, and the generated entry points say so: the READER routes. The
+deterministic lexical decision serves callers with no model (script, integration, `route-test`) and
+accompanies a model's reading as an indication to verify, so the entry-point text does not instruct a
+model to run `base route` (that instruction is what FR-ROUTE-016's eval measures the absence of: it
+grades the read path, which dominates in practice). The agent's reading is a **consigne**; the
+generation is the **mechanism**.
+
+### The author's bench (FR-ROUTE-005)
+
+`base route-test` answers two different questions, so it reports two numbers with their labels. The
+FIXTURES say "these requests must keep routing here": the author's contract with their users, in
+their users' words. The declared EXAMPLES say "every phrasing written on a card still reaches that
+card": the drift guard on the corpus itself. A run that measures one and reports "routing is fine"
+hides the other, so a default run measures both and names any source this root does not have.
+
+The blank page is what keeps a root from having fixtures at all, and a root without fixtures has no
+guard on the routes it promises. `--scaffold` drafts one case per routable process from what the card
+already declares, for the author to rewrite in their users' words. It is creation-only: the file
+belongs to its author from the moment it exists.
+
+What the bench certifies is said where it is read, in its own output and in the writing guide: the
+lexical floor, which serves callers with no model. A conversation routes by reading the index.
 
 ### Optional indexed routing (scale, FR-SCALE-001..004)
 

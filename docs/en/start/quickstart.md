@@ -1,7 +1,7 @@
-<!-- fr-synced: 48f1909ff4f0b530fb1b0494baa85047be65f410 -->
+<!-- fr-synced: f1562c76ac769c44b264f8044d5d489bcef5dbf4 -->
 # Shape your first assistant
 
-In a few minutes, you hand off a task you repeat by hand to an assistant that takes it on, with no code and without giving up any control: it proposes, you approve. Concretely, you copy an example into an AI tool that can read your files, you say what you want to do, and the assistant does the rest.
+In a few minutes, you hand a recurring task to an assistant without writing code: it helps you make the method explicit, proposes the files, then waits for your approval. Concretely, you copy an example into an AI tool that can read your files and describe what you want to do.
 
 > **No repository yet?** See [Get BASE](obtenir-base.md) to choose a ZIP, a Git clone, an example copy, or the browser pack.
 >
@@ -31,7 +31,7 @@ Copy the `exemples/assistant-devis/` folder into your workspace (your Desktop or
 | **Claude Code** | Run `claude` in the copied folder |
 | **ChatGPT / Claude (browser)** | Nothing to install to try it: paste an example's pack ([Try without installing](essayer-sans-installer.md)). To connect your agents with the mechanical guarantees, the [MCP server](installer-mcp.md) (technical path) |
 
-> **Prefer a visual workshop?** Studio is optional: run, from the BASE repository, `base studio --root <your folder>` (`base` = `node .ai/base.mjs`, the launcher at the repository root: [step 0 of the tutorial](../tutoriel/harnais.md)) to open the workshop and see your files, your agents, and their processes at a glance. Your AI tool stays the day-to-day experience; Studio is only a supplementary workshop.
+> **Prefer a visual workshop?** Studio is optional. Install Node 18 or later, open a terminal in the BASE repository clone, then run `npm ci` once. After initialization, run `cd my-folder && node .ai/base.mjs studio --root .` ([step 0 of the tutorial](../tutoriel/harnais.md)). The launcher does not install the short `base` command. The workshop shows your files, agents, and processes. Your AI tool remains the day-to-day experience; Studio is only a supporting workshop.
 
 ## 3. Say what you want to do
 
@@ -48,13 +48,13 @@ The assistant restates the request, prices it, and proposes the quote. You appro
 Two cues make this control visible:
 
 - **`[A VALIDER]`**: when the assistant proposes something not yet confirmed (a price, a quote), it marks it `[A VALIDER]` (French for "to be validated"). The marker is a cue you can spot at a glance, for you as for your tools. As long as it is there, nothing is settled: it is yours to confirm.
-- **Writing happens in two steps**: for actions that go through BASE (`base propose` then `base commit`, or the MCP equivalent), a change is first *proposed* (a diff is shown to you, nothing is written), then *applied* only after your confirmation. You see what will change before it changes. Outside these tools, the assistant guides you but does not enforce this control for you.
+- **Writing happens in two steps**: after initialization, for actions that pass through the folder launcher (`node .ai/base.mjs propose` then `node .ai/base.mjs commit`, or the MCP equivalent), a change is first *proposed* (a diff is shown to you, nothing is written), then *applied* only after your confirmation. This launcher does not install the short `base` command. Outside these mediated paths, the assistant guides you but does not enforce this control for you.
 
 Concretely: you ask to add a line to the quote. The assistant does not write it right away; it shows you the line and the new total; you say "yes", and only then does the file change. You see the effect before it exists.
 
-This control also covers what leaves your machine: for what goes through the BASE tools, a resource marked confidential is not sent to a remote model, and the check happens before the call. Details: [What can leave, and what BASE holds back](../trust/frontiere-local-vs-sortant.md).
+The mediation component, called the broker, also applies a control before remote calls that pass through it, including the MCP server and Studio chat: a resource marked confidential, or a root declared `local-only`, is not sent to the model through those paths. Direct file access or another execution path bypasses this control. Details: [What can leave, and what the broker holds back](../trust/frontiere-local-vs-sortant.md).
 
-**Going further:** the [co-thinking practices](../learn/pratiques-co-pensee.md) show, by example, the ways of working with AI that carry the most value.
+**Going further:** [Co-thinking practices](../learn/pratiques-co-pensee.md) illustrates the most useful ways to work with AI.
 
 ## 5. What next?
 
@@ -66,21 +66,21 @@ This control also covers what leaves your machine: for what goes through the BAS
 | Try recruiting | Copy `exemples/assistant-rh/`: job postings, interviews |
 | Try project management | Copy `exemples/assistant-projet/`: planning, milestones, tracking |
 | Try meeting minutes | Copy `exemples/assistant-reunion/`: decisions, actions, follow-up |
-| See how BASE routes a request | From the repository root: `node tools/base.mjs route-test --root exemples/routage-pme` |
-| Your own assistant | Open the project's main folder and say "Read `.ai/agents/createur-agent/AGENT.md`" |
+| Verify reproducible lexical routing | With Node 18 or later, from a terminal: `node <BASE_DIR>/tools/base.mjs route-test --strategy lexical --root <BASE_DIR>/exemples/routage-pme` |
+| Your own assistant | [Have your AI initialize your folder](installer-par-votre-ia.md), then say "Here is the work I want to structure with BASE. Help me define the method and wait for my approval before creating the files." |
 | Find where to start | Same thing, then say "Help me find where to start" |
-| **Lost, or a question about BASE?** | In the BASE repository or a project where the router is enabled, say "I am lost" or "Help": the concierge welcomes you. Every business example ships a fallback welcome: "I am lost" guides you even inside a copied folder. |
+| **Lost, or a question about BASE?** | In the BASE repository or a project where the router is enabled, say "I am lost" or "Help": the router selects the welcome reference, then your tool presents its guidance. Every business example ships this fallback welcome. |
 | Get inspired | Browse the [idea gallery](../guides/idees-agents.md) |
 
-> **Two different doors.** In a project with a router, "Help / I am lost" opens the **welcome** (concierge): it orients you and answers questions about BASE. "Help me find where to start" opens the assistant creator's **diagnosis**: it works out *which assistant to build* for your line of work.
+> **Two different entry points.** In a project with a router, "Help / I am lost" opens the **welcome** (concierge), which directs you and answers questions about BASE. "Help me find where to start" opens the assistant creator's **diagnosis**, which identifies the assistant to build for your work.
 
-> **Forcing a routing choice.** Say **"R"** (or "R your request") so BASE decides through its tested engine rather than letting the model guess: for a given request, the same route, or an abstention stated clearly.
+> **Forcing a routing choice.** Say **"R"** (or "R your request") to require the assistant to use the routing map instead of answering from memory. With the default lexical strategy, `node .ai/base.mjs route "<your request>"` is deterministic for the same map. Semantic or model-based strategies do not carry that guarantee. The reproducible gate is `node .ai/base.mjs route-test --strategy lexical`.
 
 ---
 
 **Reminder**: AI can be wrong and invent details. Always review a quote before sending it.
 
-For personal use, this guide is enough. For a team, add `base.config.json`, `base validate`, `base entretien`, and the reference points in `docs/reference/framework-public.md`. `BASE_BOOTSTRAP.md` is for wiring a router into an AI tool; it stays outside the scope of team governance. For a large organization, also read `docs/reference/framework-public.md` before any deployment.
+For personal use, this guide is enough. For a team, review and configure the `base.config.json` created by `node <BASE_DIR>/tools/base.mjs init`, then use `node .ai/base.mjs validate`, `node .ai/base.mjs doctor`, and the reference points in `docs/reference/framework-public.md`. `BASE_BOOTSTRAP.md` is for wiring a router into an AI tool; it stays outside the scope of team governance. For a large organization, also read `docs/reference/framework-public.md` before any deployment.
 
 For a small business or a small team, add the [Swiss SME starter kit](../audiences/kit-demarrage-pme-suisse.md) before sharing an assistant: permitted data, human validation, versioning, and monthly upkeep.
 
@@ -90,11 +90,15 @@ For a small business or a small team, add the [Swiss SME starter kit](../audienc
 
 You rarely start from a blank page. Two doors, same result:
 
-- **CLI**: `base init --root my-folder` shows exactly which files would be created (a minimal agent, or a workspace file if the folder already contains several BASE roots); `--yes` creates them: never an overwrite.
-- **Studio**: launch the workshop on the folder (`base studio --root my-folder`): the Welcome screen shows the same plan, in readable form, with a "Create these files" button. The app then switches to normal mode without restarting. Your AI tool stays the day-to-day experience; Studio serves as the workshop, and your files stay at the center, with the AI tool of your choice.
+- **CLI**: with Node 18 or later in a terminal, `node <BASE_DIR>/tools/base.mjs init --root my-folder` shows the files the tool intends to create (a minimal agent, or a workspace file if the folder already contains several BASE roots). After your choices and approval, a second invocation with `--yes` initializes the folder without overwriting existing files; its result reflects the answers you provided.
+- **Studio**: run `npm ci` once in the BASE clone. After initialization, run `cd my-folder && node .ai/base.mjs studio --root .`. The Welcome screen presents the files and available actions. Your AI tool remains the day-to-day experience; Studio serves as the workshop.
 
 Then, to turn your documents into processes and competences, ask your assistant: "import my existing procedures." The router will send it to `importer-l-existant`, which proposes each conversion as a diff. The routing stays simple but effective, and extensible through adapters. It saves you from hunting for the right process yourself.
 
 ---
 
-BASE is a framework by [AI Swiss](https://a-i.swiss). Use case in partnership with [Innovaud](https://innovaud.ch).
+**Next action, new folder:** copy `exemples/assistant-devis/` into your workspace, open that copy in your AI tool, then say "Hello, I'd like to set up my business."
+
+**Next action, existing folder:** initialize that folder through the CLI or Studio as described above, then say "Import my existing procedures."
+
+BASE is an open convention with a reference implementation, maintained by [AI Swiss](https://a-i.swiss). Use case in partnership with [Innovaud](https://innovaud.ch).

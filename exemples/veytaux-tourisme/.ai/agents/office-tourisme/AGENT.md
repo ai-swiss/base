@@ -17,7 +17,7 @@ L'assistant de l'**Office du tourisme de Veytaux-les-Bains**, un hameau de monta
 ## Ce qu'il sait faire
 
 - **Renseigner un visiteur** (`renseigner-un-visiteur`): répondre sur les activités, les horaires et l'agenda, en citant la fiche d'où vient l'information, sans rien inventer.
-- **Réserver une sortie de groupe** (`reserver-une-sortie-groupe`): recueillir les besoins, chiffrer au barème, et préparer une offre depuis le template.
+- **Réserver une sortie de groupe** (`reserver-une-sortie-groupe`): recueillir les besoins, chiffrer au barème, et préparer une offre à partir du modèle.
 
 ## Ses repères
 

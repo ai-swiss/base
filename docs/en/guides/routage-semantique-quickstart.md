@@ -1,9 +1,21 @@
-<!-- fr-synced: 4b2cd28795087024c25dbff7b8ad00b37c490aee -->
+<!-- fr-synced: 664e913cb17eb023cb42c7857fe18b6c8a203ad0 -->
 # Setting up semantic routing, from zero config to real embeddings
 
 From the moment BASE is installed, requests should reach the right agent and the right process with no initial configuration, then grow in quality the day the need makes itself felt: that is what you set up here. BASE routes a request, or abstains honestly when nothing fits.
 
-BASE routes in **two ways, set by configuration**. **Track 1** applies by default: the assistant reads the generated index and chooses, with a deterministic keyword floor serving as its offline safety net. **Track 2** is optional, designed for large catalogs: embeddings retrieve a handful of candidates that a small local model then refines (it chooses, or asks for clarification); see [Track 2, embedding-based routing](voie-2-routage-embeddings.md). This page details Track 1 and, within it, the **ranking quality** of candidates: a ranker ranks, but the router is what decides. You will follow three paths, from the simplest to the most robust; start with the first, and go no further unless the need demands it.
+Two separate settings must not be confused:
+
+- the **routing strategy** selects the complete path. The `lexical` strategy (Track 1) is the default.
+  The `embedding` strategy (Track 2) activates when `.ai/studio.settings.json` names both an embedding
+  model and a refiner; it retrieves a few candidates, then asks the refiner to select one or request
+  clarification;
+- the configurable **rankers** in `base.config` do not select a strategy. They add scores to Track 1
+  ranking and to search. A ranker may itself use embeddings without activating Track 2.
+
+See [Track 2, embedding-based routing](voie-2-routage-embeddings.md) for the `embedding` strategy.
+This page mainly shows how to configure Track 1 rankers. A ranker orders candidates; the routing
+strategy produces the decision. Start with no extension, then add a ranker or Track 2 only when real
+cases justify it.
 
 BASE routing chooses the primary workflow, not every possible resource. The full chain is this: choose an agent, route to a process, then open the competences, tools, templates, documents, or data that the process needs. For the full doctrine, see [`docs/reference/routage-process-et-ressources.md`](../reference/routage-process-et-ressources.md).
 
@@ -12,14 +24,18 @@ BASE routing chooses the primary workflow, not every possible resource. The full
 Before the *quality* of the ranking (the "paths" below), here is how the assistant reaches the right agent, from the most manual to the most automatic:
 
 - **Manual, zero tools.** If you know which agent you want, point straight at its `AGENT.md`: it is the only file to load. "Read `exemples/assistant-devis/.ai/agents/assistant-devis/AGENT.md`" is enough (path relative to the repo; in an assistant project, it is nothing more than `.ai/agents/<agent>/AGENT.md`). No routing, no installation.
-- **CLI.** `base route "<request>" --root <project>` chooses the agent → process deterministically, and abstains honestly if nothing fits. The same router, at the terminal.
+- **CLI.** `base route "<request>" --root <project>` runs the configured production strategy and
+  abstains honestly if nothing fits.
 - **MCP.** The `route_request` tool exposes that same router to an AI tool able to read your files. To wire it up, follow the `activer-routage` process.
 
-Routing (CLI/MCP), deterministic by default, helps most when several processes or agents could answer, or when you want guarantees (tested abstention, fixtures). It spares the user the trouble of hunting for the right process. The moment an embedding ranker comes into play, the ranking depends on the chosen provider; the statuses and the fixtures, though, do not change. For a single simple assistant, loading manually is enough.
+CLI/MCP routing helps most when several processes or agents could answer. With no model or external
+ranker, Track 1 is deterministic. An embedding ranker makes its ranking depend on the provider;
+Track 2 also adds a refiner. Both paths retain the same decision statuses, but their result is not
+therefore identical or reproducible. For a single simple assistant, loading manually is enough.
 
-The three "paths" below address a separate question: the ranking quality of candidates within Track 1, from zero-config lexical to real embeddings. (Not to be confused with Track 2, which is another routing track, and not a ranker.)
+The options below address ranking quality within Track 1. They are independent of the Track 2 strategy.
 
-## Path 1: zero configuration
+## Default ranking: zero configuration
 
 Write agents and processes in Markdown, with a `use_when` per process. BASE routes thanks to its zero-dependency core: lexical + `semanticHybridRanker` (token overlap, aliases by token subset, fuzzy similarity), structured abstention, routing fixtures, MCP.
 
@@ -44,7 +60,7 @@ In `base.config.json`, declare aliases (domain synonyms), still without the slig
 
 The rule is simple: reserve `base.config.json` for declarative options (`semanticHybrid`, thresholds, validators), and `base.config.mjs` for the cases where you have to import code, for example an embedding provider. If the two coexist, BASE prefers the declarative JSON; so keep only a single format per project once you turn on real embeddings.
 
-## Path 2: real embeddings
+## Optional ranker: real embeddings
 
 Install `@ai-swiss/base-ranker-semantic`, choose a provider, add a ranker in `base.config.mjs` (executable config, because a ranker is code). The core itself gains no model or cloud dependency.
 
@@ -88,17 +104,31 @@ export default {
 
 The package is robust by default against provider calls: it handles timeouts, the `AbortSignal`, bounded retries (transient only), and typed errors. To group many concurrent calls together, wrap the provider in `createBatchingEmbedder`. Details: [`packages/base-ranker-semantic/README.md`](../../../packages/base-ranker-semantic/README.md) and [the provider page](choisir-provider-embeddings.md).
 
-## Path 3: optional local index
+## Optional local index
 
 As the corpus grows, derive a deletable local index with `@ai-swiss/base-index-local`. The user model stays the same, with no catalog to maintain by hand, and the default routing statuses do not move. See [Understanding scale](../learn/comprendre-echelle.md).
 
 ## Running the fixtures
 
-`.ai/routing/route-tests.json` lists requests and the expected route (status, agent, process). It is a regression test, not an academic performance measurement:
+`.ai/routing/route-tests.json` lists requests and the expected route (status, agent, process).
+By default, `route-test` replays the available fixtures and `routing.examples` with the lexical
+strategy and the rankers from `base.config`. It checks those written cases, not every possible
+phrasing or the decision of a model reading the index:
 
 ```bash
 node tools/base.mjs route-test --root <project>         # readable output, exit ≠ 0 if a route breaks
 ```
+
+If both Track 2 models are configured, `base route` uses the `embedding` strategy. Deliberately replay
+the real path:
+
+```bash
+node tools/base.mjs route-test --strategy production --root <project>
+```
+
+This second command calls the configured models. It checks the production path during that run; it
+is neither deterministic nor intended as a reproducible CI gate. Likewise, an external ranker wired
+through `base.config` can make the lexical run depend on its provider.
 
 ## Reading the score reasons
 

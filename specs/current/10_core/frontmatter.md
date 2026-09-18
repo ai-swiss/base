@@ -56,7 +56,7 @@ Each emits a stable code (registry: `core/codes.mjs`) and the offending **line**
 |---|---|
 | Tab in indentation | `base.yaml.tab_indent` |
 | Block scalar `\|` or `>` | `base.yaml.block_scalar_unsupported` |
-| Flow mapping `{a: b}` | `base.yaml.flow_map_unsupported` |
+| Flow mapping `{a: b}` | `base.yaml.flow_map_unsupported` (the message names the fix: quote the value) |
 | Anchor/alias `&a`/`*a`, tag `!!type` | `base.yaml.anchor_or_tag_unsupported` |
 | Unterminated quote | `base.yaml.unterminated_quote` |
 | Duplicate key at same level | `base.yaml.duplicate_key` |
@@ -64,7 +64,50 @@ Each emits a stable code (registry: `core/codes.mjs`) and the offending **line**
 | Inconsistent indentation | `base.yaml.bad_indent` |
 | Unparsable line | `base.yaml.unparsable_line` |
 
+**Template placeholder, not a flow mapping.** A value whose braces enclose it entirely and hold
+no colon and no `#` (`handle: {dataset-handle}`, `date: {YYYY-MM-DD}`, `who: {a | b}`) is read as the
+text it is: it is the marker BASE's own templates use for «fill this in», and no mapping is
+intended. `{a: b}` stays rejected. Reading side only: the serializer quotes any value starting
+with `{`, so the round trip is unchanged and the emitted form stays strict-YAML valid.
+
 **Golden rule:** on error, **do not insert a guessed value**: record the error and omit the key. Downstream validation then fails cleanly (NFR-CORE-004).
+
+### Editions and originals: `lang`, `translation_of`, `cite_as`, `source.*`
+Four fields the reader consumes without any grammar extension, all scalars or a nested block mapping
+(FR-CORE-013). `lang` is two lower-case letters, and when it is absent the file-name suffix
+`<slug>.<lang>.md` answers instead, so a translation need not repeat itself. `translation_of` names the
+canonical resource's id, one direction only: the canonical declares nothing, and the family is found
+from either end. `cite_as` is the citation string a passage travels with. Inside `source`, `pages` is a
+flow sequence of integers, `image` one root-relative path, and `page_images` a template:
+
+```yaml
+lang: de
+translation_of: guide-assess
+cite_as: "Guide (2026), p. 4"
+source:
+  pages: [4, 5]
+  page_images: originals/page-{page:03}.png
+```
+
+`{page}` and `{page:03}` are markers inside a path, and the flow-mapping rejection above applies only
+to a value that **starts** with `{`, so an embedded template is read as the bareword it is and needs no
+quoting. A `page_images` value beginning with a brace would be quoted like any other.
+
+### `superseded_anchors` — a block mapping the simple-key rule already covers
+A section is cited as `id#anchor` (FR-CORE-012), and the anchor derives from the heading, so rewording
+a heading breaks every citation already written down. A card records where each old name went:
+
+```yaml
+superseded_anchors:
+  risk-assessment: assessing-risk
+```
+
+This needs no grammar extension. Derived anchors are `[a-z0-9-]+` (lowercased, accents folded,
+punctuation dropped), which sits inside the simple-key set `[A-Za-z0-9_-]+`, so any anchor this engine
+derives can be written as a key, and the value is an ordinary bareword scalar. The entry must name an
+anchor the document still has: one whose target has gone reads as not found, and the reader is told
+which anchors exist. The field is declared in `base.schema.json`; `findSection` (`core/sections.mjs`)
+is its only reader.
 
 ## Serializer — the parser's inverse
 `serializeFrontmatter(data) → string` and `composeMarkdown(data, body) → string` emit the **same strict subset** the parser accepts, so that `parseFrontmatter(composeMarkdown(data, body))` returns `{ data, body }` unchanged for any **representable** `data`. (Used by editing surfaces that write metadata back to a file, via propose→commit.)

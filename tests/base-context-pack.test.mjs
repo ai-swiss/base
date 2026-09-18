@@ -1,11 +1,11 @@
-// Spec coverage: UR-CORE-001
+// Spec coverage: UR-CORE-001 FR-CORE-011
 // The context pack, tested WITHOUT disk: inventory + reader injected. Resolution order
 // (exact → folder/README → ranker «≈»), dead links flagged, budget respected with the remainder
 // listed — and the rendered «Contexte fourni» block.
 
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { buildContextPack, extractReferences, renderContextPack, summarizeContextPack } from "../tools/core/context-pack.mjs";
+import { buildContextPack, extractLinks, extractReferences, renderContextPack, summarizeContextPack } from "../tools/core/context-pack.mjs";
 
 const PROCESS_BODY = [
   "# Devis",
@@ -20,7 +20,7 @@ const INVENTORY = [
   { path: "devis/SKILL.md", type: "process", id: "devis", title: "Devis", description: "", keywords: [], body: PROCESS_BODY },
   { path: "tarifs/bareme.md", type: "document", id: "bareme", title: "Barème", description: "", keywords: [] },
   { path: "clients/README.md", type: "document", id: "clients-readme", title: "Clients", description: "", keywords: [] },
-  { path: "clients/acme.md", type: "document", id: "acme", title: "ACME", description: "", keywords: [] },
+  { path: "clients/dupont-sa.md", type: "document", id: "dupont-sa", title: "Dupont SA", description: "", keywords: [] },
   { path: "modeles/devis-standard.md", type: "template", id: "devis-standard", title: "Devis type standard", description: "modèle de devis", keywords: ["devis", "modele"] },
 ];
 
@@ -39,6 +39,25 @@ describe("context pack — resolution exact → dossier → ranker", () => {
   it("extracts links and inline paths, skipping urls, anchors and placeholders", () => {
     const refs = extractReferences(PROCESS_BODY + "\nVoir [doc](https://exemple.ch) et [ancre](#ici) et `devis/[nom].md`.");
     assert.deepEqual(refs, ["tarifs/bareme.md", "archives/2020/tres-vieux.md", "clients/", "modeles/devis-type.md"]);
+  });
+
+  it("ignores links inside a fenced block: an illustrated layout is prose, not references to follow", () => {
+    const body = [
+      "Voici à quoi ressemble un dossier:",
+      "",
+      "```markdown",
+      "- [Barème](exemple/inexistant.md)",
+      "- [Fiche](exemple/autre.md)",
+      "```",
+      "",
+      "Le vrai barème est le [barème](tarifs/bareme.md).",
+    ].join("\n");
+    assert.deepEqual(extractLinks(body), ["tarifs/bareme.md"]);
+  });
+
+  it("a fence shown inside a longer fence does not close it", () => {
+    const body = ["````markdown", "```", "[piège](nulle-part.md)", "```", "````", "[vrai](tarifs/bareme.md)"].join("\n");
+    assert.deepEqual(extractLinks(body), ["tarifs/bareme.md"]);
   });
 
   it("resolves and injects: exact path, folder README, imperfect ref annotated «≈», dead link flagged", async () => {
@@ -82,5 +101,34 @@ describe("context pack — resolution exact → dossier → ranker", () => {
     const summary = summarizeContextPack(pack);
     assert.deepEqual(summary.sections, [{ path: "a/shared/x.md" }]);
     assert.ok(!JSON.stringify(summary).includes("X!"));
+  });
+
+  it("loads structured requirements first by id, carries their purpose, and injects each resource once", async () => {
+    const inv = [
+      {
+        path: "devis/SKILL.md",
+        type: "process",
+        id: "devis",
+        body: "Consulte aussi [le barème](tarifs/bareme.md).",
+        metadata: {
+          requires: [
+            { ref: "bareme", access: "read", purpose: "  calculer   le prix  " },
+            { ref: "inconnu", purpose: "vérifier l'absence" },
+          ],
+        },
+      },
+      { path: "tarifs/bareme.md", type: "document", id: "bareme" },
+    ];
+
+    const pack = await buildContextPack(
+      inv,
+      async (path) => (path === "tarifs/bareme.md" ? "Taux: 8.1%" : Promise.reject(new Error("ENOENT"))),
+      "devis/SKILL.md",
+    );
+
+    assert.deepEqual(pack.sections, [
+      { path: "tarifs/bareme.md", content: "Taux: 8.1%", note: "purpose: calculer le prix" },
+    ]);
+    assert.deepEqual(pack.unresolved, [{ ref: "inconnu", suggestions: [] }]);
   });
 });

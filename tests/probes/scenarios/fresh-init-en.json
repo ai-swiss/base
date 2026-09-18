@@ -1,0 +1,49 @@
+{
+  "schema_version": "base.probe-scenario.v1",
+  "id": "fresh-init-en",
+  "title": "A fresh English root routes an ordinary request",
+  "setup": {
+    "kind": "init",
+    "args": [
+      "--language",
+      "en",
+      "--about",
+      "We install and maintain heat pumps"
+    ]
+  },
+  "prompt": "I want to import my existing procedures.",
+  "expect": {
+    "required": [
+      {
+        "type": "file_read",
+        "path_ends_with": ".ai/routing/index.md"
+      },
+      {
+        "type": "file_read",
+        "path_matches": "/skills/processes/importer-l-existant/SKILL\\.md$"
+      },
+      {
+        "type": "final_answer",
+        "matches": "procedure|document|import"
+      },
+      {
+        "type": "final_answer",
+        "question_marks": 1
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "command",
+        "includes": "base route"
+      },
+      {
+        "type": "final_answer",
+        "matches": "\\b(process|frontmatter|router|routing|SKILL\\.md|AGENT\\.md)\\b"
+      },
+      {
+        "type": "final_answer",
+        "includes": "—"
+      }
+    ]
+  }
+}

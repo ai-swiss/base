@@ -24,7 +24,8 @@
     },
     "name": {
       "type": "string",
-      "description": "Alias for `label` (accepted for convenience)."
+      "deprecated": true,
+      "description": "Deprecated compatibility alias for `label`. Readers warn and use it only when `label` is absent."
     },
     "roots": {
       "type": "array",

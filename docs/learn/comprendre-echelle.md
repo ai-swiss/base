@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: comprendre-echelle
 type: document
 title: Choisir entre scan, index local et base externe selon votre échelle
-description: Comment décider entre le scan en mémoire, un index local ou une base externe selon la taille de votre corpus, et pourquoi l'index reste une projection régénérable.
+description: Décider entre scan en mémoire, index local et moteur externe à partir de mesures sur son propre corpus.
 scope: public
 status: active
 sensitivity: public
@@ -12,58 +12,37 @@ keywords: [echelle, index, scan, projection, performance, benchmark]
 
 # Choisir entre scan, index local et base externe selon votre échelle
 
-Bien dimensionner le routage de BASE, c'est éviter deux écueils: payer une infrastructure dont vous
-n'avez pas l'usage, ou se heurter à un mur de lenteur lorsque le corpus grossit. Cette page vous donne une règle
-de décision chiffrée, des petits projets aux corpus volumineux, pour savoir quand le scan en mémoire
-suffit, quand un index local devient utile et quand une base externe se justifie.
+Commencez par le mécanisme le plus simple, mesurez-le sur votre corpus, puis changez seulement si la mesure révèle une limite. Les ordres de grandeur ci-dessous orientent un essai, ils ne promettent pas une vitesse universelle.
 
-## Quand le scan en mémoire suffit
+## Scan en mémoire
 
-Par défaut, `routeRequest` lit les ressources et les score en mémoire. Cette approche est simple, sans
-état ni artefact à régénérer, et elle **suffit** pour des centaines, voire quelques milliers de
-ressources. La plupart des projets n'ont besoin de rien de plus. N'ajoutez pas de complexité avant
-d'en avoir constaté le coût.
+Par défaut, `routeRequest` lit les ressources et les score en mémoire. Cette option évite tout état et tout artefact à régénérer. Elle convient tant que sa latence, sa consommation de mémoire et son débit restent acceptables dans votre environnement.
 
-## Quand un index local aide
+## Index local
 
-Lorsque le corpus grandit (dizaines de milliers de ressources) et qu'un scan à chaque requête devient
-pesant, dérivez un index local avec `@ai-swiss/base-index-local`:
+Un index local devient utile lorsque les scans répétés coûtent trop cher. Le paquet `@ai-swiss/base-index-local` permet de construire l'index, de router et de mesurer:
 
 ```bash
-base-index-local build  <projet>
-base-index-local route  <projet> "préparer un devis client"
-base-index-local bench  --sizes 100,1000,10000,50000
+base-index-local build <projet>
+base-index-local route <projet> "préparer un devis client"
+base-index-local bench --sizes 100,1000,10000,50000
 ```
 
-L'index est une **projection locale**: il évite de relire l'ensemble du système de fichiers et peut servir une liste de
-postings pour la recherche lexicale. Mesuré sur un portable (voir [Benchmarks](../guides/benchmarks-echelle.md)):
-un index de **52 500 documents** se construit en ~0,4 s et se recherche à chaud en **moins d'1 ms**.
+Les [benchmarks reproductibles](../guides/benchmarks-echelle.md) utilisent un corpus et des requêtes synthétiques. Ils isolent le coût technique sur un matériel et un logiciel explicités, mais ne mesurent ni la qualité du routage ni la latence de vos requêtes réelles. Mesurez celles-ci séparément sur un échantillon représentatif de votre corpus.
 
-Le routage indexé retourne les mêmes statuts que le routage en mémoire par défaut. Pour
-préserver cette parité, `routeWithIndex` score tous les routables stockés dans l'index avec le même
-Ranker et le même Router injectés. Les équipes dont le routage se prête à une comparaison lexicale
-peuvent activer un préfiltrage par postings (`candidateMode: "lexical"`), à titre d'optimisation explicite.
+L'index reste une **projection**, au sens du [glossaire](../reference/glossaire.md): il se reconstruit depuis les sources. Par défaut, `routeWithIndex` utilise `candidateMode: "all"` et rescrore toutes les ressources routables avec le même ranker et le même routeur que le chemin en mémoire; c'est cette configuration qui vise la parité de statut, d'agent et de process. Le mode `"lexical"` ne rescrore que les candidats trouvés dans les postings. Il préserve cette parité avec un ranker lexical compatible, mais peut écarter un résultat qu'un ranker sémantique ou hybride aurait trouvé.
 
-## Quand une base externe devient légitime
+## Moteur externe
 
-Au-delà (millions de documents, recherche distribuée, multi-tenant), un moteur dédié (OpenSearch, une
-base vectorielle, une passerelle interne) se justifie. BASE ne l'impose pas et ne l'embarque pas dans
-le cœur: il expose la même forme (candidats → décision), pour que vous branchiez derrière elle le moteur de votre
-choix.
+Un moteur dédié peut se justifier pour un corpus distribué, plusieurs locataires, des contraintes de disponibilité ou un volume que l'index local ne sert plus correctement. BASE n'en impose aucun: l'intégration conserve la forme candidats puis décision, tandis que l'exploitation, les permissions, l'egress et les tests relèvent du dispositif choisi.
 
-## Pourquoi l'index reste une projection
+## Garder l'index dérivé
 
-L'index n'est **jamais** une source de vérité. Il se reconstruit de façon déterministe à partir de
-l'inventaire, des signaux de routage dérivés, du frontmatter, des titres et descriptions, du `route_text` et d'embeddings
-optionnels. Conséquences:
+- Supprimer `.ai/index/local.json` ne supprime aucune source.
+- Deux constructions depuis les mêmes signaux dérivés doivent produire le même index.
+- Les embeddings calculés à l'exécution ne rendent pas leurs scores sémantiques déterministes.
+- Un catalogue tenu à la main ne doit pas devenir une seconde source de vérité.
 
-- **Supprimable.** Effacez `.ai/index/local.json`: vous ne perdez rien, régénérez-le.
-- **Déterministe.** Deux builds des mêmes fichiers sont identiques: un gate CI peut en vérifier la
-  fraîcheur (`git diff --exit-code`). *Les embeddings calculés à l'exécution échappent à ce gate:
-  l'index reste déterministe pour les signaux dérivés, non pour les scores sémantiques calculés.*
-- **Pas de catalogue manuel.** Aucune table maintenue à la main ne peut diverger des fichiers.
+## Prochaine action
 
-## En une phrase
-
-BASE sait quand le scan suffit, quand l'index aide et ce que coûte chaque option. Des [benchmarks
-reproductibles](../guides/benchmarks-echelle.md) le mesurent: cela vaut mieux qu'une simple affirmation.
+Exécutez d'abord le benchmark synthétique sur trois tailles proches de votre corpus, puis rejouez un échantillon de requêtes réelles et notez séparément latence, route attendue et abstentions. Ne changez de stratégie que si un seuil métier explicite est dépassé.

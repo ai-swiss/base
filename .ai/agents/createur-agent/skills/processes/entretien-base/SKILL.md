@@ -21,7 +21,9 @@ routing:
     - Audit and harden this BASE before release
   avoid_when:
     - Créer un nouvel assistant métier à partir de zéro.
+    - Appliquer un plan approuvé qui crée un nouvel assistant métier.
     - Améliorer le comportement d'un agent métier précis.
+    - Faire le point sur les process, le routage ou les frictions d'un BASE en service pour préparer des propositions à soumettre.
 name: entretien-base
 argument-hint: "[dossier BASE ou objectif d'entretien]"
 user-invocable: true
@@ -98,7 +100,7 @@ Classer les marqueurs en trois catégories:
 
 ### 4. Identifier les ressources utiles
 
-Repérer les fichiers qui reviennent souvent dans les workflows:
+Repérer les fichiers qui reviennent souvent dans les procédures:
 
 - process bien décrits;
 - compétences réutilisables;
@@ -112,7 +114,7 @@ Ne proposer une promotion que si la ressource est claire, réutilisable et valid
 
 Si l'utilisateur demande un audit, une publication ou un partage d'équipe, en proposer une lecture par niveau:
 
-- **Usage local**: validation, workflows utilisables, données lisibles, marqueurs compréhensibles.
+- **Usage local**: validation, procédures utilisables, données lisibles, marqueurs compréhensibles.
 - **Équipe / PME**: descriptions, route-tests, ressources promues, responsabilités humaines, données sensibles identifiées.
 - **MCP / intégration**: lecture seule ou écriture explicite, authentification, dry-run, dépendances, scripts disponibles.
 - **Publication**: README, exemples, licences, SECURITY, changelog, artefacts générés, absence de traces ou brouillons.

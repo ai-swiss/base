@@ -1,3 +1,13 @@
+---
+schema_version: base.resource.v1
+id: client-dupont-sa
+type: document
+title: Dupont SA
+description: Coordonnées, statut et historique commercial du client fictif Dupont SA.
+scope: team
+status: active
+sensitivity: internal
+---
 # Dupont SA
 
 > Fiche client fictive de démonstration.

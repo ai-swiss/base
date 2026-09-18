@@ -14,22 +14,55 @@ import { loadGoldenSet, NOT_A_TARGET_HEADER } from "./route-eval.mjs";
 import { loadCompanion } from "../core/companion.mjs";
 
 const DEFAULT_GOLDEN = "tests/fixtures/route-eval-golden.json";
+// Where a project keeps its OWN labelled set. The framework's own set lives at DEFAULT_GOLDEN; any
+// other root that wants the model diagnostic on its own corpus puts one here and runs the same verb.
+const ROOT_GOLDEN = ".ai/routing/route-eval-golden.json";
+
+/**
+ * Resolve WHICH corpus and which labelled set this run measures. In order: an explicit `--golden`
+ * (relative to the selected root), then that root's own set at `.ai/routing/route-eval-golden.json`,
+ * then the framework's set over its example corpus. A root's set measures that root: a labelled set
+ * with no `corpus` field means "this root", which is what an author writing one expects.
+ * @param {{ frameworkRoot: string, rootDir?: string, goldenPath?: string, pathExists: (p: string) => Promise<boolean> }} opts
+ */
+export async function resolveEvalTarget({ frameworkRoot, rootDir, goldenPath, pathExists }) {
+  const selected = rootDir ? path.resolve(rootDir) : null;
+  if (goldenPath && selected) {
+    return { goldenFile: path.resolve(selected, goldenPath), base: selected, corpusDefault: selected, source: "flag" };
+  }
+  if (goldenPath) return { goldenFile: path.resolve(frameworkRoot, goldenPath), base: frameworkRoot, corpusDefault: frameworkRoot, source: "flag" };
+  if (selected && (await pathExists(path.join(selected, ROOT_GOLDEN)))) {
+    return { goldenFile: path.join(selected, ROOT_GOLDEN), base: selected, corpusDefault: selected, source: "root" };
+  }
+  return {
+    goldenFile: path.resolve(frameworkRoot, DEFAULT_GOLDEN),
+    base: frameworkRoot,
+    corpusDefault: path.resolve(frameworkRoot, "exemples/routage-pme"),
+    source: "framework",
+  };
+}
 
 /**
  * Run the labeled routing eval. Returns the report(s) as data (so `--json` can print them) and the
  * text render. `withOllama` triggers the real run (recall@k + the refiner diagnostic over a local
  * Ollama, imported lazily so the default path pulls no model client). Without it, the default path
  * prints the header and the run instruction — never a model round-trip. `frameworkRoot` is the BASE
- * repo root the golden set + corpus resolve against.
- * @param {{ frameworkRoot: string, goldenPath?: string, withOllama?: boolean }} opts
+ * repo root; `rootDir` is the selected root, which may carry its own labelled set.
+ * @param {{ frameworkRoot: string, rootDir?: string, goldenPath?: string, withOllama?: boolean }} opts
  */
-export async function runRouteEvalCli({ frameworkRoot, goldenPath, withOllama = false }) {
-  const goldenFile = path.resolve(frameworkRoot, goldenPath || DEFAULT_GOLDEN);
-  const golden = await loadGoldenSet(goldenFile);
-  const corpusRoot = path.resolve(frameworkRoot, golden.corpus ?? "exemples/routage-pme");
+export async function runRouteEvalCli({ frameworkRoot, rootDir, goldenPath, withOllama = false }) {
+  const { pathExists } = await import("../core/confine.mjs");
+  const target = await resolveEvalTarget({ frameworkRoot, rootDir, goldenPath, pathExists });
+  const golden = await loadGoldenSet(target.goldenFile);
+  const corpusRoot = golden.corpus ? path.resolve(target.base, golden.corpus) : target.corpusDefault;
 
   const sections = [NOT_A_TARGET_HEADER];
-  const result = { corpus: golden.corpus, total: golden.cases.length };
+  const result = { corpus: golden.corpus ?? (path.relative(target.base, corpusRoot) || "."), total: golden.cases.length, golden: target.goldenFile, source: target.source };
+  sections.push(
+    target.source === "framework"
+      ? `\n  Jeu étiqueté: celui du cadre BASE (${path.relative(frameworkRoot, target.goldenFile)}), sur son corpus d'exemple. Pour mesurer VOTRE dossier, écrivez ${ROOT_GOLDEN} ou passez --golden <fichier>.`
+      : `\n  Jeu étiqueté: ${target.goldenFile} (${golden.cases.length} cas), corpus ${corpusRoot}.`,
+  );
 
   if (!withOllama) {
     sections.push(

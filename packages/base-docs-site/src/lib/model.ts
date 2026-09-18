@@ -1,15 +1,13 @@
 import fs from "node:fs";
 import path from "node:path";
-import { Marked, type Tokens } from "marked";
-// The model is the single source of the slug algorithm; the site renders anchors with it
-// so deep links and the page outline can never drift from the model's heading slugs.
-import { slugifyText } from "../../../../tools/docs/model.mjs";
 import { localeBase, type Locale } from "./i18n";
 import { REPO_URL } from "./metadata.mjs";
+import { renderMarkdownBody } from "./render-markdown.mjs";
 
 export type DocsResource = {
   id: string;
-  source_id: string | null;
+  id_is_authored: boolean;
+  site_key: string;
   path: string;
   title: string;
   description: string | null;
@@ -20,7 +18,7 @@ export type DocsResource = {
   sensitivity: string;
   family: string;
   headings: Array<{ depth: number; text: string; slug: string }>;
-  incoming_links: Array<{ source_id: string; source_path: string; label: string }>;
+  incoming_links: Array<{ source_id: string; source_site_key: string; source_path: string; label: string }>;
   route_examples: string[];
   owning_agent: string | null;
   owning_example: string | null;
@@ -36,13 +34,8 @@ export type DocsModel = {
     warnings: number;
     errors: number;
   };
-  navigation: {
-    sections: Array<{
-      id: string;
-      title: string;
-      items: Array<{ id: string; title: string; path: string; role: string }>;
-    }>;
-  };
+  navigation: DocsNavigation;
+  resource_aliases: Array<{ id: string; site_key: string }>;
   families: Array<{
     id: string;
     description: string;
@@ -50,7 +43,7 @@ export type DocsModel = {
     included_in_docs_model: boolean;
   }>;
   graph: {
-    nodes: Array<{ id: string; label: string; type: string; role: string; path: string }>;
+    nodes: Array<{ id: string; resource_id: string; site_key: string; label: string; type: string; role: string; path: string }>;
     edges: Array<{ source: string; target: string; type: string }>;
   };
   route_fixtures: Array<{
@@ -79,6 +72,30 @@ export type DocsModel = {
   resources: DocsResource[];
   warnings: Array<{ code: string; path?: string; message: string }>;
   errors: Array<{ code: string; path?: string; message: string }>;
+};
+
+type LocalizedLabel = { fr: string; en: string };
+type NavigationResource = {
+  type: "resource";
+  id: string;
+  site_key: string;
+  title: string;
+  path: string;
+  role: string;
+};
+type NavigationLink = { type: "link"; id: string; labels: LocalizedLabel; href: string };
+type NavigationGroup = {
+  type: "group";
+  id: string;
+  labels: LocalizedLabel;
+  collapsed: boolean;
+  items: NavigationItem[];
+};
+type NavigationItem = NavigationResource | NavigationLink | NavigationGroup;
+type DocsNavigation = {
+  target: string;
+  items: NavigationItem[];
+  exclusions: Array<{ id: string; site_key: string; path: string; reason: string }>;
 };
 
 export function loadModel(): DocsModel {
@@ -113,30 +130,14 @@ export function loadRenderedSource(
   // Links and images in a mirror keep the French source's relative paths (only their text is
   // translated), so they resolve against the French resource's directory, not the mirror's.
   const baseDir = path.posix.dirname(resource.path);
-  const marked = new Marked();
-  marked.use({
-    renderer: {
-      heading(token: Tokens.Heading) {
-        return `<h${token.depth} id="${slugifyText(token.text)}">${this.parser.parseInline(token.tokens)}</h${token.depth}>\n`;
-      },
-      link(token: Tokens.Link) {
-        const resolved = resolveHref(token.href, baseDir, byPath, locale);
-        const titleAttr = token.title ? ` title="${escapeAttribute(token.title)}"` : "";
-        return `<a href="${escapeAttribute(resolved)}"${titleAttr}>${this.parser.parseInline(token.tokens)}</a>`;
-      },
-      image(token: Tokens.Image) {
-        const resolved = isExternal(token.href) ? token.href : `${REPO_URL}/raw/main/${resolvePath(token.href, baseDir)}`;
-        const titleAttr = token.title ? ` title="${escapeAttribute(token.title)}"` : "";
-        return `<img src="${escapeAttribute(resolved)}" alt="${escapeAttribute(token.text)}"${titleAttr} />`;
-      },
-    },
+  const rendered = renderMarkdownBody(stripFrontmatter(raw), {
+    resolveLink: (href) => resolveHref(href, baseDir, byPath, locale),
+    resolveImage: (href) => isExternal(href) ? href : `${REPO_URL}/raw/main/${resolvePath(href, baseDir)}`,
   });
-  const body = stripFrontmatter(raw);
   // A mirror has its own (translated) headings and title, so the page outline AND the page title come
   // from it, not from the French model resource, or the anchors, the TOC and the heading would disagree.
-  const headings = translated ? extractHeadings(body) : null;
-  const title = translated ? (headings?.find((h) => h.depth === 1)?.text ?? null) : null;
-  return { type: "html", content: marked.parse(body, { async: false }) as string, headings, translated, title };
+  const title = translated ? (rendered.headings.find((heading) => heading.depth === 1)?.text ?? null) : null;
+  return { type: "html", content: rendered.content, headings: rendered.headings, translated, title };
 }
 
 /**
@@ -168,25 +169,41 @@ function translatedSourcePath(resourcePath: string, locale: Locale, root: string
   return resourcePath;
 }
 
-/** Heading outline of a body, slugged with the model's algorithm so the TOC matches the rendered anchors. */
-function extractHeadings(body: string): DocsResource["headings"] {
-  const headings: DocsResource["headings"] = [];
-  const re = /^(#{1,6})\s+(.+)$/gm;
-  let m: RegExpExecArray | null;
-  while ((m = re.exec(body))) {
-    const text = m[2].replace(/\s+#*\s*$/, "").trim();
-    headings.push({ depth: m[1].length, text, slug: slugifyText(text) });
-  }
-  return headings;
+export function resourceHref(resource: Pick<DocsResource, "site_key">, locale: Locale = "fr"): string {
+  return `${localeBase(locale)}/resources/${resource.site_key}/`;
 }
 
-export function resourceHref(resource: Pick<DocsResource, "id">, locale: Locale = "fr"): string {
-  return `${localeBase(locale)}/resources/${resource.id}/`;
+export function resourceStaticPaths(model: DocsModel, locale: Locale = "fr") {
+  const bySiteKey = new Map(model.resources.map((resource) => [resource.site_key, resource]));
+  const canonical = model.resources.map((resource) => ({
+    params: { id: resource.site_key },
+    props: { resource, target: model.target, aliasTo: null },
+  }));
+  const aliases = model.resource_aliases.map((alias) => {
+    const resource = bySiteKey.get(alias.site_key);
+    if (!resource) throw new Error(`Resource alias "${alias.id}" targets missing site key "${alias.site_key}".`);
+    return {
+      params: { id: alias.id },
+      props: { resource, target: model.target, aliasTo: resourceHref(resource, locale) },
+    };
+  });
+  return [...canonical, ...aliases];
 }
 
 export function byTitleThenPath(a: DocsResource, b: DocsResource): number {
   const title = a.title.localeCompare(b.title);
   return title === 0 ? a.path.localeCompare(b.path) : title;
+}
+
+export function resourcesByUniqueId(resources: DocsResource[]): Map<string, DocsResource> {
+  const byId = new Map<string, DocsResource>();
+  const duplicates = new Set<string>();
+  for (const resource of resources) {
+    if (byId.has(resource.id)) duplicates.add(resource.id);
+    else byId.set(resource.id, resource);
+  }
+  for (const id of duplicates) byId.delete(id);
+  return byId;
 }
 
 function resolveHref(href: string, baseDir: string, byPath: Map<string, DocsResource>, locale: Locale): string {
@@ -207,13 +224,11 @@ function isExternal(href: string): boolean {
   return /^[a-z][a-z0-9+.-]*:/i.test(href);
 }
 
-function escapeAttribute(value: string): string {
-  return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-}
-
 function stripFrontmatter(content: string): string {
-  if (!content.startsWith("---\n")) return content;
-  const lines = content.split("\n");
+  const prelude = content.match(/^(?:\uFEFF)?(?:<!--[\s\S]*?-->\s*)*/)?.[0] ?? "";
+  const source = content.slice(prelude.length);
+  if (!/^---\r?\n/.test(source)) return content;
+  const lines = source.split("\n");
   const end = lines.findIndex((line, index) => index > 0 && line.trim() === "---");
   return end === -1 ? content : lines.slice(end + 1).join("\n");
 }

@@ -1,4 +1,4 @@
-// Spec coverage: FR-MCP-001 FR-MCP-002 FR-MCP-003 FR-MCP-004 FR-MCP-005 FR-EGRESS-004 FR-FEEDBACK-003 RC-MCP-001
+// Spec coverage: FR-MCP-001 FR-MCP-002 FR-MCP-003 FR-MCP-004 FR-MCP-005 FR-EGRESS-004 FR-FEEDBACK-003 FR-CORE-011 FR-CLI-005 RC-MCP-001 NFR-CORE-003
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import * as fs from "fs/promises";
 import * as path from "path";
@@ -567,7 +567,7 @@ describe("createServer integration", () => {
     await fs.writeFile(path.join(tmpDir, "conditions.md"), "---\nid: conditions\ntype: document\ndescription: Conditions.\n---\nSECRET-BODY-TOKEN des conditions.\n");
     await fs.writeFile(
       path.join(tmpDir, ".ai/agents/sales/skills/processes/devis/SKILL.md"),
-      "---\nid: nouveau-devis\ntype: process\ndescription: Créer un devis.\nuse_when: Créer un devis client.\n---\n# Devis\nLire [les conditions](conditions.md).\n",
+      "---\nid: nouveau-devis\ntype: process\ndescription: Créer un devis.\nuse_when: Créer un devis client.\nrequires:\n  - ref: conditions\n    purpose: appliquer les conditions commerciales\n---\n# Devis\n",
     );
     await fs.writeFile(
       path.join(tmpDir, ".ai/agents/sales/skills/processes/secret.md"),
@@ -582,6 +582,8 @@ describe("createServer integration", () => {
     }, {});
     const summary = JSON.parse(planned.content[0].text);
     expect(summary.sections.map((x: { path: string }) => x.path)).toContain("conditions.md");
+    expect(summary.sections.find((x: { path: string }) => x.path === "conditions.md").note)
+      .toBe("purpose: appliquer les conditions commerciales");
     expect(planned.content[0].text).not.toContain("SECRET-BODY-TOKEN"); // paths + notes, never bodies
 
     // The MCP read posture: a confidential process is not even revealed by the planner.
@@ -1330,5 +1332,68 @@ describe("report_friction + abstention journal", () => {
     expect(line.query).toBe("qwerty zzz gibberish nonsense");
     expect(line.verdict).toBe("out_of_scope");
     expect(typeof line.at).toBe("string");
+  });
+
+  it("inlines the help process when the fallback lives in the framework, not in this root", async () => {
+    // A remote client has no access to the server's filesystem, so a pointer to a file outside the
+    // root would be a dead end. The server reads it and delivers the author's words.
+    const frameworkDir = await fs.mkdtemp(path.join(os.tmpdir(), "base-mcp-framework-"));
+    try {
+      const accueil = path.join(frameworkDir, ".ai/agents/concierge/skills/processes/accueil");
+      const improve = path.join(frameworkDir, ".ai/agents/concierge/skills/processes/improve");
+      await fs.mkdir(accueil, { recursive: true });
+      await fs.mkdir(improve, { recursive: true });
+      await fs.writeFile(path.join(frameworkDir, ".ai/agents/concierge/AGENT.md"), "---\nid: concierge\ntype: agent\ndescription: Accueil.\n---\n# Concierge\n");
+      await fs.writeFile(path.join(accueil, "SKILL.md"), "---\nid: accueil\ntype: process\ndescription: Orienter.\nuse_when: Quand la personne ne sait pas par où commencer.\n---\n# Accueil\n\nVoici par où commencer. Choisissez dans la carte.\n");
+      await fs.writeFile(path.join(improve, "SKILL.md"), "---\nid: improve\ntype: process\ndescription: Améliorer.\nuse_when: Quand la personne veut améliorer ses process.\n---\n# Améliorer\n");
+      await fs.writeFile(
+        path.join(tmpDir, "base.config.json"),
+        JSON.stringify({ framework_dir: frameworkDir, routing: { fallback: { agent: "concierge", process: "accueil" } } }),
+      );
+
+      const server = await createServer(tmpDir) as any;
+      const callTool = server.server._requestHandlers.get("tools/call");
+      const response = await callTool(
+        { method: "tools/call", params: { name: "route_request", arguments: { request: "qwerty zzz gibberish nonsense" } } },
+        {},
+      );
+      const payload = JSON.parse(response.content[0].text);
+      expect(payload.status).toBe("out_of_scope");       // the abstention stays honest
+      expect(payload.fallback.source).toBe("framework");
+      expect(payload.guidance).toContain("Voici par où commencer.");
+      expect(payload.guidance_map).toHaveLength(1);
+      expect(payload.guidance_map[0].id).toBe("concierge");
+      expect(payload.guidance_map[0].processes.map((process: { id: string }) => process.id)).toEqual(["accueil", "improve"]);
+    } finally {
+      await fs.rm(frameworkDir, { recursive: true, force: true });
+    }
+  });
+
+  it("a read-only server journals nothing: the request text never touches the corpus", async () => {
+    const server = await createServer(tmpDir, { readOnly: true }) as any;
+    const callTool = server.server._requestHandlers.get("tools/call");
+    const response = await callTool(
+      { method: "tools/call", params: { name: "route_request", arguments: { request: "le taux de TVA 2024 pour un devis" } } },
+      {},
+    );
+    // The route still answers honestly...
+    expect(JSON.parse(response.content[0].text).status).toBe("out_of_scope");
+    // ...and leaves no trace of what was asked.
+    const journal = await fs.readFile(path.join(tmpDir, ".ai/feedback/abstentions.jsonl"), "utf8").catch(() => null);
+    expect(journal).toBeNull();
+  });
+});
+
+// K-08: how to reach a FACT, not just how to reach a process. A client that knows only the routing
+// journey reads whole documents to answer a question one passage would have answered.
+describe("the reading discipline names the cheapest move for each shape of question", () => {
+  it("covers the four journeys, and says a quotation must be opened", async () => {
+    const { brokerMcpGuidance: guidance } = await import("../src/base-core-adapter.js");
+    const { readDiscipline } = await guidance();
+    expect(readDiscipline).toContain("known address");          // open it directly
+    expect(readDiscipline).toContain('grain \"section\"');        // a factual question
+    expect(readDiscipline).toContain("get_routing_map");        // exploring what exists
+    expect(readDiscipline).toContain("id#section");             // the citation shape
+    expect(readDiscipline).toContain("verbatim");               // and never a quotation nobody opened
   });
 });

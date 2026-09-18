@@ -77,7 +77,7 @@ cd ../../..
 
 ## 7. Version + changelog + spec freeze (git tag)
 
-- Bump versions per [SemVer](../docs/reference/versions-et-stabilite.md) (core + any changed package).
+- Bump versions according to the documented [versioning policy](../docs/reference/versions-et-stabilite.md) (core + any changed package).
 - Update `CHANGELOG.md` (and each package's, if changed): promote `[Unreleased]` to the new version.
 - Freeze the spec: in `specs/current/CHANGELOG.md` move `[Unreleased]` to `[X.Y.Z] - <date>`. The git tag **is** the frozen spec; no `specs/vX.Y.Z/` tree is copied (read a past spec with `git show vX.Y.Z:specs/current/...`).
 - Confirm no em-dashes in French public content; specs/docs updated for any behaviour change.

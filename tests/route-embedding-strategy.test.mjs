@@ -104,6 +104,7 @@ describe("routeRequest — embedding strategy vs lexical strategy selection", ()
     assert.deepEqual(out.fallback, {
       agent: { id: "help-agent", path: ".ai/agents/help-agent/AGENT.md" },
       process: { id: "accueil", path: ".ai/agents/help-agent/skills/processes/accueil/SKILL.md" },
+      source: "root",
     });
   });
 });

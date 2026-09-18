@@ -70,7 +70,7 @@ Documentation:
 - `docs/trust/securite-et-limites.md` explicite le modèle de sécurité, les limites et les responsabilités.
 - `docs/trust/souverainete-et-confiance.md` rassemble souveraineté, conformité, licence et gouvernance.
 - `docs/trust/licence.md` explique la double licence en langage lisible.
-- `docs/reference/specification-v0.md` donne la lecture d'architecture.
+- `docs/reference/specification-v0.md` renvoie vers la spécification d'ingénierie courante.
 - `mcp/README.md` explique l'adapter MCP sans le confondre avec le broker.
 - `SECURITY.md` explique comment signaler un problème.
 - `CODE_OF_CONDUCT.md` définit les règles de participation publique.
@@ -82,7 +82,7 @@ Code et validation:
 
 - `npm test` passe.
 - `npm run validate` passe.
-- `npm run entretien` ne signale pas d'action critique.
+- `npm run doctor` ne signale aucune erreur.
 - `npm test` et `npm run build` passent dans `mcp/`.
 - `npm run smoke:pack` passe.
 - `base.manifest.json` est régénéré.

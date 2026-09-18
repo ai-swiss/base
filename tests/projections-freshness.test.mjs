@@ -31,7 +31,9 @@ const TARGETS = ["agents-md", "tools", "bootstrap", "routing-index"];
 
 // The machine banner, in the file's head (first 8 lines: line 1 for the index tree, line 3 for the
 // bootstrap family after the title, line 6 for the Cursor rule after its frontmatter).
-const BANNER = /^<!-- Généré par `base build/;
+// The machine token, not the sentence: the sentence follows the root's language (the French
+// form stays recognised for every root written before 1.5).
+const BANNER = /^<!-- (?:BASE:generated|Généré par `base build)/;
 
 async function bannered(file) {
   try {

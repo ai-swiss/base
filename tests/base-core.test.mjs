@@ -22,7 +22,6 @@ import {
   listPendingChanges,
   confineToRoot,
   writeArtifacts,
-  createMaintenanceReport,
   inventoryResources,
   invokeTool,
   listMarkers,
@@ -434,6 +433,24 @@ describe("searchResources", () => {
     assert.equal("body" in results[0], false);
   });
 
+  it("never returns a generated projection: the map points at the answer, it is not the answer", async () => {
+    // A generated index summarises the resources it lists, so it matches their own words and can
+    // outrank them. A reader searching for a fact would open a table of contents. The map stays
+    // open-able by path; it is not a hit.
+    await write(
+      "guide-tarifs.md",
+      "---\nid: guide-tarifs\ntype: document\ndescription: Le bareme applique aux mandats.\n---\n# Tarifs\n",
+    );
+    await write(
+      "index.md",
+      "<!-- Généré par `base build index-cards`. Ne pas éditer: régénéré depuis les pages. -->\n\n# Carte\n\n- guide-tarifs: le bareme applique aux mandats.\n",
+    );
+
+    const results = await searchResources(tmpDir, "bareme mandats");
+    assert.ok(results.length > 0, "the real page is still found");
+    assert.equal(results.some((r) => r.path === "index.md"), false, "a generated map is not a search hit");
+  });
+
   it("scores a natural French question on its content words, never on function words (routeTerms)", async () => {
     // Two documents: the right one shares CONTENT words with the question; the decoy is stuffed with
     // the function words («est», «les», «entre») that used to dominate discover's un-filtered terms.
@@ -621,12 +638,13 @@ describe("openResource and invokeTool", () => {
     await write("conditions.md", "---\nid: conditions\ntype: document\ndescription: Conditions.\n---\nSECRET-BODY-TOKEN des conditions.\n");
     await write(
       ".ai/agents/sales/skills/processes/devis/SKILL.md",
-      "---\nid: nouveau-devis\ntype: process\nconfidential: true\ndescription: Devis.\nuse_when: Créer un devis.\n---\n# Devis\nLire [les conditions](conditions.md).\n",
+      "---\nid: nouveau-devis\ntype: process\nconfidential: true\ndescription: Devis.\nuse_when: Créer un devis.\nrequires:\n  - ref: conditions\n    purpose: appliquer les conditions commerciales\n---\n# Devis\n",
     );
 
     // The local human CLI passes no egress: even a confidential process plans (reads unchanged).
     const summary = await contextPack(tmpDir, "nouveau-devis");
     assert.ok(summary.sections.some((s) => s.path === "conditions.md"), "the declared reference resolves");
+    assert.equal(summary.sections.find((s) => s.path === "conditions.md").note, "purpose: appliquer les conditions commerciales");
     assert.ok(!JSON.stringify(summary).includes("SECRET-BODY-TOKEN"), "paths and notes, never bodies");
     for (const key of ["sections", "omitted", "unresolved", "withheld"]) assert.ok(key in summary, key);
 
@@ -840,6 +858,7 @@ describe("buildArtifacts", () => {
       "# Assistant Foo\n\nQuand ce fichier est charge, agis comme un assistant de test.\n",
     );
 
+    await write("base.config.json", JSON.stringify({ tools: ["agents-md"] }));
     const artifacts = await buildArtifacts(tmpDir, { targets: ["all"] });
     const agentsMd = artifacts.find((a) => a.path === "AGENTS.md");
     const matrix = artifacts.find((a) => a.path === ".ai/tools.md");
@@ -852,22 +871,41 @@ describe("buildArtifacts", () => {
     assert.match(matrix.content, /Matrice des outils/);
     assert.match(matrix.content, /claude-code/);
 
-    const written = await writeArtifacts(tmpDir, artifacts);
+    const { written, kept } = await writeArtifacts(tmpDir, artifacts);
     assert.ok(written.includes("AGENTS.md"));
+    assert.deepEqual(kept, []);
     assert.equal(await fs.readFile(path.join(tmpDir, "AGENTS.md"), "utf8"), agentsMd.content);
+  });
+
+  it("keeps a hand-owned file instead of overwriting it, and says which", async () => {
+    // A file without the provenance banner is its author's: they removed it, or wrote the file
+    // themselves. A build must not replace their work, safety rules included.
+    const mine = "# Mon routeur\n\nÉcrit à la main, avec ma règle de sécurité.\n";
+    await write("AGENTS.md", mine);
+    await write("base.config.json", JSON.stringify({ tools: ["agents-md"] }));
+    const artifacts = await buildArtifacts(tmpDir, { targets: ["agents-md"] });
+
+    const { written, kept } = await writeArtifacts(tmpDir, artifacts);
+    assert.deepEqual(written, []);
+    assert.deepEqual(kept, ["AGENTS.md"]);
+    assert.equal(await fs.readFile(path.join(tmpDir, "AGENTS.md"), "utf8"), mine);
   });
 
   it("excludes the _template agent from the index", async () => {
     await write(".ai/agents/_template/AGENT.md", "# Template\n\nagis comme un modele.\n");
     await write(".ai/agents/real/AGENT.md", "# Real\n\nagis comme un assistant reel.\n");
+    await write("base.config.json", JSON.stringify({ tools: ["agents-md"] }));
 
     const [agentsMd] = await buildArtifacts(tmpDir, { targets: ["agents-md"] });
     assert.match(agentsMd.content, /\breal\b/);
     assert.doesNotMatch(agentsMd.content, /_template/);
   });
 
-  it("projects four harness entry points from one canonical router body, kept in sync", async () => {
+  it("projects the declared harness entry points from one canonical router body, kept in sync", async () => {
     await write(".ai/agents/real/AGENT.md", "# Real\n\nagis comme un assistant.\n");
+    // A root that declares four tools gets four entry points; one that declares one gets one, and a
+    // build never puts back the file of a tool nobody chose (FR-BUILD-001).
+    await write("base.config.json", JSON.stringify({ tools: ["claude-code", "cursor", "agents-md", "autre"] }));
     const artifacts = await buildArtifacts(tmpDir, { targets: ["all"] });
 
     for (const entry of ["CLAUDE.md", "BASE_BOOTSTRAP.md", ".cursor/rules/assistant.mdc", "AGENTS.md"]) {
@@ -889,6 +927,12 @@ describe("buildArtifacts", () => {
     assert.ok(body.includes("ne lis jamais tous les corps"), "the stop condition (metadata to decide)");
     assert.ok(body.includes("n'ouvre pas les corps des process concurrents"), "the ambiguity rule");
     assert.ok(body.includes("précharge ce que le process déclare"), "the retrieval planner gesture");
+
+    // R-05: the model routes by READING the map. The entry point must not send it to the lexical
+    // router, whose job is to serve callers with no model and to pin route-test fixtures. This line
+    // is the ratchet: the instruction cannot come back silently.
+    assert.equal(/base\.mjs route\b|`base route`/.test(body), false, "the entry point never instructs a model to run the CLI router");
+    assert.ok(body.includes("Tu routes en lisant la carte"), "and says plainly who routes");
 
     // The MCP twin: the instructions compose the exported constants VERBATIM (one source, no re-phrasing).
     const { renderMcpInstructions, MCP_ROUTE_DISCIPLINE, MCP_READ_DISCIPLINE, MCP_CONTINUITY } = await import("../tools/base-core.mjs");
@@ -1020,28 +1064,12 @@ describe("policy and trace", () => {
   });
 });
 
-describe("specification v0 contract", () => {
-  it("documents bounded claims for advisory, hybrid and strict modes", async () => {
+describe("public specification pointer contract", () => {
+  it("points to the current engineering specification without duplicating it", async () => {
     const spec = await fs.readFile(path.resolve("docs/reference/specification-v0.md"), "utf8");
 
-    assert.match(spec, /advisory = guide\/audit/);
-    assert.match(spec, /hybrid = enforcement partiel explicite/);
-    assert.match(spec, /strict = enforcement médié/);
-    assert.match(spec, /Un adapter doit déclarer son niveau réel/);
-  });
-
-  it("keeps generated indexes as derived artifacts", async () => {
-    const spec = await fs.readFile(path.resolve("docs/reference/specification-v0.md"), "utf8");
-
-    assert.match(spec, /Index dérivé/);
-    assert.match(spec, /manifests, caches et index ne sont pas la source de vérité/);
-  });
-
-  it("keeps external data distinct from instructions", async () => {
-    const spec = await fs.readFile(path.resolve("docs/reference/specification-v0.md"), "utf8");
-
-    assert.match(spec, /Donnée externe ≠ instruction/);
-    assert.match(spec, /traité comme donnée, jamais comme instruction/);
+    assert.match(spec, /specs\/current\//);
+    assert.match(spec, /fait foi/);
   });
 
   it("keeps public claims bounded and expert-defensible", async () => {
@@ -1068,15 +1096,13 @@ describe("specification v0 contract", () => {
     }
   });
 
-  it("documents implementation state separately from long-term specification", async () => {
+  it("documents implementation state separately from the public framework map", async () => {
     const state = await fs.readFile(path.resolve("docs/reference/etat-implementation.md"), "utf8");
     const framework = await fs.readFile(path.resolve("docs/reference/framework-public.md"), "utf8");
-    const spec = await fs.readFile(path.resolve("docs/reference/specification-v0.md"), "utf8");
 
     assert.match(state, /Ce que fait le cœur public/);
     assert.match(state, /Hors cœur public/);
     assert.match(framework, /docs\/reference\/etat-implementation\.md/);
-    assert.match(spec, /Broker canonique/);
   });
 
   it("documents audiences and publication discipline", async () => {
@@ -1104,19 +1130,36 @@ describe("specification v0 contract", () => {
     assert.match(readingOrder, /Si vous êtes une personne seule/);
     assert.match(readingOrder, /Si vous êtes une PME ou une petite équipe/);
     assert.match(readingOrder, /Si vous êtes une grande entreprise/);
-    assert.match(readingOrder, /source de vérité des parcours de lecture/);
+    assert.match(readingOrder, /page de référence pour les parcours de lecture/);
     assert.match(framework, /Trois couches à ne pas confondre/);
     assert.match(claude, /point d'entrée pour Claude Code/);
-    assert.match(readme, /Pourquoi ça compte/);
-    assert.match(readme, /La structure peut rester simple/);
+    assert.match(readme, /Des documents ne constituent pas une méthode/);
+    assert.match(readme, /Cette organisation n'oblige pas à construire un système complexe/);
+    assert.match(readme, /Votre méthode de travail doit survivre aux outils d'IA\. Vos compétences aussi\./);
+    assert.match(readme, /La méthode est définie principalement hors de la plateforme qui l'exécute/);
+    assert.match(readme, /BASE est un cadre ouvert.*proposition de standard ouvert.*implémentation de référence/s);
+    assert.match(readme, /Ce qui devient portable n'est pas le comportement exact du modèle, mais la méthode avec laquelle vous cherchez à le façonner/);
+    assert.match(readme, /## 1\. Décrivez le travail, pas l'outil/);
+    assert.match(readme, /la méthode de référence reste disponible: vous n'avez pas à la redéfinir entièrement/);
+    assert.match(readme, /La plateforme devient un contexte d'exécution parmi d'autres; les fichiers BASE restent la référence commune/);
+    assert.match(readme, /Cela ne rend pas les modèles interchangeables/);
+    assert.match(readme, /## 6\. Trouver la documentation correspondant à votre besoin/);
+    assert.match(readme, /structurer-un-corpus-de-connaissance\.md/);
+    assert.match(readme, /securite-et-limites\.md/);
+    assert.match(readme, /\[architecture\]\(ARCHITECTURE\.md\)/);
+    assert.match(readme, /\[guide de contribution\]\(CONTRIBUTING\.md\)/);
+    assert.match(readme, /La convention ouverte et versionnée.*déclarer ces ressources/s);
+    assert.match(readme, /Une même méthode documentée, plusieurs contextes d'exécution/);
+    assert.match(readme, /ERP.*outil plus avancé.*MCP/s);
+    assert.match(readme, /Ce qui reste commun est la description versionnée de la méthode/);
     assert.match(readme, /Apache-2\.0/);
     assert.match(diffusion, /double licence/);
     assert.match(license, /Apache License 2\.0/);
     assert.match(license, /Creative Commons Attribution 4\.0/);
     assert.match(licenseDoc, /BASE repose sur une double licence/);
     assert.match(licenseDoc, /Source légale/);
-    assert.match(security, /Ces garanties valent seulement pour les actions qui passent/);
-    assert.match(securityLimits, /Une garantie est réelle seulement si l'action passe/);
+    assert.match(security, /Chaque garantie s'applique selon son mécanisme, lorsque l'action passe effectivement/);
+    assert.match(securityLimits, /borner chaque garde-fou au composant et au chemin qui l'appliquent/);
     assert.match(changelog, /## \[1\.0\.0\] - 2026-06-25/);
     // Dual license, made machine-readable: the published `@ai-swiss/base` package ships BOTH code
     // (Apache-2.0) and content (docs/, exemples/, .ai/agents/, MANIFESTO — CC-BY-4.0), so the SPDX
@@ -1133,8 +1176,8 @@ describe("specification v0 contract", () => {
     const diffusion = await fs.readFile(path.resolve("docs/guides/diffusion.md"), "utf8");
     const combined = [readme, comprendre, audiences, diffusion].join("\n");
 
-    assert.match(readme, /ne fonctionne donc pas comme un logiciel ordinaire/);
-    assert.match(comprendre, /collègue venu d'ailleurs, amnésique: il a une représentation riche du monde, mais pas du vôtre/);
+    assert.match(readme, /le modèle doit les déduire ou s'en passer/);
+    assert.match(comprendre, /Il ne connaît pas spontanément votre terrain, vos règles implicites ni l'état de votre travail/);
     assert.doesNotMatch(combined, /junior brillant/, "rejected model metaphor must not return");
     assert.match(audiences, /charge mentale au lieu de la réduire/);
     assert.match(diffusion, /transforme ce constat en méthode praticable/);
@@ -1146,52 +1189,14 @@ describe("specification v0 contract", () => {
     const readme = await fs.readFile(path.resolve("README.fr.md"), "utf8");
     const comprendre = await fs.readFile(path.resolve("docs/learn/comprendre.md"), "utf8");
 
-    assert.match(pratiques, /Gardez le contrôle dans la durée/);
-    assert.match(pratiques, /Gardez une intuition suffisante pour vérifier/);
-    assert.match(pratiques, /Gardez la souveraineté sur votre dispositif/);
-    assert.match(pratiques, /seize principes/);
-    assert.match(readme, /formes de perte de contrôle/); // §4 opens by naming the forms of control at stake (method, understanding, what survives a tool change, verification) that the sub-sections then address
-    assert.match(comprendre, /Déléguer la granularité ne doit pas faire perdre la capacité de juger/);
+    assert.match(pratiques, /### Garder le contrôle/);
+    assert.match(pratiques, /Conservez assez d'intuition pour juger/);
+    assert.match(pratiques, /Restez souverain sur votre dispositif/);
+    assert.equal((pratiques.match(/^\d+\. \*\*/gm) ?? []).length, 16);
+    assert.match(readme, /conserver.*une description de référence de la méthode de travail/s);
+    assert.match(readme, /souveraineté cognitive.*conserver et à faire évoluer cette description de référence indépendamment de la plateforme/s);
+    assert.match(comprendre, /sans garantir la vérité ni remplacer la capacité de juger/);
     assert.equal(readme.includes("14 principes"), false, "README must not keep the stale principle count");
   });
 });
 
-describe("createMaintenanceReport", () => {
-  it("reports open markers and derives simple descriptions from Markdown", async () => {
-    await write("journal/session.md", "# Demo\n\n[A VALIDER: contenu]\n");
-
-    const report = await createMaintenanceReport(tmpDir);
-    assert.equal(report.summary.placeholders, 1);
-    assert.equal(report.summary.missing_descriptions, 0);
-    assert.ok(report.recommendations.length > 0);
-  });
-
-  it("flags open markers in files untouched for 30+ days as stale (verification theater lens)", async () => {
-    await write("devis/vieux.md", "# Vieux devis\n\n[A VALIDER: remise de 10%]\n");
-    await write("devis/recent.md", "# Devis recent\n\n[A VALIDER: delai]\n");
-    const old = new Date(Date.now() - 45 * 24 * 60 * 60 * 1000);
-    await fs.utimes(path.join(tmpDir, "devis/vieux.md"), old, old);
-
-    const report = await createMaintenanceReport(tmpDir);
-
-    assert.equal(report.summary.stale_markers, 1);
-    assert.equal(report.structural.stale_markers[0].path, "devis/vieux.md");
-    assert.ok(report.structural.stale_markers[0].days >= 44, "reports the age in days");
-    assert.ok(report.recommendations.some((r) => r.includes("dormants")), "recommends acting on stale markers");
-  });
-
-  it("flags weak routing and orphan resources as a private static lens (no runtime, no telemetry)", async () => {
-    await write(".ai/agents/demo/AGENT.md", "# Demo\n\nUtilise skills/competences/used/SKILL.md pour la methode.\n");
-    // A process with neither use_when nor routing examples: a weak routing signal that can drift.
-    await write(".ai/agents/demo/skills/processes/faible/SKILL.md", "# Process faible\n\nAucun signal de routage declare.\n");
-    await write(".ai/agents/demo/skills/competences/used/SKILL.md", "# Competence utilisee\n\nReferencee par l'agent.\n");
-    await write(".ai/agents/demo/skills/competences/orphan/SKILL.md", "# Competence orpheline\n\nPersonne ne me reference.\n");
-
-    const report = await createMaintenanceReport(tmpDir);
-
-    assert.equal(report.summary.weak_routing, 1);
-    assert.ok(report.structural.weak_routing.some((p) => p.endsWith("processes/faible/SKILL.md")));
-    assert.ok(report.structural.orphans.some((p) => p.endsWith("competences/orphan/SKILL.md")), "the unreferenced competence is an orphan");
-    assert.ok(!report.structural.orphans.some((p) => p.endsWith("competences/used/SKILL.md")), "the referenced competence is not flagged");
-  });
-});

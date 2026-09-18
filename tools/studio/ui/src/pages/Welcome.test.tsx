@@ -36,8 +36,9 @@ describe("Welcome", () => {
   it("step 2 is the door to your AI tool, with the real folder path", () => {
     render(<Welcome context={CONTEXT} onInitialized={() => {}} />);
     expect(screen.getByRole("heading", { name: "Ouvrir dans votre outil IA" })).toBeInTheDocument();
-    // The command carries the actual perimeter path, not a placeholder.
-    expect(screen.getByText('cd "/tmp/mes-notes" && claude')).toBeInTheDocument();
+    expect(screen.getByText("BASE_BOOTSTRAP.md")).toBeInTheDocument();
+    // The prompt carries the actual perimeter path, not a placeholder or a tool-specific command.
+    expect(screen.getByText('Ouvre le dossier "/tmp/mes-notes", puis lis BASE_BOOTSTRAP.md.')).toBeInTheDocument();
   });
 
   it("creates via api.init then hands control back; a server error stays on screen", async () => {

@@ -8,7 +8,7 @@ named only by a skipped test) · ❌ no test — GAP · ⊘ de-scoped (retired, 
 with `npm run spec:matrix`; CI fails when this file is stale, when a test cites an unknown ID, or
 when the weak/gap count rises against the baseline (`--ratchet`).
 
-**125 of 125 requirements cited by a test — 3 weak, 0 gap, 1 de-scoped.**
+**143 of 143 requirements cited by a test — 1 weak, 0 gap, 1 de-scoped.**
 
 | Requirement | Proof | Covered by |
 |---|---|---|
@@ -16,22 +16,31 @@ when the weak/gap count rises against the baseline (`--ratchet`).
 | UR-CORE-002 | ✅ | `tests/base-cli-init.test.mjs`<br>`tests/base-cli.test.mjs`<br>`tests/base-userconfig.test.mjs` |
 | UR-CORE-003 | ✅ | `packages/base-llm/tests/base-llm.streaming.test.mjs`<br>`packages/base-llm/tests/base-llm.test.mjs` |
 | UR-CORE-004 | ✅ | `tests/docs-contract.test.mjs`<br>`tests/requirements-matrix.test.mjs`<br>`tests/spec-gates.test.mjs` |
+| NFR-CORE-001 | ✅ | `tests/architecture.test.mjs` |
+| NFR-CORE-002 | ✅ | `tests/base-cli.test.mjs`<br>`tests/base-roots.test.mjs`<br>`tests/routing-vectors.test.mjs` |
+| NFR-CORE-003 | ✅ | `mcp/tests/index.test.ts`<br>`tests/base-policy.test.mjs`<br>`tests/base-rankers.test.mjs`<br>`tests/studio-server.test.mjs` |
+| NFR-CORE-004 | ✅ | `tests/base-cli.test.mjs`<br>`tests/base-frontmatter.test.mjs` |
+| NFR-CORE-005 | ✅ | `tests/base-policy.test.mjs`<br>`tests/base-rankers.test.mjs` |
+| NFR-CORE-006 | ✅ | `tests/adoption-five-minutes.test.mjs` |
 | NFR-CORE-007 | ✅ | `tests/architecture.test.mjs`<br>`tests/base-core.test.mjs` |
 | NFR-CORE-008 | ✅ | `tests/base-core.test.mjs` |
 | NFR-CORE-009 | ✅ | `tests/base-core.test.mjs` |
 | NFR-CORE-010 | ✅ | `tests/spec-gates.test.mjs` |
+| NFR-MCP-001 | ✅ | `mcp/tests/smoke-pack.mjs` |
 | NFR-PARSE-001 | ✅ | `tests/base-core-modules.test.mjs`<br>`tests/base-frontmatter.test.mjs` |
 | FR-CORE-001 | ✅ | `tests/base-core.test.mjs` |
 | FR-CORE-002 | ✅ | `tests/base-core.test.mjs` |
 | FR-CORE-003 | ✅ | `tests/base-core.test.mjs` |
 | FR-CORE-004 | ✅ | `tests/base-core.test.mjs` |
-| FR-CORE-005 | ✅ | `tests/base-core.test.mjs`<br>`tests/base-doctor.test.mjs`<br>`tests/base-egress.test.mjs`<br>`tests/base-ontology.test.mjs`<br>`tests/studio-api.test.mjs` |
+| FR-CORE-005 | ✅ | `tests/base-core-sections.test.mjs`<br>`tests/base-core.test.mjs`<br>`tests/base-doctor.test.mjs`<br>`tests/base-egress.test.mjs`<br>`tests/base-ontology.test.mjs`<br>`tests/studio-api.test.mjs` |
 | FR-CORE-006 | ✅ | `tests/base-core.test.mjs` |
 | FR-CORE-007 | ✅ | `tests/base-core.test.mjs` |
-| FR-CORE-008 | ✅ | `tests/base-core.test.mjs` |
+| FR-CORE-008 | ✅ | `tests/base-core-sections.test.mjs`<br>`tests/base-core.test.mjs` |
 | FR-CORE-009 | ✅ | `tests/base-core.test.mjs` |
 | FR-CORE-010 | ✅ | `tests/base-core.test.mjs` |
-| FR-CORE-011 | ✅ | `tests/base-core.test.mjs` |
+| FR-CORE-011 | ✅ | `mcp/tests/index.test.ts`<br>`tests/base-context-pack.test.mjs`<br>`tests/base-core.test.mjs` |
+| FR-CORE-012 | ✅ | `tests/sections.test.mjs` |
+| FR-CORE-013 | ✅ | `tests/editions.test.mjs` |
 | FR-PARSE-001 | ✅ | `tests/base-frontmatter-serialize.test.mjs`<br>`tests/base-frontmatter.test.mjs` |
 | FR-PARSE-002 | ✅ | `tests/base-frontmatter.test.mjs` |
 | FR-PARSE-003 | ✅ | `tests/base-frontmatter-serialize.test.mjs`<br>`tests/base-frontmatter.test.mjs` |
@@ -50,18 +59,19 @@ when the weak/gap count rises against the baseline (`--ratchet`).
 | FR-ROUTE-002 | ✅ | `tests/base-routing.test.mjs` |
 | FR-ROUTE-003 | ✅ | `tests/base-routing.test.mjs`<br>`tests/route-adversarial.test.mjs`<br>`tests/route-policy.test.mjs`<br>`tests/route-veto.test.mjs`<br>`tests/route-workspace.test.mjs` |
 | FR-ROUTE-004 | ✅ | `tests/base-routing.test.mjs` |
-| FR-ROUTE-005 | ✅ | `tests/base-routing.test.mjs`<br>`tests/ci-route-fixtures.test.mjs`<br>`tests/route-index.test.mjs` |
+| FR-ROUTE-005 | ✅ | `tests/adoption-five-minutes.test.mjs`<br>`tests/base-routing.test.mjs`<br>`tests/ci-route-fixtures.test.mjs`<br>`tests/route-index.test.mjs` |
 | FR-ROUTE-006 | ✅ | `packages/base-ranker-semantic/tests/hardening.test.mjs`<br>`packages/base-ranker-semantic/tests/index.test.mjs`<br>`tests/routing-vectors.test.mjs` |
 | FR-ROUTE-007 | ✅ | `tests/base-routing-quality.test.mjs`<br>`tests/example-routing.test.mjs` |
 | FR-ROUTE-008 | ✅ | `packages/base-ranker-semantic/tests/hardening.test.mjs`<br>`packages/base-ranker-semantic/tests/index.test.mjs`<br>`packages/base-ranker-semantic/tests/transport.test.mjs` |
-| FR-ROUTE-009 | ✅ | `tests/base-fallback.test.mjs`<br>`tests/route-embedding-strategy.test.mjs` |
+| FR-ROUTE-009 | ✅ | `tests/base-cli-init.test.mjs`<br>`tests/base-fallback.test.mjs`<br>`tests/route-embedding-strategy.test.mjs`<br>`tests/route-index.test.mjs` |
 | FR-ROUTE-010 | ✅ | `tests/router.test.mjs` |
 | FR-ROUTE-011 | ✅ | `tests/retrieve.test.mjs` |
 | FR-ROUTE-012 | ✅ | `tests/refine.test.mjs` |
 | FR-ROUTE-013 | ✅ | `tests/route-embedding-strategy.test.mjs` |
 | FR-ROUTE-014 | ✅ | `tests/route-eval-scorer.test.mjs` |
-| FR-ROUTE-015 | ⚠️ weak | `tests/route-eval-ollama.smoke.test.mjs` |
+| FR-ROUTE-015 | ✅ | `tests/route-eval-ollama.smoke.test.mjs`<br>`tests/route-eval-scorer.test.mjs` |
 | FR-ROUTE-016 | ✅ | `tests/route-eval-agent.test.mjs`<br>`tests/route-eval-ollama.smoke.test.mjs` |
+| FR-ROUTE-017 | ✅ | `tests/base-validators.test.mjs` |
 | NFR-ROUTE-001 | ✅ | `tests/base-routing-quality.test.mjs` |
 | FR-SCALE-001 | ✅ | `packages/base-index-local/tests/index-core.test.mjs` |
 | FR-SCALE-002 | ✅ | `packages/base-index-local/tests/index-core.test.mjs` |
@@ -76,21 +86,25 @@ when the weak/gap count rises against the baseline (`--ratchet`).
 | FR-EGRESS-004 | ✅ | `mcp/tests/index.test.ts` |
 | NFR-EGRESS-001 | ✅ | `tests/base-egress.test.mjs` |
 | FR-CLI-001 | ✅ | `tests/base-cli-init.test.mjs`<br>`tests/base-cli.test.mjs`<br>`tests/base-launcher.test.mjs`<br>`tests/base-update.test.mjs`<br>`tests/docs-commands.test.mjs`<br>`tests/studio-launch.test.mjs` |
-| FR-CLI-002 | ✅ | `tests/base-cli.test.mjs` |
+| FR-CLI-002 | ✅ | `tests/base-cli-init.test.mjs`<br>`tests/base-cli.test.mjs` |
 | FR-CLI-003 | ✅ | `tests/base-cli.test.mjs` |
 | FR-CLI-004 | ✅ | `tests/base-cli.test.mjs` |
-| FR-CLI-005 | ✅ | `tests/base-roots.test.mjs` |
+| FR-CLI-005 | ✅ | `mcp/tests/index.test.ts`<br>`tests/base-roots.test.mjs` |
 | FR-CLI-006 | ✅ | `tests/progress-logging.test.mjs` |
 | FR-INIT-001 | ✅ | `tests/base-perimeter.test.mjs` |
-| FR-INIT-002 | ✅ | `tests/base-perimeter.test.mjs` |
+| FR-INIT-002 | ✅ | `tests/adoption-five-minutes.test.mjs`<br>`tests/base-cli-init.test.mjs`<br>`tests/base-perimeter.test.mjs` |
 | FR-INIT-003 | ✅ | `tests/base-perimeter.test.mjs` |
-| FR-INIT-004 | ✅ | `tests/base-cli-init.test.mjs` |
+| FR-INIT-004 | ✅ | `tests/adoption-five-minutes.test.mjs`<br>`tests/base-cli-init.test.mjs` |
 | FR-INIT-005 | ✅ | `tests/studio-server.test.mjs` |
+| FR-INIT-006 | ✅ | `tests/base-upgrade.test.mjs` |
 | FR-MCP-001 | ✅ | `mcp/tests/index.test.ts` |
 | FR-MCP-002 | ✅ | `mcp/tests/index.test.ts` |
 | FR-MCP-003 | ✅ | `mcp/tests/index.test.ts` |
 | FR-MCP-004 | ✅ | `mcp/tests/index.test.ts` |
 | FR-MCP-005 | ✅ | `mcp/tests/index.test.ts` |
+| FR-MCP-006 | ✅ | `mcp/tests/knowledge.test.ts` |
+| FR-MCP-007 | ✅ | `mcp/tests/exposure.test.ts` |
+| FR-MCP-008 | ✅ | `mcp/tests/routing-map.test.ts` |
 | FR-STUDIO-001 | ✅ | `tests/studio-server.test.mjs`<br>`tools/studio/ui/src/components/DocumentDiff.test.tsx` |
 | FR-STUDIO-002 | ✅ | `tests/studio-chat.test.mjs` |
 | FR-STUDIO-003 | ✅ | `tests/studio-eval.test.mjs`<br>`tools/studio/ui/src/components/EvalDrawer.test.tsx` |
@@ -99,7 +113,7 @@ when the weak/gap count rises against the baseline (`--ratchet`).
 | FR-STUDIO-006 | ✅ | `tests/studio-settings.test.mjs`<br>`tests/studio-ui-typography.test.mjs`<br>`tools/studio/ui/src/components/ModelPicker.test.tsx`<br>`tools/studio/ui/src/pages/Settings.test.tsx` |
 | FR-STUDIO-007 | ✅ | `tests/studio-server.test.mjs` |
 | FR-DOCTOR-001 | ✅ | `tests/base-doctor.test.mjs` |
-| FR-DOCTOR-002 | ⚠️ weak | `tests/base-doctor.test.mjs` |
+| FR-DOCTOR-002 | ✅ | `tests/adoption-five-minutes.test.mjs`<br>`tests/base-doctor.test.mjs` |
 | FR-TRACE-001 | ✅ | `tests/base-core.test.mjs` |
 | FR-TRACE-002 | ✅ | `tests/base-core.test.mjs` |
 | FR-CONFIG-001 | ✅ | `tests/base-config.test.mjs` |
@@ -116,14 +130,18 @@ when the weak/gap count rises against the baseline (`--ratchet`).
 | FR-FEEDBACK-003 | ✅ | `mcp/tests/index.test.ts` |
 | FR-FEEDBACK-004 | ✅ | `tests/base-feedback.test.mjs` |
 | FR-FEEDBACK-005 | ✅ | `tests/base-feedback.test.mjs` |
+| FR-PROBE-001 | ✅ | `tests/model-probes.test.mjs` |
+| FR-PROBE-002 | ✅ | `tests/model-probes.test.mjs` |
+| FR-PROBE-003 | ✅ | `tests/model-probes.test.mjs` |
 | FR-MARKERS-001 | ✅ | `tests/base-core.test.mjs` |
 | FR-BUILD-001 | ✅ | `tests/base-core.test.mjs` |
 | FR-BUILD-002 | ✅ | `tests/base-core.test.mjs`<br>`tests/base-docs.test.mjs` |
 | FR-BUILD-003 | ✅ | `tests/base-core.test.mjs` |
 | FR-BUILD-004 | ⊘ de-scoped | — |
 | FR-BUILD-005 | ✅ | `tests/base-cli.test.mjs` |
+| FR-BUILD-006 | ✅ | `tests/base-views.test.mjs` |
 | FR-DOCS-001 | ✅ | `tests/base-docs.test.mjs`<br>`tests/docs-model-public.test.mjs` |
-| FR-DOCS-002 | ✅ | `tests/base-docs.test.mjs` |
+| FR-DOCS-002 | ✅ | `tests/base-docs.test.mjs`<br>`tests/docs-site-launch.test.mjs`<br>`tests/smoke-pack-docs.mjs` |
 | FR-DOCS-003 | ✅ | `tests/docs-site-sidebar.test.mjs` |
 | FR-DOCS-004 | ✅ | `tests/base-docs.test.mjs` |
 | RC-CONFINE-001 | ✅ | `tests/base-core.test.mjs` |
@@ -141,9 +159,13 @@ when the weak/gap count rises against the baseline (`--ratchet`).
 
 ## Weak proofs (cited, but not yet a strong test)
 
+- FR-FEEDBACK-002 — adapter call-sites not asserted end-to-end
+
+Partial proof (a strong test exists, but at least one citation is flagged weak — review that the
+strong test really covers the claim):
+
 - FR-ROUTE-015 — opt-in Ollama smoke, skipped by default unless ROUTE_EVAL_OLLAMA=1 and a local Ollama
 - FR-DOCTOR-002 — CLI exit code and API door not asserted end-to-end
-- FR-FEEDBACK-002 — adapter call-sites not asserted end-to-end
 
 ## Gaps (requirements with no citing test)
 

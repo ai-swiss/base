@@ -3,11 +3,11 @@ schema_version: base.resource.v1
 id: licence
 type: document
 title: Ce que vous pouvez faire avec BASE
-description: "Vos droits de réutilisation sous la double licence BASE: Apache-2.0 pour le code, CC BY 4.0 pour les contenus."
+description: "Comment copier et adapter le code, les agents, les exemples et les documents de BASE, y compris dans une offre commerciale, sous Apache-2.0 et CC BY 4.0."
 scope: public
 status: active
 sensitivity: public
-keywords: [licence, double-licence, apache-2, cc-by, reutilisation, attribution]
+keywords: [licence, double-licence, apache-2, cc-by, reutilisation, adaptation, agents, exemples, documents, offre commerciale, attribution]
 ---
 
 # Ce que vous pouvez faire avec BASE
@@ -20,7 +20,7 @@ Le code, les tests, les schémas et les packages sont sous Apache-2.0.
 
 Cette licence convient à un projet de code comme BASE: elle pose un cadre clair pour la réutilisation, la distribution, la modification et la contribution, et l'assortit d'une clause de brevet.
 
-## Contenus: CC BY 4.0
+## Adapter agents, exemples et documents dans une offre commerciale: CC BY 4.0 {#contenus-cc-by-4-0}
 
 La documentation, les agents, les skills, les exemples, les templates et les contenus pédagogiques sont sous CC BY 4.0.
 

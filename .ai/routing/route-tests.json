@@ -214,6 +214,14 @@
     }
   },
   {
+    "request": "mon assistant s'est trompé",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "signaler-une-friction"
+    }
+  },
+  {
     "request": "importer mes procédures existantes",
     "expect": {
       "status": "routed",
@@ -319,6 +327,38 @@
       "status": "routed",
       "agent": "concierge-base",
       "process": "faq-base"
+    }
+  },
+  {
+    "request": "j'ai un dossier plein de documents, qu'est-ce que BASE en ferait",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "adopter-ce-dossier"
+    }
+  },
+  {
+    "request": "regarde mon répertoire et propose-moi une structure",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "adopter-ce-dossier"
+    }
+  },
+  {
+    "request": "qu'est-ce qui pourrait aller mieux dans mes process",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "ameliorer-mes-process"
+    }
+  },
+  {
+    "request": "des frictions traînent depuis des semaines, qu'en faire",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "ameliorer-mes-process"
     }
   }
 ]

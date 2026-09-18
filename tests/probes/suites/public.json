@@ -1,0 +1,7 @@
+{
+  "schema_version": "base.probe-suite.v1",
+  "id": "public",
+  "scenarios": [
+    "first-contact-public-url"
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "schema_version": "base.probe-scenario.v1",
+  "id": "report-friction-start",
+  "title": "Une erreur vécue ouvre un constat sans modifier le travail",
+  "access": "workspace-write",
+  "setup": {
+    "kind": "package"
+  },
+  "prompt": "Mon assistant s'est trompé.",
+  "rubric": [
+    {
+      "id": "useful-first-question",
+      "criterion": "L'unique question demande le fait le plus utile pour comprendre l'erreur vécue, sans attribuer prématurément une cause."
+    },
+    {
+      "id": "reassuring-intake",
+      "criterion": "La réponse accueille le signalement simplement et n'annonce ni correction ni modification avant d'avoir les faits."
+    }
+  ],
+  "expect": {
+    "required": [
+      {
+        "type": "file_read",
+        "path_ends_with": ".ai/routing/index.md"
+      },
+      {
+        "type": "file_read",
+        "path_ends_with": ".ai/agents/concierge-base/index.md"
+      },
+      {
+        "type": "file_read",
+        "path_ends_with": ".ai/agents/concierge-base/skills/processes/signaler-une-friction/SKILL.md"
+      },
+      {
+        "type": "final_answer",
+        "question_marks": 1
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "file_added"
+      },
+      {
+        "type": "file_modified"
+      },
+      {
+        "type": "file_removed"
+      },
+      {
+        "type": "command",
+        "includes": "base route"
+      }
+    ],
+    "order": [
+      [
+        {
+          "type": "file_read",
+          "path_ends_with": ".ai/routing/index.md"
+        },
+        {
+          "type": "file_read",
+          "path_ends_with": ".ai/agents/concierge-base/index.md"
+        },
+        {
+          "type": "file_read",
+          "path_ends_with": ".ai/agents/concierge-base/skills/processes/signaler-une-friction/SKILL.md"
+        },
+        {
+          "type": "final_answer"
+        }
+      ]
+    ]
+  }
+}

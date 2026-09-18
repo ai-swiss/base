@@ -1,7 +1,9 @@
-<!-- fr-synced: ececa9237cabc981c37acfd4bd6eb6e947d3b665 -->
+<!-- fr-synced: e402f3758df9e11be6b2b71c136aba7fd26edcfc -->
 # Getting started with BASE in a Swiss SME
 
 Getting a small Swiss team to work with AI without going off the rails or rolling out a heavyweight platform: that is the challenge. This kit pulls together the bare essentials to start cleanly with BASE and frame a first, controlled use. It stands in for neither legal advice, nor a security policy, nor document governance.
+
+For the distinction between method, structure, approved reference, and execution, see the [audience map diagnosis](pour-qui.md).
 
 ## 1. Choose a first workflow
 
@@ -24,7 +26,7 @@ You may enter: public information, fictional examples, non-sensitive internal te
 You do not enter: secrets, passwords, medical data, sensitive HR data, client data that is not needed, confidential documents without approval or a suitable environment.
 ```
 
-BASE keeps the files locally, but the AI tool you rely on may process the content of the conversation under its own terms. Under the nLPD, the GDPR, or sector-specific obligations, the organization remains responsible for the processing, the provider it selects, and the access rights.
+The files may remain in your local folder, but a tool may project their content to a remote model under its own terms. On mediated paths, egress is permissive by default: explicitly mark resources `confidential: true` or the root `local-only` for them to be withheld. A `sensitivity` value classifies content; it does not block sending by itself. Under the nLPD, the GDPR, or sector-specific obligations, the organization remains responsible for the processing, the provider it selects, and the access rights.
 
 ## 3. Name the responsibilities
 
@@ -46,18 +48,18 @@ For a small team that has mastered it, Git is the ideal tool. Otherwise, start m
 - log the important changes, with dates;
 - do not touch critical templates without review;
 - keep a copy before any major change;
-- run `base validate` before sharing a new version.
+- run the validator before sharing a new version.
 
 As the team grows, move to Git, to change reviews, and to formalized access rights.
 
 ## 5. Set up the monthly ritual
 
-Once a month, or before each important share, run these three commands. They run in a terminal and assume Node is installed (as it was at setup); if no one on the team is comfortable with the terminal, hand this ritual to whoever installed BASE, or ask your AI assistant to run them for you.
+Once a month, or before each important share, run these three commands. They require Node 18 or later (`node --version`) and a folder initialized from the framework, containing the `.ai/base.mjs` launcher. Run them from the root of that folder. If the launcher is missing, return to the [installation guide](../start/installer.md) before continuing.
 
 ```bash
-base validate --root <folder>
-base entretien --root <folder>
-base route-test --root <folder>
+node .ai/base.mjs validate --root .
+node .ai/base.mjs doctor --root .
+node .ai/base.mjs route-test --root .
 ```
 
 Then check as a team:
@@ -71,7 +73,7 @@ Then check as a team:
 
 ## 6. Keep the limits visible
 
-BASE helps an SME structure its work with AI. By itself, it does not provide:
+The files, router, and BASE's mediation component (the broker) help an SME structure its work with AI. They do not provide:
 
 - IAM, SSO, or RBAC;
 - DLP;
@@ -81,16 +83,20 @@ BASE helps an SME structure its work with AI. By itself, it does not provide:
 - centralized secrets management;
 - a guarantee that the model's answers are accurate.
 
-If these needs come up, keep BASE as the structuring layer and add the technical controls all around it.
+If these needs come up, keep the files as the structuring layer and add technical controls around their access and execution paths.
 
 ## 7. Decision rule
 
-A BASE use is ready for the team when:
+A use is ready for the team when:
 
 1. a first real workflow works;
 2. the allowed data is written down;
 3. a responsible person reviews the outputs;
-4. `base validate` passes;
+4. `node .ai/base.mjs validate --root .` passes;
 5. the team knows what to do when the assistant marks `[A VALIDER]` or `[ATTENTION]`.
 
 If any one of these is missing, keep the use at the experimentation stage.
+
+## Your next action
+
+Choose one repeatable, low-risk task today, then write the allowed-data rule with its owner before opening any document in the AI tool.

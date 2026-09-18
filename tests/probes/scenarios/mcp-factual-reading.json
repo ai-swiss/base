@@ -1,0 +1,61 @@
+{
+  "schema_version": "base.probe-scenario.v1",
+  "id": "mcp-factual-reading",
+  "title": "Le client MCP découvre puis ouvre un passage citable",
+  "mcp": true,
+  "setup": {
+    "kind": "example",
+    "example": "assistant-devis-demo"
+  },
+  "prompt": "Utilise uniquement les outils BASE MCP. Quel est le délai de paiement prévu?",
+  "expect": {
+    "required": [
+      {
+        "type": "tool_call",
+        "name_ends_with": "discover_resources",
+        "includes": "\"grain\":\"section\""
+      },
+      {
+        "type": "tool_call",
+        "name_ends_with": "open_resource",
+        "includes": "conditions-generales#paiement"
+      },
+      {
+        "type": "final_answer",
+        "matches": "30 jours"
+      },
+      {
+        "type": "final_answer",
+        "includes": "conditions-generales#paiement"
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "tool_call",
+        "name": "Read"
+      },
+      {
+        "type": "tool_call",
+        "name": "Bash"
+      }
+    ],
+    "order": [
+      [
+        {
+          "type": "tool_call",
+          "name_ends_with": "discover_resources",
+          "includes": "\"grain\":\"section\""
+        },
+        {
+          "type": "tool_call",
+          "name_ends_with": "open_resource",
+          "includes": "conditions-generales#paiement"
+        },
+        {
+          "type": "final_answer",
+          "matches": "30 jours"
+        }
+      ]
+    ]
+  }
+}

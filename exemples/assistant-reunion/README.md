@@ -3,8 +3,8 @@
 ## Essayez en 30 secondes
 
 1. Ouvrez **ce dossier** (pas la racine du dépôt) dans Claude Code ou Cursor.
-2. Dites, mot pour mot: **«Bonjour, je voudrais configurer mon activité»**
-3. Vous devriez voir: l'assistant vous pose une question à la fois (nom de l'entreprise, activité, types de réunions, niveau de détail) puis propose de remplir entreprise/identite.md, qui contient encore des champs à personnaliser. Rien n'est écrit ni envoyé sans vous.
+2. Dites, mot pour mot: **«Bonjour, je veux configurer mon assistant réunion»**
+3. Vous devriez voir: l'assistant vous pose une question à la fois (nom de l'entreprise, activité, types de réunions, niveau de détail) puis propose de remplir entreprise/identite.md, qui contient encore des champs à personnaliser. Demander votre confirmation est ici une consigne à l'assistant. Pour une écriture, la confirmation n'est mécanique que via `base propose` puis `base commit`, ou leurs équivalents MCP.
 
 Un assistant IA qui transforme vos notes de réunion en comptes-rendus structurés et garde la trace des décisions et des actions.
 
@@ -14,7 +14,7 @@ Il vous guide d'abord pour préciser votre contexte et votre modèle de compte-r
 
 | Vous dites | Il fait |
 |------------|---------|
-| «Bonjour, je voudrais configurer mon activité» (première fois) | Configure votre contexte et votre modèle de compte-rendu pas à pas |
+| «Bonjour, je veux configurer mon assistant réunion» (première fois) | Configure votre contexte et votre modèle de compte-rendu pas à pas |
 | «Fais le compte-rendu de la réunion...» | Transforme vos notes en compte-rendu structuré (participants, décisions, actions) |
 | «Quelles actions sont ouvertes?» | Dresse l'état des actions et décisions de l'ensemble de vos réunions |
 | «Montre-moi mes réunions» | Liste les comptes-rendus dans votre historique |
@@ -27,7 +27,7 @@ assistant-reunion/
 ├── .ai/agents/assistant-reunion/          L'intelligence de l'agent
 │   ├── AGENT.md                           Instructions principales
 │   ├── skills/
-│   │   ├── processes/                     Workflows (config, compte-rendu, suivi)
+│   │   ├── processes/                     Procédures (config, compte-rendu, suivi)
 │   │   └── competences/                   Connaissances (métier, communication, marqueurs, journal)
 │   └── templates/                         Modèles (compte-rendu, relevé de décisions)
 │

@@ -8,16 +8,19 @@ status: active
 sensitivity: internal
 name: creer-agent
 description: "Créer un assistant IA métier de A à Z. Utiliser quand l'utilisateur veut créer un nouvel assistant, construire un agent, ou adapter l'IA à son métier."
-use_when: Quand l'utilisateur veut créer un nouvel assistant IA métier, construire un agent ou adapter l'IA à son activité.
+use_when: Quand l'utilisateur veut créer un nouvel assistant IA métier, construire un agent, partir d'un plan de création déjà approuvé ou adapter l'IA à son activité.
 routing:
   examples:
     - Je veux créer un assistant pour mon métier
     - Construire un agent pour mon entreprise
     - J'aimerais un assistant IA pour mon activité
+    - Le plan de création de notre nouvel assistant est approuvé, construis-le
   avoid_when:
     - Je ne sais pas quel choix faire en premier.
     - Audit entretien vérification publication readiness d'un BASE existant.
     - Review audit harden an existing BASE after implementation.
+may_use:
+  - deleguer-a-plusieurs-branches
 argument-hint: "[description du métier ou du besoin]"
 user-invocable: true
 allowed-tools: Read Write Edit Glob Grep Bash
@@ -31,6 +34,8 @@ Guider l'utilisateur de la description de son besoin jusqu'à un agent IA métie
 
 **Ne crée AUCUN fichier avant l'étape 7.** Les étapes 1 à 6 forment une conversation de découverte et de conception. L'étape 6 s'achève sur un plan complet que l'utilisateur doit approuver explicitement. Si l'utilisateur dit «Crée un assistant pour X», réponds par une question, jamais par la création d'un fichier.
 
+Un plan fourni par l'utilisateur qui se déclare explicitement approuvé et autorise la création vaut approbation de l'étape 6. Vérifie qu'il fixe au moins la mission, le premier travail, les connaissances à utiliser, le résultat attendu et les décisions humaines. S'il est complet, applique-le sans redemander le même accord; s'il manque un élément qui change la structure, pose une seule question ciblée.
+
 ## Inputs
 
 Demande à l'utilisateur:
@@ -40,8 +45,8 @@ Demande à l'utilisateur:
 Avant de parler de fichiers ou de métadonnées, clarifie le niveau de structure souhaité avec des mots simples:
 
 - assistant unique que l'utilisateur sélectionne lui-même;
-- assistant avec plusieurs workflows proches;
-- assistant où BASE choisit automatiquement le bon workflow;
+- assistant avec plusieurs procédures proches;
+- assistant où BASE choisit automatiquement la bonne procédure;
 - assistant destiné à une équipe ou à une publication.
 
 Si l'utilisateur ne sait pas par où commencer, charge `skills/competences/exemples-agents/SKILL.md` pour lui montrer des idées.
@@ -64,27 +69,27 @@ Questions complémentaires:
 
 ← Reformulation
 
-### 2. Identifier les workflows → processes
+### 2. Identifier les procédures → process
 
 Pour chaque tâche relevée, approfondis:
 
 > «Prenons [tâche]. Quand vous la faites aujourd'hui, quelles sont les étapes? De quoi avez-vous besoin pour commencer? Comment savez-vous que c'est terminé?»
 
-Pour chaque workflow, note:
+Pour chaque procédure, note:
 - **Nom** (en termes métier, pas techniques)
 - **Déclencheur** (quand est-ce que l'utilisateur lance cette tâche?)
 - **Étapes principales** (3 à 7 étapes, pas plus)
 - **Résultat attendu** (quel document ou action à la fin?)
-- **Signal de routage éventuel** (si BASE doit choisir automatiquement ce workflow, une phrase simple qui indique quand l'utiliser)
+- **Signal de routage éventuel** (si BASE doit choisir automatiquement ce process, une phrase simple qui indique quand l'utiliser)
 
-Après avoir identifié 2-3 workflows:
-> «Voici les workflows que je propose pour votre assistant:
-> 1. **[Workflow 1]**: [description courte]
-> 2. **[Workflow 2]**: [description courte]
+Après avoir identifié 2-3 procédures:
+> «Voici les procédures que je propose pour votre assistant:
+> 1. **[Procédure 1]**: [description courte]
+> 2. **[Procédure 2]**: [description courte]
 >
 > Chacun deviendra un «guide de conversation» que l'assistant suivra à votre demande. On pourra en ajouter d'autres plus tard. Cela vous convient?»
 
-Ne propose pas plus de 3 workflows pour commencer.
+Ne propose pas plus de 3 procédures pour commencer.
 
 ← Reformulation
 
@@ -131,6 +136,7 @@ Questions:
 ### 6. Proposer l'architecture complète
 
 Charge `skills/competences/architecture-agent/SKILL.md` pour suivre les patterns.
+Si le travail se répartit entre plusieurs lectures ou plusieurs sous-tâches menées de front, charge d'abord `skills/competences/deleguer-a-plusieurs-branches/SKILL.md`: elle dit les cinq conditions à réunir, et quand rester ensemble.
 
 Présente un récapitulatif complet:
 
@@ -138,11 +144,11 @@ Présente un récapitulatif complet:
 >
 > **Rôle:** [description en une phrase]
 >
-> **Workflows:**
-> 1. [Workflow 1]: [description]
-> 2. [Workflow 2]: [description]
+> **Procédures:**
+> 1. [Procédure 1]: [description]
+> 2. [Procédure 2]: [description]
 >
-> **Choix de routage:** [chargement manuel de l'agent / routage BASE vers les workflows / fixtures de routage si besoin]
+> **Choix de routage:** [chargement manuel de l'agent / routage BASE vers les process / fixtures de routage si besoin]
 >
 > **Connaissances:**
 > 1. [Connaissance 1]: [contenu]
@@ -168,7 +174,7 @@ Crée la structure dans `.ai/agents/[nom-agent]/`:
 
 1. **AGENT.md**: renseigne l'identité, la philosophie d'interaction (5 points), la doctrine agent → process → ressources, la section «Où router» (un pointeur vers l'index généré: le routage vit dans les frontmatter des SKILL.md, jamais dans une table à la main), les fichiers métier et les garde-fous (6 points, dont le contrôle mécanique, la validation humaine et la séparation instructions/données). Pars de `.ai/agents/_template/AGENT.md`.
 
-2. **skills/processes/**: un dossier par workflow identifié, chaque dossier contient un SKILL.md au format standard avec frontmatter. Si l'utilisateur veut le routage BASE ou si plusieurs workflows sont proches, ajoute `schema_version`, `id`, `type: process`, `description`, `use_when` et, si utile, `routing.examples` / `routing.avoid_when`. **Rédige `use_when`, `description` et `routing.examples` dans la langue de l'utilisateur** (le routage compare les mots de la demande à ceux-ci; en allemand, écris-les en allemand). Distingue reformulations (légères) et points de décision (avant action irréversible). Chaque process se termine par une étape Journal.
+2. **skills/processes/**: un dossier par process identifié, chaque dossier contient un SKILL.md au format standard avec frontmatter. Si l'utilisateur veut le routage BASE ou si plusieurs process sont proches, ajoute `schema_version`, `id`, `type: process`, `description`, `use_when` et, si utile, `routing.examples` / `routing.avoid_when`. **Rédige `use_when`, `description` et `routing.examples` dans la langue de l'utilisateur** (le routage compare les mots de la demande à ceux-ci; en allemand, écris-les en allemand). Deux règles d'hygiène pour ces signaux: écarte les mots outils des `routing.examples` et des `keywords` («je voudrais», «est-ce que» se retrouvent partout et ne distinguent rien), et rédige chaque `avoid_when` avec les mots du cas à exclure, jamais avec ceux du process lui-même, sinon le veto lui retire les demandes qu'il sert (`base validate` le signale). Distingue reformulations (légères) et points de décision (avant action irréversible). Nomme une à trois preuves observables permettant de conclure: fichier produit, source citée, calcul vérifié, commande réussie ou décision humaine explicite. Chaque process se termine par une étape Journal.
 
 3. **skills/competences/**: un dossier par domaine de connaissance identifié, chaque dossier contient un SKILL.md avec `user-invocable: false`. Plus les 3 compétences standard:
    - Copie `marqueurs/SKILL.md` depuis `_template/skills/competences/marqueurs/`
@@ -179,7 +185,7 @@ Crée la structure dans `.ai/agents/[nom-agent]/`:
 
 5. **tools/** (optionnel): scripts si des besoins d'automatisation ont été identifiés
 
-6. **.ai/routing/route-tests.json** (si routage BASE activé): quelques demandes réalistes et la route attendue. Ce fichier sert à vérifier que BASE choisit le bon workflow et s'abstient quand la demande sort du périmètre.
+6. **.ai/routing/route-tests.json** (si routage BASE activé): quelques demandes réalistes et la route déterministe attendue pour les scripts et intégrations sans modèle. Ces fixtures ne remplacent pas le jugement d'un modèle, qui lit la carte générée et vérifie lui-même le process à suivre.
 
 Pour chaque fichier créé, présente un résumé à l'utilisateur (non le contenu technique, mais ce à quoi il sert).
 
@@ -210,17 +216,23 @@ Si un terminal est disponible, vérifie le travail avec les mécanismes de BASE 
 
 1. `node .ai/base.mjs validate --root .` (chaque fichier créé passe la validation; corrige avant de continuer)
 2. `node .ai/base.mjs build routing-index --write --root .` (régénère `.ai/routing/index.md` et l'index de l'agent: la carte que lit l'outil IA; sans ce pas, le nouveau process reste invisible au routage progressif)
-3. `node .ai/base.mjs route-test --root .` (si tu as écrit un `route-tests.json`): rejoue les demandes réalistes et confirme que BASE choisit le bon workflow et s'abstient hors périmètre. Si une route dérape (un process capte une demande trop générale), resserre ses signaux `use_when`/`avoid_when`/`keywords` ou ajuste la fixture, puis rejoue.
+3. `node .ai/base.mjs route-test --root .` (si tu as écrit un `route-tests.json`): rejoue les demandes réalistes et confirme le résultat du routeur déterministe destiné aux scripts et intégrations sans modèle. Le modèle, lui, lit la carte générée et vérifie le process à suivre. Si une route déterministe dérape (un process capte une demande trop générale), resserre ses signaux `use_when`/`avoid_when`/`keywords` ou ajuste la fixture, puis rejoue.
+4. Relis les fichiers créés et ta réponse dans la langue du dossier. En français, remplace chaque tiret cadratin et retire les espaces insécables avant la ponctuation avant d'annoncer que le travail est prêt.
 
 Sans terminal, dis-le simplement: «Pour que le routage voie ce nouveau process, il faudra régénérer l'index (`base build routing-index --write`) et rejouer `route-test` à la prochaine occasion.»
 
 ### 11. Tester et itérer
 
+Dans le récapitulatif, nomme les fichiers canoniques que l'équipe peut relire: identité de
+l'assistant, premier travail, fiches de connaissances et modèle de résultat. Distingue ce que les
+contrôles ont vérifié de ce qui reste à compléter ou à décider par une personne. Si un site HTML a
+été demandé, donne son emplacement et précise qu'il rend ces mêmes fichiers, il ne les remplace pas.
+
 > «Votre assistant est prêt! Essayons-le ensemble.
 >
 > Fermez cette conversation et ouvrez-en une nouvelle. Votre nouvel assistant devrait se présenter.
 >
-> Essayez de lui demander: [suggestion tirée du premier workflow créé].»
+> Essayez de lui demander: [suggestion tirée de la première procédure créée].»
 
 ### 12. Journal
 
@@ -229,8 +241,8 @@ Sans terminal, dis-le simplement: «Pour que le routage voie ce nouveau process,
 ## Ce que tu ne fais jamais dans ce process
 
 - **Créer des fichiers avant d'avoir compris le besoin.** Les étapes 1 à 5 existent pour une raison.
-- **Proposer plus de 3 workflows au départ.** Un agent ciblé rend plus de services qu'un agent qui veut tout faire.
-- **Utiliser du jargon technique.** L'utilisateur parle de «workflows», de «connaissances métier», de «modèles de documents». Bannis «process», «compétence» et «SKILL.md» de la conversation.
+- **Proposer plus de 3 procédures au départ.** Un agent ciblé rend plus de services qu'un agent qui veut tout faire.
+- **Utiliser du jargon technique.** L'utilisateur parle de «procédures», de «connaissances métier», de «modèles de documents». Bannis «process», «compétence» et «SKILL.md» de la conversation.
 - **Remplir des fichiers de données inventées.** Tout contenu vient de l'utilisateur. Si une information manque, pose un marqueur `[A COMPLETER: ...]`.
 - **Passer à la création sans le point de décision de l'étape 6.** C'est le plus critique de tous.
 - **Oublier les compétences standard.** Chaque agent reçoit marqueurs, journal et communication.

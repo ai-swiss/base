@@ -12,6 +12,7 @@ import { after, before, describe, it } from "node:test";
 import { createFauxModel } from "../packages/base-llm/index.mjs";
 import { createLlmEvaluator, createSimulatedUser, runScenario } from "../packages/base-eval/index.mjs";
 import { routeRequest } from "../tools/base-core.mjs";
+import { everyLanguage } from "../tools/core/lang/index.mjs";
 import { isAbstention } from "../tools/core/feedback.mjs";
 import { diagnose, diagnoseData, formatDiagnosis } from "../tools/doctor/diagnose.mjs";
 import { buildProcessHarness } from "../tools/eval/broker-harness.mjs";
@@ -60,6 +61,31 @@ describe("doctor — diagnoseData (pure, injected fixtures)", () => {
     ];
     const dead = diagnoseData({ inventory, now: NOW }).filter((f) => f.type === "dead_link");
     assert.deepEqual(dead, [], "code-span paths must not be dead links");
+  });
+
+  it("a declared may_use or requires reaches its target: no orphan, no duplicated inline path", () => {
+    // An author declares what a process opens in its frontmatter. That declaration is as deliberate
+    // as a link, so the graph follows it: a declared competence is not invisible knowledge, and the
+    // prose no longer has to repeat its path just to escape this check.
+    const inventory = [
+      { id: "p", type: "process", path: ".ai/agents/x/skills/processes/p/SKILL.md", body: "Rien dans le corps.", may_use: ["conventions"], requires: [{ ref: ".ai/agents/x/templates/devis.md", access: "read" }] },
+      { id: "conventions", type: "competence", path: ".ai/agents/x/skills/competences/conventions/SKILL.md", body: "" },
+      { id: "devis", type: "template", path: ".ai/agents/x/templates/devis.md", body: "" },
+    ];
+    const findings = diagnoseData({ inventory, now: NOW });
+    assert.deepEqual(findings.filter((f) => f.type === "orphan"), []);
+    assert.deepEqual(findings.filter((f) => f.type === "unresolved_declaration"), []);
+  });
+
+  it("a declaration whose target disappeared is named, with what to fix", () => {
+    const inventory = [
+      { id: "p", type: "process", path: ".ai/agents/x/skills/processes/p/SKILL.md", body: "", may_use: ["parti"] },
+    ];
+    const findings = diagnoseData({ inventory, now: NOW }).filter((f) => f.type === "unresolved_declaration");
+    assert.equal(findings.length, 1);
+    assert.equal(findings[0].severity, "warn");
+    assert.match(findings[0].message, /parti/);
+    assert.ok(findings[0].fix_hint.includes("may_use"));
   });
 
   it("an orphaned agent resource is an ERROR; an orphaned doc stays a warning", () => {
@@ -162,19 +188,20 @@ describe("doctor — diagnoseData (pure, injected fixtures)", () => {
     assert.match(formatDiagnosis(findings), /1 signal/);
   });
 
-  it("a recurring abstention (>= 3) surfaces as a process waiting to exist; a rare one stays quiet", () => {
+  it("only recurring actionable abstentions suggest routing or process work", () => {
     const feedback = {
       frictions: [],
       abstentions: [
         { query: "résilier le bail du local", verdict: "out_of_scope", count: 3, lastAt: "2026-06-10T00:00:00Z" },
+        { query: "préparer le dossier", verdict: "ambiguous", count: 3, lastAt: "2026-06-10T00:00:00Z" },
+        { query: "répondre au client", verdict: "needs_clarification", count: 4, lastAt: "2026-06-10T00:00:00Z" },
         { query: "demande rare", verdict: "ambiguous", count: 1, lastAt: "2026-06-10T00:00:00Z" },
       ],
     };
     const findings = diagnoseData({ inventory: [], files: ["CLAUDE.md", ".ai/base.mjs"], feedback, now: NOW }).filter((f) => f.type === "recurring_abstention");
-    assert.equal(findings.length, 1, "only the >= 3 query is surfaced");
-    assert.equal(findings[0].severity, "warn");
-    assert.match(findings[0].message, /résilier le bail/);
-    assert.match(findings[0].fix_hint, /process/);
+    assert.deepEqual(findings.map((f) => f.message.match(/«([^»]+)»/)?.[1]), ["préparer le dossier", "répondre au client"]);
+    assert.ok(findings.every((f) => f.severity === "warn" && /process/.test(f.fix_hint)));
+    assert.equal(findings.some((f) => /résilier le bail/.test(f.message)), false, "out_of_scope is a valid boundary, not a missing process");
   });
 
   it("a root without CLAUDE.md gets the missing-tool-artifacts signal; with it, silence", () => {
@@ -204,18 +231,24 @@ describe("doctor — diagnoseData (pure, injected fixtures)", () => {
         { id: "mute", type: "agent", path: ".ai/agents/mute/AGENT.md", body: "", metadata: {} },
         { id: "dormant", type: "document", path: "clients/dossier.md", body: "[A VALIDER: montant]", description: "Dossier.", metadata: {} },
         { id: "active", type: "document", path: "clients/actif.md", body: "[A VALIDER: date]", description: "Dossier.", metadata: {} },
+        { id: "translating", type: "document", path: "TRANSLATING.md", body: "Keep [A VALIDER] literal.", description: "Guide.", metadata: {} },
       ],
       files: ["CLAUDE.md", ".ai/base.mjs"],
       mtimes: {
         "clients/dossier.md": NOW_MS - 31 * DAY,
         "clients/actif.md": NOW_MS - 2 * DAY,
+        "TRANSLATING.md": NOW_MS - 31 * DAY,
       },
       now: NOW,
     });
     assert.deepEqual(findings.filter((f) => f.type === "weak_routing").map((f) => f.path), ["a/weak/SKILL.md"], "use_when or examples silences the lens");
     assert.deepEqual(findings.filter((f) => f.type === "missing_description").map((f) => f.path), [".ai/agents/mute/AGENT.md"]);
     const dormant = findings.filter((f) => f.type === "stale_marker");
-    assert.deepEqual(dormant.map((f) => f.path), ["clients/dossier.md"], "a marker touched 2 days ago is not dormant");
+    assert.deepEqual(
+      dormant.map((f) => f.path),
+      ["clients/dossier.md"],
+      "recent business markers and TRANSLATING.md's marker vocabulary stay silent",
+    );
     assert.match(dormant[0].message, /31 jours/);
     for (const f of [...dormant, ...findings.filter((f) => f.type === "weak_routing" || f.type === "missing_description")]) {
       assert.equal(f.severity, "warn");
@@ -360,5 +393,127 @@ describe("runtime artifacts are machine state, never knowledge", () => {
     const file = ai.files.find((f) => f.name === "studio.settings.json");
     assert.ok(file);
     assert.equal(file.resource, null);
+  });
+});
+
+// A-15 / A-04: attribution where it is owed, and an entry point whatever the tool.
+describe("doctor — attribution and entry points", () => {
+  const card = (over = {}) => ({ id: "x", type: "process", path: ".ai/agents/a/skills/processes/x/SKILL.md", scope: "personal", content: "# X", ...over });
+
+  it("asks for attribution only when the root declares sharing", () => {
+    const readme = { id: "readme", type: "document", path: "README.md", scope: "personal", content: "# Mon dossier\n" };
+    const personal = diagnoseData({ inventory: [card(), readme], files: ["CLAUDE.md", ".ai/base.mjs"] });
+    assert.equal(personal.some((f) => f.type === "missing_attribution"), false, "a private folder shares nothing");
+
+    const shared = diagnoseData({ inventory: [card({ scope: "org" }), readme], files: ["CLAUDE.md", ".ai/base.mjs"] });
+    const finding = shared.find((f) => f.type === "missing_attribution");
+    assert.ok(finding, "a folder that shares credits the method it is built on");
+    assert.match(finding.fix_hint, /a-i\.swiss/);
+
+    const credited = diagnoseData({
+      inventory: [card({ scope: "org" }), { ...readme, content: "# Mon dossier\n\nConstruit avec BASE, par AI Swiss, https://a-i.swiss\n" }],
+      files: ["CLAUDE.md", ".ai/base.mjs"],
+    });
+    assert.equal(credited.some((f) => f.type === "missing_attribution"), false);
+  });
+
+  it("accepts ANY tool entry point, and asks for one only when none exists", () => {
+    const withCursor = diagnoseData({ inventory: [card()], files: [".cursor/rules/assistant.mdc", ".ai/base.mjs"] });
+    assert.equal(withCursor.some((f) => f.type === "missing_tool_artifacts"), false, "a Cursor root is not missing a CLAUDE.md");
+
+    const withNone = diagnoseData({ inventory: [card()], files: [".ai/base.mjs"] });
+    const finding = withNone.find((f) => f.type === "missing_tool_artifacts");
+    assert.ok(finding);
+    assert.match(finding.fix_hint, /--tool/);
+  });
+});
+
+// A-17: what a card kept from its template, and a harness file nobody declared.
+describe("doctor — template residue and undeclared harness files", () => {
+  const card = (over = {}) => ({ id: "x", type: "process", path: ".ai/agents/a/skills/processes/x/SKILL.md", scope: "personal", metadata: {}, body: "# X", content: "# X", ...over });
+  const files = ["CLAUDE.md", ".ai/base.mjs"];
+
+  it("names an unfilled placeholder in a frontmatter value", () => {
+    const findings = diagnoseData({ inventory: [card({ metadata: { handle: "{dataset-handle}" } })], files });
+    const residue = findings.find((f) => f.type === "template_residue");
+    assert.ok(residue);
+    assert.match(residue.message, /\{dataset-handle\}/);
+  });
+
+  it("names the scaffold sentence a card never rewrote, in every language BASE can write it", () => {
+    // The detector asks the language tables rather than carrying a French literal: a translated
+    // scaffold would otherwise leave the check passing while the untouched card it exists to catch
+    // sat in plain sight.
+    for (const render of everyLanguage("scaffoldAgentDescription")) {
+      const sentence = typeof render === "function" ? render("Atelier") : String(render);
+      const findings = diagnoseData({ inventory: [card({ type: "agent", body: sentence })], files });
+      assert.ok(findings.some((f) => f.type === "template_residue"), sentence);
+    }
+  });
+
+  it("says nothing about a card whose description its author actually wrote", () => {
+    const findings = diagnoseData({ inventory: [card({ type: "agent", body: "Nous réparons des vélos et gérons un atelier partagé." })], files });
+    assert.equal(findings.some((f) => f.type === "template_residue"), false);
+  });
+
+  it("says nothing about a pattern a process TEACHES in code", () => {
+    const teaching = card({ body: "Nommez le fichier `{YYYY-MM-DD}_{sujet}.html`, puis rangez-le.\n\n```\n{slug}/index.md\n```\n" });
+    assert.equal(diagnoseData({ inventory: [teaching], files }).some((f) => f.type === "template_residue"), false);
+  });
+
+  it("exempts a template resource: a placeholder is its content", () => {
+    const template = card({ type: "template", path: ".ai/agents/a/templates/devis/TEMPLATE.md", body: "Client: {nom}" });
+    assert.equal(diagnoseData({ inventory: [template], files }).some((f) => f.type === "template_residue"), false);
+  });
+
+  it("names an entry point the root does not declare, and never removes it", () => {
+    const findings = diagnoseData({
+      inventory: [card()],
+      files: ["CLAUDE.md", ".cursor/rules/assistant.mdc", ".ai/base.mjs"],
+      declaredTools: ["claude-code"],
+    });
+    const undeclared = findings.find((f) => f.type === "undeclared_harness_file");
+    assert.equal(undeclared.path, ".cursor/rules/assistant.mdc");
+    assert.match(undeclared.fix_hint, /tools/);
+    // Nothing is flagged when the root declares nothing: an older root keeps what it has.
+    assert.equal(diagnoseData({ inventory: [card()], files: ["CLAUDE.md", ".cursor/rules/assistant.mdc", ".ai/base.mjs"] }).some((f) => f.type === "undeclared_harness_file"), false);
+  });
+});
+
+// T-02b: a summary never replaces its sources.
+describe("doctor — a document that derives from sources", () => {
+  const source = { id: "barometre", type: "document", path: "data/barometre.md", scope: "personal", metadata: {}, body: "# Barème", content: "# Barème" };
+  const summary = (over = {}) => ({ id: "synthese", type: "document", path: "notes/synthese.md", scope: "personal", metadata: { derived_from: ["barometre"] }, body: "# Synthèse", content: "# Synthèse", ...over });
+  const files = ["CLAUDE.md", ".ai/base.mjs"];
+
+  it("names a summary whose source moved after it was written", () => {
+    const findings = diagnoseData({
+      inventory: [source, summary()],
+      files,
+      mtimes: { "notes/synthese.md": 1000, "data/barometre.md": 2000 },
+    });
+    const stale = findings.find((f) => f.type === "derived_stale");
+    assert.equal(stale.path, "notes/synthese.md");
+    assert.match(stale.message, /data\/barometre\.md/);
+  });
+
+  it("says nothing while the summary is the more recent of the two", () => {
+    const findings = diagnoseData({
+      inventory: [source, summary()],
+      files,
+      mtimes: { "notes/synthese.md": 3000, "data/barometre.md": 2000 },
+    });
+    assert.equal(findings.some((f) => f.type === "derived_stale"), false);
+  });
+
+  it("is a reachability edge like may_use, and a declaration that leads nowhere is named", () => {
+    // Reachability starts at the routable roots, so the deriving resource is a process here: what it
+    // declares as its source is then reached, exactly as a competence it declares would be.
+    const deriving = summary({ type: "process", path: ".ai/agents/a/skills/processes/synthese/SKILL.md" });
+    const reachable = diagnoseData({ inventory: [source, deriving], files, mtimes: {} });
+    assert.equal(reachable.some((f) => f.type === "orphan" && f.path === "data/barometre.md"), false);
+
+    const broken = diagnoseData({ inventory: [summary({ metadata: { derived_from: ["disparu"] } })], files, mtimes: {} });
+    assert.ok(broken.some((f) => f.type === "unresolved_declaration"));
   });
 });

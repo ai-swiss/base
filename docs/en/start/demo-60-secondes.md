@@ -1,4 +1,4 @@
-<!-- fr-synced: 1a983e7c25059311b6b5ddf334ecc9bc5989704c -->
+<!-- fr-synced: 82c12e016b4c2c55024c184d729ebb51bd54b944 -->
 # See BASE in action
 
 Before handing a real folder to an AI, watch how it behaves on a case you can check. This demo shows, in under a minute, a BASE assistant that consults two files, cites the rule it applies, and marks `[A VALIDER]` instead of treating the decision as settled.
@@ -45,12 +45,10 @@ Check what just happened: the reply draws on the two expected files, lays out th
 
 ## The second round: an instruction and a mechanism are not equivalent
 
-The first round shows a readable method. The second shows a protection enforced by code. Mark a resource `confidential: true` (for example a discount grid) and have the assistant work **through the broker** (MCP server or Studio chat): before a remote call, BASE holds back that resource and replaces it with a notice. This protection does not depend on the model's good will; it is tested in `tools/core/egress.mjs` and `tests/base-egress.test.mjs`.
+The first round shows a readable method. The second shows a protection enforced by code. Mark a resource `confidential: true` (for example a discount grid) and have the assistant work **through the mediation component, called the broker** (MCP server or Studio chat): before a remote call that passes through one of these mediated paths, the broker holds back that resource and replaces it with a notice. This protection does not depend on the model's good will; it is tested in `tools/core/egress.mjs` and `tests/base-egress.test.mjs`.
 
-The scope is precise: this hold operates **through the broker** (MCP, Studio, evaluation). In a direct editor agent, asking for the same confinement stays an instruction. The example `exemples/agence-multi-clients/` shows how to separate several client folders. When the action passes through the broker, each assistant stays within its root and confidential resources are held back before the remote call.
+The scope is precise: this hold operates only on calls that pass **through the broker** (MCP, Studio, evaluation). Direct file access or another execution path can bypass it. In a direct editor agent, asking for the same confinement stays an instruction. The example `exemples/agence-multi-clients/` shows how to separate several client folders. When the action passes through the broker, it confines each assistant to its root and holds confidential resources back before the remote call.
 
 ## Going further
 
-- **See a finished document:** ask "Show me quote DEV-2026-001." It already exists in `devis/DEV-2026-001.md`.
-- **Create your own:** copy `exemples/assistant-devis/`, then say: "Hello, I'd like to set up my business." This template contains the structure to customize and guides you step by step.
-- **Know what to read next:** follow [Where to start](lire-dans-quel-ordre.md).
+**Next action:** copy `exemples/assistant-devis/`, open the copy in your AI tool, and say "Hello, I'd like to set up my business."

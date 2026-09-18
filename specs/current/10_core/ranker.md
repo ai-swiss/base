@@ -108,6 +108,11 @@ The package is production-grade. An embedding provider is `embed(textOrTexts, ct
 - **Observability** — `onMetric({provider, batchSize, attempt, latencyMs, cacheHit, similarity, dimension})` — operational signals only, **no text and no vectors**.
 - **Security** — the core never calls a provider; nothing leaves without an explicit `embed`. `textOf`/`getResourceEmbedding` bound what is sent (`SECURITY.md`, `docs/trust/securite-donnees-routage.md`).
 
+## The section-grain scorer sits outside this composition (FR-CORE-008)
+`searchResources(root, q, {grain: "section"})` scores passages in `core/sections-search.mjs` and does **not** build its score from `composeRankers`. The reason is structural, and it is written here so an audit finds it rather than a second ranking system: a Ranker scores **one** resource against the terms and knows nothing of the others, while each term's weight at section grain is an **inverse document frequency computed over the whole passage population** (every candidate's passages, plus the parent cards' routing signals), which exists only once every candidate has been cut into sections. Wearing the Ranker interface would mean recomputing that population for each candidate, or hiding it in a cache behind the interface, and the composition would then be a facade over a scorer that ignores it.
+
+Two consequences, both intended. Project rankers declared in `base.config` (`config.rankers`) apply at **resource grain only**, because a rule written against a whole resource has no defined meaning on one of its passages. And the section weights (heading 3, body 1, parent signals 2; whole-word matching, prefix match from five letters) live in `core/sections-search.mjs`, not in the table above: they are that scorer's own knobs, and the two sets never merge. Explainability is unchanged, each component still returning its reason (`heading:<term>`, `text:<term>`, `resource:<term>`).
+
 ## How it's proven
 - **Neutral project (no config):** `discover` produces **no** `reasons` starting with `intent:` and injects no business keyword.
 - **Opt-in intent boost:** when a project adds a `keywordIntentRanker` via `base.config`, the declared `intent:` reason appears with its boost — localised and inspectable, never in the core.

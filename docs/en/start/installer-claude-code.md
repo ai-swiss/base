@@ -1,11 +1,11 @@
-<!-- fr-synced: 54cc6d9a4a55ec730b851cc4cdcb6fd80730a956 -->
+<!-- fr-synced: 0cb7c59c9e76cdec139b35f5a12d56d9597d7eb0 -->
 # Install Claude Code
 
-By the end of this page, you will have an assistant that reads and edits your files under your control, ready to work on your real documents: BASE stops being text you read and becomes a framework that acts. This assumes you are comfortable in a terminal and have an Anthropic account. In a few minutes, you install Claude Code, launch it in a BASE example, and make a first request; you will also know what to do if you get stuck.
+By the end of this page, you will have an assistant that reads and edits your files under your control, ready to work on your real documents: Claude Code then executes the work using a structure that follows the BASE convention. This assumes you are comfortable in a terminal and have an Anthropic account. In a few minutes, you install Claude Code, launch it in a BASE example, and make a first request; you will also know what to do if you get stuck.
 
 Claude Code, Anthropic's command-line AI agent, is just one entry point among many: most AI tools that can read and edit your files will do. This page documents Claude Code; for the others, refer to their installer.
 
-You need an Anthropic account (Claude subscription or API access). No other dependency is required with the native installer.
+You need an Anthropic account (Claude subscription or API access), a terminal, and a `PATH` in which the installer can make the `claude` command available. No other dependency is required with the native installer.
 
 ## 1. Install Claude Code
 
@@ -55,4 +55,6 @@ The assistant guides you, proposes files, and waits for your approval on the imp
 
 ---
 
-BASE is a framework by [AI Swiss](https://a-i.swiss). Use case in partnership with [Innovaud](https://innovaud.ch).
+**Next action:** continue with the [quickstart](quickstart.md) to create your first verifiable quote.
+
+BASE is an open convention with a reference implementation, maintained by [AI Swiss](https://a-i.swiss). Use case in partnership with [Innovaud](https://innovaud.ch).

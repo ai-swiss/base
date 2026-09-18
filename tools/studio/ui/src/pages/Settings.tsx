@@ -93,10 +93,9 @@ export function Settings() {
     });
   };
 
-  // Exactly the models shown in the cards above (providers × discovered/catalog × aliases), as catalog
-  // entries the pickers consume. Passed to every ModelPicker here so a provider configured on this page
-  // shows up in the defaults/routing pickers at once, without a remount or a second fetch (the bug: the
-  // pickers used to fetch once on mount and never saw a provider added during the session).
+  // Exactly the models shown in the cards above (providers × discovered/catalog × aliases), as
+  // catalog entries every ModelPicker on this page consumes. These controlled pickers receive the
+  // live catalog, so a provider added during the session appears without a remount or another fetch.
   const pickerModels: CatalogModel[] = settings.providers.flatMap((p) =>
     modelsOf(p).map((m) => {
       const cat = catalog.find((c) => c.ref === m.ref);

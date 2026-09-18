@@ -16,6 +16,16 @@ Consulter ou publier la documentation de son BASE sans jamais la recopier ailleu
 
 L'interface du site est bilingue: français par défaut, avec une bascule vers l'anglais. La version française de chaque page fait foi; voir [Langues](langues.md). Chaque contenu conserve la langue de sa source, conformément aux [langues de BASE](langues.md). La navigation latérale est engendrée depuis `navigation.json`, la projection de navigation du modèle documentaire: aucune liste de pages n'est tenue à la main.
 
+## Installer le générateur du site
+
+Le générateur du site vit dans un paquet séparé, à installer le jour où vous voulez du HTML:
+
+```bash
+npm install @ai-swiss/base-docs-site
+```
+
+Il demande Node 22.12 ou plus, et il reste à l'écart du reste: BASE valide, route et lit vos fiches sans lui. Tant qu'il n'est pas installé, `base docs build` vous dit quoi installer plutôt que de tenter une construction. Depuis le dépôt BASE, il est déjà là.
+
 ## Voir en local
 
 Depuis la racine du dépôt:
@@ -45,6 +55,8 @@ Pour choisir explicitement le dossier déployable:
 ```bash
 node tools/base.mjs docs build --public --out public-site
 ```
+
+Depuis un dossier qui a installé BASE, la même construction s'écrit `base docs build --public --out public-site`, ou `node .ai/base.mjs docs build --public --out public-site`. Sans `--out`, le site est écrit dans `.base-docs/<cible>/site`, à l'intérieur de votre dossier.
 
 Le dossier obtenu contient un site statique. Vous pouvez le servir depuis la plupart des hébergeurs compatibles avec le HTML statique.
 

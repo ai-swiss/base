@@ -7,6 +7,14 @@ Browse, search, edit and evaluate the resources BASE picks up — a thin React +
 that talks to the Studio API server (`tools/studio/server.mjs`). Deliberately lean: no UI framework
 beyond React, plain CSS, so the dependency surface stays small and legible. Loopback only.
 
+## Ce que Studio configure
+
+Studio modifie les ressources inventoriées et ses réglages locaux dans
+`.ai/studio.settings.json`. Il affiche les autres fichiers, dont `base.config.json`, en lecture
+seule. La configuration partagée de la racine, notamment `tools`, `views`, `mcp` et `egress`, se
+déclare dans `base.config.json`, directement ou par les commandes CLI qui prennent en charge le
+choix concerné.
+
 ## Run it (one command)
 
 ```bash

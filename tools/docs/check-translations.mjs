@@ -11,6 +11,13 @@
 // fails if the source has changed since, so a maintainer is told to re-sync (a watched, opt-in signal,
 // not a noisy guess).
 //
+// The per-language word tables (tools/core/lang/) are translations in exactly the same sense as a
+// docs mirror: en.mjs, de.mjs and it.mjs hold every key of fr.mjs with only the words changed. They
+// are covered here rather than left to review, because a reworded fr.mjs otherwise leaves every
+// table silently stale and nothing fails. Their marker is the same one, spelled as a JS line
+// comment (`// fr-synced: <hash>`), hashed against tools/core/lang/fr.mjs. A table this build does
+// not carry yet is not a failure; one that exists must declare what it was translated from.
+//
 //   node tools/docs/check-translations.mjs        # exit 1 on a missing attribution or a stale sync
 import { execFileSync } from "node:child_process";
 import * as fs from "node:fs/promises";
@@ -33,6 +40,11 @@ const TRANSLATIONS = [
 // here is the fr-synced marker: mandatory, and verified fresh against the French source.
 const LOCALE_MIRROR_DIRS = ["docs/en", "docs/de", "docs/it"];
 
+// The per-language word tables: same keys as fr.mjs, only the words change. Same contract as a
+// locale mirror (fr-synced mandatory, verified fresh), and the same list of locales.
+const LANG_TABLE_SOURCE = "tools/core/lang/fr.mjs";
+const LANG_TABLES = ["en", "de", "it"].map((locale) => ({ file: `tools/core/lang/${locale}.mjs`, source: LANG_TABLE_SOURCE }));
+
 async function discoverMirrors() {
   const out = [];
   async function walk(relDir) {
@@ -54,10 +66,19 @@ export function linksToSource(headText, source) {
   return headText.includes(`(${source})`);
 }
 
-/** The recorded sync hash, if the translation declares `<!-- fr-synced: <hash> -->`. */
+/**
+ * The recorded sync hash. Markdown declares it as `<!-- fr-synced: <hash> -->`; a source file, which
+ * has no HTML comments, declares it as `// fr-synced: <hash>`. One marker, two spellings, so a
+ * language table records what it was translated from the way a page does.
+ */
 export function recordedSyncHash(text) {
-  const m = text.match(/<!--\s*fr-synced:\s*([0-9a-f]{7,40})\s*-->/);
-  return m ? m[1] : null;
+  const m = text.match(/<!--\s*fr-synced:\s*([0-9a-f]{7,40})\s*-->|\/\/\s*fr-synced:\s*([0-9a-f]{7,40})/);
+  return m ? (m[1] ?? m[2]) : null;
+}
+
+/** Whether `recorded` still names the current blob hash (a short prefix counts). */
+function syncIsFresh(recorded, current) {
+  return !current || current.startsWith(recorded) || recorded.startsWith(current.slice(0, recorded.length));
 }
 
 function gitBlobHash(relPath) {
@@ -80,8 +101,7 @@ async function main() {
     }
     const recorded = recordedSyncHash(text);
     if (recorded) {
-      const current = gitBlobHash(source);
-      if (current && !current.startsWith(recorded) && !recorded.startsWith(current.slice(0, recorded.length))) {
+      if (!syncIsFresh(recorded, gitBlobHash(source))) {
         failures.push(`${file}: ${source} changed since the recorded fr-synced:${recorded}. Re-sync the translation and update the marker (or confirm it is still accurate).`);
       } else {
         synced++;
@@ -103,8 +123,7 @@ async function main() {
       failures.push(`${file}: a docs translation must carry <!-- fr-synced: <hash> -->, recording the French source it mirrors.`);
       continue;
     }
-    const current = gitBlobHash(source);
-    if (current && !current.startsWith(recorded) && !recorded.startsWith(current.slice(0, recorded.length))) {
+    if (!syncIsFresh(recorded, gitBlobHash(source))) {
       failures.push(`${file}: ${source} changed since fr-synced:${recorded}. Re-translate and update the marker.`);
     } else {
       synced++;
@@ -118,6 +137,24 @@ async function main() {
       if (/[‘’“”]/.test(text)) failures.push(`${file}: contains curly quotes (use straight quotes).`);
     }
   }
+  // The word tables: a table that exists must say which fr.mjs it was translated from, and stay
+  // fresh against it. A locale with no table yet is simply absent, never a failure.
+  let tables = 0;
+  for (const { file, source } of LANG_TABLES) {
+    const text = await fs.readFile(path.join(ROOT, file), "utf8").catch(() => null);
+    if (text === null) continue;
+    tables++;
+    const recorded = recordedSyncHash(text);
+    if (!recorded) {
+      failures.push(`${file}: a language table must carry // fr-synced: <hash>, recording the ${source} it translates (git hash-object ${source}).`);
+      continue;
+    }
+    if (!syncIsFresh(recorded, gitBlobHash(source))) {
+      failures.push(`${file}: ${source} changed since fr-synced:${recorded}. Re-translate the reworded keys and update the marker.`);
+    } else {
+      synced++;
+    }
+  }
 
   if (synced) console.log(`check-translations: ${synced} translation(s) carry an up-to-date fr-synced marker.`);
   if (failures.length) {
@@ -125,7 +162,7 @@ async function main() {
     for (const f of failures) console.error(`  ${f}`);
     process.exit(1);
   }
-  console.log(`check-translations: pass — ${TRANSLATIONS.length} root translation(s) + ${mirrors.length} docs mirror(s); French stays authoritative.`);
+  console.log(`check-translations: pass — ${TRANSLATIONS.length} root translation(s) + ${mirrors.length} docs mirror(s) + ${tables} language table(s); French stays authoritative.`);
 }
 
 if (process.argv[1] && process.argv[1].endsWith("check-translations.mjs")) {

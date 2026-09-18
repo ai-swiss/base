@@ -1,3 +1,13 @@
+---
+schema_version: base.resource.v1
+id: identite-entreprise
+type: document
+title: Identité de l'entreprise
+description: Identité légale, activité, contact et coordonnées bancaires de l'entreprise fictive.
+scope: team
+status: active
+sensitivity: internal
+---
 # Identité de l'entreprise
 
 > Données **fictives de démonstration** (entreprise Atelier Léman Sàrl). Pour démarrer à blanc avec vos propres données, copiez plutôt le dossier `assistant-devis`.

@@ -4,9 +4,9 @@
 
 1. Ouvrez **ce dossier** (pas la racine du dépôt) dans Claude Code ou Cursor.
 2. Dites, mot pour mot: **«Quelles sont mes options?»**
-3. Vous devriez voir: un accueil en une phrase, puis un petit menu (préciser le rôle de votre assistant, ajouter un process, importer vos documents existants) et la question «Que souhaitez-vous faire?». Rien n'est écrit ni envoyé sans vous.
+3. Vous devriez voir: un accueil en une phrase, puis un petit menu (préciser le rôle de votre assistant, ajouter une procédure, importer vos documents existants) et la question «Que souhaitez-vous faire?». Demander votre confirmation est ici une consigne à l'assistant. Pour une écriture, la confirmation n'est mécanique que via `base propose` puis `base commit`, ou leurs équivalents MCP.
 
-Le plus petit BASE personnel qui soit: un assistant générique, prêt à recevoir VOTRE métier.
+Le plus petit BASE personnel qui soit: un assistant générique à adapter à VOTRE métier.
 Copiez ce dossier où bon vous semble (par exemple dans vos Documents), renommez-le, puis ouvrez-le
 dans Cursor ou Claude Code.
 

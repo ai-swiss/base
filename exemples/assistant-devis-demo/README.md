@@ -5,7 +5,7 @@
 1. Ouvrez **ce dossier** (pas la racine du dépôt) dans un outil d'IA qui lit vos fichiers, par exemple Claude Code, Codex, Cursor, GitHub Copilot ou OpenCode. BASE n'en privilégie aucun.
 2. Demandez d'abord à l'outil de lire les instructions, puis de vous présenter la structure du dossier et le rôle des principaux fichiers.
 3. Demandez, mot pour mot: **«Dupont SA a-t-il droit à la remise fidélité?»**
-4. Vérifiez que la réponse consulte `catalogue/regles-tarification.md` et `clients/dupont-sa.md`, conclut «non» (la remise exige deux mandats, Dupont SA en est à son premier) et pose un `[A VALIDER]`. Cette question ne demande aucune écriture et la démo n'envoie rien au client.
+4. Vérifiez que la réponse consulte `catalogue/regles-tarification.md` et `clients/dupont-sa.md`, conclut «non» (la remise exige deux mandats, Dupont SA en est à son premier) et pose un `[A VALIDER]`. Demander votre confirmation est ici une consigne à l'assistant. Pour une écriture, la confirmation n'est mécanique que via `base propose` puis `base commit`, ou leurs équivalents MCP.
 
 Ce dossier contient déjà les données d'une entreprise fictive, **Atelier Léman Sàrl**, un studio de design lausannois, ainsi qu'un devis d'exemple.
 
@@ -20,9 +20,9 @@ L'outil doit retrouver le devis existant dans [`devis/DEV-2026-001.md`](devis/DE
 
 > «Nouveau devis pour Dupont SA: 2 jours de conseil et un site web vitrine.»
 
-Les fichiers contiennent déjà le catalogue ([`catalogue/services.json`](catalogue/services.json)), les tarifs et les conditions. Le process demande à l'assistant de proposer un devis et de marquer `[A VALIDER]` avant tout envoi. Cette consigne reste à contrôler dans l'outil que vous utilisez.
+Les fichiers contiennent déjà le catalogue ([`catalogue/services.json`](catalogue/services.json)), les tarifs et les conditions. La procédure demande à l'assistant de proposer un devis et de marquer `[A VALIDER]` avant tout envoi. Cette consigne reste à contrôler dans l'outil que vous utilisez.
 
-La démo reprend la structure d'`assistant-devis`: l'agent peut être chargé directement, et BASE peut router une demande vers le process `nouveau-devis` ou `configuration`. Le process indique ensuite les ressources utiles à ouvrir: catalogue, conditions, templates et outils.
+La démo reprend la structure d'`assistant-devis`: l'agent peut être chargé directement, et BASE peut router une demande vers la procédure `nouveau-devis` ou `configuration`. La procédure indique ensuite les ressources utiles à ouvrir: catalogue, conditions, modèles et outils.
 
 ## Ce que contient la démo
 
@@ -32,12 +32,12 @@ La démo reprend la structure d'`assistant-devis`: l'agent peut être chargé di
 | `catalogue/` | 5 services avec prix + règles de tarification |
 | `clients/` | Fiche client Dupont SA |
 | `devis/` | Un devis déjà généré (`DEV-2026-001`) |
-| `.ai/agents/assistant-devis/` | Le rôle, les process, les compétences et les outils de l'agent |
-| `.ai/routing/` | Fixtures de routage agent → process |
+| `.ai/agents/assistant-devis/` | Le rôle, les procédures, les compétences et les outils de l'agent |
+| `.ai/routing/` | Fixtures de routage agent → procédure |
 
 ## Pour démarrer avec **vos** données
 
-Cette démo sert à **voir** le résultat. Pour construire le vôtre à partir d'un gabarit à personnaliser, copiez plutôt le dossier voisin `assistant-devis` et dites: «Bonjour, je voudrais configurer mon activité.» Son process est conçu pour recueillir votre entreprise, vos services et vos tarifs.
+Cette démo sert à **voir** le résultat. Pour construire le vôtre à partir d'un gabarit à personnaliser, copiez plutôt le dossier voisin `assistant-devis` et dites: «Bonjour, je veux configurer mon assistant devis.» La procédure de configuration est conçue pour recueillir votre entreprise, vos services et vos tarifs.
 
 ## Avertissement
 

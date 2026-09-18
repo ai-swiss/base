@@ -4,7 +4,7 @@
 
 1. Ouvrez **ce dossier** (pas la racine du dépôt) dans Claude Code ou Cursor.
 2. Dites, mot pour mot: **«Aide-moi à clarifier une décision que j'hésite à prendre»**
-3. Vous devriez voir: l'assistant reformule votre décision pour la cadrer, vous demande s'il a bien compris et s'il y a une échéance, puis attend votre validation avant de passer aux critères. Rien n'est écrit ni envoyé sans vous.
+3. Vous devriez voir: l'assistant reformule votre décision pour la cadrer, vous demande s'il a bien compris et s'il y a une échéance, puis attend votre validation avant de passer aux critères. Demander votre confirmation est ici une consigne à l'assistant. Pour une écriture, la confirmation n'est mécanique que via `base propose` puis `base commit`, ou leurs équivalents MCP.
 
 Un compagnon de réflexion personnel et privé. Il vous aide à clarifier une décision, à explorer une question ou à mettre de l'ordre dans vos notes, sur votre machine et pour vous seul. Personne d'autre ne lit, personne ne surveille.
 
@@ -31,7 +31,7 @@ assistant-reflexion/
 ├── .ai/agents/assistant-reflexion/          L'intelligence de l'agent
 │   ├── AGENT.md                            Instructions principales
 │   ├── skills/
-│   │   ├── processes/                      Workflows (config, clarifier, explorer, note de décision)
+│   │   ├── processes/                      Procédures (config, clarifier, explorer, note de décision)
 │   │   └── competences/                    Connaissances (validation aux bons moments, méthode, marqueurs, communication, journal)
 │   └── templates/                          Modèles (note de décision, tableau d'options)
 │

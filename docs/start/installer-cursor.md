@@ -106,4 +106,6 @@ Cursor excelle dans le travail itératif sur fichiers. Pour la recherche web app
 
 ---
 
-BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
+**Prochaine action:** poursuivez avec le [démarrage express](quickstart.md) pour créer votre premier devis vérifiable.
+
+BASE est une convention ouverte accompagnée d'une implémentation de référence, portée par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).

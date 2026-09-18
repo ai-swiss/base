@@ -17,16 +17,17 @@ Zero dependencies: runs with bare `node` (NFR-CORE-001).
 |---|---|---|
 | `validate` | Validate the project; print errors/warnings | `validateBase` |
 | `index` | (Re)write `base.manifest.json` | `writeManifest` |
-| `discover "<query>"` | Explainable search | `searchResources` |
+| `discover "<query>"` | Explainable search; `--grain section` ranks passages and `--scope <folder>` narrows the candidates | `searchResources` |
 | `route "<demande>"` | Route to agent → process, or abstain | `routeRequest` |
 | `route-test` | Run routing fixtures (JSON) or replay declared `routing.examples`; exit `1` on mismatch | `runRouteTests` |
 | `route-eval` | Ollama-gated routing eval (recall@k + refiner diagnostic); skipped cleanly when absent | `tools/eval/route-eval.mjs` |
 | `context <id\|path>` | Preload plan for a process: paths and notes under a budget, never bodies | `contextPack` |
 | `inventory` | List resources (`id\tkind\tpath`) | `inventoryResources` |
-| `open <id\|path>` | Open a resource under policy | `openResource` |
+| `open <id\|path[#anchor]>` | Open a resource under policy; `--section <anchor>`, `--lang <xx>`, `--projection outline\|source` open one passage, an edition, or the document's own map | `openResource` |
 | `access <id\|path>` | Read a resource or confined file | `accessResource` |
 | `invoke <id> [args…]` | Prepare/run a tool | `invokeTool` |
-| `entretien` | Maintenance report (markers, missing descriptions, trace) | `createMaintenanceReport` |
+| `upgrade` | What an older root should change to match today's conventions: dry-run by default, `--write` applies, nothing deleted | `planUpgrade` |
+| `view <nom>` | Generate a door onto part of this root (`.ai/views/<nom>/`): dry-run, `--write`, `--shell` for the alias | `buildViewArtifacts` |
 | `init` | Bootstrap: detect what a directory is (workspace / root / collection of roots / loose markdown / empty), print the EXACT files to create, write them only with `--yes` (creation-only, `wx`). Core logic in `tools/core/perimeter.mjs`, shared verbatim with Studio's Welcome screen | `detectPerimeter` + `buildInitPlan` + `applyInitPlan` |
 | `doctor` | Corpus health: dead links, orphans, stale evals, due reviews, expired reference data, open frictions — pure projection, mandatory fix hint per finding, `--json` | `tools/doctor/diagnose.mjs` |
 | `trace` | Trace summary | `summarizeTrace` |
@@ -78,7 +79,7 @@ Commands dispatch through ONE table (`COMMANDS` in `tools/base.mjs`: name → `h
 Unknown `--flag` → error, exit `1` (NFR-CORE-004: a mistyped flag such as `--comfirmed` fails loudly rather than being silently accumulated into positional). Non-flag tokens still accumulate as positional in order.
 
 ## Exit codes (FR-CLI-003)
-- `validate`, `entretien`: exit `1` when `ok == false`, else `0`. `doctor`: exit `1` when any finding has `severity: "error"`.
+- `validate`: exits `1` when `ok == false`, else `0`. `doctor`: exit `1` when any finding has `severity: "error"`.
 - Any command: uncaught error → message to **stderr**, exit `1`.
 - Otherwise `0`.
 

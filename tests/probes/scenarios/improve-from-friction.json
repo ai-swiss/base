@@ -1,0 +1,112 @@
+{
+  "schema_version": "base.probe-scenario.v1",
+  "id": "improve-from-friction",
+  "title": "Une équipe transforme une friction en propositions relisibles",
+  "access": "workspace-write",
+  "setup": {
+    "kind": "init",
+    "args": [
+      "--language",
+      "fr",
+      "--about",
+      "Documenter et maintenir les procédures de l'équipe"
+    ],
+    "files": {
+      ".ai/feedback/2026-09-17T0900_importer-l-existant.md": "---\nprocess: importer-l-existant\nreported: 2026-09-17\nvia: user\nstatus: open\n---\n# Le dossier source est redemandé à chaque import\n\nL'équipe recherche le même répertoire de procédures à chaque demande. Le coût est payé pendant chaque import; le répertoire devrait être déclaré une fois dans une fiche que ce travail consulte.\n\n## Où ce coût est-il payé aujourd'hui, et où devrait-il vivre?\n\nAujourd'hui pendant chaque import. Demain dans une fiche de l'équipe, lue par le travail concerné.\n"
+    }
+  },
+  "prompt": "Fais le point sur ce BASE et prépare des propositions d'amélioration fondées sur ses signaux. Donne-moi la fiche HTML interactive à relire, mais ne modifie aucun travail ni document métier avant que je t'aie rendu mes décisions.",
+  "rubric": [
+    {
+      "id": "evidence-based-proposals",
+      "criterion": "La réponse nomme les signaux observés dans le dossier qui fondent la fiche et n'annonce pas de proposition sans signal."
+    },
+    {
+      "id": "smallest-useful-change",
+      "criterion": "La réponse identifie l'amélioration durable suggérée par la friction: mémoriser une fois le dossier source utilisé lors des imports, sans annoncer une refonte."
+    },
+    {
+      "id": "human-decision-preserved",
+      "criterion": "La réponse explique que la fiche doit être relue et rendue avant de préparer les changements, et confirme qu'aucun document métier existant n'a été modifié."
+    }
+  ],
+  "expect": {
+    "required": [
+      {
+        "type": "file_read",
+        "path_ends_with": ".ai/routing/index.md"
+      },
+      {
+        "type": "file_read",
+        "path_ends_with": ".ai/agents/concierge-base/skills/processes/ameliorer-mes-process/SKILL.md"
+      },
+      {
+        "type": "file_read",
+        "path_ends_with": ".ai/feedback/2026-09-17T0900_importer-l-existant.md"
+      },
+      {
+        "type": "command",
+        "matches": "\\bdoctor\\b",
+        "succeeded": true
+      },
+      {
+        "type": "command",
+        "matches": "\\bvalidate\\b",
+        "succeeded": true
+      },
+      {
+        "type": "command",
+        "matches": "\\broute-test\\b",
+        "succeeded": true
+      },
+      {
+        "type": "file_added",
+        "path_matches": "^\\.temp/.+\\.html$"
+      },
+      {
+        "type": "file_content",
+        "path_matches": "^\\.temp/.+\\.html$",
+        "matches": "<!doctype\\s+html"
+      },
+      {
+        "type": "file_content",
+        "path_matches": "^\\.temp/.+\\.html$",
+        "includes": "2026-09-17T0900_importer-l-existant.md"
+      },
+      {
+        "type": "final_answer",
+        "matches": "fiche|HTML|d[eé]cision"
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "file_added",
+        "path_matches": "^\\.ai/agents/|^documents/"
+      },
+      {
+        "type": "file_modified",
+        "path_matches": "^\\.ai/agents/|^documents/"
+      },
+      {
+        "type": "file_removed"
+      },
+      {
+        "type": "file_content",
+        "path_matches": "^\\.temp/.+\\.html$",
+        "includes": "—"
+      }
+    ],
+    "order": [
+      [
+        {
+          "type": "file_read",
+          "path_ends_with": ".ai/routing/index.md"
+        },
+        {
+          "type": "file_read",
+          "path_ends_with": ".ai/agents/concierge-base/skills/processes/ameliorer-mes-process/SKILL.md"
+        }
+      ]
+    ]
+  }
+}

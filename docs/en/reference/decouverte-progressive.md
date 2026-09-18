@@ -1,4 +1,4 @@
-<!-- fr-synced: 4b1908ed2c94bd2c69bd2f5b5edf068def9e4e57 -->
+<!-- fr-synced: 6d02284c6815b3436fd486462920ec069f590b44 -->
 ---
 schema_version: base.resource.v1
 id: decouverte-progressive-en
@@ -11,7 +11,7 @@ sensitivity: public
 keywords: [discovery, progressive, reading, order, harness, integration, routing, context, budget, playbook]
 ---
 
-# Progressive discovery, from the first file to the final gesture
+# Reading order: root, agent, process, and context {#progressive-discovery-from-the-first-file-to-the-final-gesture}
 
 A BASE is made to be discovered little by little. This page answers a harness integrator's question:
 in what order do I read what, and when do I stop? It describes each step at the level of the
@@ -19,7 +19,15 @@ in what order do I read what, and when do I stop? It describes each step at the 
 tool's commands: the CLI, the MCP server and a file harness each offer their own door to the same
 gestures (see [BASE and your AI tools](base-et-vos-outils-ia.md)).
 
-One rule governs the whole page:
+The order is: find the root, read the entry point, route if necessary, read the agent and then the
+chosen process, and finally bind the useful context before opening or executing anything else.
+
+The scope differs by door. In a file harness, this order is an **instruction to the model**: it
+guides a cooperative model without technically preventing another read. The CLI and MCP enforce only
+the mechanisms of their named operations, such as confined opening or context planning; by
+themselves, they do not impose the whole reading order on the harness.
+
+One instruction governs the whole page:
 
 > At each step, read the smallest object that proves the next decision. If the proof is missing,
 > abstain and ask.
@@ -37,7 +45,7 @@ The entry point says whether the folder has already chosen its agent. If it poin
 `AGENT.md`, read that agent and work: global routing would be a useless expense. If it describes a
 router (the general case), move to the next step at the first need for a process.
 
-## 3. Route when the process is unknown
+## 3. If the result is `ambiguous`, ask before opening competing processes {#3-route-when-the-process-is-unknown}
 
 The `route` gesture takes the request and returns a route or an honest abstention. The order of the
 first move depends on the surface:
@@ -46,11 +54,12 @@ first move depends on the surface:
   router confirms or serves as fallback.
 - **Broker or MCP**: `route_request` first, because the access policy and the audit live in the
   broker.
-- **Proof and CI**: the CLI first, because the route must be reproducible.
+- **Proof and CI**: `route-test` with the lexical strategy first; `--strategy production` calls the
+  models when Track 2 is configured and is not a deterministic check.
 - **Degraded mode** (no index, no CLI, no MCP): metadata-only search (see the last section).
 
-In every case: **never full bodies before a shortlist**. The router returns four statuses, and each
-commands a precise gesture:
+The instruction to the model stays the same: **do not open full bodies before a shortlist**. The
+router returns four statuses, and each calls for a precise gesture:
 
 | Status | The gesture that follows |
 | --- | --- |
@@ -108,8 +117,10 @@ execute only after explicit confirmation.
 ## 9. Write
 
 The write gesture happens in two steps (`propose` then `commit`): propose the diff or the list of
-files, obtain validation, apply through the mediated path when it exists, trace. Never a final file
-without confirmation; never a modification of the `.ai/` core in the middle of a business process.
+files, obtain validation, apply through the mediated path when it exists, trace. On that path,
+confirmation before writing is a mechanism. In a harness that edits files directly, "no final file
+without confirmation" and "no modification of the `.ai/` core in the middle of a business process"
+remain instructions to the model.
 
 ## 10. The conversation that continues
 
@@ -120,9 +131,9 @@ Routing happens at task boundaries, not at every message. Two cases refine this 
 - **A change of intent** ("in the end I want to dispute an invoice already sent"): reroute, because
   the unit of work changes.
 
-And when a long, summarized conversation loses the thread: reopen the active process's `SKILL.md`
-and its `AGENT.md` from disk before acting. The file is authoritative, not the conversation's
-memory.
+And if the harness summarizes a long conversation until the thread is lost, reopen the active
+process's `SKILL.md` and its `AGENT.md` from disk before acting. The file is authoritative, not the
+summary retained by the harness.
 
 ## Degraded mode (diagnostic only)
 

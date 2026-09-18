@@ -1,11 +1,17 @@
-<!-- fr-synced: 9e8ba9b23d02da2cc9ddeaea649f7c2ad55a535d -->
+<!-- fr-synced: 03da0c11162c9411f78f2127dab51bbfc421616f -->
 # Deploying BASE in an organization
 
-Deploying BASE in an organization means deciding who can do what with your assistants and keeping a hand on sensitive actions, without surrendering your know-how to a platform. For a team or an IT department, the stakes are these: staying on top of what the framework actually enforces, knowing how to lock it down, and choosing a deployment mode that matches your requirements. BASE rounds out your existing stack on two fronts: a language for expertise in files that belong to you, and honest mediation of sensitive actions, something you plug in without touching the heart of the system. None of which makes it a compliance platform: BASE replaces neither IAM, nor SSO, nor RBAC, nor DLP, nor SIEM, nor regulatory retention (see [Security and limits](../trust/securite-et-limites.md)).
+Deploying a BASE folder in an organization means deciding who can do what with your assistants and keeping control of sensitive actions without surrendering your know-how to a platform. For a team or an IT department, the stakes are these: understanding what each file, tool, and integration actually enforces, then choosing a deployment mode that matches your requirements. The files provide a language for expertise; the broker, BASE's mediation component, can mediate some sensitive actions. Neither replaces IAM, SSO, RBAC, DLP, SIEM, or regulatory retention (see [Security and limits](../trust/securite-et-limites.md)).
+
+Before choosing controls, review the distinction between method, structure, approved reference, and execution in the [audience map diagnosis](pour-qui.md).
 
 ## What is actually enforced
 
-The rules apply only to actions that go through the broker, the CLI, the MCP, or a controlled connector. There, BASE provides: path confinement, the propose then commit mode with diff and validation, dry-run by default for tools, minimal traces, and extension points (validators, policy, ranker, auth) configured via `base.config.{json,mjs}`. The router, for its part, picks the workflow suited to the request and spares the user the search for the right process: it does not enforce permissions.
+Mechanical rules apply only to actions that go through the broker, CLI, MCP, or a controlled connector. Depending on that path, the code enforces path confinement, the propose-then-commit flow, tool dry-runs, minimal traces, or a policy configured through `base.config.{json,mjs}`. The router proposes a suitable workflow or abstains; it does not enforce permissions.
+
+Files may remain local while a tool projects excerpts from them to a remote model. On mediated paths, egress is permissive by default (`any`): the broker withholds a resource only when it is marked `confidential: true` or its root is `local-only`. The `sensitivity` field classifies; it does not trigger this withholding. Direct file access bypasses these controls.
+
+Separating instructions from content supports review, but does not prevent prompt injection by itself. Effective defenses combine context reduction, technical controls, permissions, and human validation.
 
 ## A strict configuration example
 
@@ -18,7 +24,7 @@ export default {
   // and explicit confirmation for writes and invocations.
   policy: { type: "strict", grants: ["devis:nouveau-devis"] },
 
-  // Organization validators, applied by `base validate` and `base entretien`.
+  // Organization validators, applied by `node .ai/base.mjs validate --root .`.
   validators: [
     { type: "requireSchemaVersion" },
     { type: "requireFields", fields: ["owner", "review_date"], whenScope: "team" },
@@ -37,7 +43,9 @@ export default {
 };
 ```
 
-The fallback above assumes the deployed root contains `concierge-base` and its `accueil` process. If you copy only a domain assistant, point the fallback at an equivalent local entry point, or copy the concierge as well.
+The fallback above looks for `concierge-base` in the deployed root, then in the installed BASE
+framework. If you distribute a standalone copy without that framework, point it at an equivalent
+local welcome.
 
 For the MCP, add an `auth` descriptor (bearer token or a homegrown `AuthProvider`): the MCP server refuses any non-loopback exposure that lacks authentication in any case (see [`mcp/`](../../../mcp/)).
 
@@ -45,16 +53,12 @@ For the MCP, add an `auth` descriptor (bearer token or a homegrown `AuthProvider
 
 | Mode | Mediation | For whom |
 | --- | --- | --- |
-| Local, browser only | None (*consignes* followed by the model) | Discovery, no installation |
+| Local, browser only | None (*instructions* followed by the model) | Discovery, no installation |
 | AI tool + folder | Weak (the tool follows the routing) | Individual, first setup |
 | Local CLI | Strong on mediated actions (propose/commit, dry-run) | Team, maintaining a BASE |
 | Authenticated MCP | Read-only by default, explicit writes, auth required off loopback | Multi-client integration |
 | Strict policy (`policy: { type: "strict" }`) | Read grants and explicit confirmations on mediated actions | Organization, fine-grained governance |
 
-## Going further
+## Your next action
 
-- Guarantees and out-of-scope: [Security and limits](../trust/securite-et-limites.md).
-- Sovereignty and trust (IT departments, compliance): [Sovereignty and trust](../trust/souverainete-et-confiance.md).
-- Local and Swiss models (Ollama, Infomaniak): [Sovereign and local models](../guides/modeles-souverains.md).
-- Engineering contract and extension points: [`specs/current/README.md`](../../../specs/current/README.md).
-- Public surface stability: [Versions and stability](../reference/versions-et-stabilite.md).
+Have the business, security, and compliance owners review [Security and limits](../trust/securite-et-limites.md), then record the required deployment mode and external controls before any trial with real data.

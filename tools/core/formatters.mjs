@@ -20,6 +20,18 @@ export function formatValidationResult(result) {
 
 export function formatSearchResults(results, query) {
   if (results.length === 0) return `Aucune ressource trouvee pour "${query}".`;
+  // A section hit is a passage, so it is shown as one: the citable ref, the heading path that says
+  // where it sits, then the passage itself. A reader checks the quote before using it.
+  if (results[0]?.section) {
+    return [
+      `Passages trouvés pour "${query}":`,
+      ...results.flatMap((hit) => [
+        `- ${hit.ref} [score ${hit.score}; ${(hit.reasons ?? []).join(", ")}] -> ${hit.path}`,
+        `  ${hit.heading_path}`,
+        `  ${hit.passage}`,
+      ]),
+    ].join("\n");
+  }
   return [
     `Ressources trouvees pour "${query}":`,
     ...results.map((resource) => `- ${resource.id} (${resource.type}) - ${resource.title} [score ${resource.score}; ${resource.reasons.join(", ")}] -> ${resource.path}`),
@@ -42,7 +54,10 @@ export function formatRouteResult(result) {
   // see an open door, not a rejection. The machine-readable pointer line is kept for tooling and tests.
   if (result.fallback) {
     lines.push("Pas de route directe ; je vous oriente vers l'accueil de BASE.");
-    lines.push(`Fallback: ${result.fallback.agent.id} -> ${result.fallback.process.id}`);
+    // The path matters when the target is not in this root: the harness reads this text, and a
+    // framework process sits outside the working folder. Say where it is, once, in full.
+    const from = result.fallback.source === "framework" ? " (cadre BASE)" : "";
+    lines.push(`Fallback${from}: ${result.fallback.agent.id} -> ${result.fallback.process.id} (${result.fallback.process.path})`);
   }
   // Never silently drop a workspace root: a declared root that could not be routed is surfaced here,
   // not only in --json, so a human sees that one root was skipped rather than a false clean success.
@@ -58,10 +73,22 @@ export function formatRouteResult(result) {
   return lines.join("\n");
 }
 
+export const ROUTE_BENCH_ROLE =
+  "Ce banc mesure le plancher lexical: il sert les appels sans modèle (script, intégration, CI) et garde stables les routes promises. Dans une conversation, la carte est l'index et c'est le modèle qui route.";
+
+const SUITE_LABELS = { fixtures: "fixtures", examples: "exemples déclarés" };
+
 export function formatRouteTestResult(result) {
-  const lines = [`Tests de routage: ${result.passed}/${result.total} OK.`];
+  // Two numbers, labelled, side by side: the fixtures are the author's contract with their users,
+  // the declared examples the drift guard on the cards themselves. One number for both would hide
+  // which promise broke.
+  const suites = result.suites ?? [];
+  const head = suites.length
+    ? `Tests de routage: ${suites.map((s) => `${SUITE_LABELS[s.source] ?? s.source} ${s.passed}/${s.total} OK${s.path ? ` (${s.path})` : ""}`).join(" · ")}`
+    : `Tests de routage: ${result.passed}/${result.total} OK.`;
+  const lines = [head];
   for (const failure of result.failures) {
-    lines.push(`- [${failure.index}] "${failure.request}"`);
+    lines.push(`- [${SUITE_LABELS[failure.source] ?? failure.source ?? "cas"} ${failure.index}] "${failure.request}"`);
     for (const mismatch of failure.mismatches) lines.push(`    ${mismatch}`);
     // The WHY next to the WHAT: decision + shortlist scores, so the author can tighten
     // use_when/avoid_when/keywords without re-running `base route` per failing case.
@@ -74,48 +101,14 @@ export function formatRouteTestResult(result) {
     }
   }
   if (result.ok) lines.push("Toutes les routes attendues sont stables.");
-  return lines.join("\n");
-}
-
-export function formatMaintenanceReport(report) {
-  const lines = [
-    "Entretien BASE",
-    `- Ressources: ${report.summary.resources}`,
-    `- Erreurs: ${report.summary.errors}`,
-    `- Avertissements: ${report.summary.warnings}`,
-    `- Fichiers avec marqueurs ouverts: ${report.summary.placeholders}`,
-    `- Fichiers avec marqueurs d'action: ${report.summary.actionable_placeholders}`,
-    `- Descriptions manquantes: ${report.summary.missing_descriptions}`,
-    `- Processes a signal de routage faible: ${report.summary.weak_routing ?? 0}`,
-    `- Ressources orphelines: ${report.summary.orphans ?? 0}`,
-    `- Marqueurs dormants: ${report.summary.stale_markers ?? 0}`,
-    `- Evenements de trace: ${report.summary.trace_events}`,
-    "",
-    "Recommandations:",
-    ...report.recommendations.map((item) => `- ${item}`),
-  ];
-
-  const structural = report.structural ?? { weak_routing: [], orphans: [] };
-  if (structural.weak_routing.length > 0) {
-    lines.push("", "Routage a signal faible (ni use_when ni exemples):");
-    for (const item of structural.weak_routing.slice(0, 20)) lines.push(`- ${item}`);
+  // Say what was NOT certified, so a green line is never read as more than it is.
+  for (const missing of result.absent ?? []) {
+    if (missing === "fixtures") lines.push("Aucun fichier de fixtures: `base route-test --scaffold` en rédige un depuis votre corpus.");
+    if (missing === "examples") lines.push("Aucun `routing.examples` déclaré: les formulations de vos fiches ne sont pas rejouées.");
   }
-  if (structural.orphans.length > 0) {
-    lines.push("", "Ressources orphelines (referencees par aucun agent ni process):");
-    for (const item of structural.orphans.slice(0, 20)) lines.push(`- ${item}`);
-  }
-  if ((structural.stale_markers ?? []).length > 0) {
-    lines.push("", "Marqueurs dormants (fichier non touche depuis 30 jours ou plus):");
-    for (const item of structural.stale_markers.slice(0, 20)) lines.push(`- ${item.path} (${item.days} jours)`);
-  }
-
-  if (report.validation.errors.length > 0) {
-    lines.push("", "Erreurs a traiter:");
-    for (const error of report.validation.errors.slice(0, 20)) {
-      lines.push(`- ${error.path}: ${error.message}`);
-    }
-  }
-
+  // What this bench IS, said where it is read (the same sentence as the guide): a green run certifies
+  // the lexical floor, which serves callers with no model; a conversation routes by reading the index.
+  lines.push("", ROUTE_BENCH_ROLE);
   return lines.join("\n");
 }
 

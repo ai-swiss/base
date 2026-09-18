@@ -1,6 +1,6 @@
 # @ai-swiss/base-eval
 
-Run a BASE process against a **simulated user** and score the conversation with an **independent judge** — to answer *does this process actually achieve its goal when a real-ish user drives it?*
+Run a BASE process against a **simulated user** and score the conversation with a **separate judge invocation** to answer *does this process actually achieve its goal when a real-ish user drives it?* The separation supports different models and prompts, but does not make the verdict statistically independent.
 
 Decoupled by dependency injection: the engine consumes `LanguageModel`-shaped objects (from `@ai-swiss/base-llm` or any adapter) for the three roles, and a `HarnessProfile` for the SUT's system context + tool surface. Headless, **deterministic with `faux` models**, zero dependencies.
 

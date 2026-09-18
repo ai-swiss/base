@@ -1,0 +1,32 @@
+{
+  "schema_version": "base.probe-scenario.v1",
+  "id": "forced-routing",
+  "title": "R conduit au process nouveau devis sans routeur déterministe",
+  "setup": {
+    "kind": "example",
+    "example": "assistant-devis-demo"
+  },
+  "prompt": "R prépare un devis pour Dupont SA.",
+  "expect": {
+    "required": [
+      {
+        "type": "file_read",
+        "path_ends_with": ".ai/agents/assistant-devis/skills/processes/nouveau-devis/SKILL.md"
+      },
+      {
+        "type": "final_answer",
+        "includes": "Dupont SA"
+      },
+      {
+        "type": "final_answer",
+        "question_marks": 1
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "command",
+        "includes": "base route"
+      }
+    ]
+  }
+}

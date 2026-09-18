@@ -1,6 +1,8 @@
 # Contribuer, adapter, réutiliser
 
-BASE est publié comme un socle ouvert et réutilisable, **maintenu par un mainteneur principal** sous l'intendance d'AI Swiss, avec une gouvernance légère et ouverte à la co-maintenance. Sa vocation première n'est pas d'être une plateforme à rejoindre, mais une **amorce à forker** (à reprendre dans votre propre dépôt pour en faire une copie indépendante): reprenez-le, adaptez-le et faites-en le point de départ de vos propres projets. Le [standard `base.resource.v1`](docs/reference/le-standard.md), lui, reste le langage commun: un fork qui le conserve demeure lisible par l'outillage BASE et par toute implémentation conforme.
+BASE publie une convention ouverte et une implémentation de référence réutilisable, **maintenues par un mainteneur principal** sous l'intendance d'AI Swiss, avec une gouvernance légère et ouverte à la co-maintenance. Sa vocation première n'est pas d'être une plateforme à rejoindre, mais une **amorce à forker** (à reprendre dans votre propre dépôt pour en faire une copie indépendante): reprenez-la, adaptez-la et faites-en le point de départ de vos propres projets. La convention [`base.resource.v1`](docs/reference/le-standard.md) reste le langage commun: un fork qui la conserve demeure lisible par l'implémentation de référence et par toute autre implémentation conforme.
+
+La méthode est la manière de travailler, avec ses étapes, ses références, ses contrôles et ses décisions humaines. La structure BASE décrit cette méthode dans des fichiers reliés. Une référence approuvée et versionnée en fixe un état; son exécution dépend ensuite du modèle, des outils, des données et des permissions. Contribuer à BASE consiste à faire évoluer cette convention et son implémentation sans confondre la référence avec ce qu'un dispositif exécute effectivement.
 
 ## Développer BASE (point de départ technique)
 
@@ -8,19 +10,19 @@ Le guide complet de la forge (en anglais, comme toute la partie développement) 
 
 ### Contribuer avec votre IA (recommandé)
 
-La manière la plus simple de contribuer est de travailler avec votre outil IA, au fil des process que BASE définit pour lui-même. Chargez l'agent de contribution [`base-contributor`](.ai/agents/base-contributor/AGENT.md) et laissez-le aiguiller le travail: comprendre l'état, planifier si le changement est conséquent, ouvrir un changement, le mettre en œuvre (le code et la spec ensemble, au niveau d'exigence le plus élevé), puis vérifier que toutes les barrières passent. Les garde-fous (`npm run check`) valident le résultat, quel qu'en soit l'auteur.
+La manière la plus simple de contribuer est de travailler avec votre outil IA, au fil des process décrits pour ce dépôt. Chargez l'agent de contribution [`base-contributor`](.ai/agents/base-contributor/AGENT.md) et laissez-le aiguiller le travail: comprendre l'état, planifier si le changement est conséquent, ouvrir un changement, le mettre en œuvre (le code et la spec ensemble, au niveau d'exigence le plus élevé), puis vérifier que toutes les barrières passent. Les garde-fous (`npm run check`) valident le résultat, quel qu'en soit l'auteur.
 
-Ce chemin est **fortement encouragé, jamais imposé**. Tout se fait aussi à la main, et une contribution écrite sans IA est tout autant la bienvenue: l'exigence porte sur le résultat (clair, testé, vert), non sur l'outil. Une bonne «good first issue» tient en un paragraphe qu'un nouveau venu et son IA peuvent reprendre de bout en bout. Pour une première contribution, partez des issues marquées «good first issue»; pour un changement conséquent, ouvrez d'abord une discussion ou une issue, le temps de cadrer l'approche ensemble avant d'écrire le code.
+Ce chemin est **fortement encouragé, jamais imposé**. Tout se fait aussi à la main, et une contribution écrite sans IA est tout autant la bienvenue: l'exigence porte sur le résultat (clair, testé, vert), non sur l'outil. Une bonne «good first issue» tient en un paragraphe qu'un nouveau venu et son IA peuvent reprendre de bout en bout. Pour une première contribution, partez des [issues marquées «good first issue»](https://github.com/ai-swiss/base/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22); pour un changement conséquent, ouvrez d'abord une [discussion](https://github.com/ai-swiss/base/discussions) ou une [issue](https://github.com/ai-swiss/base/issues/new/choose), le temps de cadrer l'approche ensemble avant d'écrire le code.
 
 Pour modifier le cœur, la CLI, le MCP ou les tests, partez de [`specs/current/README.md`](specs/current/README.md): il décrit l'architecture Ports & Adapters et donne un bloc «Verified baseline» reproductible.
 
-Première exécution (Node 18 ou plus; environ une minute). Le cœur de BASE n'a aucune dépendance d'exécution; les commandes ci-dessous installent et lancent la **chaîne d'outils de contribution** (types, tests), qui en a besoin:
+Première exécution (Node 18 ou plus pour le cœur; Node 18.14.1 ou plus pour le serveur MCP et la vérification de publication complète; environ une minute). Le cœur de BASE n'a aucune dépendance d'exécution; les commandes ci-dessous installent et lancent la **chaîne d'outils de contribution** (types, tests), qui en a besoin:
 
 ```bash
 git clone https://github.com/ai-swiss/base.git && cd base
 npm ci                   # installe la chaîne d'outils de contribution (le cœur, lui, n'a aucune dépendance d'exécution)
-npm run check            # la barrière locale rapide (spec, types, validate, routes, docs, tests, doctor)
-npm run check:release    # l'image complète, comme la CI: check + smoke:pack + build et test du MCP
+npm run check            # la barrière locale principale (spec, types, validation, index, routes, docs, tests, doctor)
+npm run check:release    # Node >=18.14.1: check + audits, paquets installables et build/tests du MCP
 npm test                 # cœur + packages (~5 s) → tout vert
 npm run test:coverage    # mêmes tests + seuils 90/80/90
 npm run typecheck        # tsc --checkJs sur tools/ et packages/ → 0 erreur
@@ -31,11 +33,11 @@ npm run spec:check       # discipline de spec: matrice, IDs, feuilles, marqueurs
 
 Les barrières de discipline s'exécutent localement, et pas seulement en CI. Pour les déclencher à chaque commit, activez une fois les hooks fournis: `git config core.hooksPath .githooks`. Le hook `commit-msg` lance alors `spec-sync` (un changement de code touche `specs/` ou déclare `[SPEC-NEUTRAL: raison]`) et `changelog-sync` (un changement visible ajoute sa ligne au `CHANGELOG`, ou déclare `[CHANGELOG-SKIP: raison]`). Une simple coquille se déclare ainsi par `[CHANGELOG-SKIP: coquille]`: en local, le marqueur va dans le **message de commit**; en pull request, il peut aussi figurer dans le **corps de la PR**.
 
-`npm run check` est la **boucle locale rapide**; elle ne couvre pas tout. L'image complète, équivalente à la CI, est `npm run check:release` (check + `smoke:pack` + build et test du serveur MCP), à laquelle s'ajoutent, en CI seulement, la couverture, l'e2e du Studio et la régénération des artefacts. «Vert en local» ne signifie donc pas «vert partout»: voir [les gates de BASE](docs/reference/gates.md) pour ce que chaque contrôle vérifie et l'endroit où il s'exécute. Le serveur MCP et le Studio ont leurs propres dépendances: `cd mcp && npm ci && npm run build && npm test`, et `cd tools/studio/ui && npm ci && npm test && npm run build` (plus `npm run e2e` pour les parcours).
+`npm run check` est la **barrière locale principale** du cœur, compatible avec Node 18 ou plus; elle ne couvre pas tout. Avec Node 18.14.1 ou plus, `npm run check:release` l'étend avec les audits de dépendances de production, les essais d'installation des paquets du cœur et de la documentation, puis l'installation, l'audit, le build et les tests du serveur MCP. Elle ne reproduit pas toute la CI. La CI ajoute notamment les matrices Node et Windows, la couverture, la validation isolée des exemples, les différences des artefacts régénérés, le ratchet et l'immutabilité des IDs, les suites Studio et E2E, ainsi que les contrôles DCO et de synchronisation propres aux pull requests. «Vert en local» ne signifie donc pas «vert partout»: consultez [les gates de BASE](docs/reference/gates.md) et [la définition de la CI](https://github.com/ai-swiss/base/blob/main/.github/workflows/ci.yml). Le serveur MCP requiert Node 18.14.1 ou plus; le Studio a aussi ses propres dépendances: `cd mcp && npm ci && npm run build && npm test`, et `cd tools/studio/ui && npm ci && npm test && npm run build` (plus `npm run e2e` pour les parcours).
 
 La carte complète des suites (statique, unitaire, contrat, composants, end-to-end, accessibilité) est dans [`specs/TESTING.md`](specs/TESTING.md); la checklist de publication reproductible de bout en bout est dans [`specs/RELEASE.md`](specs/RELEASE.md).
 
-Les points d'extension (`FrontmatterParser`, `Validator`, `Ranker`, `PolicyEnforcer`, `AuthProvider`) se branchent via `base.config.{json,mjs}` **sans forker** le cœur; voir `specs/current/10_core/` et `exemples/routage-pme/base.config.json`.
+L'implémentation de référence accepte des points d'extension (`FrontmatterParser`, `Validator`, `Ranker`, `PolicyEnforcer`, `AuthProvider`) via `base.config.{json,mjs}` **sans forker** le cœur; voir [`specs/current/10_core/`](specs/current/10_core/) et [`exemples/routage-pme/base.config.json`](exemples/routage-pme/base.config.json).
 
 ### Discipline d'architecture (fonctions de validation)
 
@@ -43,11 +45,11 @@ Les fichiers d'orchestration (`tools/base.mjs`, `tools/base-core.mjs`, `mcp/src/
 
 ## Où écrire quoi
 
-Chaque type de travail a un seul foyer dans BASE: écrire au bon endroit, c'est préserver une source de vérité unique et un présent sans état (voir [`specs/current/00_overview/les-deux-plans.md`](specs/current/00_overview/les-deux-plans.md)).
+Chaque type de travail a un seul foyer dans BASE: écrire au bon endroit préserve une référence approuvée et versionnée unique, rédigée au présent (voir [`specs/current/00_overview/les-deux-plans.md`](specs/current/00_overview/les-deux-plans.md)).
 
 | Type de travail | Foyer | En une phrase |
 |---|---|---|
-| Comportement ou contrat actuel | `specs/current/` (feuille de spec) | Le présent du logiciel, décrit sans état, assez précisément pour le réimplémenter, avec sa preuve dans la matrice. |
+| Comportement ou contrat actuel | `specs/current/` (feuille de spec) | La référence approuvée du logiciel, décrite au présent et assez précisément pour le réimplémenter, avec sa preuve dans la matrice. |
 | Décision d'architecture ou de changement | `decisions/` (record, identifiant `AD-*` si applicable) | Un choix porteur, consigné comme record durable et tracé dans le plan de changement, jamais comme une preuve. |
 | Approche ou plan | `.plans/` (privé, ignoré par git) | Le «comment on s'y prend» du moment; une décision durable arrêtée dans un plan doit être promue en record dans `decisions/`. Un plan clos peut porter une ligne `Promoted: decisions/YYYY-MM-DD` pour relier la note privée à sa décision. |
 | Revue ou audit | `.reviews/` (privé, ignoré par git) | Le constat daté d'une revue; ce qui fait foi dans la durée est promu dans `decisions/` ou `specs/`, le reste demeure local. |
@@ -99,7 +101,7 @@ Gardez les principes suivants:
 
 ## Si vous voulez proposer une amélioration
 
-Utilisez les formulaires GitHub pour les bugs reproductibles et les demandes d'amélioration. Privilégiez:
+Utilisez les [formulaires GitHub](https://github.com/ai-swiss/base/issues/new/choose) pour les bugs reproductibles et les demandes d'amélioration. Privilégiez:
 
 - une correction précise;
 - un exemple reproductible;
@@ -113,9 +115,9 @@ En proposant une contribution (issue, pull request, correctif, exemple, traducti
 
 ### Traductions
 
-Le cœur de BASE est indépendant de la langue; seule la documentation du cadre est, pour l'instant, en français. Les **traductions de la documentation** (allemand, italien, anglais) sont des contributions particulièrement bienvenues, par exemple `README.de.md`, `README.it.md`, ou un dossier `docs/de/`. Conservez la même sobriété et la même honnêteté que l'original; ne traduisez pas les identifiants techniques (codes, `schema_version`, noms de champs), qui demeurent stables. La version française fait foi; chaque traduction le rappelle en tête de fichier.
+La documentation française fait foi. Son miroir anglais est maintenu dans `docs/en/`: chaque page traduite ne contient que le corps, nomme la source française et porte un marqueur `fr-synced` vérifié par `check-translations`. Les miroirs allemands et italiens sont facultatifs et peuvent rester partiels; une page absente retombe sur le français, tandis qu'une page présente doit rester synchronisée.
 
-Le contrat complet est dans [`TRANSLATING.md`](TRANSLATING.md): structure des miroirs (corps seul, sans frontmatter), marqueur `fr-synced` vérifié par le gate `check-translations`, barre de qualité, glossaire vivant et marche à suivre pour ajouter une langue.
+Les **traductions de la documentation** sont les bienvenues. Conservez la même sobriété et la même honnêteté que la source; ne traduisez pas les identifiants techniques (codes, `schema_version`, noms de champs), qui demeurent stables. Le contrat complet est dans [`TRANSLATING.md`](TRANSLATING.md): structure des miroirs, marqueur `fr-synced`, barre de qualité, glossaire vivant et marche à suivre pour ajouter une langue.
 
 ## Style et changelog
 
@@ -130,4 +132,4 @@ Le contrat complet est dans [`TRANSLATING.md`](TRANSLATING.md): structure des mi
 - Promettre une sécurité enterprise dans le cœur public.
 - Rendre BASE dépendant d'un modèle, d'un fournisseur ou d'un harness précis.
 
-BASE doit demeurer simple en surface, rigoureux dans ses abstractions et progressif dans ses exigences.
+BASE doit demeurer simple en surface, rigoureux dans ses abstractions et progressif dans ses exigences. Pour contribuer maintenant, ouvrez une [pull request](https://github.com/ai-swiss/base/compare) avec le résultat de `npm run check` et le contexte du changement.

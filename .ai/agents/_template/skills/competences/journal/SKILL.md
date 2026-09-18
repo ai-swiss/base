@@ -17,7 +17,7 @@ Le journal est la mémoire externe de l'agent d'une conversation à l'autre. San
 
 ## Quand écrire une entrée
 
-À la **fin de chaque process** (chaque workflow invocable), l'agent écrit une entrée de journal. C'est l'ultime étape de tout process.
+À la **fin de chaque process** (chaque procédure invocable), l'agent écrit une entrée de journal. C'est l'ultime étape de tout process.
 
 ## Où écrire
 
@@ -77,7 +77,7 @@ Si un process est interrompu en cours de route, l'entrée de journal comporte un
 ```markdown
 ## Progression
 - [x] Étape 1 : Découverte du besoin
-- [x] Étape 2 : Identification des workflows
+- [x] Étape 2: Identification des procédures
 - [ ] Étape 3 : Connaissances métier
 - [ ] Étape 4 : Documents types
 - [ ] Étape 5 : Architecture complète

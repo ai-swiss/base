@@ -1,0 +1,74 @@
+{
+  "schema_version": "base.probe-scenario.v1",
+  "id": "cli-factual-section",
+  "title": "Une question locale ouvre seulement le passage qui répond",
+  "access": "base-read",
+  "setup": {
+    "kind": "init",
+    "args": [
+      "--language",
+      "fr",
+      "--about",
+      "Aider une équipe à appliquer ses procédures"
+    ],
+    "files": {
+      "knowledge/conditions.md": "---\nschema_version: base.resource.v1\nid: conditions-equipe\ntype: document\ntitle: Conditions de l'équipe\ndescription: Délais et conditions applicables aux projets de l'équipe.\nscope: team\nstatus: active\nsensitivity: internal\n---\n# Conditions de l'équipe\n\n## Délai de paiement {#delai-de-paiement}\n\nLes factures sont payables à 45 jours à compter de leur date d'émission.\n\n## Archivage {#archivage}\n\nLes dossiers terminés sont archivés pendant cinq ans.\n"
+    }
+  },
+  "prompt": "Quel est le délai de paiement prévu par notre équipe? Réponds brièvement et indique précisément le passage qui le dit.",
+  "expect": {
+    "required": [
+      {
+        "type": "command",
+        "matches": "\\bdiscover\\b.*--grain\\s+section",
+        "succeeded": true
+      },
+      {
+        "type": "command",
+        "matches": "\\bopen\\b.*conditions-equipe#delai-de-paiement",
+        "succeeded": true
+      },
+      {
+        "type": "final_answer",
+        "matches": "45 jours"
+      },
+      {
+        "type": "final_answer",
+        "includes": "conditions-equipe#delai-de-paiement"
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "file_read",
+        "path_ends_with": "knowledge/conditions.md"
+      },
+      {
+        "type": "file_added",
+        "path_matches": "^(?!\\.ai/trace/)"
+      },
+      {
+        "type": "file_modified",
+        "path_matches": "^(?!\\.ai/trace/)"
+      },
+      {
+        "type": "file_removed",
+        "path_matches": "^(?!\\.ai/trace/)"
+      }
+    ],
+    "order": [
+      [
+        {
+          "type": "command",
+          "matches": "\\bdiscover\\b"
+        },
+        {
+          "type": "command",
+          "matches": "\\bopen\\b"
+        },
+        {
+          "type": "final_answer"
+        }
+      ]
+    ]
+  }
+}

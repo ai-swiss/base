@@ -41,16 +41,32 @@ import {
   brokerProposeChange,
   brokerContextScope,
   brokerResolveBaseContext,
+  brokerWorkspaceWarnings,
   brokerResolveConfig,
   brokerRouteRequest,
   brokerDecideWorkspaceRoute,
   brokerSearchResources,
+  type BrokerProjection,
+  type BrokerSectionHit,
   type BrokerRouteResult,
   brokerAppendAbstention,
   brokerIsAbstention,
   brokerReportFriction,
 } from "./base-core-adapter.js";
 import { createLogger } from "./logger.js";
+// What the server SAYS (payload shape + the text beside it) lives in ./format.ts.
+import {
+  agentDisplayName,
+  findAgentsByName,
+  formatAgentCatalog,
+  formatAgentNotFound,
+  formatAmbiguousAgentName,
+  formatNoAgentsFound,
+  withScope,
+  withScopeText,
+} from "./format.js";
+import { DISCOVER_DESCRIPTION, OPEN_DESCRIPTION, foundPayload, knowledgeSiblings, openContentBlocks, openPayload, registerGetRoutingMap, sectionRequest } from "./knowledge.js";
+import { attributionReader, readMcpExposure } from "./exposure.js";
 import { withRouteGuidance, registerChangeStatusTools } from "./route-guidance.js";
 import { parseArgs, remoteExposureError, dnsRebindingGuard } from "./transport.js";
 export { parseArgs, isLoopbackHost, remoteExposureError, crossOriginError } from "./transport.js";
@@ -371,8 +387,8 @@ export async function inventoryResources(rootDir: string): Promise<ResourceInfo[
   return brokerInventoryResources(rootDir) as Promise<ResourceInfo[]>;
 }
 
-export async function searchResources(rootDir: string, query: string, limit = 10): Promise<ResourceInfo[]> {
-  return brokerSearchResources(rootDir, query, limit) as Promise<ResourceInfo[]>;
+export async function searchResources(rootDir: string, query: string, limit = 10, grain: "resource" | "section" = "resource", scope?: string): Promise<ResourceInfo[] | BrokerSectionHit[]> {
+  return brokerSearchResources(rootDir, query, limit, grain, scope) as Promise<ResourceInfo[] | BrokerSectionHit[]>;
 }
 
 export async function routeRequest(rootDir: string, request: string, limit?: number) {
@@ -382,14 +398,16 @@ export async function routeRequest(rootDir: string, request: string, limit?: num
 export async function openResource(
   rootDir: string,
   idOrPath: string,
-  projection: "metadata" | "instructions" | "full" = "full",
+  projection: BrokerProjection = "full",
   purpose = "",
   confirmed = false,
   grantToken?: string,
-): Promise<{ resource: ResourceInfo; content: string }> {
-  const result = await brokerOpenResource(rootDir, idOrPath, projection, purpose, confirmed, grantToken);
+  section?: string,
+  lang?: string,
+): Promise<{ resource: ResourceInfo; content: string } & Record<string, unknown>> {
+  const result = await brokerOpenResource(rootDir, idOrPath, projection, purpose, confirmed, grantToken, section, lang);
   if (!result.resource) throw new Error(`Resource not found: ${idOrPath}`);
-  return { resource: result.resource as ResourceInfo, content: result.content };
+  return { resource: result.resource as ResourceInfo, content: result.content, ...knowledgeSiblings(result) };
 }
 
 export async function accessResource(
@@ -453,8 +471,14 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
     return match ? { mode: "workspace", workspace: workspaceScope, root: rootScope(match) } : scope;
   };
   const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION }, { instructions: guidance.instructions });
+  // What this deployment exposes. `expose` guards each registration BY NAME below, so the surface is
+  // provable from the config rather than from what a client happens to call (./exposure.ts).
+  const exposure = await readMcpExposure(rootDir);
+  const expose = (tool: string) => !exposure.tools || exposure.tools.has(tool);
+  const agentAllowed = (agent: AgentInfo) => !exposure.agents || exposure.agents.has(agent.name);
+  const attribution = attributionReader(exposure);
 
-  server.tool(
+  if (expose("load_agent")) server.tool(
     "load_agent",
     [
       "Load the lightweight bootstrap for a BASE business AI agent.",
@@ -465,13 +489,11 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
     ].join(" "),
     {
       name: z.string().optional().describe("Agent name. Omit to list available agents."),
-      include_data: z
-        .boolean()
-        .optional()
-        .describe("Deprecated compatibility flag. Data is not bulk-loaded; use access_resource for targeted access."),
     },
-    async ({ name, include_data }) => {
-      const agents = await egressVisibleAgents(await discoverWorkspaceAgents(await rootChoices()));
+    // `include_data` is not a parameter of this tool. Zod drops it before the handler sees it; data
+    // remains available through the targeted read tools because loading is lazy by design.
+    async ({ name }) => {
+      const agents = (await egressVisibleAgents(await discoverWorkspaceAgents(await rootChoices()))).filter(agentAllowed);
 
       // No name → list available agents
       if (!name) {
@@ -503,18 +525,8 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
       }
 
       // Load only bootstrap and catalogs. Detailed access goes through router primitives.
-      log.info("Loading agent", { agent: name, includeData: !!include_data });
-      let result = await bundleAgentBootstrap(agent);
-
-      if (include_data) {
-        result += [
-          "",
-          "---",
-          "# Note de compatibilité",
-          "",
-          "`include_data` n'entraîne plus de chargement global des données métier. Ouvrez seulement les données nécessaires avec `access_resource`.",
-        ].join("\n");
-      }
+      log.info("Loading agent", { agent: name });
+      const result = await bundleAgentBootstrap(agent);
 
       log.info("Agent loaded", { agent: name, totalChars: result.length });
 
@@ -522,20 +534,22 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
     },
   );
 
-  server.tool(
+  if (expose("discover_resources")) server.tool(
     "discover_resources",
-    "Search local BASE resources with explainable ranking over metadata, titles, descriptions and full text.",
+    DISCOVER_DESCRIPTION,
     {
       query: z.string().describe("Search query."),
       limit: z.number().int().positive().optional().describe("Maximum number of results. Default: 10."),
+      grain: z.enum(["resource", "section"]).optional().describe("resource (default): whole resources. section: passages with their heading path and the citable ref id#anchor."),
+      scope: z.string().optional().describe("Root-relative folder to search in, for example collections/acme/guide."),
       root_id: z.string().optional().describe("Optional root id from load_agent or route_request when several roots are visible."),
     },
-    async ({ query, limit, root_id }) => {
+    async ({ query, limit, grain, scope: searchScope, root_id }) => {
       let selectedRoot = rootDir;
       try {
         selectedRoot = await effectiveRoot(root_id);
-        const results = await searchResources(selectedRoot, query, limit ?? 10);
-        return { content: [{ type: "text" as const, text: json({ results }, scopeForRoot(selectedRoot)) }] };
+        const results = await searchResources(selectedRoot, query, limit ?? 10, grain ?? "resource", searchScope);
+        return { content: [{ type: "text" as const, text: json(await foundPayload(results, grain === "section" ? (hit) => attribution(selectedRoot, hit) : undefined), scopeForRoot(selectedRoot)) }] };
       } catch (err) {
         return {
           content: [{ type: "text" as const, text: clientError(err, selectedRoot) }],
@@ -545,7 +559,7 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
     },
   );
 
-  server.tool(
+  if (expose("route_request")) server.tool(
     "route_request",
     [
       "Route a user request to the right BASE agent and process, or honestly abstain.",
@@ -563,7 +577,15 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
     async ({ request, limit, root_id }) => {
       // Every abstention is journalled by this ADAPTER (.ai/feedback/abstentions.jsonl) — an
       // unserved request is a process waiting to exist. The broker stays side-effect free.
+      //
+      // Except in read-only mode, where nothing is written to the corpus at all. The journal holds
+      // the request TEXT, which on a shared or public server is a stranger's question: a server
+      // that promises to write nothing must not keep it. Read-only is the one signal, so a
+      // deployment's posture is provable from how it was launched, with no second switch to forget.
+      // What remains is the operational trace (operation, path, duration, and a HASH of the
+      // arguments, never the text), which is what an operator needs and no one can read back.
       const journal = async (root: string, result: { status: string; next_question?: string | null }) => {
+        if (readOnly) return;
         if (await brokerIsAbstention(result.status)) {
           await brokerAppendAbstention(root, { query: request, verdict: result.status, suggestion: result.next_question ?? null }).catch(() => {});
         }
@@ -589,25 +611,26 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
     },
   );
 
-
-
-  server.tool(
+  if (expose("open_resource")) server.tool(
     "open_resource",
-    "Open an INVENTORIED BASE resource by id or relative path, confined to the local project. Errors on a path that is not an inventoried resource (business data files: use access_resource).",
+    OPEN_DESCRIPTION,
     {
-      id_or_path: z.string().describe("Resource id or relative path."),
-      projection: z.enum(["metadata", "instructions", "full"]).optional().describe("Projection to return. Default: full."),
+      id_or_path: z.string().describe("Resource id, relative path, or id#anchor (the ref of one section)."),
+      projection: z.enum(["metadata", "instructions", "full", "outline", "source"]).optional().describe("Projection to return. Default: full. outline: the headings with their anchors. source: the source record and the printed pages."),
+      section: z.string().optional().describe("Anchor of the one section to return instead of the whole body."),
+      lang: z.string().optional().describe("ISO 639-1 language of the edition to open (a translation declares translation_of). Falls back to the canonical edition, flagged in `edition`."),
       purpose: z.string().optional().describe("Why this resource is needed. Used by policy adapters."),
       confirmed: z.boolean().optional().describe("Explicit confirmation for sensitive reads."),
       grant_token: z.string().optional().describe("Optional grant token for strict policy adapters."),
       root_id: z.string().optional().describe("Optional root id from load_agent or route_request when several roots are visible."),
     },
-    async ({ id_or_path, projection, purpose, confirmed, grant_token, root_id }) => {
+    async ({ id_or_path, projection, section, lang, purpose, confirmed, grant_token, root_id }) => {
       let selectedRoot = rootDir;
       try {
         selectedRoot = await effectiveRoot(root_id);
-        const result = await openResource(selectedRoot, id_or_path, projection ?? "full", purpose ?? "", confirmed ?? false, grant_token);
-        return { content: [{ type: "text" as const, text: json(result, scopeForRoot(selectedRoot)) }] };
+        const { target, anchor } = sectionRequest(id_or_path, section);
+        const result = await openResource(selectedRoot, target, projection ?? "full", purpose ?? "", confirmed ?? false, grant_token, anchor, lang);
+        return { content: openContentBlocks(openPayload(result, await attribution(selectedRoot, result.resource.path)), (payload) => json(payload, scopeForRoot(selectedRoot))) };
       } catch (err) {
         return {
           content: [{ type: "text" as const, text: clientError(err, selectedRoot) }],
@@ -617,7 +640,7 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
     },
   );
 
-  server.tool(
+  if (expose("get_context_pack")) server.tool(
     "get_context_pack",
     "Plan what to preload for a process before following it: the paths and notes its declared references resolve to, with what stayed out (budget) and what could not resolve. Never returns file bodies - open a listed path with open_resource. Read-only.",
     {
@@ -639,7 +662,7 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
     },
   );
 
-  server.tool(
+  if (expose("access_resource")) server.tool(
     "access_resource",
     "Read a project file by relative path, with BASE path confinement. Superset of open_resource: an inventoried resource opens identically; any other file (e.g. business data listed by load_agent) gets a confined raw read. Prefer routing first (route_request) so you read only what the chosen process needs.",
     {
@@ -669,12 +692,14 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
 
   // Change-status reads (read-only, registered in every mode): verify what is staged and whether a
   // claimed write actually happened, against server truth rather than the model's narration.
-  registerChangeStatusTools(server, { effectiveRoot, scopeForRoot, json, clientError });
+  registerChangeStatusTools(server, { effectiveRoot, scopeForRoot, json, clientError, expose });
+  // The map without a verdict, for a client whose model routes by itself. Read-only like the two above.
+  registerGetRoutingMap(server, { effectiveRoot, scopeForRoot, json, clientError, expose, agentAllowed: (id) => !exposure.agents || exposure.agents.has(id) });
 
   // Write & execute tools. In read-only mode (recommended for shared/remote deployments) they are
   // not registered at all, so the surface is provably read-only — there is no tool to reach a write.
   if (!readOnly) {
-    server.tool(
+    if (expose("report_friction")) server.tool(
       "report_friction",
       [
         "Report a field friction about a process: what broke or drifted in real use. Appends a dated",
@@ -703,7 +728,7 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
       },
     );
 
-    server.tool(
+    if (expose("invoke_tool")) server.tool(
       "invoke_tool",
       "Invoke a local tool script. Dry-run is default; execution requires explicit confirmation.",
       {
@@ -746,7 +771,7 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
       },
     );
 
-    server.tool(
+    if (expose("propose_change")) server.tool(
       "propose_change",
       [
         "Prepare a mediated write to a local file, confined to the project. This is the ONLY way to change",
@@ -776,7 +801,7 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
       },
     );
 
-    server.tool(
+    if (expose("commit_change")) server.tool(
       "commit_change",
       [
         "Apply a change previously staged by propose_change, by its change_id (call propose_change first;",
@@ -805,7 +830,7 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
       },
     );
 
-    server.tool(
+    if (expose("promote_resource")) server.tool(
       "promote_resource",
       [
         "Prepare the promotion of a resource to a wider scope (e.g. personal -> team).",
@@ -836,7 +861,7 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
     );
   }
 
-  server.tool(
+  if (expose("list_markers")) server.tool(
     "list_markers",
     "List open work markers ([A VALIDER], [A COMPLETER], [ATTENTION], [DECISION]) in business documents, skipping framework files.",
     {
@@ -858,68 +883,6 @@ export async function createServer(rootDir: string, options: ServerOptions = {})
   );
 
   return server;
-}
-
-// ---------------------------------------------------------------------------
-// Response Formatting
-// ---------------------------------------------------------------------------
-
-function withScope(scope: Record<string, unknown> | undefined, payload: unknown): unknown {
-  if (!scope) return payload;
-  if (payload && typeof payload === "object" && !Array.isArray(payload)) {
-    return { scope, ...(payload as Record<string, unknown>) };
-  }
-  return { scope, value: payload };
-}
-
-function withScopeText(scope: Record<string, unknown> | undefined, text: string): string {
-  if (!scope) return text;
-  return `${formatScopeText(scope)}\n\n${text}`;
-}
-
-function formatScopeText(scope: Record<string, unknown>): string {
-  const root = scope.root as Record<string, unknown> | undefined;
-  const workspace = scope.workspace as Record<string, unknown> | undefined;
-  if (workspace && root) return `Using BASE workspace: ${workspace.label ?? workspace.id}\nUsing BASE root: ${root.id ?? root.display_path ?? root.path}`;
-  if (root) return `Using BASE root: ${root.display_path ?? root.path}`;
-  return `Using BASE scope: ${scope.mode ?? "unknown"}`;
-}
-
-function formatAgentCatalog(agents: AgentInfo[]): string {
-  const list = agents.map((a) => `- **${agentDisplayName(a)}** : ${a.description}`).join("\n");
-  return `# Agents BASE disponibles\n\n${list}\n\nPour charger un agent, demandez-moi de charger l'agent de votre choix.`;
-}
-
-function formatAgentNotFound(name: string, agents: AgentInfo[]): string {
-  const available = agents.map(agentDisplayName).join(", ");
-  return `Agent "${name}" non trouvé. Agents disponibles: ${available}`;
-}
-
-function formatAmbiguousAgentName(name: string, agents: AgentInfo[]): string {
-  return [
-    `Plusieurs agents correspondent à "${name}".`,
-    "Choisissez un nom qualifié:",
-    ...agents.map((agent) => `- ${agentDisplayName(agent)}`),
-  ].join("\n");
-}
-
-function formatNoAgentsFound(rootDir: string): string {
-  return [
-    `Aucun agent trouvé dans ${rootDir}.`,
-    "Vérifiez que le dossier contient .ai/agents/ avec des fichiers AGENT.md.",
-  ].join(" ");
-}
-
-function findAgentsByName(agents: AgentInfo[], name: string): AgentInfo[] {
-  if (name.includes("/")) {
-    const [rootId, agentName] = name.split("/", 2);
-    return agents.filter((agent) => agent.rootId === rootId && agent.name === agentName);
-  }
-  return agents.filter((agent) => agent.name === name);
-}
-
-function agentDisplayName(agent: AgentInfo): string {
-  return agent.rootId ? `${agent.rootId}/${agent.name}` : agent.name;
 }
 
 async function routeAcrossWorkspaceRoots(roots: WorkspaceRoot[], request: string, limit?: number) {
@@ -1100,6 +1063,7 @@ export async function main() {
     scope,
     version: SERVER_VERSION,
   });
+  for (const warning of brokerWorkspaceWarnings(routingContext)) log.warn(warning.message, warning);
 
   // Relaxing a confidentiality control must leave a trace, not just a silent behaviour change.
   if (process.env.BASE_MCP_ALLOW_CONFIDENTIAL === "1") {
@@ -1115,7 +1079,7 @@ export async function main() {
       process.exit(1);
     }
     if (configured) log.info("AuthProvider active for HTTP transport");
-    if (config.readOnly) log.info("Read-only mode: write and execute tools are not exposed");
+    if (config.readOnly) log.info("Read-only mode: write and execute tools are not exposed, and nothing is written to the corpus (no abstention journal)");
     const app = createHttpApp(rootDir, provider, { readOnly: config.readOnly, scope, workspaceScope, workspaceRoots }, config.host);
 
     const httpServer = app.listen(config.port, config.host, () => {
@@ -1132,7 +1096,7 @@ export async function main() {
     process.on("SIGINT", shutdown);
     process.on("SIGTERM", shutdown);
   } else {
-    if (config.readOnly) log.info("Read-only mode: write and execute tools are not exposed");
+    if (config.readOnly) log.info("Read-only mode: write and execute tools are not exposed, and nothing is written to the corpus (no abstention journal)");
     const server = await createServer(rootDir, { readOnly: config.readOnly, scope, workspaceScope, workspaceRoots });
     const transport = new StdioServerTransport();
     await server.connect(transport);

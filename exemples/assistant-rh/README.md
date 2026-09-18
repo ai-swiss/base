@@ -3,8 +3,8 @@
 ## Essayez en 30 secondes
 
 1. Ouvrez **ce dossier** (pas la racine du dépôt) dans Claude Code ou Cursor.
-2. Dites, mot pour mot: **«Bonjour, je voudrais configurer mon activité»**
-3. Vous devriez voir: l'assistant vous accueille et lance la configuration pas à pas, en posant une seule question à la fois (en commençant par le nom de votre entreprise). Rien n'est écrit ni envoyé sans vous.
+2. Dites, mot pour mot: **«Bonjour, je veux configurer mon assistant RH»**
+3. Vous devriez voir: l'assistant vous accueille et lance la configuration pas à pas, en posant une seule question à la fois (en commençant par le nom de votre entreprise). Demander votre confirmation est ici une consigne à l'assistant. Pour une écriture, la confirmation n'est mécanique que via `base propose` puis `base commit`, ou leurs équivalents MCP.
 
 Un assistant IA qui aide les PME suisses à mener leur recrutement par la conversation: publier des offres d'emploi, préparer des entretiens et évaluer les candidats.
 
@@ -14,7 +14,7 @@ L'assistant vous guide pour configurer votre entreprise, puis vous accompagne da
 
 | Vous dites | Il fait |
 |------------|---------|
-| «Bonjour, je voudrais configurer mon activité» (première fois) | Configure votre entreprise et votre politique RH pas à pas |
+| «Bonjour, je veux configurer mon assistant RH» (première fois) | Configure votre entreprise et votre politique RH pas à pas |
 | «Je cherche un développeur» | Crée une offre d'emploi complète |
 | «J'ai un entretien avec Marie Dupont» | Prépare l'entretien (questions, grille d'évaluation) |
 | «Évalue ce candidat» | Aide à structurer l'évaluation après entretien |
@@ -28,7 +28,7 @@ assistant-rh/
 ├── .ai/agents/assistant-rh/    L'intelligence de l'agent
 │   ├── AGENT.md                 Instructions principales
 │   ├── skills/
-│   │   ├── processes/           Workflows (config, offres, entretiens)
+│   │   ├── processes/           Procédures (config, offres, entretiens)
 │   │   └── competences/         Connaissances (droit du travail, marqueurs, journal)
 │   └── templates/               Modèles (offre d'emploi, grille d'entretien)
 │

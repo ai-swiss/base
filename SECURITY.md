@@ -1,6 +1,6 @@
 # Sécurité
 
-BASE est un cadre local-first qui structure la collaboration entre l'humain et l'IA. Le cœur public fournit des garde-fous locaux, mais il ne remplace pas la sécurité d'une organisation.
+BASE est une convention ouverte accompagnée d'une implémentation de référence local-first pour structurer la collaboration entre l'humain et l'IA. Cette implémentation fournit des garde-fous locaux, mais elle ne remplace pas la sécurité d'une organisation. La référence décrit les contrôles attendus; leur application effective dépend du chemin d'exécution et des permissions accordées.
 
 ## Signaler un problème
 
@@ -19,9 +19,9 @@ Incluez si possible:
 
 Nos engagements de bonne foi, indicatifs et non contractuels: **accusé de réception sous 3 jours ouvrés**, **première évaluation sous 10 jours ouvrés** et **divulgation coordonnée sous 90 jours**, selon la gravité et la complexité du correctif. Nous vous tenons informé de son avancement. Ne divulguez pas publiquement un exploit actif tant qu'un correctif ou une mesure d'atténuation raisonnable n'est pas disponible.
 
-## Périmètre du cœur public
+## Périmètre de l'implémentation de référence
 
-BASE public vérifie notamment:
+L'implémentation de référence vérifie notamment:
 
 - le confinement local des chemins pour les opérations médiées;
 - le refus des traversées de chemin et des symlinks sortants;
@@ -29,24 +29,34 @@ BASE public vérifie notamment:
 - l'invocation d'outils en dry-run par défaut;
 - les traces minimales des opérations médiées par BASE.
 
-Ces garanties valent seulement pour les actions qui passent par la CLI, le broker, le MCP ou un futur connecteur contrôlé.
+Chaque garantie s'applique selon son mécanisme, lorsque l'action passe effectivement par la CLI, le composant de médiation de BASE (le broker) ou le serveur MCP.
 
-## Écriture hors du projet: une seule, déclarée
+## Localisation du cadre
 
-Tout l'état de BASE réside dans le dossier du projet, à une exception près: `base init` enregistre
-l'emplacement du cadre dans **`~/.config/base/config.json`** (un seul champ, `framework_dir`),
-afin que `base whereis` et les autres outils retrouvent l'installation. C'est la seule écriture
-hors du root.
+`node <BASE_DIR>/tools/base.mjs init --yes` tente d'enregistrer l'emplacement de l'implémentation de référence dans
+**`~/.config/base/config.json`**, avec un champ `framework_dir`. Cette configuration propre à
+l'utilisateur permet au lanceur et aux autres outils de retrouver l'installation sans inscrire un
+chemin propre à la machine dans chaque projet.
 
-- Elle se fait **au mieux**: si le dossier personnel est en lecture seule (cas fréquent pour un agent
-  IA en bac à sable), `base init` réussit malgré tout et affiche le contenu à créer à la main.
-- Le fichier ne contient **aucun secret**: ni clé ni donnée métier, seulement un chemin.
-- Pour la désactiver ou la rediriger, pointez la variable d'environnement `BASE_CONFIG_HOME` vers
-  un dossier de votre choix (les tests s'en servent pour ne jamais toucher le vrai `~/.config`).
+- L'enregistrement se fait **au mieux**: un dossier personnel en lecture seule ne fait pas échouer
+  l'initialisation.
+- Si cette configuration est absente, illisible ou inutilisable au moment de préparer une nouvelle
+  racine, `node <BASE_DIR>/tools/base.mjs init --yes` inscrit `framework_dir` dans le
+  `base.config.json` de cette racine. Le projet
+  reste alors exécutable, mais ce chemin absolu peut devoir être adapté sur une autre machine.
+- Le fichier utilisateur ne contient **aucun secret**: ni clé ni donnée métier, seulement sa version
+  de schéma et le chemin du cadre.
+- `BASE_CONFIG_HOME` redirige le dossier personnel utilisé pour cette configuration. Les tests
+  l'emploient pour ne pas toucher au vrai `~/.config`.
+
+Cette description concerne la découverte du cadre, pas toutes les écritures possibles d'un outil,
+d'un modèle ou d'une intégration. Le confinement annoncé par BASE ne couvre que les opérations
+médiées énumérées ci-dessus; un accès direct au shell ou au système de fichiers conserve ses propres
+permissions.
 
 ## Hors périmètre
 
-BASE public ne fournit pas seul:
+L'implémentation de référence ne fournit pas seule:
 
 - IAM, SSO ou RBAC enterprise;
 - DLP, SIEM, archivage légal ou rétention réglementaire;
@@ -54,4 +64,5 @@ BASE public ne fournit pas seul:
 - garantie d'exactitude des réponses générées par un modèle;
 - protection contre les politiques propres aux fournisseurs IA utilisés.
 
-Pour une analyse détaillée, voir `docs/trust/securite-et-limites.md`.
+Pour une analyse détaillée, consultez [Sécurité et limites](docs/trust/securite-et-limites.md), puis
+signalez tout problème exploitable par [GitHub Security Advisories](https://github.com/ai-swiss/base/security/advisories/new).

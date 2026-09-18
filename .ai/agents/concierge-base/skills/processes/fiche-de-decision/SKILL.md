@@ -44,7 +44,8 @@ structure la décision.
    `{AAAA-MM-JJ}_{sujet}_decisions-filled.md` (l'export se range ainsi à côté de sa fiche vierge et
    reste lisible hors de son dossier).
 3. **Rester sobre.** Pas de référence à un cadre externe; le style est déjà dans le modèle.
-   `.temp/` est ignoré par git, la fiche reste un brouillon.
+   `.temp/` est ignoré par git, la fiche reste un brouillon. Avant de la livrer, relisez le fichier
+   entier, commentaires HTML compris: en français, aucun tiret cadratin ni espace avant `:;!?`.
 4. **Ouvrir la fiche** pour la personne et attendre. La fiche s'enregistre dans le navigateur;
    l'export est un Markdown qu'elle vous rend.
 5. **Agir sur l'export.** Appliquez là où elle est d'accord, suivez ses commentaires là où elle

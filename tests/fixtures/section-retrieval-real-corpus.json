@@ -1,0 +1,127 @@
+{
+  "schema_version": "base.section-retrieval-fixture.v1",
+  "id": "base-public-fr-real-questions",
+  "description": "Questions françaises observées lors de l'audit empirique du corpus public de BASE.",
+  "cases": [
+    {
+      "query": "Qu’est-ce que BASE et à quoi ça sert ?",
+      "ref": "docs-comprendre-md#comprendre-base-et-faconner-l-interaction-avec-l-ia"
+    },
+    {
+      "query": "Pourquoi posséder la structure de mes interactions avec l’IA ?",
+      "ref": "co-penser-avec-lia#pourquoi-base"
+    },
+    {
+      "query": "Comment co-penser avec l’IA au lieu de tout lui déléguer ?",
+      "ref": "co-penser-avec-lia#co-penser-pas-tout-deleguer"
+    },
+    {
+      "query": "Quelle boucle suivre pour cadrer, confier, évaluer et ajuster une réponse ?",
+      "ref": "pratiques-co-pensee#la-co-pensee-en-pratique"
+    },
+    {
+      "query": "Pourquoi BASE ne découpe-t-il pas tout le travail en une multitude d’agents ?",
+      "ref": "au-dela-des-agents#un-point-d-acces-par-intention"
+    },
+    {
+      "query": "Quand vaut-il mieux garder un seul fil plutôt que lancer plusieurs agents en parallèle ?",
+      "ref": "au-dela-des-agents#le-critere-de-separation"
+    },
+    {
+      "query": "Quelle installation choisir entre Cursor, Claude Code, MCP et un simple navigateur ?",
+      "ref": "installer#votre-situation-votre-page"
+    },
+    {
+      "query": "Puis-je demander à mon IA d’installer BASE à ma place ?",
+      "ref": "installer-par-votre-ia#le-bloc-a-coller"
+    },
+    {
+      "query": "Comment essayer BASE dans ChatGPT ou Claude sans rien installer ?",
+      "ref": "essayer-sans-installer#le-plus-simple-un-chat-d-ia-dans-le-navigateur"
+    },
+    {
+      "query": "J’ai déjà un dossier de notes et de procédures, comment le transformer en BASE ?",
+      "ref": "quickstart#j-ai-deja-un-dossier-de-notes-ou-de-procedures"
+    },
+    {
+      "query": "Quelle différence entre router vers un process et chercher une ressource ?",
+      "ref": "routage-process-et-ressources#pourquoi-ne-pas-router-toutes-les-ressources"
+    },
+    {
+      "query": "Que se passe-t-il quand aucune route ne correspond à ma demande ?",
+      "ref": "routage-process-et-ressources#quand-base-ne-trouve-pas-de-route-le-repli-fallback"
+    },
+    {
+      "query": "Dans quel ordre l’assistant doit-il lire la racine, l’agent, le process et le contexte ?",
+      "ref": "decouverte-progressive#la-decouverte-progressive-du-premier-fichier-au-geste-final"
+    },
+    {
+      "query": "Comment retrouver puis ouvrir seulement le passage précis qui répond à une question factuelle ?",
+      "ref": "structurer-un-corpus-de-connaissance#deux-grains-deux-questions"
+    },
+    {
+      "query": "Qu’est-ce qui change quand plusieurs personnes partagent le même BASE ?",
+      "ref": "travailler-en-equipe#ce-qui-change-quand-le-base-est-partage"
+    },
+    {
+      "query": "Quand utiliser une seule racine ou un workspace avec plusieurs clients ?",
+      "ref": "travailler-en-equipe#une-racine-ou-plusieurs"
+    },
+    {
+      "query": "Quelles données restent locales et lesquelles peuvent sortir vers un fournisseur IA ?",
+      "ref": "docs-trust-frontiere-local-vs-sortant#2-ce-qui-ne-peut-sortir-que-sur-choix-explicite"
+    },
+    {
+      "query": "Le champ sensitivity suffit-il à empêcher l’envoi d’un document confidentiel ?",
+      "ref": "docs-trust-frontiere-local-vs-sortant#3-sous-quelle-autorite"
+    },
+    {
+      "query": "Où sont les preuves vérifiables des promesses de BASE ?",
+      "ref": "evidence#verifier-les-promesses-de-base-et-ses-limites"
+    },
+    {
+      "query": "Les évaluations par un juge IA prouvent-elles la qualité de BASE ?",
+      "ref": "evidence#evaluer-votre-assistant-sans-en-faire-une-preuve"
+    },
+    {
+      "query": "Quelles garanties ai-je avec Cursor, Claude Code ou un serveur MCP ?",
+      "ref": "compatibilite-harnesses#savoir-quelles-garanties-vous-obtenez-selon-votre-outil"
+    },
+    {
+      "query": "Puis-je changer d’outil ou de modèle sans perdre mon expertise ?",
+      "ref": "co-penser-avec-lia#une-portabilite-a-verifier"
+    },
+    {
+      "query": "À partir de quand faut-il remplacer le scan en mémoire par un index local ?",
+      "ref": "comprendre-echelle#index-local"
+    },
+    {
+      "query": "Quand un moteur de recherche externe devient-il nécessaire à grande échelle ?",
+      "ref": "comprendre-echelle#moteur-externe"
+    },
+    {
+      "query": "Mon assistant ignore les instructions du dossier, que dois-je vérifier ?",
+      "ref": "installer#quatre-pieges-d-environnement"
+    },
+    {
+      "query": "Comment diagnostiquer liens morts, ressources orphelines et relectures échues ?",
+      "ref": "structurer-un-corpus-de-connaissance#verifier-son-travail"
+    },
+    {
+      "query": "Comment promouvoir une pratique individuelle en méthode d’équipe gouvernée ?",
+      "ref": "adoption-organisation#palier-2-l-equipe-promeut"
+    },
+    {
+      "query": "BASE suffit-il pour la conformité, l’IAM, la DLP et l’archivage d’une administration ?",
+      "ref": "securite-et-limites#ce-que-base-public-ne-protege-pas-seul"
+    },
+    {
+      "query": "Existe-t-il un exemple concret de devis avec une remise fidélité à vérifier ?",
+      "ref": "essayer-sans-installer#le-plus-complet-un-outil-d-ia-qui-ouvre-le-dossier"
+    },
+    {
+      "query": "Quel tutoriel suivre pour apprendre BASE pas à pas, seul puis en équipe ?",
+      "ref": "docs-tutoriel-index#apprendre-base-en-faisant"
+    }
+  ]
+}

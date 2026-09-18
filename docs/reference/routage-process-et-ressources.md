@@ -36,7 +36,13 @@ base route "je dois préparer un devis client" --root <dossier-base>
 
 Le routage choisit un couple agent → process, ou s'abstient en donnant une raison lisible. Il ne charge pas toutes les instructions et ne fouille pas librement le dépôt entier. Dans un outil d'IA, le modèle lit la carte (l'index généré) et décide; le plancher déterministe, lui, reste volontairement simple mais efficace, et s'étend par adaptateurs. Il épargne surtout à l'utilisateur la charge mentale de chercher le bon process.
 
-**Deux couches, une seule source.** Au quotidien, votre outil d'IA route de façon **progressive**: il lit l'index généré (`.ai/routing/index.md`), ou la carte que retourne l'outil MCP `route_request`, et choisit en comprenant le «Quand l'utiliser». La commande `base route` est le **plancher déterministe**: sans modèle, par simple recouvrement lexical, elle sert les appels sans modèle (script, intégration, hors-ligne), fixe les routes dans `route-test`, et fournit à `route_request` une suggestion à vérifier. Les deux dérivent du même `use_when`: c'est lui qui porte l'intention, pas une liste de mots-clés.
+**Deux couches, une seule source.** Au quotidien, votre outil d'IA route de façon **progressive**: il
+lit l'index généré (`.ai/routing/index.md`), ou la carte que retourne l'outil MCP `route_request`, et
+choisit en comprenant le «Quand l'utiliser». Sans Voie 2 configurée, `base route` utilise la stratégie
+lexicale: le classement associe le plancher lexical aux éventuels rankers de `base.config`. Avec les
+deux modèles de la Voie 2, `base route` utilise à la place la stratégie `embedding`, qui retrouve des
+candidats puis les soumet à un raffineur. Un ranker améliore un classement; il ne sélectionne pas la
+stratégie. Tous ces chemins dérivent du même `use_when`: c'est lui qui porte l'intention.
 
 Cette limite est volontaire. Un process répond à la question:
 
@@ -53,7 +59,13 @@ Pour rendre un process routable, on recommande les signaux suivants:
 - `routing.examples`: formulations réelles d'utilisateurs;
 - `routing.avoid_when`: contre-exemples qui évitent les fausses routes.
 
-Les fixtures `.ai/routing/route-tests.json` protègent vos routes importantes contre les régressions: `base route-test --root <dossier>` rejoue chaque demande écrite et vérifie que BASE choisit le même workflow, ou s'abstient là où c'est attendu. Ajoutez-y vos propres demandes, y compris des cas volontairement ambigus pour vérifier l'abstention, et rejouez après chaque changement de signaux (`use_when`, `avoid_when`, `keywords`).
+Les fixtures `.ai/routing/route-tests.json` consignent les routes importantes. Par défaut,
+`base route-test --root <dossier>` rejoue ces fixtures et les `routing.examples` disponibles avec la
+stratégie lexicale et les rankers de `base.config`; il vérifie seulement les cas écrits. Si la Voie 2
+est configurée, `base route-test --strategy production --root <dossier>` rejoue le chemin réellement
+pris par `base route`, avec ses appels modèle et sans promesse de déterminisme. Ajoutez des cas
+volontairement ambigus pour vérifier l'abstention, puis rejouez après chaque changement de signaux
+(`use_when`, `routing.avoid_when`, `keywords`).
 
 ## 3. Ouvrir les ressources utiles
 
@@ -85,7 +97,7 @@ may_use:
   - catalogue/services.json
 ```
 
-Réservez `requires` à une ressource que le process doit ouvrir ou exécuter de façon structurée, idéalement via son `id`. Le champ `access` décrit l'usage qu'en attend le process, par exemple lire ou exécuter; il ne confère aucun droit d'accès.
+Réservez `requires` à une ressource que le process doit ouvrir ou exécuter de façon structurée, idéalement via son `id`. Le champ `access` décrit l'usage qu'en attend le process, par exemple lire ou exécuter; il ne confère aucun droit d'accès. `purpose` explique pourquoi cette dépendance est nécessaire: le pack de contexte le montre dans sa note, sans en faire une permission ni l'envoyer comme justification au broker.
 
 Réservez `may_use` au contexte simple ou facultatif, souvent un chemin lisible dans le projet. Le process peut aussi citer ces ressources au fil de ses étapes quand le contexte reste simple. L'essentiel est que la logique demeure lisible: le routeur choisit le process, puis le process indique ce qu'il faut ouvrir.
 
@@ -123,11 +135,37 @@ discover/open = trouver ou ouvrir les ressources utiles
 
 Cette séparation garde le système compréhensible pour une personne seule, testable pour une équipe, extensible pour une organisation.
 
+## Ce que BASE lit dans votre frontmatter, et ce qui reste à vous
+
+BASE lit une liste fermée de champs: `id`, `type`, `title`, `description`, `use_when`,
+`routing.examples`, `routing.avoid_when`, `may_use`, `requires`, `scope`, `status`, `sensitivity`,
+`confidential`, `keywords`, `valid_from`, `valid_until`, `review_by`, `derived_from`, `execution`
+et `schema_version`. Tout autre champ est conservé tel quel et n'est interprété par rien: vos propres
+conventions (`kind: dossier-client`, `client: dupont`, un identifiant interne) traversent BASE sans
+effet de bord et restent lisibles par vos outils. Les champs que votre outil d'IA lit pour son
+compte, par exemple `name` ou `allowed-tools` dans une fiche de compétence Claude Code, entrent dans
+la même catégorie: BASE ne les lit pas, il ne les touche pas.
+
+Un document écrit à partir d'autres documents déclare ses sources dans `derived_from`, par leur identifiant ou leur chemin. Un résumé ne remplace jamais ses sources: cette ligne dit où revenir, et `base doctor` signale un document dont une source a été modifiée depuis.
+
+Un dossier contient parfois des contenus qui ne doivent jamais router: des archives volumineuses,
+des données brutes, des textes de fiction ou d'exemple. Déclarez-les dans `base.config.json`:
+
+```json
+{ "inventory": { "exclude": ["archives", "donnees-brutes"] } }
+```
+
+Ces préfixes de chemin sortent de l'inventaire: ni routage, ni recherche, ni contrôles. Ils restent
+sur le disque et vos outils y accèdent normalement; BASE cesse simplement de les considérer comme du
+savoir-faire à router.
+
 ## Quand BASE ne trouve pas de route: le repli (fallback)
 
 Le routeur reste honnête: si la demande ne correspond à aucun workflow, il s'abstient (`out_of_scope`) plutôt que d'inventer une route. Pour autant, l'utilisateur ne doit jamais rester sans suite.
 
-Un projet peut déclarer un repli d'aide dans `base.config.json` ou `base.config.mjs`:
+`base init` déclare l'accueil du cadre comme repli d'aide. `base upgrade` le propose aux dossiers
+plus anciens qui n'ont pas déjà choisi leur propre porte. Un projet peut aussi déclarer une autre
+cible dans `base.config.json` ou `base.config.mjs`:
 
 ```json
 {
@@ -137,16 +175,25 @@ Un projet peut déclarer un repli d'aide dans `base.config.json` ou `base.config
 }
 ```
 
-Quand le routeur s'abstient honnêtement, il joint au résultat un pointeur `fallback`. C'est une métadonnée distincte, jamais une fausse route: le `status` demeure l'abstention honnête. L'assistant charge alors ce repli (un agent → process d'accueil) au lieu de laisser l'utilisateur bloqué.
+Quand le routeur s'abstient honnêtement, il joint au résultat un pointeur `fallback`. C'est une
+métadonnée distincte, jamais une fausse route: le `status` demeure l'abstention honnête. La carte du
+dossier affiche aussi cette porte. L'assistant charge alors le process d'accueil au lieu de laisser
+l'utilisateur bloqué.
 
-Le cœur reste agnostique: la cible est configurée, jamais codée en dur; une cible introuvable n'attache aucun repli (et `base validate` le signale). Le repli se borne à orienter, sans rien promettre de plus.
+Le moteur reste agnostique: il suit la cible configurée. Il la cherche d'abord dans le dossier, puis
+dans le cadre BASE installé. Rien n'est copié dans le dossier métier et le lien de la carte reste
+ouvrable même si le cadre est ailleurs sur la machine. Une cible introuvable n'attache aucun repli,
+et `base validate` le signale. Le repli se borne à orienter, sans rien promettre de plus.
 
 ```text
 Routage "Bonjour": out_of_scope (below_floor)
 Fallback: concierge-base -> accueil
 ```
 
-Cette promesse vaut lorsque le routage est activé et que la cible de repli existe dans la racine sélectionnée. Dans un exemple copié qui charge directement un agent métier, «Aide» peut se contenter d'ouvrir l'aide métier locale. Pour obtenir le concierge BASE, ajoutez le repli et le dossier `concierge-base`, ou chargez directement `.ai/agents/concierge-base/AGENT.md` quand il existe.
+Cette promesse vaut lorsque le routage est activé et que la cible existe dans le dossier ou dans son
+cadre installé. Un client MCP reçoit le texte d'accueil et la carte de ses autres process, puisqu'il
+ne peut pas ouvrir les chemins du serveur. Dans un exemple copié qui charge directement un agent
+métier, «Aide» peut encore ouvrir l'aide métier locale.
 
 ## Racine et workspace
 

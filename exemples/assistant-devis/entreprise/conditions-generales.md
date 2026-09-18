@@ -1,3 +1,13 @@
+---
+schema_version: base.resource.v1
+id: conditions-generales
+type: document
+title: Conditions commerciales
+description: Délais, paiement, TVA, garanties et conditions applicables aux devis.
+scope: team
+status: active
+sensitivity: internal
+---
 # Conditions commerciales
 
 ## Devis

@@ -3,7 +3,7 @@
 // surrounding repo). The adapter's loadBroker() prefers this bundled copy and falls back to the
 // repo layout in dev.
 import { execFileSync } from "node:child_process";
-import { copyFile, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readdir, readFile, rm, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -30,15 +30,26 @@ await writeFile(
   JSON.stringify({ name: rootPkg.name, version: rootPkg.version, commit }, null, 2) + "\n",
 );
 
-// base-core.mjs imports from ./core/*.mjs — bundle those too, or the published package breaks.
+// Bundle the complete module tree: core modules can import language tables or future leaf modules
+// from nested directories, and the published server must have the same graph as the source tree.
 const coreSrc = resolve(toolsDir, "core");
 const coreDest = resolve(destDir, "core");
-await mkdir(coreDest, { recursive: true });
-let copied = 0;
-for (const name of await readdir(coreSrc)) {
-  if (name.endsWith(".mjs")) {
-    await copyFile(resolve(coreSrc, name), resolve(coreDest, name));
-    copied++;
+await rm(coreDest, { recursive: true, force: true });
+const copied = await copyModules(coreSrc, coreDest);
+
+async function copyModules(source, destination) {
+  await mkdir(destination, { recursive: true });
+  let count = 0;
+  for (const entry of await readdir(source, { withFileTypes: true })) {
+    const from = resolve(source, entry.name);
+    const to = resolve(destination, entry.name);
+    if (entry.isDirectory()) {
+      count += await copyModules(from, to);
+    } else if (entry.isFile() && entry.name.endsWith(".mjs")) {
+      await copyFile(from, to);
+      count++;
+    }
   }
+  return count;
 }
 console.error(`Bundled tools/base-core.mjs + ${copied} core module(s) into mcp/dist/ (core ${rootPkg.version}${commit ? ` @ ${commit.slice(0, 7)}` : ""})`);

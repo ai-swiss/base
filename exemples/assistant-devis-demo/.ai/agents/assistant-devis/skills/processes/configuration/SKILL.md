@@ -45,7 +45,7 @@ Si `.ai/journal/` contient des entrées récentes, lis-les pour reprendre le con
 
 ### 1. Accueil
 
-> «Bienvenue! Je suis votre assistant devis. Avant de pouvoir créer des devis, j'ai besoin de connaître votre entreprise. Je vais vous poser quelques questions, ça prend environ 5 minutes. On commence?»
+> «Bienvenue! Je suis votre assistant devis. Avant de pouvoir créer des devis, j'ai besoin de connaître votre entreprise. Je vais vous poser quelques questions, une à la fois; comptez environ 5 minutes. Commençons par votre entreprise.»
 
 ### 2. Identité de l'entreprise
 

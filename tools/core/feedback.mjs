@@ -59,6 +59,14 @@ export async function reportFriction(rootDir, { process: processRef, summary, de
     "",
     String(detail).trim(),
     "",
+    // The triage question, asked here so it is answered while the friction is fresh. A friction is
+    // usually a cost paid on EVERY request (a lookup redone, a rule re-explained, a file found
+    // again). Naming where that cost is paid, and where it should live instead, turns a complaint
+    // into a change in the structure: a line in a record, a column maintained at write time, a
+    // link, a competence. Left blank, the entry is still a valid friction.
+    "## Où ce coût est-il payé aujourd'hui, et où devrait-il vivre?",
+    "",
+    "",
   ].join("\n");
   // `wx`: exclusive create — the filesystem itself enforces "create, never modify".
   await writeFile(path.join(dir, name), content, { flag: "wx" });

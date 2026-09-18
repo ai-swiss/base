@@ -13,7 +13,7 @@ allowed-tools: Read
 
 # Exemples d'agents par secteur
 
-Catalogue d'idées d'agents IA métier pour PME et startups. Pour chaque idée: ce que ferait l'agent, puis ses workflows, connaissances, documents et données typiques.
+Catalogue d'idées d'agents IA métier pour PME et startups. Pour chaque idée: ce que ferait l'agent, puis ses procédures, connaissances, documents et données typiques.
 
 Ce catalogue sert d'inspiration; adaptez chaque agent aux besoins propres de l'utilisateur.
 

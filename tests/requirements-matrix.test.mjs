@@ -15,8 +15,10 @@ import {
   extractDescopedIds,
   extractHeaderIds,
   extractSkippedIds,
+  extractUnrowedIds,
   extractWeakCitations,
   extractWeakCitedIds,
+  listTestFiles,
   parseCounts,
   ratchetVerdict,
   renderMatrix,
@@ -30,6 +32,12 @@ const id = (/** @type {string} */ suffix) => ["FR", suffix].join("-");
 const nfr = (/** @type {string} */ suffix) => ["NFR", suffix].join("-");
 
 describe("requirements matrix", () => {
+  it("indexes release packaging smokes beside conventional test files", async () => {
+    const files = await listTestFiles();
+    assert.ok(files.includes("mcp/tests/smoke-pack.mjs"));
+    assert.ok(files.includes("tests/smoke-pack-docs.mjs"));
+  });
+
   it("extracts defined IDs from table rows only, in file order, without duplicates", () => {
     const md = [
       `Canonical list: **${nfr("X-001")}** inline mention (not a row).`,
@@ -40,6 +48,17 @@ describe("requirements matrix", () => {
       `| ${id("A-001")} | Duplicate row stays single. |`,
     ].join("\n");
     assert.deepEqual(extractDefinedIds(md), [id("A-001"), id("A-002")]);
+  });
+
+  it("rejects canonical references that have no requirement row", () => {
+    const md = [
+      `Canonical list: **${nfr("X-001")}**.`,
+      "| ID | Requirement |",
+      "|---|---|",
+      `| ${id("A-001")} | References ${id("A-002")}. |`,
+      `| ${id("A-002")} | Present. |`,
+    ].join("\n");
+    assert.deepEqual(extractUnrowedIds(md), [nfr("X-001")]);
   });
 
   it("extracts cited IDs from headers and test titles alike", () => {

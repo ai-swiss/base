@@ -1,0 +1,51 @@
+{
+  "schema_version": "base.probe-scenario.v1",
+  "id": "configure-start",
+  "title": "Une personne commence à adapter le modèle à son activité",
+  "access": "workspace-write",
+  "setup": {
+    "kind": "example",
+    "example": "assistant-devis"
+  },
+  "prompt": "Bonjour, je voudrais configurer ce modèle pour mon activité.",
+  "rubric": [
+    {
+      "id": "welcoming-start",
+      "criterion": "La réponse commence la configuration progressivement, sans déverser un questionnaire complet ni du jargon technique."
+    },
+    {
+      "id": "single-useful-question",
+      "criterion": "L'unique question demande l'information la plus utile pour commencer à adapter le modèle à l'activité."
+    }
+  ],
+  "expect": {
+    "required": [
+      {
+        "type": "file_read",
+        "path_ends_with": ".ai/agents/assistant-devis/skills/processes/configuration/SKILL.md"
+      },
+      {
+        "type": "final_answer",
+        "question_marks": 1
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "file_added",
+        "path_matches": "^(catalogue|clients|devis|entreprise)/"
+      },
+      {
+        "type": "file_modified",
+        "path_matches": "^(catalogue|clients|devis|entreprise)/"
+      },
+      {
+        "type": "command",
+        "includes": "base route"
+      },
+      {
+        "type": "file_removed",
+        "path_matches": "^(catalogue|clients|devis|entreprise)/"
+      }
+    ]
+  }
+}

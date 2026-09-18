@@ -26,11 +26,11 @@ allowed-tools: Read Bash
 
 # Activer le routage
 
-Donner à l'assistant un **routeur fiable**: au lieu de deviner quel agent répond à une demande, il interroge un moteur déterministe, testé, capable de dire honnêtement «je ne sais pas». Ce process branche ce moteur par l'une de deux portes: le **serveur MCP**, pour les applications de chat, ou la **CLI**, pour les outils dotés d'un terminal.
+Donner à l'assistant une **carte explicite** pour choisir le bon agent et le bon process. Un assistant qui lit les fichiers suit l'index généré. `base route` et `route_request` fournissent aussi un résultat déterministe aux appels sans modèle et une indication à vérifier quand un modèle est présent; ils ne décident pas à sa place.
 
 ## Pourquoi c'est utile (à expliquer simplement)
 
-> «Aujourd'hui, l'assistant choisit le bon savoir-faire en lisant des instructions; cela fonctionne, mais il peut se tromper sans le dire. Une fois le routage activé, il s'appuie sur un moteur qui tranche toujours de la même façon et qui signale clairement quand la demande sort de son périmètre. Cinq minutes pour le brancher, et il gagne en fiabilité pour de bon.»
+> «L'assistant choisit en lisant une carte générée depuis vos fiches. La CLI et le MCP peuvent aussi fournir un résultat déterministe, utile pour un script sans modèle ou comme indication à vérifier. Si rien ne convient, le routage le dit et pose une question.»
 
 ## Inputs
 
@@ -44,18 +44,19 @@ Si l'utilisateur l'ignore, propose de regarder ensemble; ne présume rien.
 
 ### 1. Choisir la porte
 
-Deux chemins, un même moteur:
+Trois situations:
 
-- **Application de chat sans terminal** (ChatGPT, Claude Desktop) → **serveur MCP** (étape 2).
-- **Outil avec terminal** (Claude Code, Cursor) → **CLI**, plus simple (étape 3).
+- **Assistant qui peut lire le dossier** (Claude Code, Cursor) → lire `.ai/routing/index.md`, puis l'index de l'agent retenu.
+- **Application de chat qui ne peut pas lire le dossier** (ChatGPT, Claude Desktop) → **serveur MCP** (étape 2).
+- **Script ou intégration sans modèle** → **CLI** (étape 3).
 
-> «D'après votre outil, je propose [MCP / la CLI]. On y va?»
+> «D'après votre outil, je propose [la carte / le MCP / la CLI]. On y va?»
 
 ← Reformulation (confirmer le chemin)
 
 ### 2. Porte MCP (apps de chat)
 
-Le serveur MCP expose le routeur comme un outil que l'application peut appeler.
+Le serveur MCP expose la carte de routage à l'application. `route_request` renvoie cette carte avec un résultat déterministe présenté comme une indication; le modèle choisit en lisant «Quand l'utiliser» et «Éviter si».
 
 1. **Construire le serveur** (une seule fois). Si tu disposes d'un terminal, propose d'exécuter les commandes; sinon, transmets-les à l'utilisateur:
    ```bash
@@ -71,30 +72,30 @@ Le serveur MCP expose le routeur comme un outil que l'application peut appeler.
 
 ### 3. Porte CLI (outils avec terminal)
 
-La CLI, c'est **le même routeur déterministe**, sans rien à installer de plus que BASE.
+La CLI fournit le routage déterministe aux scripts et intégrations sans modèle, sans rien à installer de plus que BASE.
 
 1. **Vérifier qu'elle répond**:
    ```bash
    node tools/base.mjs route "une demande de test" --root .
    ```
    (ou `base route "…" --root <dossier-base>` si le paquet est installé.)
-2. Pour toute demande, l'assistant peut dès lors exécuter `base route "<demande>" --root <dossier-base>`, lire l'agent → process retourné, puis le charger.
+2. Dans un appel sans modèle, charger l'agent et le process retournés. Si un modèle est présent, utiliser ce résultat comme une indication à vérifier contre la carte générée.
 
-> «Le routeur répond. À partir de maintenant, je peux router vos demandes de façon fiable.»
+> «La CLI répond. Son résultat est déterministe; avec un assistant IA, je le vérifie contre la carte avant de choisir.»
 
 ### 4. Tester ensemble
 
-Propose une vraie demande de l'utilisateur et montre le résultat: agent + process, ou abstention honnête.
+Propose une vraie demande de l'utilisateur. Montre le choix fait à partir de la carte et, si la CLI ou le MCP est branché, l'indication déterministe. En cas de désaccord, relis «Quand l'utiliser» et «Éviter si» ou pose une question.
 
 > «Essayons avec une vraie demande: … → voici où elle est routée, et pourquoi.»
 
-> Pour un très grand catalogue de process, un routage par embeddings (Voie 2) peut affiner le choix: c'est un autre process, `activer-voie2` (installer Ollama et deux modèles locaux). Inutile pour un petit BASE; le routage déterministe branché ici suffit.
+> Pour un très grand catalogue de process, un routage par embeddings (Voie 2) peut affiner le choix: c'est un autre process, `activer-voie2` (installer Ollama et deux modèles locaux). Inutile pour un petit BASE; la lecture de la carte générée suffit généralement.
 
 ### 5. Si c'est trop technique
 
 Sois honnête, jamais culpabilisant:
 
-> «Cette étape touche à l'installation, il est normal qu'elle soit moins évidente. Deux options: nous la faisons ensemble, pas à pas, ou vous sollicitez une personne à l'aise avec un terminal; la documentation se trouve dans `mcp/README.md` et `docs/`. Sans cela, je continue à vous aider en lisant les fichiers; c'est simplement un peu moins fiable.»
+> «Cette étape touche à l'installation, il est normal qu'elle soit moins évidente. Deux options: nous la faisons ensemble, pas à pas, ou vous sollicitez une personne à l'aise avec un terminal; la documentation se trouve dans `mcp/README.md` et `docs/`. Sans cela, je continue à vous aider en lisant la carte générée.»
 
 ### 6. Journal
 
@@ -103,6 +104,6 @@ Sois honnête, jamais culpabilisant:
 ## Ce que tu ne fais jamais dans ce process
 
 - **Installer ou modifier une configuration sans avoir d'abord montré et fait valider** chaque commande.
-- **Présumer un fournisseur ou un outil.** MCP et CLI sont deux portes; c'est l'utilisateur qui choisit.
-- **Culpabiliser un utilisateur non technique.** Propose l'aide d'un tiers, sans jargon, et rappelle que l'assistant fonctionne déjà sans routage, simplement de façon moins fiable.
-- **Promettre qu'aucun fournisseur ne sera jamais appelé**: `base route` et `route_request` avec le ranker local ne font sortir aucune donnée du projet. Une configuration d'embeddings, un connecteur ou une plateforme IA externe peut en revanche transmettre du contenu, selon le choix explicite de l'utilisateur.
+- **Présumer un fournisseur ou un outil.** La carte générée, le MCP et la CLI répondent à des situations différentes; c'est l'utilisateur qui choisit.
+- **Culpabiliser un utilisateur non technique.** Propose l'aide d'un tiers, sans jargon, et rappelle que l'assistant peut déjà choisir en lisant la carte générée.
+- **Confondre le routage local de BASE avec l'outil IA distant.** `base route` et le calcul déterministe derrière `route_request` restent locaux dans leur configuration par défaut. Séparément, l'outil IA peut déjà transmettre la conversation ou les fichiers qu'il ouvre à son fournisseur; des modèles de routage distants, un connecteur ou une autre intégration peuvent ajouter d'autres sorties.

@@ -1,13 +1,14 @@
-<!-- fr-synced: f274aedacaf481156b027003950067b18af9bc52 -->
+<!-- fr-synced: 163e3b0d2d8189e698c8df6e06445333fe025a14 -->
 # Official BASE visuals to download
 
-This page gathers the official BASE visuals, ready to use and released under an open license. Journalists, partners, and authors will find here the structure diagram to illustrate an article, a presentation, or a publication without having to redraw it.
+This page gathers the official BASE visuals, ready to use and released under an open license. Journalists, partners, and authors will find a representation of the convention and its reference implementation to illustrate an article, presentation, or publication without having to redraw it.
 
 ## Contents
 
 | File | Description |
 | --- | --- |
-| `structure-base.svg` | A big-picture diagram of BASE: your AI tools, the surfaces (CLI, MCP server, Studio, documentation UI), the core (the broker) that enforces the guarantees, the extension points, and your Markdown files as the source of truth |
+| [Authoritative `base-logo.png`](../../../public/assets/base-logo.png) | Primary horizontal logo, white on anthracite, for digital headers. |
+| [Authoritative French `structure-base.svg`](../../../public/assets/structure-base.svg) | A big-picture diagram: the method described in your Markdown files as an approved, versioned reference, the surfaces of the reference implementation, BASE's mediation component (the broker), and its extension points. The diagram does not guarantee the result of any particular execution. |
 
 ## License and attribution
 
@@ -15,4 +16,4 @@ These visuals are published under the [CC BY 4.0](https://creativecommons.org/li
 
 ## Other formats
 
-Need a high-resolution PNG, a dark variant, or a different crop? Submit a request at [a-i.swiss](https://a-i.swiss), specifying the medium and the formats you need.
+To continue, download the [authoritative French `structure-base.svg`](../../../public/assets/structure-base.svg). If that format does not fit, request a variant at [a-i.swiss](https://a-i.swiss), specifying the medium and format you need.

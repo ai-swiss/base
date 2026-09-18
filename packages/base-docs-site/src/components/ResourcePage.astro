@@ -91,7 +91,7 @@ const backlinks = resource.incoming_links.slice(0, 20);
         <ul>
           {backlinks.map((link) => (
             <li>
-              <a href={resourceHref({ id: link.source_id }, lang)}>{link.source_path}</a>{" "}
+              <a href={resourceHref({ site_key: link.source_site_key }, lang)}>{link.source_path}</a>{" "}
               {lang === "fr" && <span class="bd-muted">«{link.label}»</span>}
             </li>
           ))}

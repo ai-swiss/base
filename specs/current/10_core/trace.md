@@ -51,7 +51,7 @@ content (NFR-CORE-008); absent an actor, it is omitted entirely.
 ```js
 { events: number, by_operation: {op: count}, by_resource: {id: count}, denied: number, errors: number }
 ```
-Surfaced by `base trace` and folded into `base entretien`.
+Surfaced by `base trace`.
 
 ## Design notes
 - Trace is a **derived, optional** signal (vision plane: not source of truth). It exists to support maintenance and a future drift-detection check ("a write happened without a recorded decision"), not surveillance; keep it minimal (CONTRIBUTING: "useful traces must not become surveillance").

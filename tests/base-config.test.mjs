@@ -132,6 +132,27 @@ describe("resolveConfig", () => {
     assert.deepEqual(DEFAULTS.inventory.exclude, [], "the engine excludes nothing by default");
   });
 
+  it("records the language, normalized to its primary subtag, and never refuses an unknown one", async () => {
+    // Deliberately unlike `tools` just below: a tool id decides which FILE is written, a language
+    // decides only which words are in it. A root must never become unloadable for having named a
+    // language this build has not been taught.
+    await write("base.config.json", JSON.stringify({ language: "de-CH" }));
+    assert.equal((await resolveConfig(tmpDir)).language, "de", "primary subtag, lowercased: a table is per language, not per region");
+
+    await write("base.config.json", JSON.stringify({ language: "Klingon" }));
+    assert.equal((await resolveConfig(tmpDir)).language, "klingon", "an unknown language loads and is recorded as declared");
+
+    await write("base.config.json", "{}");
+    assert.equal((await resolveConfig(tmpDir)).language, "fr", "a root that declares nothing is French");
+    assert.equal(DEFAULTS.language, "fr");
+
+    // A shape error is still an error: the value must be a language tag.
+    await write("base.config.json", JSON.stringify({ language: 42 }));
+    await assert.rejects(() => resolveConfig(tmpDir), /`language` must be a language tag/);
+    await write("base.config.json", JSON.stringify({ language: "   " }));
+    await assert.rejects(() => resolveConfig(tmpDir), /`language` must be a language tag/);
+  });
+
   it("rejects a malformed inventory block loudly", async () => {
     await write("base.config.json", JSON.stringify({ inventory: { exclude: "specs" } }));
     await assert.rejects(() => resolveConfig(tmpDir), /inventory\.exclude/);
@@ -153,14 +174,11 @@ describe("resolveConfig", () => {
     await assert.rejects(() => resolveConfig(tmpDir), /base\.config\.invalid/);
   });
 
-  it("tolerates the deprecated routing.embedder key (it shipped in v1.0.0/v1.1.0): config still loads, key inert", async () => {
-    // Stability law: base.config stays additive across minors, so a config that used the shipped
-    // routing.embedder key must keep loading. It is deprecated and inert (the single model reference
-    // is routing.embedding_model); removed in the next minor version.
+  it("names the valid model reference when a config carries routing.embedder", async () => {
+    // A generic "unknown routing option" would leave the root guessing, so the error names the
+    // single model reference the configuration accepts.
     await write("base.config.json", JSON.stringify({ routing: { embedder: { provider: "ollama", model: "nomic-embed-text" }, floor_score: 40 } }));
-    const config = await resolveConfig(tmpDir);
-    assert.equal(config.routing.floor_score, 40, "the rest of routing still applies");
-    assert.equal(config.routing.embedder, undefined, "the deprecated key is dropped, not surfaced");
+    await assert.rejects(() => resolveConfig(tmpDir), /routing\.embedding_model/);
   });
 
   it("rejects an unknown descriptor type loudly", async () => {
@@ -216,10 +234,10 @@ describe("façade export contract (AD-CORE-002)", () => {
       // mediated writes / promote / markers / build
       "proposeChange", "commitChange", "promoteResource", "listMarkers", "buildArtifacts", "writeArtifacts",
       // validate / maintain / trace
-      "validateBase", "createMaintenanceReport", "recordEvent", "summarizeTrace",
+      "validateBase", "recordEvent", "summarizeTrace",
       // presentation (extracted to core/formatters.mjs, re-exported for the CLI)
       "formatValidationResult", "formatSearchResults", "formatRouteResult", "formatRouteTestResult",
-      "formatMaintenanceReport", "formatMarkers", "formatTraceSummary", "compareByCodePoint",
+      "formatMarkers", "formatTraceSummary", "compareByCodePoint",
       // roots / workspace context
       "WORKSPACE_FILENAME", "resolveBaseContext", "contextScope", "formatContextHeader",
       "findNearestBaseRoot", "findNearestWorkspace", "readWorkspace", "selectWorkspaceRoot",
@@ -307,6 +325,7 @@ describe("schema enum parity", () => {
     assert.deepEqual([...SCHEMA_STATUSES], schema.properties.status.enum);
     assert.deepEqual([...SCHEMA_SENSITIVITIES], schema.properties.sensitivity.enum);
     assert.deepEqual([...REQUIRE_ACCESS], schema.properties.requires.items.properties.access.enum);
+    assert.equal("dry_run" in schema.properties.execution.properties, false);
   });
 
   it("keeps the base.workspace.v1 schema_version const in sync with readWorkspace's default", async () => {

@@ -24,6 +24,16 @@ export function parseArgs(argv) {
     yes: false,
     ollama: false,
     examples: false,
+    scaffold: false,
+    shell: false,
+    grain: "",
+    scope: "",
+    section: "",
+    lang: "",
+    tools: /** @type {string[]} */ ([]),
+    about: "",
+    language: "",
+    egress: "",
     out: "",
     keepDays: /** @type {number | undefined} */ (undefined),
     channel: /** @type {string | undefined} */ (undefined),
@@ -84,7 +94,7 @@ export function parseArgs(argv) {
 
     if (item === "--projection") {
       if (!next || next.startsWith("--")) throw new Error("--projection requires a value.");
-      if (!["metadata", "instructions", "full"].includes(next)) throw new Error("--projection must be metadata, instructions, or full.");
+      if (!["metadata", "instructions", "full", "outline", "source"].includes(next)) throw new Error("--projection must be metadata, instructions, full, outline, or source.");
       args.projection = next;
       index++;
       continue;
@@ -178,6 +188,72 @@ export function parseArgs(argv) {
     }
     if (item === "--examples") {
       args.examples = true;
+      continue;
+    }
+    // Section grain: the same two words the MCP tools use, so a person checks on the CLI exactly what
+    // a remote client will get.
+    if (item === "--grain") {
+      if (!next || next.startsWith("--")) throw new Error("--grain requires a value (resource or section).");
+      if (!["resource", "section"].includes(next)) throw new Error("--grain must be resource or section.");
+      args.grain = next;
+      index++;
+      continue;
+    }
+    if (item === "--scope") {
+      if (!next || next.startsWith("--")) throw new Error("--scope requires a folder prefix.");
+      args.scope = next;
+      index++;
+      continue;
+    }
+    if (item === "--section") {
+      if (!next || next.startsWith("--")) throw new Error("--section requires an anchor.");
+      args.section = next;
+      index++;
+      continue;
+    }
+    if (item === "--lang") {
+      if (!next || next.startsWith("--")) throw new Error("--lang requires a two-letter code.");
+      args.lang = next;
+      index++;
+      continue;
+    }
+    if (item === "--shell") {
+      args.shell = true;
+      continue;
+    }
+    if (item === "--scaffold") {
+      args.scaffold = true;
+      continue;
+    }
+
+    // `base init` intake: which tool reads this folder, and one sentence about the work. Repeatable
+    // or comma-separated (`--tool claude-code,cursor`) for a team that genuinely uses two.
+    if (item === "--tool") {
+      if (!next || next.startsWith("--")) throw new Error("--tool requires a value (claude-code, cursor, agents-md, autre).");
+      args.tools = [...args.tools, ...next.split(",").map((s) => s.trim()).filter(Boolean)];
+      index++;
+      continue;
+    }
+    if (item === "--about") {
+      if (!next || next.startsWith("--")) throw new Error("--about requires a sentence, in quotes.");
+      args.about = next;
+      index++;
+      continue;
+    }
+    // The language of the files `base init` writes, recorded in base.config.json. Distinct from
+    // `--lang`, which picks the EDITION of a resource `base open` returns: one decides which words
+    // BASE writes, the other which of the author's translations to read. Any tag is accepted here —
+    // a language this build has no table for is recorded and rendered in French, never refused.
+    if (item === "--language") {
+      if (!next || next.startsWith("--")) throw new Error("--language requires a language code (fr, en, …).");
+      args.language = next;
+      index++;
+      continue;
+    }
+    if (item === "--egress") {
+      if (!["local-only", "any"].includes(next)) throw new Error("--egress accepts local-only or any.");
+      args.egress = next;
+      index++;
       continue;
     }
     if (item === "--golden") {

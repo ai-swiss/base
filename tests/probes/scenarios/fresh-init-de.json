@@ -1,0 +1,49 @@
+{
+  "schema_version": "base.probe-scenario.v1",
+  "id": "fresh-init-de",
+  "title": "Eine neue deutsche Root leitet eine gewöhnliche Anfrage weiter",
+  "setup": {
+    "kind": "init",
+    "args": [
+      "--language",
+      "de",
+      "--about",
+      "Wir installieren und warten Wärmepumpen"
+    ]
+  },
+  "prompt": "Ich möchte meine bestehenden Verfahren importieren.",
+  "expect": {
+    "required": [
+      {
+        "type": "file_read",
+        "path_ends_with": ".ai/routing/index.md"
+      },
+      {
+        "type": "file_read",
+        "path_matches": "/skills/processes/importer-l-existant/SKILL\\.md$"
+      },
+      {
+        "type": "final_answer",
+        "matches": "Verfahren|Dokument|import"
+      },
+      {
+        "type": "final_answer",
+        "question_marks": 1
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "command",
+        "includes": "base route"
+      },
+      {
+        "type": "final_answer",
+        "matches": "\\b(Prozess|Frontmatter|Router|Routing|SKILL\\.md|AGENT\\.md)\\b"
+      },
+      {
+        "type": "final_answer",
+        "includes": "—"
+      }
+    ]
+  }
+}

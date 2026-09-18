@@ -1,0 +1,70 @@
+{
+  "schema_version": "base.probe-scenario.v1",
+  "id": "ambiguous-intent",
+  "title": "Une intention trop large reçoit une seule question de cadrage",
+  "access": "workspace-write",
+  "setup": {
+    "kind": "package"
+  },
+  "prompt": "J'hésite: créer un nouvel assistant pour mon équipe ou améliorer celui que nous avons déjà.",
+  "rubric": [
+    {
+      "id": "decision-relevant-question",
+      "criterion": "L'unique question aide réellement à choisir entre créer un nouvel assistant et améliorer l'existant, sans supposer la réponse."
+    },
+    {
+      "id": "plain-language",
+      "criterion": "La réponse est brève et compréhensible par une personne non technique."
+    }
+  ],
+  "expect": {
+    "required": [
+      {
+        "type": "file_read",
+        "path_ends_with": ".ai/routing/index.md"
+      },
+      {
+        "type": "file_read",
+        "path_ends_with": ".ai/agents/createur-agent/index.md"
+      },
+      {
+        "type": "final_answer",
+        "question_marks": 1
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "file_read",
+        "path_matches": "/skills/processes/[^/]+/SKILL\\.md$"
+      },
+      {
+        "type": "command",
+        "includes": "base route"
+      },
+      {
+        "type": "file_added"
+      },
+      {
+        "type": "file_modified"
+      },
+      {
+        "type": "file_removed"
+      }
+    ],
+    "order": [
+      [
+        {
+          "type": "file_read",
+          "path_ends_with": ".ai/routing/index.md"
+        },
+        {
+          "type": "file_read",
+          "path_ends_with": ".ai/agents/createur-agent/index.md"
+        },
+        {
+          "type": "final_answer"
+        }
+      ]
+    ]
+  }
+}

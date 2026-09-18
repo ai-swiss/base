@@ -1,7 +1,7 @@
 # BASE-Manifest
 
 > Dies ist eine Übersetzung. Die [französische Fassung](MANIFESTO.md) ist massgebend. Auch verfügbar: [English](MANIFESTO.en.md) · [Italiano](MANIFESTO.it.md).
-<!-- fr-synced: 8a190af89ffcfb6922bbf5d1d57aa5a4d99acd23 -->
+<!-- fr-synced: d1c30b7cea1ed76715983b57edcf52e4f3be4520 -->
 
 **Die Struktur der eigenen Expertise besitzen, im Zeitalter der KI.**
 
@@ -26,7 +26,7 @@ Der Kipppunkt ist einfach. Produzieren kostet kaum noch Mühe; Prüfen bleibt te
 3. **Generieren verlangt wenig Aufwand; Prüfen viel.** Jede KI-Produktion ist als Hypothese zu behandeln, nicht als feststehende Schlussfolgerung. Eine solide Struktur erleichtert die Prüfung, niemals umgekehrt.
 4. **Eine Garantie ist nur real, wenn sie durchgesetzt wird.** Wir unterscheiden ehrlich zwischen der Anweisung (ein Text, befolgt von einem kooperativen Modell) und dem Mechanismus (durchgesetzt vom Broker). Wir dokumentieren diese Grenze, statt sie zu übertünchen.
 5. **Die wichtige Entscheidung bleibt menschlich und sichtbar.** Entscheidungspunkte, Markierungen und das Journal halten Kontrolle und Gedächtnis auf der Seite der Menschen.
-6. **Souveränität ist nicht verhandelbar.** Der lokale Kern von BASE lässt standardmässig nichts nach aussen dringen. Wenn Sie daran ein KI-Werkzeug, einen Embeddings-Anbieter oder eine API anschliessen, dann entscheiden Sie, was ihnen anvertraut wird. Sie bleiben frei, das Werkzeug zu wechseln; Ihre Dateien aber bleiben. Die Souveränität, die zählt, entscheidet sich **rund um die Modelle**: die Freiheit, mit diesen Intelligenzen zu artikulieren, zu strukturieren, zu denken.
+6. **Souveränität wird aufgebaut, nicht bloss behauptet.** Der lokale Kern von BASE ruft von sich aus keinen externen Dienst auf. Daten können dennoch über ein angeschlossenes KI-Werkzeug, einen Embeddings-Anbieter oder eine API nach aussen gelangen; die Filter von BASE greifen nur auf Wegen, die tatsächlich über BASE führen. Kognitive Souveränität hat ein konkretes Fundament: Ihre Referenzdateien gehören Ihnen, bleiben lesbar und portabel und erlauben Ihnen, das Werkzeug zu wechseln. Sie entscheidet sich **rund um die Modelle**: in der Freiheit, mit diesen Intelligenzen zu artikulieren, zu strukturieren und zu denken.
 7. **Was zählt, muss sichtbar bleiben.** Man sollte nie wühlen müssen, um zum Wesentlichen zu gelangen. BASE stellt voran, was zu prüfen oder zu entscheiden ist, weist eine Richtung, statt einen ohne Anschluss zu lassen, und hält die Hilfe in Reichweite eines Wortes. Das Wichtige zu vergraben ist bereits ein kleiner Verlust an Prüfung.
 
 ## Was wir nicht versprechen

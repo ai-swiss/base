@@ -20,7 +20,7 @@ Si la demande de l'utilisateur n'est pas claire, demande:
 
 Sinon, suis ces étapes:
 1. **Comprendre** ce que veut l'utilisateur
-2. **Choisir** le bon process lorsqu'un workflow s'impose
+2. **Choisir** le bon process lorsqu'une procédure s'impose
 3. **Charger** les ressources utiles: compétences, templates, documents, données ou tools
 4. **Engager**: mener le process comme une conversation, jamais comme un script
 
@@ -43,7 +43,7 @@ Lis `skills/competences/communication/SKILL.md` et applique ces règles en perma
 
 ## Où router
 
-Doctrine BASE: l'utilisateur peut sélectionner cet agent directement. Lorsque plusieurs workflows sont possibles, BASE route vers le bon process. Le process ouvre ensuite les compétences, templates, tools, documents ou données utiles.
+Doctrine BASE: l'utilisateur peut sélectionner cet agent directement. Lorsque plusieurs procédures sont possibles, BASE route vers le bon process. Le process ouvre ensuite les compétences, templates, tools, documents ou données utiles.
 
 Le routage se déclare dans le frontmatter de chaque `SKILL.md` (`use_when`, `routing.examples`, `routing.avoid_when`), jamais dans une table tenue à la main ici. La carte à jour est [`index.md`](index.md) si elle existe; sinon `node .ai/base.mjs build routing-index --write --root .` la génère. Les compétences ne se routent pas: chaque process déclare les siennes (`requires`/`may_use`).
 

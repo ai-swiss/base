@@ -1,43 +1,46 @@
-<!-- fr-synced: b5233f5f100aaa83b241d478273269fd430b72cb -->
+<!-- fr-synced: a28d963f9e35b10a65fe398e4bb3f622845a4d63 -->
 # Evaluating and using BASE responsibly in the public sector
 
 Deploying BASE in a public institution puts citizen data, a legal basis, and public procurement on the line: deciding whether and how to do it without taking on needless risk calls for clear bearings. This checklist provides those concrete bearings and flags the decisions that remain yours (legal counsel, data protection officer, archives, procurement); it is not a substitute for legal advice.
 
-> **Important.** BASE is a local-first **component**, not a compliance platform. On its own it does not provide IAM, SSO, RBAC, DLP, SIEM, legal archiving, or regulatory retention (see [Security and limits](../trust/securite-et-limites.md)). What it does provide: domain knowledge in files you own, and honest mediation of sensitive actions.
+> **Important.** The BASE structure is a local-first **component**, not a compliance platform. The files, router, and BASE's mediation component (the broker) do not provide IAM, SSO, RBAC, DLP, SIEM, legal archiving, or regulatory retention (see [Security and limits](../trust/securite-et-limites.md)). Files can record domain knowledge; the broker can mediate actions that actually pass through it.
+
+The [audience map diagnosis](pour-qui.md) distinguishes method, structure, approved reference, and execution. Keep that distinction in every institutional decision below.
 
 ## 1. Classify the data scope
 
 - List the data an assistant will touch, and its classification (public, internal, confidential).
 - A prudent starting rule: no personal citizen data in a first assistant. Begin with internal workflows (templates, procedures, drafting).
-- BASE maintains a sensitivity boundary in the metadata (`sensitivity`) and can, if you configure a validator, **refuse** resources that are too sensitive (see the [enterprise kit](kit-enterprise.md), `forbidSensitivity` validator).
+- The `sensitivity` metadata classifies a resource. It does not automatically withhold it from sending. A validator can reject a given classification during corpus validation; egress withholding instead depends on `confidential: true` or a `local-only` root on a mediated path (see the [enterprise kit](kit-enterprise.md)).
 
 > **Institutional decision:** the applicable internal classification and the legal basis (for example the nLPD and relevant cantonal/communal law).
 
 ## 2. Citizen data and data protection
 
-- If personal data is involved, the browser tier alone is not enough: use the CLI or the MCP, which mediate actions and keep traces.
+- If personal data is involved, the browser tier alone is not enough. The CLI or MCP mediate and trace only actions that pass through their commands; direct tool access to files remains outside that guarantee.
 - Default routing **makes no network calls** (lexical, no data leaves). Advanced semantic routing sends text to an embeddings provider only if you explicitly enable it, and a local option (Ollama) exists (see [Security of routing data](../trust/securite-donnees-routage.md)).
+- Files may remain on the workstation while a tool projects excerpts to a remote model. The egress policy is permissive by default (`any`) until you configure withholding.
 
 > **Institutional decision:** an impact assessment (AIPD/DPIA) where required, and the record of processing activities.
 
 ## 3. Model provider policy
 
-- The model (the generative execution) remains **your choice** and lives outside BASE. BASE structures the knowledge the model executes; it ties you to no provider. Your know-how thus stays independent of the model that runs it: tools come and go, the context stays, and you can switch models without rewriting your base.
-- To stay sovereign, you can run local models (for example via Ollama); BASE imposes no cloud service.
+- The model remains **your choice** and sits outside the document structure. The files do not bind the institution to a provider. Changing models does not necessarily require rewriting the reference, but it does require reevaluating execution.
+- To stay sovereign, you can run local models (for example via Ollama); the files and local commands require no cloud service.
 - **Locality does not settle everything: the host's jurisdiction matters as much as where the model runs.** A host subject to a foreign law (for example the U.S. CLOUD Act) can be compelled even for data stored in Switzerland. See the CLOUD Act section of [`souverainete-et-confiance.md`](../trust/souverainete-et-confiance.md).
 
 > **Institutional decision:** the list of authorized model providers and the contractual clauses (data location, subcontracting, retention period on the provider's side).
 
 ## 4. Accessibility
 
-- BASE resources are readable Markdown: compatible with screen readers and suited to accessible publications.
+- Resources are written in readable Markdown: the format is compatible with screen readers and suited to accessible publications.
 - For any derived public interface, aim for the applicable accessibility standards.
 
 > **Institutional decision:** the accessibility standard applicable to your institution.
 
 ## 5. Archiving and retention
 
-- BASE versions by files (Git recommended): the history of decisions and content is traceable.
+- Git can version the files, making changes to decisions and content traceable.
 - The traces of mediated actions are minimal (operation, resource, status, duration), with no business content by default.
 
 > **Institutional decision:** the retention periods and legal archiving rules for your content and logs.
@@ -52,15 +55,14 @@ Deploying BASE in a public institution puts citizen data, a legal basis, and pub
 
 ## 7. Human validation and traceability
 
-- A propose-then-commit discipline: a diff is shown, you validate, then the write happens. Tools run in dry-run by default.
+- On the mediated path, the proposal command produces a diff and does not write the target file; the apply command requires confirmation under the policy. The client must actually show the diff to a person before supplying that confirmation. Tools run in dry-run by default.
 - The markers (`[A VALIDER]`, `[DECISION]`) are searchable bearings, readable by a person as well as by an algorithmic process: they keep the state of a case visible, even months later.
+- Separating instructions from content supports review, but does not prevent prompt injection by itself. Treat all external content as untrusted and add controls appropriate to the execution path.
 
 ## 8. Keep the limits visible
 
-Display what BASE does not enforce mechanically (especially in browser-only mode), and what falls to your own systems (IAM, DLP, retention). See [Security and limits](../trust/securite-et-limites.md) and [Sovereignty and trust](../trust/souverainete-et-confiance.md). And for the map of the guarantees the code actually enforces, each with its function and its test, see [Verified mechanisms](../trust/mecanismes-verifies.md).
+Display what the tools do not enforce mechanically (especially in browser-only mode), and what falls to your own systems (IAM, DLP, retention). See [Security and limits](../trust/securite-et-limites.md) and [Sovereignty and trust](../trust/souverainete-et-confiance.md). For the map of guarantees the code actually enforces, each with its function and test, see [Verified mechanisms](../trust/mecanismes-verifies.md).
 
-## Contact
+## Your next action
 
-For an institutional conversation (evaluation, pilot, compliance questions), write to AI Swiss at [info@a-i.swiss](mailto:info@a-i.swiss): we aim for a first reply within about ten business days. See also [a-i.swiss](https://a-i.swiss).
-
-The same address points you to the right person for the terms of support for a pilot. For a public tender that requires a nameable support line, AI Swiss is also the party that carries and formalizes that commitment with you (response times, scope, people involved), the association remaining the steward of the framework ([governance](../../../GOVERNANCE.md)).
+Run the [institutional pilot without personal data](pilote-institution-90-min.md), then record with your data protection officer the conditions that would authorize, or prohibit, a next stage.

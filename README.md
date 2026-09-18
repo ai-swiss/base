@@ -1,298 +1,241 @@
-<!-- fr-synced: 9d3a20733690bddaa79a07b03c6a4d67bff3bfbf -->
+<!-- fr-synced: 7ef1297a1a9c6f7841376947403ad3b57f87e350 -->
 
 # BASE
 
-**English** · [Français](README.fr.md)
+**English** · [Français](README.fr.md) (authoritative)
 
-> **Does your way of working with AI still belong to you when you switch tools?**
+<p align="center">
+  <img src="docs/public/assets/base-logo.png" alt="BASE" width="560">
+</p>
 
-As you work with AI, you develop a method: how to frame a problem, what to give it to read, which corrections to make, what the AI can do and what remains to be decided. Part of it sometimes already lives in your files. The rest is scattered across settings, tool-specific instructions and past conversations. BASE gives your method a consistent structure, in text files you can read, correct and pass on.
+> **Your working method must outlast AI tools. Your skills must too.**
 
-**Already using an assistant built into your working environment, a coding agent or a platform that coordinates several agents?** BASE does not replace them. These tools handle execution; BASE describes the method they apply, in open, readable files that belong to you. You can then switch tools without rebuilding your method.
+By **working method**, BASE means the elements that specify how work should be conducted: the steps to follow, the authoritative sources, the rules to apply, the checks to perform and the decisions that must remain human.
 
-Some tools already record your instructions in files you can open and edit. BASE takes this principle and extends it to the whole organization of the work. The standard defines the role of each file, for example a procedure to follow, a piece of knowledge to consult or a piece of data to process, and specifies how they connect. You phrase your request in plain language; this structure helps the tool find the relevant procedure. BASE distinguishes instructions, useful but fallible, from the software mechanisms that enforce a rule independently of the model. Around this common core, it generates the compatibility files that different tools expect. Your method stays at the center; the adapter changes with the tool.
+In many software systems, a way of working must be translated into screens, menus, settings and automations specific to the tool. AI makes another approach possible: **describing the behaviour you expect directly in natural language.**
 
-<sub>BASE = **Build Assistants with Structured Expertise** · *Bâtir des Assistants avec une Structure d'Expertise*</sub>
+BASE organises this description in readable, editable and versionable files you control. Your way of working is therefore not defined solely in a platform's settings or the instructions of a particular model.
 
-[![Version](https://img.shields.io/badge/version-1.4.0-blue.svg)](CHANGELOG.md)
-[![CI](https://github.com/ai-swiss/base/actions/workflows/ci.yml/badge.svg)](https://github.com/ai-swiss/base/actions/workflows/ci.yml)
-[![License: Apache-2.0 + CC BY 4.0](https://img.shields.io/badge/license-Apache--2.0%20%2B%20CC%20BY%204.0-blue.svg)](LICENSING.md)
+**The method is defined primarily outside the platform that executes it.**
 
-![BASE: take back control over AI. A person works calmly under a transparent dome amid a constant flow of new tools and information. The sovereignty that matters is above all cognitive: articulating your interactions with AI in files you own.](docs/public/assets/base-cognitive-sovereignty.png)
+**BASE is an open framework for shaping, documenting and evolving the method that guides how AI tools work with you. It includes a proposed open standard and a reference implementation.**
 
-**Understand it in one minute.** If your AI tool can read a GitHub page, give it the address of this repository and ask how BASE can structure the way you work with AI. Otherwise, go straight to the demonstration. The documentation is designed to be readable by a human as well as by a model.
+You describe the work. AI helps you clarify and structure its rules. You review and approve the reference version. Another tool capable of using this structure can then rely on the same method.
 
-**Where to start:**
-- **See it concretely.** → [Get started](#2-get-started)
-- **Understand the idea.** → [The idea, one Monday morning](#1-the-idea-one-monday-morning), then [Why it matters](#4-why-it-matters)
-- **Decide, review the security, or contribute.** → [Who it is for](#6-who-it-is-for) · [The building blocks](#7-the-building-blocks-as-you-need-them) · [Contribute](#for-the-contributor)
-
-<sub>Stewarded by [AI Swiss](https://a-i.swiss) (a Swiss non-profit association) · free and open (Apache-2.0 + CC BY 4.0) · built on open files you can keep, copy and adapt ([governance](GOVERNANCE.md)).</sub>
+Models and integrations remain different: they may interpret the same instructions differently and offer different capabilities. **What becomes portable is not the model's exact behaviour, but the method with which you seek to shape it.**
 
 ---
 
-## 1. The idea, one Monday morning
+## 1. Describe the work, not the tool
 
-BASE offers an [open standard](docs/reference/le-standard.md), together with a reference implementation, to describe your working method in files you control. The structure can stay simple or grow more detailed as the need arises.
+With BASE, you begin by explaining how the work should be done, not by configuring the interface that will perform it.
 
-Knowing your trade is usually not the difficulty. You can explain how to prepare an offer, which rules must always be respected and where a person must decide. The work consists of putting this know-how into a form you can reread and a model can use. With BASE, you build that shape directly in natural language, rather than scattering it across menus, settings and conversations tied to a particular tool.
+You can begin by talking about the work itself:
 
-Monday morning, a client asks for a quote. You may already have configured an assistant, kept a good conversation or written a few rules. Still, you have to find these elements again and know which of them are authoritative.
+> "We prepare commercial proposals. Here is how we work, the documents we use and the decisions that must remain ours. Help me structure this."
 
-Once this know-how is structured with BASE, you simply ask: "I have a quote to prepare for Dupont SA, three days of strategy consulting." The procedure, called a *process* in BASE, tells the assistant which files to consult, which rules to apply and which points require your validation. It asks the assistant to prepare a draft, to cite its sources and to flag the points that call for your decision with `[A VALIDER]`. The method stays in your files: you can reread it, correct it and reuse it.
+The AI tool helps you make explicit what matters: which price list is authoritative, when to apply a rule, which checks to perform, what can be automated and what must remain subject to a human decision.
 
-As the work goes on, you can observe and reframe the method, then fold the useful corrections into your files rather than let them disappear with the conversation.
+BASE progressively turns this dialogue into a durable structure: procedures, rules, sources, checks and limits on delegation are described in the project's files. You can read, edit, version and transmit them.
 
----
+You can then simply ask:
 
-## 2. Get started
+> "Prepare a proposal for Dupont SA for three days of strategy consulting."
 
-Choose the door that matches your situation.
+The assistant uses the reference method, consults the sources it designates and flags the decisions that still need to be made by a person.
 
-**Door 0: understand it in one question.** If your AI tool can read a web page, give it the address of the repository and ask: "Concretely, what does BASE do and how can it structure the way I work with AI?" Do you want to evaluate BASE for your organization? Ask for an analysis from the point of view of an executive or a compliance officer, then read [Sovereignty, trust and compliance](docs/trust/souverainete-et-confiance.md). Do you want to see the code? Start with [ARCHITECTURE.md](ARCHITECTURE.md), which presents the architecture, the main abstractions and their limits.
+And if its behaviour needs to change, you can express the change in the terms of the work:
 
-**Door 1: see it without installing.** The goal: to see how a BASE assistant is made, and how it behaves. In a web chat such as ChatGPT or Claude, download the [quote assistant pack](https://github.com/ai-swiss/base/releases/latest/download/assistant-devis-demo.pack.md). This single text file, in Markdown format, gathers its role, its procedures and its conventions: browse it to observe the structure. Then attach it to a new conversation and ask: "What must you have me validate before creating or modifying a quote?" Check that the answer distinguishes what the assistant can prepare from what you must decide. To test the loyalty discount itself, which cross-references two sources absent from the pack (a pricing rule and a client record), move on to Door 2.
+> "Stop asking me whether the loyalty discount is possible when the client record already lets you determine that. Check the pricing rule and request approval only for an exception."
 
-**Door 2: work with your own files.** Use an AI tool that can open a folder on your computer, for example Claude Code, Codex, Cursor, GitHub Copilot or OpenCode. BASE favors none of them. Download the example and open `exemples/assistant-devis-demo/`, not the repository root. First ask the tool to read the instructions, then to show you the folder structure and the role of the main files. Then ask the question: "Is Dupont SA entitled to the loyalty discount?" The expected answer is "no": the discount requires two mandates, whereas the record indicates "1st mandate." Check that the assistant cites both sources and that the `[A VALIDER]` marker appears.
+The tool can propose the corresponding change to the reference method. After your approval, this evolution does not remain confined to the conversation: it becomes an explicit and versioned part of your way of working with AI.
 
-**You do not have to write this structure on your own.** BASE is designed so that you articulate your method in conversation, without having to know the format. Your AI tool follows a procedure that asks the useful questions, proposes a structure and submits the changes to you before writing them. The decision stays with you.
+**You are therefore not merely configuring a tool. In natural language, you are developing a method for collaborating with AI that you can preserve and reuse elsewhere.**
 
-**Create your folder in the BASE format.** For the quote example, copy `exemples/assistant-devis/`, a complete template to personalize, then say: "Configure my business." The procedure asks you one question at a time and fills in, with your agreement, the company identity, the commercial terms, the catalog and the pricing rules.
+Changing models or platforms may require an adaptation, new permissions or new tests, and the results may vary. **But the reference method remains available: you do not have to redefine it entirely in the new tool's interface and settings.**
 
-To start from another folder, the command-line interface (CLI) and Studio offer the same starting structure. `base init` first shows the files it plans to create; `base init --yes` creates them with your agreement. `base studio --root <folder>` installs the interface dependencies on first launch and opens BASE Studio, the graphical workshop, in your browser. If the folder is not yet structured by BASE, the welcome screen shows the exact content of the proposed files before they are created. Browsing and editing the files requires no model configuration; the chat and the evaluations require you to choose a provider in the settings. → [Install](docs/start/installer.md) · [Studio](tools/studio/ui/README.md)
+### A verifiable demonstration
 
-> **Cost.** BASE is free. The AI tool and the model you choose can be free or paid; their costs and their limits depend on the services you select.
+Open [`exemples/assistant-devis-demo/`](exemples/assistant-devis-demo/) in an AI tool that reads files, then ask:
 
-> **Limit of the controls.** BASE's controls apply only to the actions that go through its components. A tool with direct access to the files, the terminal or an API can bypass them. BASE replaces neither access management, nor a data-leak prevention system (DLP), nor your compliance obligations.
+> "Is Dupont SA entitled to the loyalty discount?"
 
----
+The expected answer is **no**: the rule requires two signed engagements; the client record mentions only one. The assistant must cite the [pricing rule](exemples/assistant-devis-demo/catalogue/regles-tarification.md) and [client record](exemples/assistant-devis-demo/clients/dupont-sa.md), then state that any exception still requires human approval.
 
-## 3. Start from an example
-
-You can start from an example or from work you already do. Describe to your AI tool what you want to accomplish, the documents available and the decisions that must rest with you. First discuss with it how the work should unfold. It can then translate that exchange into the BASE format, show you the proposed files and help you refine them. You do not need to know the standard to begin.
-
-In the resulting folder, an agent defines a role and serves as the entry point. The processes describe the way of working; the competences gather the necessary knowledge; the sources provide the reference information. The metadata of the [`base.resource.v1` standard](docs/reference/le-standard.md) then let the code recognize these roles and activate, as you need them, the routing, the validations or access rules.
-
-The examples below organize know-how, knowledge and data in open, distinct files. You can copy them and adapt them freely to your needs.
-
-| Example | What it helps you do |
-| --- | --- |
-| [Reflection assistant](exemples/assistant-reflexion/) | Structure your thinking, your sources and your positions on a topic, so you follow your own train of thought |
-| [Personal starter](exemples/starter-perso/) | Start from a folder structured by BASE to organize your personal knowledge: notes, projects, tracking |
-| [Quote assistant](exemples/assistant-devis/) | Prepare professional quotes: prices, VAT, terms, optional export |
-| [HR assistant](exemples/assistant-rh/) | Publish job offers, prepare interviews, evaluate candidates |
-| [Communication assistant](exemples/assistant-communication/) | Write LinkedIn posts and newsletters in your tone of voice |
-| [Correspondence assistant](exemples/assistant-courrier/) | Write and handle your client letters and emails |
-| [Project assistant](exemples/assistant-projet/) | Structure, plan and track your projects with milestones |
-| [Teaching assistant](exemples/assistant-enseignant/) | Prepare teaching sequences and assessments |
-| [Multi-client agency](exemples/agence-multi-clients/) | Keep a multi-folder workspace, with one folder structured by BASE for each client |
-
-[See all the examples →](exemples/) · *For another need, simply say: "Here is what I would like to do with AI. Help me clarify the work, then structure it with BASE." You can then discuss the proposed files and refine them.*
+[See the detailed journey](docs/start/demo-60-secondes.md) · [Browse all examples](exemples/)
 
 ---
 
-## 4. Why it matters
+## 2. Choose your starting point
 
-> "When AI can have real consequences, transparency is the condition of responsibility. An organization should be able to see and to show, in plain language and in a single place, how it has articulated its work with AI."
-> <br>*Charles-Edouard Bardyn*
+### Try without installing
 
-Working with AI risks a loss of control on several fronts at once: over your method, over how much you still understand of the work produced, over what survives when the tool changes, over what you actually verify. The sections below take these fronts one by one, and what BASE changes for each.
+Download the [demonstration pack](https://github.com/ai-swiss/base/releases/latest/download/assistant-devis-demo.pack.md), attach it to ChatGPT or Claude and ask:
 
-### Turning every correction into a lasting gain
+> "What must I approve before you create or modify a quote?"
 
-A correction in a conversation can improve the answer at hand. Written into a rule, an example or a procedure, it becomes reusable for the requests that follow. Some tools already keep instructions or a memory, but this content often accumulates over conversations without staying fully visible or offering fine control over what is kept, changed or deleted. BASE places these elements in files you can reread, modify, delete, version and take with you.
+[Try it in a browser](docs/start/essayer-sans-installer.md)
 
-### Reducing what the model has to guess
+### Build from work you understand
 
-Language models remain important and are not all equal. For many real-world tasks, however, the model's capability is not enough. The result depends above all on the structure of the work, the relevant facts and the required controls. When the steps, the context and the criteria are explicit, the model no longer has to reconstruct the intended organization on its own at each request. Smaller or local models can then be suitable for some tasks, not because they equal the most powerful models, but because they are asked to guess less.
+[Entrust the installation of BASE and initialization of your folder to your AI tool](docs/start/installer-par-votre-ia.md), then say:
 
-This structure stays in your files when you change model or tool. You will sometimes have to adapt the compatibility files, the available tools or the execution parameters, but you will not have to rebuild your way of working from memories, settings, proprietary instructions and old conversations.
+> "Here is the work I want to structure with BASE. Help me define the method, propose the necessary files and wait for my approval before creating them."
 
-### Keeping control of the method
+`base init` first shows what it proposes to create without modifying the folder. After your choices and approval, a second invocation with `--yes` creates the planned files without overwriting existing ones.
 
-In BASE, the expression **cognitive sovereignty** designates a precise capacity: staying in control of how you work and decide with AI. The method you follow, what you delegate, what you keep for yourself are written in files you own, that you can reread and correct. This capacity promises neither total independence nor identical results from one model to the next.
+You do not need to learn the BASE format before starting.
 
-Material sovereignty, by contrast, concerns where the model runs and where the data is processed. The two dimensions complement each other. The fact that the files remain on your device does not prevent a cloud tool from transmitting their content to a remote service; that depends on your configuration and on your contracts with one or more providers. → [Sovereignty and trust](docs/trust/souverainete-et-confiance.md)
+### Start from existing documents or procedures
 
-### Preserving the overall view
+Initialize the folder, open it in your AI tool and say:
 
-When working with generative AI, a mistake is sometimes visible right away. The loss of understanding is more insidious: answers and documents accumulate, while rereading becomes more superficial. You nonetheless remain responsible for work you understand less and less. BASE does not preserve your judgment for you. It encourages a readable way of working, with assumptions and decision points that help you see what you delegate and what you approve.
+> "Review this folder and show me what BASE could make of it. Do not change any files yet."
 
-Working with BASE also makes transmissible the criteria and the decisions that guide the work. A new colleague can read them, apply them, question them and propose a correction. The point of AI literacy, then, is not to learn the interface of the month. Would we teach computing by limiting it to a spreadsheet? In the same way, a durable AI literacy is about objectives, context, delegation, verification and responsibility.
+The tool can then propose separating procedures, reusable knowledge, authoritative sources, output templates and data specific to individual cases. It can prepare an HTML brief for you to review in a browser, then submit the proposed conversions separately.
 
-### Structuring interaction and verification
+[Get BASE](docs/start/obtenir-base.md) · [Quick start](docs/start/quickstart.md) · [Step-by-step tutorial](docs/tutoriel/index.md)
 
-A language model produces the most probable continuation of what it is given to read; it does not follow rules fixed in advance. So it does not work like ordinary software, and two traits change how you work with it. First, it knows many general regularities but not your organization: even if it can access a database, emails or a set of documents, you still have to tell it what to look for, which sources are authoritative and when to consult them. Second, its core generates, it does not verify: verification is up to you.
-
-BASE organizes not only access to information, but its use. In each process, you can specify which resources to consult, at which step and with what level of detail. Knowledge, sources and business data stay distinct so as to provide the relevant information, at the right granularity and at the right moment, rather than piling up all the available context.
-
-With generative AI, verifying always requires a reference point outside the generation itself: a source, a rule, a calculation, a test or the judgment of a responsible person. Asking the same model to reread its answer with no reference element produces a new generation, not an independent verification. BASE lets you write into the way of working the sources to consult, the controls to run and the decisions to keep visible. On its own, it does not guarantee that an answer is true.
-
-The repository also documents applied research on human-AI interaction. This work is at the heart of the approach to AI literacy that AI Swiss develops and promotes with its education partners: explicit objectives, chosen context, correction loops, a level of delegation and verifications, both adapted to the risk. These pages do not turn any of this into established laws or guarantees. They make the assumptions, the practices and the corrections explicit, transmissible and revisable. → [Co-thinking with AI](docs/learn/co-penser-avec-lia.md) · [Co-thinking in practice, 16 principles](docs/learn/pratiques-co-pensee.md)
-
-> **What you control.** The reference copy of your method stays in Markdown files that you can version and take with you. The BASE conventions are public and the reference implementation is open. BASE determines neither the legal ownership of your data, nor its hosting, nor the processing carried out by the AI tool you choose.
-
-<details>
-<summary><strong>Limits of BASE</strong></summary>
-
-BASE does not make AI infallible. On its own it provides neither IAM/SSO (identity management and single sign-on), nor RBAC (role-based access), nor DLP/SIEM (leak prevention and monitoring), nor legal archiving, nor nFADP/GDPR compliance. Meeting an isolated requirement does not amount to compliance.
-
-The standard is nonetheless designed to be built upon. Its metadata can in particular designate an owner, a review date, a sensitivity level or a policy; validators and extension points then let you connect this information to access controls, to authentication or to other layers of governance. BASE thus provides coherent foundations, not turnkey compliance. Each integration must be implemented and verified in its context. → [Public framework and extensions](docs/reference/framework-public.md) · [The standard](docs/reference/le-standard.md)
-
-The separation of instructions and data ([§7](#7-the-building-blocks-as-you-need-them)) helps limit certain confusions, but it does not on its own constitute a mechanism resistant to injection. An external security review is planned, but has not yet been carried out. Threat model: [Security and limits](docs/trust/securite-et-limites.md).
-</details>
+> **Cost.** BASE is free. Execution costs, usage limits and data processing depend on the chosen model and tool.
 
 ---
 
-## 5. What BASE adds
+## 3. Documents do not constitute a method
 
-BASE complements the layers that already exist:
+A model produces a response from the request and context it receives. If that context does not specify the procedure to follow, the authoritative sources, the required checks or the decisions to leave to a person, the model must infer them or proceed without them.
 
-- a **language model** provides generation and reasoning capabilities;
-- a **harness** provides the interface, the tools, the execution memory and the orchestration;
-- a **format or a knowledge layer** organizes the information the AI can consult, for example a document corpus, a catalog, a glossary or a business ontology;
-- **BASE extends this principle to the whole articulation of the work with AI**: processes, knowledge, sources, data, controls and human decisions each receive a distinct role.
+Adding documents increases the amount of available information. **It does not tell the model which documents are authoritative, when to consult them, in what order to act or when to stop for a human decision.**
 
-In other words, BASE occupies the least-tooled layer: how the work is described, verified and preserved.
+You can therefore own every necessary document and still lose the instructions that explained how to use them together.
 
-The metadata that the code recognizes connect this structure to mechanisms. They can signal a review, route a request or underpin an access policy. The standard also accepts additional fields: an organization can enrich its schema, then connect these fields to its own validators, policies and controls without locking its files into a particular platform.
+In a BASE structure, these relationships are described explicitly in files: which procedure uses which sources, which rules apply, which checks are required and which decisions remain human.
 
-Concretely, you can keep the model and the harness you already use. You connect your documents, your data or your knowledge layer, if you have one, to BASE, then you describe how to mobilize them over the course of the work. Without a particular knowledge format, simple files are enough. BASE replaces neither the model, nor the harness, nor document search; it makes their articulation readable, editable and durable. → [The map of the 2026 landscape](docs/reference/positionnement.md)
+This separation also changes where the method is defined. It no longer exists only in the settings, prompts or interface of a given platform. The platform becomes one execution context among others; the BASE files remain the shared reference.
 
-From the same core of files, BASE can generate the adapters expected by different harnesses, for example `CLAUDE.md`, `AGENTS.md` or the Cursor rules. These files let each tool find the same structure without making its proprietary format the source of truth. → [The standard](docs/reference/le-standard.md) · [Compatibility](docs/reference/compatibilite-harnesses.md)
+This does not make models interchangeable. It allows you to change models or tools without having to redefine your entire way of working in a new interface.
 
-Multiplying agents does not, in itself, constitute a better structure. Several agents can be useful when tasks can genuinely be isolated, carried out in parallel or evaluated separately. They also introduce a cost of coordination and of context handoff. When work follows a single line of reasoning or depends on a largely shared context, splitting it across several agents mainly adds losses and complexity; a single agent guided by an explicit process then often does just as well, without the coordination cost. BASE imposes no architecture: a process can be followed by a single agent, split across several, or run by another harness. Multiplying agents replaces neither a clear decomposition of the work, nor a verification external to the model.
+The hypothesis can be tested: making these elements explicit reduces what remains implicit in the context provided to the model. The actual effect on quality, working time or migration cost must nevertheless be measured for each task, model and integration.
 
----
+Changing providers may require another adapter, different permissions or new tests, and two models will not necessarily produce the same result. BASE therefore does not remove dependency on the execution tool.
 
-## 6. Who it is for
+It does, however, let you retain outside that tool a reference description of the working method and the limits of delegation.
 
-A provider can shut down a service or change its terms. Your files, though, stay with you.
+BASE calls the ability to retain and evolve this reference description independently of the execution platform **cognitive sovereignty**.
 
-BASE becomes useful as soon as you want to develop your own working method with AI: to maintain it, version it, improve it, pass it on and preserve it across changes of models or tools. For a one-off question, a chat is often enough. As soon as the work accumulates, files you control let you keep the decisions, the procedures and the corrections without depending on the lifecycle of an interface or a provider.
-
-You can start from an existing task or folder. Tell your AI tool: "Here is what I would like to do. What is possible and how would you structure the work?" The discussion can clarify the steps, the necessary information, the human decisions and the verifications. The tool then applies the BASE standard to the proposed files; you reread and refine them without having to design the format yourself.
-
-A folder that starts light can then be enriched with governance devices: owners, review dates, sensitivity levels, routing, controls and evaluations. The format can stay the same; the access, security and compliance requirements grow as the deployment expands.
-
-| Profile | What BASE brings | What remains your responsibility |
-| --- | --- | --- |
-| **Individual / student** | Keep a method for research, writing or organization beyond a single conversation. | Choose the data entrusted to the model, reread and maintain the files. |
-| **Teacher / professional / freelancer** | Reuse rules, sources and steps specific to the activity. | Validate the business content and decide what can be delegated. |
-| **Team / SME** | Share and improve a common method, with visible responsibilities. | Organize access, reviews and the transmission of know-how. |
-| **Executive / public sector** | Keep an inspectable source of the method, independent of the execution interface. | Choose the providers, frame the uses, demonstrate and maintain compliance. |
-| **Security / compliance** | Distinguish instructions from mechanisms, document the flows and verify the stated limits. | Integrate BASE with IAM, RBAC, DLP, SIEM systems and impact assessments. |
-| **Developer / contributor** | Use or extend an open specification and its reference implementation. | Verify the requirements, the tests and the limits before deployment. |
-
-Before launching a pilot in an organization, check four points: which work needs to be structured; which data the AI tool can read; who validates the results; which external controls remain necessary? BASE helps decompose and document the work; it does not bring turnkey compliance. → [Adoption](docs/learn/adoption-organisation.md) · [Sovereignty and trust](docs/trust/souverainete-et-confiance.md) · [Evidence](docs/trust/evidence.md)
+![BASE: take back control over AI. A person works beneath a transparent dome amid a flow of tools and information.](docs/public/assets/base-cognitive-sovereignty.png)
 
 ---
 
-## 7. The building blocks, as you need them
+## 4. What BASE represents
 
-A folder structured by BASE can start with an agent, a process and a few files. The following functions are added when the need appears.
+To describe work, BASE can distinguish:
 
-At first glance the standard can look heavy; it is in fact lean. Each building block stays optional and is added only when it earns its keep, and you do not have to build and maintain the structure alone: your AI tool builds it with you in conversation, and can take your existing setup and translate it into this format. The framework itself takes on part of the upkeep, with its own guardrails and checks (`base doctor` flags a process with no example, a routable resource with no description, a dormant marker; the generated adapters and index regenerate; evaluation lets you track quality). The structure is meant to lighten the mental load, not add to it.
+- **intention**: the desired result and its constraints;
+- **procedure**: the steps to follow and stopping conditions;
+- **knowledge**: reusable rules and explanations;
+- **sources**: the documents or systems that are authoritative;
+- **business data**: information specific to the case being handled;
+- **controls**: checks grounded in a rule, source, calculation, test or human decision;
+- **human decisions**: decisions the assistant may prepare but must not make.
 
-> **Two registers, never to be confused.** A *mechanism* is enforced by code when the action goes through the BASE component concerned. An *instruction* is interpreted by the model: useful, but fallible. Each building block makes clear its register. An instruction is not a guarantee.
+Roles and procedures are described in Markdown. Sources, data, output templates and tools can retain the format suited to their use.
 
-- **Organized texts.** The files are written in your words, by you or with the help of your AI tool, following a readable structure. The shared [`base.resource.v1`](docs/reference/le-standard.md) standard makes the folder navigable, for you as much as for the AI.
-- **Metadata that activate mechanisms.** A few header lines can signal a process, mark a sensitive resource or define an access rule. Code can interpret this metadata to enforce a control; it does not guarantee how the model interprets the text. → [detail](docs/trust/mecanismes-vs-consignes.md)
-- **The double separation.** Instructions are separated from data; know-how is separated from the information used to do the work. This structure clarifies authority and eases maintenance. It reduces accidental confusions, but is not enough to eliminate prompt injection. → [§8](#8-how-it-works)
-- **Progressive routing, from your request to the right process.** You phrase your intention in plain language; your AI tool goes through a generated index (`.ai/routing/index.md`) to find the relevant role and procedure. The conversation remains the entry point. For tests and integrations, the CLI also offers lexical routing, more rudimentary, but independent of the model and reproducible. → [detail](docs/reference/routage-process-et-ressources.md)
-- **A connector for tools that do not open your files directly.** BASE's MCP server gives a compatible tool controlled access to the project's resources and functions. Locally, it can read the files and propose changes subject to confirmation; over HTTP, it stays read-only by default. BASE can thus graft itself onto a chat or an interface that cannot browse your folder on its own. → [detail](mcp/)
-- **The Studio.** A web application lets you see and edit the resources without browsing the folders by hand. By default, it listens only on the local network interface. `base studio --root <folder>` → [detail](tools/studio/ui/README.md)
-- **Evaluation.** A simulated user talks with the assistant, then a judge-model evaluates the transcript against versioned scenarios. You can compare several versions; the result serves as a regression signal, not as an absolute grade.
-- **A control over outgoing data (egress).** BASE's broker is the component that filters the resources before they are sent. When a remote call goes through it, a resource carrying `confidential: true` or located under a `local-only` root is held back and replaced by an explicit notice. By default, the policy is permissive. Text entered directly and actions outside the broker are not filtered. This mechanism is neither a firewall nor a DLP. → [detail](docs/trust/frontiere-local-vs-sortant.md)
+In BASE, an **agent** is an entry point and a **process** describes a procedure. The open, versioned [`base.resource.v1` convention](docs/reference/le-standard.md) describes how to declare these resources, their references and their relationships. The reference implementation can inventory them, validate their structure and make them available to other tools.
 
-> **Repository controls.** `npm run check` runs the verifications planned by the project. The security claims and the `FR-*` requirements point to their mechanisms, their tests and their limits in [§8](#8-how-it-works) and in [Evidence](docs/trust/evidence.md).
+This organization does not require a complex system. A first assistant may rely on one role, one procedure and a few files. Owners, review dates, sensitivity levels or additional controls are useful only when a real need justifies them.
 
-<details>
-<summary><strong>Compatibility and deployment: MCP, multi-folder workspaces, CLI, Studio confinement</strong></summary>
+This structure makes several skills involved in working with AI explicit, and therefore easier to pass on: formulating the desired result, choosing the context, designating authoritative sources, limiting delegation, verifying the result and preserving human decisions.
 
-- **The MCP server.** The *Model Context Protocol* (MCP) is the protocol that here connects the AI tool to BASE's resources and functions. The server exposes to it, in particular, discovery, routing, reading and, in local mode, mediated writing. Its HTTP interface is read-only by default; a non-local binding is refused without authentication, except for a derogation explicitly flagged as dangerous. → [mcp/](mcp/)
-- **Multi-folder workspaces.** Several folders loaded side by side, isolated from one another. A nested root remains isolated.
-- **The CLI.** `base <command>` exposes to humans and to tools commands to build, route, audit and evaluate a folder structured by BASE.
-- **Studio confinement.** It listens only on `127.0.0.1` by default and protects against *DNS rebinding*, an attack that tries to bypass the local network border. This reduces network exposure; it is not authentication and it does not protect against a malicious local process.
-- **Independent layers.** You can stick to the structured files or add the documentation, the Studio and the MCP server. An organizational deployment requires the access controls, the integration and the governance suited to its context.
-</details>
+BASE helps document these choices. It does not guarantee that they are correct.
+
+[Why go beyond the single agent](docs/learn/au-dela-des-agents.md) · [Co-thinking with AI](docs/learn/co-penser-avec-lia.md) · [The intention-driven model](docs/reference/modele-de-calcul-oriente-par-l-intention.md)
+
+### One documented method, several execution contexts
+
+An organization can use BASE to describe the procedures, knowledge, sources, controls and limits of delegation that it wants to make available to its AI tools.
+
+BASE replaces neither the ERP, nor databases, nor business applications. It describes which resources should be involved in a given piece of work and how they relate to the procedure.
+
+The same reference method can then be used in several contexts. An AI feature built into an ERP might, for instance, receive only the quotation procedure and pricing rules. A more advanced tool can consult the same files while having access to additional sources and actions. An internal service can access them through MCP.
+
+Each integration determines what the model can actually read or do.
+
+**Sharing the same reference method does not mean obtaining the same behavior everywhere.** Changing models or tools may require new adapters, new permissions and new tests. Results may differ.
+
+What remains common is the versioned description of the method; its interpretation and execution may vary.
 
 ---
 
-## 8. How it works
+## 5. What is guaranteed, and what is not
 
-### The structure, in detail
+BASE distinguishes two levels.
 
-BASE assigns distinct roles to files. The agent describes the role; the processes carry the know-how; the competences bring the useful knowledge; the sources provide the reference information; business data stays in its own folders. This separation clarifies what gives an instruction and what provides information. It helps design controls; it does not on its own prevent a piece of data that has been read from influencing the model.
+An **instruction** expresses an expected behavior in text. Its application depends on the model's interpretation.
 
-```
-METHOD AND EXPERTISE                         BUSINESS CONTENT
-AGENT.md             The role                data/        Your business files
-  └── skills/                                sources/     Your reference sources
-        ├── processes/   The know-how
-        └── competences/ The knowledge
-  templates/          Forms (opt.)
-  tools/              Scripts (opt.)
+A **mechanism** applies a rule through code. Its effect is guaranteed only for actions that pass through the relevant component.
 
-  Intended border: the method holds the authority;
-  the business content provides the information.
-```
+The reference implementation notably provides:
 
-Two distinctions structure this classification: the method is separated from the information used to do the work; instructions are separated from potentially adversarial data. Templates, scripts and other files stay optional. The processes and the competences follow the **SKILL.md** convention, in readable Markdown files. Some tools discover them natively; others ask for an adapter or an explicit link.
+- a map that the integration can present to the model so it can choose a procedure or abstain;
+- a separate deterministic router for tests and calls without a model;
+- retrieval of citable passages from structured corpora;
+- validation of structure and links;
+- mediated two-stage writing, with confirmation required by default;
+- filtering, before a remote model, of resources that the configuration designates as non-transmissible;
+- an MCP server for integrations, a Studio workshop for review and a system that replays scenarios and checks explicit criteria.
 
-### Routing, in detail
+These mechanisms protect only the actions that pass through them. Filtering applies only to execution paths that use it; reading files directly can therefore bypass this protection. Separating instructions from data does not by itself protect against prompt injection either.
 
-Three modes of access are possible, from the most guided to the most direct: **formulate your request** and let your tool find its way in BASE; **choose the agent yourself**; **directly open the file** you want. By default, the tool reads a generated index (`.ai/routing/index.md`) and descends from the root toward the agent, then toward the process. For tests and integrations, `base route` and the MCP tool `route_request` use a more rudimentary lexical routing, with no model. With the same corpus, the same configuration, the same version and the same request, this mechanism produces the same result: a route or a reasoned abstention. This reproducibility makes it testable; it makes its choice neither finer nor necessarily right. When the deterministic router and the model disagree on a route, that flags a case to clarify; on its own, it does not settle which routing is right. For large catalogs, an optional mode can add *embeddings*, numerical representations used to bring similar requests closer together, then a refinement by the model.
+BASE replaces neither access management, data protection, archiving nor compliance obligations. It has not yet undergone an independent security review.
 
-The index is regenerated when the folder changes. With a single "quote" agent, the choice is simple; adding a "support" agent introduces a new route to describe and to test.
+Verification independent of a generation requires a criterion that is not merely another generation: a source, a rule, a calculation, a test or the judgment of a responsible person.
 
-### Evaluating and observing your folder
+Asking the same model to review its own response without giving it any new element produces a second generation. That alone does not constitute independent evidence.
 
-In an evaluation, a simulated user talks with the assistant under test, then a judge-model evaluates the transcript against versioned scenarios. The verdict depends on the models and must be reread; it can signal a regression, not prove an absolute quality. You run it on an agent and scenarios, for example `npm run eval -- --root . --agent <agent> --process <process> --scenarios <file>`. By default, it calls an OpenAI-compatible provider; `--ollama` switches to local. → [detail](tools/eval/README.md)
+Replaying the same scenarios with several models makes it possible to compare results and identify what remains stable or depends on the model, tool or integration. This is one way to test the method's portability.
 
-At scale, this evaluation also measures the portability of your processes. Replay the same scenarios across different models, both as the simulated user and as the judge, and you get a signal, weak but real, of how much your results vary from one model to the next. It is a matter of sovereignty: some recent models are tuned for their own environment and follow a structure designed for another tool less faithfully; quantifying that gap reveals which models adapt best to your method, rather than imposing their own conventions on you.
+BASE currently publishes no general measurement demonstrating a reduction in errors, working time or migration cost.
 
-### For the contributor
+[Mechanisms versus instructions](docs/trust/mecanismes-vs-consignes.md) · [Security and limits](docs/trust/securite-et-limites.md) · [Evidence](docs/trust/evidence.md) · [Tool compatibility](docs/reference/compatibilite-harnesses.md)
 
-BASE today has a lead maintainer and remains under the stewardship of AI Swiss. The licenses allow others to take over the project. The CLI core uses the Node.js standard library; the MCP and the optional interfaces have their own dependencies.
+---
+
+## 6. Find the documentation for your need
+
+This README presents the general proposition. To go further:
+
+- **Understand how BASE works:** [read the documentation in order](docs/start/lire-dans-quel-ordre.md);
+- **Evaluate BASE on your own files:** [adopt an existing folder](docs/start/installer-par-votre-ia.md);
+- **Build an assistant:** [quick start](docs/start/quickstart.md) and [tutorial](docs/tutoriel/index.md);
+- **Structure a knowledge corpus:** [guide to citable passages](docs/guides/structurer-un-corpus-de-connaissance.md);
+- **Structure an organization's methods and knowledge:** [proposed standard](docs/reference/le-standard.md), [adoption guide](docs/learn/adoption-organisation.md) and [public framework](docs/reference/framework-public.md);
+- **Integrate BASE with a tool or application:** [compatibility](docs/reference/compatibilite-harnesses.md), [architecture](ARCHITECTURE.md) and [MCP server](docs/start/installer-mcp.md);
+- **Examine the limits, evidence and actual implementation status:** [limits](docs/trust/securite-et-limites.md), [evidence](docs/trust/evidence.md) and [implementation status](docs/reference/etat-implementation.md);
+- **Contribute:** [contribution guide](CONTRIBUTING.md), [development](DEVELOPING.md), [specifications](specs/README.md) and [governance](GOVERNANCE.md).
+
+An AI tool able to read this page and follow its links can likewise reach the documents relevant to a given question.
+
+---
+
+## 7. Open project
+
+BASE proposes an open, versioned convention accompanied by a reference implementation.
+
+This convention is not a standard ratified by a third-party body. The `FR-*` requirements connect expected behaviors to tests and other evidence in the repository.
+
+To verify the project:
 
 ```bash
-git clone https://github.com/ai-swiss/base.git && cd base && npm ci && npm run check
+git clone https://github.com/ai-swiss/base.git
+cd base
+npm ci
+npm run check
 ```
 
-`npm run check` verifies the specifications, the typing, the schemas, the recorded test cases for routing, the documentation hygiene and the associated test suites. Coverage and some publication checks run separately in CI. To change a behavior, find its `FR-*` requirement in `specs/current/10_core/`, read the corresponding tests, then modify code, specification and tests together. → [ARCHITECTURE](ARCHITECTURE.md) · [CONTRIBUTING](CONTRIBUTING.md)
+The CLI core relies only on the Node.js standard library. The MCP server, Studio, documentation site and adapters remain optional.
 
-<details>
-<summary><strong>Languages and sources of truth</strong></summary>
+Code is licensed under **Apache-2.0**; documentation, agents, skills and examples under **CC BY 4.0**. See [LICENSING](LICENSING.md), [SECURITY](SECURITY.md), [GOVERNANCE](GOVERNANCE.md) and the [code of conduct](CODE_OF_CONDUCT.md).
 
-**Language.** You can write the method in the languages the chosen model understands. Routing by the model can work in these languages; lexical routing without a model, by contrast, depends on the signals present in the index. → [Writing for the router](docs/guides/ecrire-pour-le-routeur.md)
+Created by **Charles-Edouard Bardyn** within [AI Swiss](https://a-i.swiss), which governs the project. Innovaud contributes to the design of examples for business use.
 
-**Sources of truth.** The expected state is defined in the specifications; the code implements it and the tests provide the elements of proof. The decisions and the `CHANGELOG` track the changes; `.plans` and `.reviews` stay drafts. Any divergence between specification and code is a defect. → [ARCHITECTURE](ARCHITECTURE.md)
-</details>
-
----
-
-## 9. Going further
-
-**Learn:** [What to read in what order](docs/start/lire-dans-quel-ordre.md) · [Step-by-step tutorial](docs/tutoriel/index.md) · [Co-thinking with AI](docs/learn/co-penser-avec-lia.md) · [Co-thinking in practice, 16 principles](docs/learn/pratiques-co-pensee.md) · [Adoption in an organization](docs/learn/adoption-organisation.md) · [The lifecycle of an expertise](docs/learn/cycle-de-vie-expertise.md)
-<br><sub>These paths develop a literacy that does not depend on a particular interface: choosing the context, distinguishing instruction from mechanism, verifying, then taking responsibility for the result.</sub>
-
-**Contribute:** [CONTRIBUTING](CONTRIBUTING.md) · [DEVELOPING](DEVELOPING.md) · [ARCHITECTURE](ARCHITECTURE.md) · [specs/](specs/README.md)
-
-**Trust and security:** [Evidence](docs/trust/evidence.md) · [Security and limits](docs/trust/securite-et-limites.md) · [The border between local and outbound data](docs/trust/frontiere-local-vs-sortant.md) · [Sovereignty and trust](docs/trust/souverainete-et-confiance.md)
-
-**Report or discuss:** [issues](https://github.com/ai-swiss/base/issues/new/choose) · [Discussions](https://github.com/ai-swiss/base/discussions) · vulnerabilities privately via [SECURITY](SECURITY.md)
-
-**Governance and durability:** [GOVERNANCE](GOVERNANCE.md)
-
-**Context:** [Launching BASE](docs/public/2026-06-25-lancement-base.pdf) (Innovaud × AI Swiss, 25.06.2026, in French).
-
----
-
-## Licence and attribution
-
-Code under **Apache-2.0**; documentation, agents, skills and examples under **CC BY 4.0** (dual license detailed in [LICENSING.md](LICENSING.md), full texts in [LICENSES/](LICENSES/)). See [GOVERNANCE](GOVERNANCE.md) · [Code of conduct](CODE_OF_CONDUCT.md) · [CONTRIBUTING](CONTRIBUTING.md).
-
-Created by **Charles-Edouard Bardyn** within AI Swiss, a non-profit association that ensures a stewardship neutral toward models. Innovaud contributes to the design of the examples devoted to enterprise uses.
-
-BASE provides a **starting point** that you can copy and adapt. The dual license also allows the creation of complementary tools and services. Their use in an enterprise must be evaluated with regard to the necessary integrations, controls and governance.
+**Models will pass and platforms will change. Your working methods, authoritative sources and decisions kept human must be able to outlast them.**

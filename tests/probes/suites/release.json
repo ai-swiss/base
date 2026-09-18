@@ -1,0 +1,26 @@
+{
+  "schema_version": "base.probe-suite.v1",
+  "id": "release",
+  "scenarios": [
+    "demo-discount",
+    "quote-ordinary",
+    "configure-start",
+    "first-contact-local",
+    "create-team-process",
+    "improve-from-friction",
+    "report-friction-start",
+    "honest-abstention",
+    "ambiguous-intent",
+    "forced-routing",
+    "contradicted-change",
+    "fresh-init-fr",
+    "fresh-init-en",
+    "fresh-init-de",
+    "fresh-init-it",
+    "cli-factual-section",
+    "mcp-factual-reading",
+    "mcp-cross-source-guidance",
+    "mcp-missing-knowledge",
+    "mcp-confidential-withholding"
+  ]
+}

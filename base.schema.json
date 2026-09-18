@@ -17,7 +17,7 @@
     },
     "id": {
       "type": "string",
-      "pattern": "^[a-z0-9][a-z0-9-]*$"
+      "pattern": "^[a-z0-9][a-z0-9-]*(\\.[a-z0-9][a-z0-9-]*)*$"
     },
     "type": {
       "type": "string",
@@ -104,6 +104,17 @@
         "type": "string"
       }
     },
+    "superseded_anchors": {
+      "description": "Where a renamed section went: { \"<old-anchor>\": \"<current-anchor>\" }. A section is cited as id#anchor and the anchor derives from the heading, so rewording a heading breaks the citations already written down. Each entry must name an anchor the document still has; one that resolves to nothing reads as not found, never as another section.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      },
+      "propertyNames": {
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      }
+    },
     "promoted_from": {
       "type": "string"
     },
@@ -111,8 +122,28 @@
       "type": "string",
       "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
     },
+    "lang": {
+      "description": "Language of this edition (ISO 639-1). When absent, the file name suffix `<slug>.<lang>.md` answers instead; a language-neutral resource (a folder card, a figure record) declares neither.",
+      "type": "string",
+      "pattern": "^[a-z]{2}$"
+    },
+    "translation_of": {
+      "description": "Id of the canonical resource this edition translates. Declared on the translation only: the canonical declares nothing, and the family resolves from either end.",
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*(\\.[a-z0-9][a-z0-9-]*)*$"
+    },
+    "attribution": {
+      "description": "The rule of use a collection declares for everything it holds, written on the folder's README.md card (e.g. «Written by Acme. Reuse only with this line.»). An MCP deployment that sets `mcp.attribution_prefix` returns the nearest such line with every read, so the rule travels with the content.",
+      "type": "string",
+      "minLength": 1
+    },
+    "cite_as": {
+      "description": "The citation a passage of this resource travels with, as a human would write it (e.g. «Guide (2026), p. 4»).",
+      "type": "string",
+      "minLength": 1
+    },
     "source": {
-      "description": "Stable semantic reference to where the resource lives; concrete access belongs to connectors.",
+      "description": "Stable semantic reference to where the resource lives; concrete access belongs to connectors. For a converted document, it also names the printed pages behind the text.",
       "type": "object",
       "additionalProperties": true,
       "properties": {
@@ -120,6 +151,21 @@
           "type": "string"
         },
         "locator": {
+          "type": "string"
+        },
+        "pages": {
+          "description": "The printed pages this resource transcribes, in order.",
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        },
+        "image": {
+          "description": "Root-relative path to the page image of the original.",
+          "type": "string"
+        },
+        "page_images": {
+          "description": "Root-relative path template for page images, with `{page}` or `{page:03}` (zero-padded) resolved for each entry of `pages`.",
           "type": "string"
         }
       }
@@ -147,12 +193,20 @@
             ]
           },
           "purpose": {
+            "description": "Why the workflow needs this dependency. Context packs expose it as an explanatory note; it grants no access.",
             "type": "string"
           }
         }
       }
     },
     "may_use": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "derived_from": {
+      "description": "Sources this document was written FROM (ids or root-relative paths). A summary never replaces its sources: this says where to go back to, and lets `base doctor` say when a source moved after the summary was written.",
       "type": "array",
       "items": {
         "type": "string"
@@ -209,9 +263,6 @@
         "entrypoint": {
           "type": "string",
           "minLength": 1
-        },
-        "dry_run": {
-          "type": "boolean"
         },
         "requires_confirmation": {
           "type": "boolean"

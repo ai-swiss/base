@@ -1,6 +1,6 @@
 ---
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-import { loadModel, resourceHref } from "../lib/model";
+import { loadModel, resourceHref, resourcesByUniqueId } from "../lib/model";
 import { useTranslations, type Locale } from "../lib/i18n";
 import { EVIDENCE_CLAIMS } from "../lib/content";
 
@@ -11,7 +11,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const model = loadModel();
-const byId = new Map(model.resources.map((resource) => [resource.source_id ?? resource.id, resource]));
+const byId = resourcesByUniqueId(model.resources);
 const byPath = new Map(model.resources.map((resource) => [resource.path, resource]));
 
 function resolveSource(item: string) {

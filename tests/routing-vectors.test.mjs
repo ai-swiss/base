@@ -1,4 +1,4 @@
-// Spec coverage: FR-ROUTE-006
+// Spec coverage: FR-ROUTE-006 NFR-CORE-002
 // Voie 2 precompute: precompute the routing embeddings (a cross-invocation cache). Pure over an injected embedder,
 // so the logic is proven without a model; the CLI wires a real Ollama/OpenAI-compatible embedder.
 // The cache is STAMPED (base.routing_vectors.v1): each entry carries the hash of the route_text it
@@ -30,6 +30,11 @@ const resources = [
   res({ id: "comm", type: "competence", path: ".ai/agents/sales/skills/competences/comm/SKILL.md", description: "Communication." }),
   res({ id: "old", type: "process", status: "deprecated", path: ".ai/agents/sales/skills/processes/old/SKILL.md", metadata: { use_when: "Vieux." } }),
   res({ id: "secret", type: "process", confidential: true, path: ".ai/agents/sales/skills/processes/secret/SKILL.md", metadata: { use_when: "Dossier confidentiel." } }),
+  // The shape the INVENTORY actually produces: a frontmatter field lives under `metadata`, and the
+  // inventory projects only the core fields to the top level. A fixture that carries `confidential`
+  // at the top level alone proves nothing about the real corpus, which is how a check that never
+  // fired once shipped green.
+  res({ id: "secret-reel", type: "process", path: ".ai/agents/sales/skills/processes/secret-reel/SKILL.md", metadata: { confidential: true, use_when: "Barème confidentiel." } }),
 ];
 
 describe("precomputeRoutingVectors — the cross-invocation cache", () => {
@@ -41,7 +46,8 @@ describe("precomputeRoutingVectors — the cross-invocation cache", () => {
     assert.equal(vectors[".ai/agents/sales/skills/processes/old/SKILL.md"], undefined, "deprecated skipped");
     // Egress on the BUILD path: a confidential route_text never reaches an embedder (it may be remote).
     assert.equal(vectors[".ai/agents/sales/skills/processes/secret/SKILL.md"], undefined, "confidential never embedded");
-    assert.equal(skippedConfidential, 1, "and the skip is counted, so the CLI says it out loud");
+    assert.equal(vectors[".ai/agents/sales/skills/processes/secret-reel/SKILL.md"], undefined, "confidential in the INVENTORY shape (metadata.confidential) never embedded either");
+    assert.equal(skippedConfidential, 2, "and both skips are counted, so the CLI says it out loud");
   });
 
   it("embeds the route_text (use_when) and stamps each entry with its hash", async () => {
@@ -76,7 +82,7 @@ describe("verifyRoutingVectors — staleness is a visible fact, never silently s
   it("a legacy bare map (pre-v1, no hashes) keeps working but is flagged legacy", () => {
     const out = verifyRoutingVectors(resources, { [resources[1].path]: [1, 2] });
     assert.equal(out.legacy, true, "no hashes → staleness undetectable → flagged for doctor");
-    assert.deepEqual(out.byPath, { [resources[1].path]: [1, 2] }, "trusted as before");
+    assert.deepEqual(out.byPath, { [resources[1].path]: [1, 2] }, "trusted");
   });
 
   it("null in, null out — a cache miss, never a failure", () => {

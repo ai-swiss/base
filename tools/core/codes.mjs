@@ -29,7 +29,8 @@ export const CODES = {
   "base.sensitivity.invalid": "sensitivity invalide.",
   "base.link.missing": "Lien relatif introuvable.",
   "base.execution.entrypoint_missing": "Entrypoint d'outil introuvable.",
-  "base.routing.fallback_unresolved": "La cible routing.fallback est introuvable dans l'inventaire.",
+  "base.routing.fallback_unresolved": "La cible routing.fallback est introuvable, ni dans cet inventaire ni dans le cadre BASE.",
+  "base.route.self_veto": "Un exemple déclaré est écarté par le «éviter si» du même process.",
 };
 
 export function codeMessage(code, fallback = "") {

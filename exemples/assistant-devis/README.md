@@ -4,19 +4,19 @@
 
 1. Ouvrez **ce dossier** (pas la racine du dépôt) dans Claude Code ou Cursor.
 2. Dites, mot pour mot: **«Bonjour, je veux configurer mon assistant devis»**
-3. L'assistant devrait vous accueillir: il annonce que la configuration prend environ 5 minutes, puis vous interroge une à une sur votre entreprise (nom, adresse, numéro IDE, forme juridique, activité) avant de remplir `entreprise/identite.md` et `catalogue/services.json`. Rien n'est écrit ni envoyé sans vous.
+3. L'assistant devrait vous accueillir: il annonce que la configuration prend environ 5 minutes, puis vous interroge une à une sur votre entreprise (nom, adresse, numéro IDE, forme juridique, activité) avant de remplir `entreprise/identite.md` et `catalogue/services.json`. Demander votre confirmation est ici une consigne à l'assistant. Pour une écriture, la confirmation n'est mécanique que via `base propose` puis `base commit`, ou leurs équivalents MCP.
 
 Un assistant IA qui aide les PME et les jeunes pousses à établir des devis professionnels par la conversation.
 
 Il vous guide d'abord pour configurer votre entreprise, puis rédige des devis à partir de vos demandes clients.
 
-Cet exemple illustre aussi la doctrine BASE dans son ensemble: vous pouvez charger directement l'agent devis, puis laisser BASE acheminer une demande vers le bon process (`configuration` ou `nouveau-devis`). Le process ouvre alors les ressources utiles: catalogue, conditions, modèles et outils.
+Cet exemple illustre aussi la doctrine BASE dans son ensemble: vous pouvez charger directement l'agent devis, puis laisser BASE acheminer une demande vers la bonne procédure (`configuration` ou `nouveau-devis`). La procédure ouvre alors les ressources utiles: catalogue, conditions, modèles et outils.
 
 ## Ce que fait cet agent
 
 | Vous dites | Il fait |
 |------------|---------|
-| «Bonjour, je voudrais configurer mon activité» (première fois) | Configure votre entreprise pas à pas |
+| «Bonjour, je veux configurer mon assistant devis» (première fois) | Configure votre entreprise pas à pas |
 | «J'ai un client qui demande...» | Crée un devis complet |
 | «Exporte le devis en PDF» | Génère un PDF professionnel |
 | «Modifie le devis de Dupont» | Ajuste un devis existant |
@@ -29,12 +29,12 @@ assistant-devis/
 ├── .ai/agents/assistant-devis/    L'intelligence de l'agent
 │   ├── AGENT.md                   Instructions principales
 │   ├── skills/
-│   │   ├── processes/             Workflows (config, devis)
+│   │   ├── processes/             Procédures (config, devis)
 │   │   └── competences/           Connaissances (TVA, format devis, marqueurs, journal)
 │   ├── templates/                 Modèles (devis .md et .json)
 │   └── tools/                     Calculs et export PDF
 │
-├── .ai/routing/                   Fixtures de routage agent → process
+├── .ai/routing/                   Fixtures de routage agent → procédure
 ├── entreprise/                    Votre identité et conditions
 ├── catalogue/                     Vos services et tarifs
 ├── clients/                       Fiches clients (auto-remplies)
@@ -43,14 +43,14 @@ assistant-devis/
 
 ## Routage BASE
 
-Si vous utilisez la CLI ou le MCP BASE, vous pouvez vérifier que les demandes importantes parviennent au bon process:
+Si vous utilisez la CLI ou le MCP BASE, vous pouvez vérifier que les demandes importantes parviennent à la bonne procédure:
 
 ```bash
-node ../../tools/base.mjs route "nouveau devis pour Dupont SA" --root .
-node ../../tools/base.mjs route-test --root .
+node .ai/base.mjs route "nouveau devis pour Dupont SA" --root .
+node .ai/base.mjs route-test --root .
 ```
 
-Le routeur se borne à choisir le process à suivre. Les compétences, documents, modèles, données et outils demeurent des ressources que le process ouvre ensuite.
+Le routeur se borne à choisir la procédure à suivre. Les compétences, documents, modèles, données et outils demeurent des ressources que la procédure ouvre ensuite.
 
 ## Export PDF (optionnel)
 

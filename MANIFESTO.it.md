@@ -1,7 +1,7 @@
 # Manifesto BASE
 
 > Questa è una traduzione. La [versione francese](MANIFESTO.md) fa fede. Disponibile anche in: [English](MANIFESTO.en.md) · [Deutsch](MANIFESTO.de.md).
-<!-- fr-synced: 8a190af89ffcfb6922bbf5d1d57aa5a4d99acd23 -->
+<!-- fr-synced: d1c30b7cea1ed76715983b57edcf52e4f3be4520 -->
 
 **Possedere la struttura della propria competenza, nell'era dell'IA.**
 
@@ -26,7 +26,7 @@ Il punto di svolta è semplice. Produrre non richiede quasi più alcuno sforzo; 
 3. **Generare richiede poco sforzo; verificare ne richiede molto.** Ogni produzione dell'IA va trattata come un'ipotesi, non come una conclusione acquisita. Una struttura solida alleggerisce la verifica, mai il contrario.
 4. **Una garanzia è reale solo se viene applicata.** Distinguiamo onestamente l'istruzione (un testo, seguito da un modello cooperativo) dal meccanismo (applicato dal broker). Documentiamo questo confine invece di mascherarlo.
 5. **La decisione importante resta umana e visibile.** I punti di decisione, i marcatori e il giornale mantengono il controllo e la memoria dalla parte delle persone.
-6. **La sovranità non si negozia.** Il cuore locale di BASE non lascia trapelare nulla per impostazione predefinita. Se vi collegate uno strumento IA, un fornitore di embeddings o un'API, siete voi a scegliere ciò che viene loro affidato. Restate liberi di cambiare strumento; i vostri file, invece, restano. La sovranità che conta si gioca **attorno ai modelli**: la libertà di articolare, di strutturare, di pensare con queste intelligenze.
+6. **La sovranità si costruisce, non si proclama.** Il cuore locale di BASE non chiama da solo alcun servizio remoto. I dati possono tuttavia uscire attraverso uno strumento IA collegato, un fornitore di embeddings o un'API; i filtri di BASE si applicano soltanto ai percorsi che passano effettivamente da BASE. La sovranità cognitiva poggia su una base concreta: i vostri file di riferimento restano vostri, leggibili e portabili, e vi permettono di cambiare strumento. Si gioca **attorno ai modelli**: nella libertà di articolare, strutturare e pensare con queste intelligenze.
 7. **Ciò che conta deve restare visibile.** Non si dovrebbe mai dover frugare per raggiungere l'essenziale. BASE mette in evidenza ciò che va verificato o deciso, orienta invece di lasciare senza seguito, e tiene l'aiuto a portata di parola. Seppellire ciò che conta è già una piccola perdita di verifica.
 
 ## Ciò che non promettiamo

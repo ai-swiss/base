@@ -32,7 +32,7 @@ Recourir à ce process lorsque l'utilisateur dit:
 - «Promouvoir ce process pour l'équipe.»
 - «Partager cette ressource avec l'équipe.»
 - «Rendre ce fichier réutilisable.»
-- «Préparer ce workflow pour la PME.»
+- «Préparer cette procédure pour la PME.»
 
 ## Inputs
 

@@ -19,7 +19,8 @@ import { resolve as pathResolve } from "node:path";
 import { denyFilterResources } from "./route-policy.mjs";
 import { agentDirOf, ROUTABLE_KINDS, withRoutedAgent } from "./routing.mjs";
 import { routingStrategy, embeddingRouter } from "./router.mjs";
-import { resolveFallback } from "./route-service.mjs";
+import { resolveFallback, fallbackResolvesIn } from "./route-service.mjs";
+import { resolveFrameworkRoot } from "./framework-root.mjs";
 import { checkEgress } from "./egress.mjs";
 // retrieve.mjs + refine.mjs (and the optional companion packages they import) load LAZILY, only when
 // the embedding strategy actually runs (see routeWithStrategy) — so the core/lexical path, and any
@@ -47,6 +48,23 @@ import { checkEgress } from "./egress.mjs";
 export function createRouteBroker(deps) {
   const { inventoryResources, applyRoutingVectors, loadRoutingVectors, verifyRoutingVectors, resolveConfig, computeRoute } = deps;
   const { resolveEmbedder, resolveModel, readRouting, routingLocality, rootEgressPolicy, recordEvent, hashArgs } = deps;
+
+  /**
+   * The FRAMEWORK corpus, for a help target the root does not own (FR-ROUTE-009). Read only when it
+   * is actually needed: a fallback is configured, the decision would carry one, and the root's own
+   * corpus does not hold it. So a root that owns its help target, BASE's own repository included,
+   * never walks a second tree, and a root that borrows the framework's welcome process reads it
+   * fresh rather than keeping a copy that ages.
+   * @param {string} root @param {any} cfg @param {any[]} resources
+   * @returns {Promise<{ root: string, resources: any[] } | null>}
+   */
+  async function frameworkCorpus(root, cfg, resources) {
+    const configured = cfg.routing?.fallback;
+    if (!configured || fallbackResolvesIn(configured, resources)) return null;
+    const frameworkRoot = await resolveFrameworkRoot(root, cfg);
+    if (!frameworkRoot) return null;
+    return { root: frameworkRoot, resources: await inventoryResources(frameworkRoot) };
+  }
 
   /**
    * Inventory the routable, deny-filtered corpus both strategies route over. `egress` filters the inventory
@@ -111,7 +129,7 @@ export function createRouteBroker(deps) {
               args_hash: hashArgs([request]),
               metadata: { strategy_fallback: "embedding->lexical", egress: "root_local_only" },
             });
-            return { ...(await computeRoute(root, request, resources, cfg, { limit, signal })), strategy: "lexical" };
+            return { ...(await computeRoute(root, request, resources, cfg, { limit, signal, framework: await frameworkCorpus(root, cfg, resources) })), strategy: "lexical" };
           }
           const { allowed, withheld } = checkEgress({ modelLocality: "remote", rootPolicy, resources: corpus });
           if (withheld.length) {
@@ -159,7 +177,7 @@ export function createRouteBroker(deps) {
         // FR-ROUTE-009 holds on BOTH strategies: the anti-dead-end fallback attaches to an honest
         // abstention here exactly as computeRoute attaches it on the lexical floor (route-service.mjs)
         // — same config, same deny-filtered corpus, same eligibility.
-        const fallback = resolveFallback(cfg.routing?.fallback, corpus, decision);
+        const fallback = resolveFallback(cfg.routing?.fallback, corpus, decision, await frameworkCorpus(root, cfg, corpus));
         return { ...decision, ...(fallback ? { fallback } : {}), strategy: "embedding" };
       } catch (error) {
         // Fail-closed to the lexical strategy. Recorded (not silenced): the owner can see it fell back.
@@ -174,7 +192,7 @@ export function createRouteBroker(deps) {
       }
     }
 
-    return { ...(await computeRoute(root, request, resources, cfg, { limit, signal })), strategy: "lexical" };
+    return { ...(await computeRoute(root, request, resources, cfg, { limit, signal, framework: await frameworkCorpus(root, cfg, resources) })), strategy: "lexical" };
   }
 
   /**
@@ -210,5 +228,22 @@ export function createRouteBroker(deps) {
     }
   }
 
-  return { prepareCorpus, routeWithStrategy, routeRequest };
+  /**
+   * The configured help target, resolved the way an abstention resolves it: the root's own corpus
+   * first, then the FRAMEWORK corpus the root belongs to (FR-ROUTE-009). A caller that routes by
+   * itself needs the fallback exactly when nothing on the map fits, which IS the abstention case, so
+   * the same eligibility and the same two corpora answer here. Reading `routing.fallback` from the
+   * config instead would report a root that borrows the framework's welcome process as having no help
+   * at all, and a typo'd target as having one that opens nothing.
+   * @param {string} rootDir @param {{ config?: any, egress?: any }} [options]
+   * @returns {Promise<{ agent: { id: string, path: string }, process: { id: string, path: string }, source: "root" | "framework", root?: string } | null>}
+   */
+  async function routingFallback(rootDir, { config, egress } = {}) {
+    const root = pathResolve(rootDir);
+    const cfg = config ?? await resolveConfig(root);
+    const resources = await prepareCorpus(root, cfg, { egress });
+    return resolveFallback(cfg.routing?.fallback, resources, { status: "out_of_scope" }, await frameworkCorpus(root, cfg, resources));
+  }
+
+  return { prepareCorpus, routeWithStrategy, routeRequest, routingFallback };
 }

@@ -3,7 +3,10 @@
 
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { punctuationLines } from "../tools/docs/check-punctuation.mjs";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import * as path from "node:path";
+import { declaredLanguage, frenchMarkdownUnder, punctuationLines } from "../tools/docs/check-punctuation.mjs";
 
 describe("check-punctuation: the typography gate", () => {
   it("flags a French space before : ; ! ? in prose", () => {
@@ -34,5 +37,32 @@ describe("check-punctuation: the typography gate", () => {
 
   it("honors an explicit [PUNCT-OK:] exception on the line", () => {
     assert.equal(punctuationLines("Un cas limite : justifié. [PUNCT-OK: citation]", false).length, 0);
+  });
+});
+
+describe("check-punctuation: which roots count as French", () => {
+  it("reads the declared language, normalises the region, and falls back to French", () => {
+    assert.equal(declaredLanguage(null), "fr", "no config at all is a French root");
+    assert.equal(declaredLanguage("{}"), "fr", "a config that says nothing is French");
+    assert.equal(declaredLanguage('{"language":"de-CH"}'), "de", "a region is dropped, as in core/lang");
+    assert.equal(declaredLanguage('{"language":"EN"}'), "en");
+    assert.equal(declaredLanguage("{ not json"), "fr", "a malformed config must not break the gate");
+  });
+
+  it("skips a nested root whose base.config.json declares another language, and keeps French ones", async () => {
+    const base = await mkdtemp(path.join(tmpdir(), "punct-lang-"));
+    try {
+      for (const [name, config] of [["de-root", '{"language":"de-CH"}'], ["fr-root", '{"language":"fr"}'], ["mute-root", "{}"]]) {
+        await mkdir(path.join(base, name), { recursive: true });
+        await writeFile(path.join(base, name, "base.config.json"), config, "utf8");
+        await writeFile(path.join(base, name, "page.md"), "Eine Regel : gehalten.\n", "utf8");
+      }
+      const skipped = [];
+      const files = await frenchMarkdownUnder(base, "exemples", skipped);
+      assert.deepEqual(files.sort(), ["exemples/fr-root/page.md", "exemples/mute-root/page.md"]);
+      assert.deepEqual(skipped, [{ dir: "exemples/de-root", language: "de" }], "the German root is named, not silently dropped");
+    } finally {
+      await rm(base, { recursive: true, force: true });
+    }
   });
 });

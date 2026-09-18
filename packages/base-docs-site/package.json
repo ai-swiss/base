@@ -1,18 +1,37 @@
 {
   "name": "@ai-swiss/base-docs-site",
   "version": "1.0.0",
+  "description": "Official optional documentation site adapter for BASE: renders the base.docs_model.v2 projection as a static Astro/Starlight site",
   "license": "Apache-2.0",
-  "private": true,
+  "author": "AI Swiss (https://a-i.swiss)",
   "type": "module",
-  "description": "Astro/Starlight presentation adapter for the BASE documentation model",
+  "bin": {
+    "base-docs-site": "./scripts/base-docs-site.mjs"
+  },
+  "files": [
+    "astro.config.mjs",
+    "scripts",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22.12"
+  },
   "scripts": {
-    "dev": "astro dev --host 127.0.0.1",
-    "build": "node scripts/build.mjs",
-    "preview": "astro preview --host 127.0.0.1"
+    "dev": "node scripts/base-docs-site.mjs dev",
+    "build": "node scripts/base-docs-site.mjs build",
+    "preview": "node scripts/base-docs-site.mjs preview"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.39.3",
-    "astro": "^6.4.5",
-    "marked": "^18.0.5"
+    "@astrojs/starlight": "~0.42.1",
+    "astro": "~7.3.3",
+    "marked": "~18.0.13"
+  },
+  "peerDependencies": {
+    "@ai-swiss/base": "1.x"
+  },
+  "devDependencies": {
+    "@ai-swiss/base": "file:../.."
   }
 }

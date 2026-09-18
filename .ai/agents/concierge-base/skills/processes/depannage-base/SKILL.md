@@ -57,7 +57,7 @@ En mots simples: un message d'erreur, un écran vide, le mauvais agent, ou rien 
 
 ### 5. Donner un seul contrôle concret
 
-Par exemple: «Depuis le dossier du projet, lancez `base validate`: s'il répond `BASE root not found`, vous n'êtes pas dans la bonne racine.»
+Par exemple: «Depuis le dossier du projet, lancez `node .ai/base.mjs validate --root .`, ou `base validate --root .` si le paquet est installé. Si la commande répond `BASE root not found`, vous n'êtes pas dans la bonne racine.»
 
 ### 6. Passer la main
 

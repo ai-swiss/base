@@ -56,12 +56,10 @@ Vérifiez ce qui vient de se passer: la réponse s'appuie sur les deux fichiers 
 
 ## Le deuxième tour: une consigne et un mécanisme ne se valent pas
 
-Le premier tour montre une méthode lisible. Le second montre une protection appliquée par du code. Marquez une ressource `confidential: true` (par exemple une grille de remises) et faites travailler l'assistant **par le broker** (serveur MCP ou chat du Studio): avant un appel distant, BASE retient cette ressource et la remplace par un avis. Cette protection ne dépend pas de la bonne volonté du modèle; elle est testée dans `tools/core/egress.mjs` et `tests/base-egress.test.mjs`.
+Le premier tour montre une méthode lisible. Le second montre une protection appliquée par du code. Marquez une ressource `confidential: true` (par exemple une grille de remises) et faites travailler l'assistant **par le composant de médiation, appelé broker** (serveur MCP ou chat du Studio): avant un appel distant qui passe par l'un de ces chemins médiés, le broker retient cette ressource et la remplace par un avis. Cette protection ne dépend pas de la bonne volonté du modèle; elle est testée dans `tools/core/egress.mjs` et `tests/base-egress.test.mjs`.
 
-La portée est précise: cette retenue opère **par le broker** (MCP, Studio, évaluation). Dans un agent d'éditeur direct, demander le même confinement reste une consigne. L'exemple `exemples/agence-multi-clients/` montre comment séparer plusieurs dossiers clients. Lorsque l'action passe par le broker, chaque assistant reste dans sa racine et les ressources confidentielles sont retenues avant l'appel distant.
+La portée est précise: cette retenue opère uniquement sur les appels qui passent **par le broker** (MCP, Studio, évaluation). Une lecture directe des fichiers ou un autre chemin d'exécution peut la contourner. Dans un agent d'éditeur direct, demander le même confinement reste une consigne. L'exemple `exemples/agence-multi-clients/` montre comment séparer plusieurs dossiers clients. Lorsque l'action passe par le broker, celui-ci confine chaque assistant à sa racine et retient les ressources confidentielles avant l'appel distant.
 
 ## Aller plus loin
 
-- **Voir un document fini:** demandez «Montre-moi le devis DEV-2026-001». Il existe déjà dans `devis/DEV-2026-001.md`.
-- **Créer le vôtre:** copiez `exemples/assistant-devis/`, puis dites: «Bonjour, je voudrais configurer mon activité.» Ce gabarit contient la structure à personnaliser et vous guide pas à pas.
-- **Savoir quoi lire ensuite:** suivez [Par où commencer](lire-dans-quel-ordre.md).
+**Prochaine action:** copiez `exemples/assistant-devis/`, ouvrez la copie dans votre outil IA et dites «Bonjour, je voudrais configurer mon activité».

@@ -16,13 +16,14 @@ Lorsque votre outil IA ne lit pas directement vos fichiers, ou lorsque vous souh
 
 ## Prérequis
 
-- Node 18 ou plus (`node --version` pour vérifier). C'est la seule dépendance du cœur de BASE.
-- Le dépôt BASE en local. Pas encore le dépôt? Voir [Obtenir BASE](obtenir-base.md).
+- [Node 18.14.1 ou plus](https://nodejs.org), avec `node` et `npm` accessibles dans le `PATH` (`node --version` et `npm --version` permettent de vérifier). Le cœur de BASE accepte Node 18 ou plus; le serveur MCP exige au minimum 18.14.1.
+- Un terminal ouvert sur votre poste.
+- L'implémentation de référence de BASE en local. Pas encore le dépôt? Voir [Obtenir BASE](obtenir-base.md).
 
 ## 1. Construire le serveur
 
 ```bash
-cd mcp/
+cd <BASE_DIR>/mcp
 npm install
 npm run build
 ```
@@ -66,9 +67,9 @@ puis «Charge mon agent assistant-devis» et enfin «Bonjour, je voudrais config
 
 ## Sécurité: lecture seule et authentification
 
-Deux garde-fous sont actifs par défaut:
+Deux garde-fous sont actifs par défaut sur les requêtes qui passent par ce serveur:
 
-- **Lecture seule en HTTP.** En transport HTTP, les outils d'écriture et d'exécution ne sont pas enregistrés: la surface est donc, de manière vérifiable, en lecture seule. `--read-write` l'élargit explicitement, à réserver aux déploiements authentifiés. En `stdio` (usage local), la surface complète du broker est disponible, écritures médiées comprises.
+- **HTTP en lecture seule par défaut; `stdio` avec surface médiée complète.** En transport HTTP, les outils d'écriture et d'exécution ne sont pas enregistrés par défaut. `--read-write` élargit explicitement cette surface, à réserver aux déploiements authentifiés. En `stdio` (usage local), le composant de médiation, appelé broker, expose sa surface médiée complète, y compris les écritures.
 - **Exposition réseau refusée sans authentification.** Lier une interface non-loopback (`--host 0.0.0.0`, une IP de LAN) sans authentification est refusé dès le démarrage. Si vous en acceptez le risque (réseau de confiance, tunnel maîtrisé), `mcp/README.md` documente l'échappatoire explicite `BASE_MCP_ALLOW_INSECURE_REMOTE=1`. Définissez `BASE_MCP_BEARER_TOKEN` pour exiger un jeton bearer, l'option recommandée pour une équipe:
 
 ```bash
@@ -77,13 +78,13 @@ BASE_MCP_BEARER_TOKEN=un-secret-long-et-aleatoire npm start -- --transport http 
 
 Pour une authentification sur mesure (OAuth, mTLS), fournissez un `AuthProvider` via `base.config.mjs`, ou placez le serveur derrière un reverse proxy authentifié.
 
-La lecture seule n'est pas pour autant anodine: les outils de lecture donnent accès aux ressources et aux fichiers confinés au projet. N'exposez pas en MCP un dossier qui renferme des secrets ou des données hors périmètre pour le client connecté.
+La lecture seule n'est pas pour autant anodine: les outils de lecture donnent accès aux ressources et aux fichiers confinés au projet. Ces protections ne couvrent pas une lecture directe des fichiers ni un autre chemin d'exécution. N'exposez pas en MCP un dossier qui renferme des secrets ou des données hors périmètre pour le client connecté.
 
 ## Dépannage de base
 
 | Symptôme | Piste |
 | --- | --- |
-| `npm: command not found` | Installer Node 18 ou plus depuis [nodejs.org](https://nodejs.org) |
+| `npm: command not found` | Installer Node 18.14.1 ou plus depuis [nodejs.org](https://nodejs.org) |
 | Le serveur refuse de démarrer en réseau | Comportement attendu sans authentification: définir `BASE_MCP_BEARER_TOKEN` |
 | La plateforme ne voit aucun agent | Vérifier le chemin passé à `--root` et que le projet contient `.ai/agents/*/AGENT.md` |
 | Blocage sur une étape technique | Demander à votre IA: «J'ai cette erreur: [coller l'erreur]. Que se passe-t-il?» |
@@ -92,6 +93,8 @@ La lecture seule n'est pas pour autant anodine: les outils de lecture donnent ac
 
 [mcp/README.md](../../mcp/README.md) détaille les outils exposés (`load_agent`, `route_request`, `propose_change`, etc.), le mode multi-racines (`--workspace`), le déploiement d'équipe derrière un reverse proxy, ainsi que les limites du dispositif: le MCP ne remplace ni IAM, ni DLP, ni archivage.
 
+**Prochaine action:** connectez votre plateforme comme indiqué à l'étape 3, puis vérifiez la connexion avec la première demande proposée.
+
 ---
 
-BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
+BASE est une convention ouverte accompagnée d'une implémentation de référence, portée par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).

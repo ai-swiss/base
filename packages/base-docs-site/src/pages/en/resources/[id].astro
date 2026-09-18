@@ -1,16 +1,17 @@
 ---
 import ResourcePage from "../../../components/ResourcePage.astro";
-import { loadModel, type DocsResource } from "../../../lib/model";
+import { loadModel, resourceStaticPaths, type DocsResource } from "../../../lib/model";
 
 export function getStaticPaths() {
-  const model = loadModel();
-  return model.resources.map((resource: DocsResource) => ({
-    params: { id: resource.id },
-    props: { resource, target: model.target },
-  }));
+  return resourceStaticPaths(loadModel(), "en");
 }
 
-const { resource, target } = Astro.props as { resource: DocsResource; target: string };
+const { resource, target, aliasTo } = Astro.props as {
+  resource: DocsResource;
+  target: string;
+  aliasTo: string | null;
+};
+if (aliasTo) return Astro.redirect(aliasTo, 301);
 ---
 
 <ResourcePage resource={resource} target={target} lang="en" />

@@ -9,8 +9,6 @@ import {
   commitChange,
   getChangeStatus,
   listPendingChanges,
-  createMaintenanceReport,
-  formatMaintenanceReport,
   formatMarkers,
   formatRouteResult,
   formatRouteTestResult,
@@ -29,6 +27,7 @@ import {
   isAbstention,
   routeRequest,
   runRouteTests,
+  scaffoldRouteTests,
   searchResources,
   summarizeTrace,
   pruneTrace,
@@ -42,116 +41,18 @@ import {
   MANIFEST_FILENAME,
 } from "./base-core.mjs";
 import { formatContextPackSummary } from "./core/formatters.mjs";
+import { buildViewArtifacts, viewShortcuts } from "./core/views.mjs";
 import { WORKSPACE_FILENAME, contextScope, formatContextHeader, resolveBaseContext } from "./core/roots.mjs";
-import { LAUNCHER_SOURCE } from "./core/launcher.mjs";
 import { decideWorkspaceRoute } from "./core/route-workspace.mjs";
 import { precomputeRoutingVectors, writeRoutingVectors } from "./core/routing-vectors.mjs";
 import { reportProgress } from "./core/progress.mjs";
 import { loadCompanion } from "./core/companion.mjs";
 import { formatDocsModelSummary, validateDocsModel, writeDocsModel } from "./docs/model.mjs";
+import { resolveDocsSite, resolveDocsSiteOutput, runDocsSite } from "./docs/site.mjs";
 import { parseArgs } from "./cli/parse-args.mjs";
-import { describeDetection, formatBuildPlan, formatChangeStatus, formatPendingChanges, formatPromoteResult, formatProposeResult, projectValidationResult } from "./cli/format.mjs";
-import { formatRegistration, frameworkDir, registerFramework, update, whereis } from "./cli/framework.mjs";
-
-// Which planned paths are TOOL artifacts (vs the BASE's own files) — display grouping only.
-const TOOL_ARTIFACT_PATHS = new Set([
-  ".ai/base.mjs", "CLAUDE.md", "AGENTS.md", "BASE_BOOTSTRAP.md", ".cursor/rules/assistant.mdc", ".ai/tools.md",
-]);
-
-/**
- * The next step is always printed: real, quoted paths — never placeholders — and every door
- * gets its exact command (your AI tool, the MCP guarantees, the workshop).
- */
-function initEpilogue(rootDir, created, skipped) {
-  const abs = path.resolve(rootDir);
-  const launcher = path.join(abs, ".ai", "base.mjs");
-  const files = created.filter((p) => !TOOL_ARTIFACT_PATHS.has(p));
-  const artifacts = created.filter((p) => TOOL_ARTIFACT_PATHS.has(p));
-  const plural = (n, word) => `${n} ${word}${n > 1 ? "s" : ""}`;
-  const lines = [];
-  if (files.length) lines.push(`✓ ${plural(files.length, "fichier")} créé${files.length > 1 ? "s" : ""}     ${files.join(" · ")}`);
-  if (artifacts.length) lines.push(`✓ ${plural(artifacts.length, "artefact")} d'outils  ${artifacts.join(" · ")}`);
-  for (const s of skipped) lines.push(`  (ignoré: ${s.path} — ${s.reason})`);
-  lines.push(
-    "",
-    "L'expérience commence dans VOTRE outil:",
-    `  cd "${abs}" && claude          # ou ouvrez ce dossier dans Cursor`,
-    "  puis dites: «importer mes procédures existantes»",
-    "",
-    "Envie des garanties mécaniques (routage déterministe, écritures validées) ?",
-    "  Le serveur MCP se branche en 3 lignes: docs/start/installer-mcp.md",
-    "",
-    "La CLI, lançable d'ici sans rien installer sur le PATH (le lanceur trouve le moteur tout seul) :",
-    `  node "${launcher}" route "votre demande" --root "${abs}"   # routage déterministe`,
-    `  node "${launcher}" studio --root "${abs}"                   # l'atelier graphique`,
-  );
-  return lines.join("\n");
-}
-
-/**
- * `base init` — from a plain directory to a working BASE. Resolves its own target (--root or the
- * cwd); it does NOT require an existing BASE (it creates one). On an existing root it heals
- * instead of abstaining: it proposes the missing tool artifacts, from the same renderers as
- * `base build`. Detection + plan are pure (tools/core/perimeter.mjs); this only formats and asks.
- */
-async function runInit(args) {
-  const rootDir = args.root ? path.resolve(args.root) : process.cwd();
-  const { applyInitPlan, buildInitPlan, detectPerimeter } = await import("./core/perimeter.mjs");
-  const detection = await detectPerimeter(rootDir);
-  let plan;
-  if (detection.type === "root") {
-    const missing = [];
-    for (const artifact of await buildArtifacts(rootDir)) {
-      if (await fs.access(path.join(rootDir, artifact.path)).then(() => true, () => false)) continue;
-      missing.push({
-        path: artifact.path,
-        content: artifact.content,
-        reason: "Artefact d'outil manquant — sans lui, votre outil IA ne reconnaît pas ce BASE.",
-      });
-    }
-    // The launcher is not a build artifact (it is root-independent); heal it here if absent so an
-    // existing BASE gains the runnable `node .ai/base.mjs` handle without a full re-init.
-    if (!(await fs.access(path.join(rootDir, ".ai", "base.mjs")).then(() => true, () => false))) {
-      missing.push({
-        path: ".ai/base.mjs",
-        content: LAUNCHER_SOURCE,
-        reason: "Le lanceur de la CLI BASE: `node .ai/base.mjs … --root .`, lançable d'ici sans rien installer.",
-      });
-    }
-    plan = missing;
-  } else {
-    plan = buildInitPlan(detection, { dirName: path.basename(rootDir), now: new Date().toISOString(), frameworkDir: frameworkDir() });
-  }
-  if (plan.length === 0) {
-    output(args.json ? { detection, plan, applied: false } : `Déjà un BASE (${detection.type}) : rien à initialiser.`, args.json);
-    return;
-  }
-  if (!args.yes) {
-    const preview = plan
-      .map((e) => `  ${e.path}\n    ${e.reason}\n    | ${e.content.split("\n").slice(0, 3).join("\n    | ")} …`)
-      .join("\n");
-    output(
-      args.json
-        ? { detection, plan, applied: false }
-        : `Détection: ${describeDetection(detection)}\n` +
-          `Fichiers à créer (rien n'est écrit sans --yes) :\n${preview}\n\n` +
-          // The hint echoes the full command: launched with --root, a hint without it is a
-          // non-sequitur when copy-pasted from another directory («Déjà un BASE: rien à initialiser»).
-          `Pour appliquer:  base init${args.root ? ` --root ${args.root}` : ""} --yes`,
-      args.json,
-    );
-    return;
-  }
-  const { created, skipped } = await applyInitPlan(rootDir, plan);
-  // Self-register the framework location, best-effort: a read-only home never fails init.
-  const registration = await registerFramework();
-  output(
-    args.json
-      ? { detection, plan, applied: true, created, skipped, registration }
-      : `${initEpilogue(rootDir, created, skipped)}\n\n${formatRegistration(registration)}`,
-    args.json,
-  );
-}
+import { formatBuildPlan, formatBuildWrite, formatChangeStatus, formatPendingChanges, formatPromoteResult, formatProposeResult, projectValidationResult } from "./cli/format.mjs";
+import { frameworkDir, update, whereis } from "./cli/framework.mjs";
+import { runInit, runUpgrade } from "./cli/init.mjs";
 
 // The command table — name → handler({ args, context, rootDir }). The same table-driven
 // dispatch the engine uses for its derived artifacts (PROJECTIONS): adding a command is adding
@@ -188,7 +89,7 @@ const COMMANDS = {
     const query = args.positional.join(" ").trim();
     if (!query) throw new Error('Usage: base discover "requete" [--root path]');
     const config = args.config ? await resolveConfig(rootDir, { configPath: args.config }) : undefined;
-    const results = await searchResources(rootDir, query, { limit: args.limit, config });
+    const results = await searchResources(rootDir, query, { limit: args.limit, config, grain: args.grain || undefined, scope: args.scope || undefined });
     output(args.json ? results : formatSearchResults(results, query), args.json, context);
     return;
   },
@@ -213,6 +114,15 @@ const COMMANDS = {
   },
 
   "route-test": async ({ args, context, rootDir }) => {
+    if (args.scaffold) {
+      const drafted = await scaffoldRouteTests(rootDir, { out: args.out });
+      output(
+        args.json ? drafted : `${drafted.path} rédigé: ${drafted.cases} cas, un par process.\nRéécrivez chaque «request» dans les mots de vos utilisateurs, puis relancez \`base route-test\`.`,
+        args.json,
+        context,
+      );
+      return;
+    }
     const config = args.config ? await resolveConfig(rootDir, { configPath: args.config }) : undefined;
     const strategy = args.strategy === "production" ? "production" : "lexical";
     if (args.strategy && !["lexical", "production"].includes(args.strategy)) {
@@ -235,12 +145,13 @@ const COMMANDS = {
     // per-model refiner diagnostic alongside (the over-routes vs over-asks shape). Both need a real
     // embedder, so the eval is Ollama-gated: `--ollama` runs it (skipped cleanly if Ollama is absent);
     // without it, the default path prints the header + how to run, never a slow model round-trip. It
-    // runs against the framework's golden set + corpus, not an arbitrary --root. `--golden <path>`
-    // (or `--from`) overrides the set, relative to the framework root; if both are given, `--from` wins.
+    // It measures the SELECTED root when that root carries a labelled set (`.ai/routing/route-eval-golden.json`,
+    // or `--golden <path>` relative to it); otherwise the framework's own set over its example corpus,
+    // and the report says which. If both `--from` and `--golden` are given, `--from` wins.
     const { runRouteEvalCli } = await import("./eval/route-eval-cli.mjs");
     const withOllama = args.ollama === true;
     const goldenPath = args.from || args.golden || undefined;
-    const { result, text } = await runRouteEvalCli({ frameworkRoot: frameworkDir(), goldenPath, withOllama });
+    const { result, text } = await runRouteEvalCli({ frameworkRoot: frameworkDir(), rootDir, goldenPath, withOllama });
     output(args.json ? result : text, args.json, context);
     return;
   },
@@ -253,9 +164,11 @@ const COMMANDS = {
 
   "open": async ({ args, context, rootDir }) => {
     const idOrPath = args.positional[0];
-    if (!idOrPath) throw new Error("Usage: base open <id-or-path> [--projection metadata|instructions|full] [--root path]");
+    if (!idOrPath) throw new Error("Usage: base open <id-or-path[#ancre]> [--section ancre] [--lang xx] [--projection metadata|instructions|full|outline|source] [--root path]");
     const result = await openResource(rootDir, idOrPath, {
       projection: args.projection,
+      section: args.section || undefined,
+      lang: args.lang || undefined,
       purpose: args.purpose,
       confirmed: args.confirmed,
       grantToken: args.grantToken,
@@ -370,11 +283,54 @@ const COMMANDS = {
     }
     const artifacts = await buildArtifacts(rootDir, { targets: [target] });
     if (args.write) {
-      const written = await writeArtifacts(rootDir, artifacts);
-      output(args.json ? { written } : `Artefacts écrits:\n${written.map((p) => `- ${p}`).join("\n")}`, args.json, context);
+      const result = await writeArtifacts(rootDir, artifacts);
+      output(args.json ? result : formatBuildWrite(result), args.json, context);
     } else {
       output(args.json ? artifacts : formatBuildPlan(artifacts), args.json, context);
     }
+    return;
+  },
+
+  "view": async ({ args, context, rootDir }) => {
+    // A named door onto part of this root: `base view support` shows what it would write,
+    // `--write` writes it, `--shell` prints the line that opens it in your tool.
+    const name = args.positional[0];
+    const cfg = await resolveConfig(rootDir);
+    const views = cfg.views ?? {};
+    const declared = Object.keys(views);
+    if (!name) {
+      throw new Error(declared.length
+        ? `Usage: base view <nom> [--write] [--shell]. Vues déclarées: ${declared.join(", ")}.`
+        : "Aucune vue déclarée. Ajoutez `views` à base.config.json: { \"views\": { \"support\": { \"entry\": \"<agent>\", \"agents\": [\"<agent>\"], \"include\": [\"<dossier>\"] } } }");
+    }
+    const view = views[name];
+    if (!view) throw new Error(`Vue inconnue: ${name}. Déclarées: ${declared.join(", ") || "aucune"}.`);
+
+    const resources = await inventoryResources(rootDir);
+    const missing = view.agents.filter((id) => !resources.some((r) => r.type === "agent" && r.id === id));
+    const artifacts = buildViewArtifacts(name, view, { resources, tools: cfg.tools ?? [], lang: cfg.language });
+    const shortcuts = viewShortcuts(name, rootDir, cfg.tools ?? []);
+
+    if (args.shell) {
+      output(args.json ? { view: name, shortcuts } : shortcuts.map((s) => `${s.line}\n# ${s.note}`).join("\n\n"), args.json, context);
+      return;
+    }
+    if (!args.write) {
+      const preview = artifacts.map((a) => `  ${a.path} (${a.content.length} caractères)`).join("\n");
+      output(
+        args.json ? { view: name, plan: artifacts.map((a) => a.path), missing } : [
+          `Vue «${name}» (rien n'est écrit sans --write):`,
+          preview,
+          missing.length ? `\nAgents déclarés introuvables: ${missing.join(", ")}` : "",
+          `\nPour appliquer:  base view ${name} --write${args.root ? ` --root ${args.root}` : ""}`,
+          `Pour le raccourci:  base view ${name} --shell${args.root ? ` --root ${args.root}` : ""}`,
+        ].join("\n"),
+        args.json,
+      );
+      return;
+    }
+    const result = await writeArtifacts(rootDir, artifacts);
+    output(args.json ? { view: name, ...result, missing } : formatBuildWrite(result) + (missing.length ? `\n\nAgents déclarés introuvables: ${missing.join(", ")}` : ""), args.json, context);
     return;
   },
 
@@ -414,15 +370,6 @@ const COMMANDS = {
     return;
   },
 
-  "entretien": async ({ args, context, rootDir }) => {
-    // Deprecated in favour of `doctor` (its lenses live there now); the 1.x report is honoured
-    // unchanged until its removal in the next minor version, and the referral rides the text door only.
-    const report = await createMaintenanceReport(rootDir);
-    const referral = "\nCe verbe fusionne dans «base doctor» (mêmes signaux, un seul propriétaire de la santé du dossier); «entretien» sera retiré dès la prochaine version mineure.";
-    output(args.json ? report : formatMaintenanceReport(report) + referral, args.json, context);
-    process.exitCode = report.ok ? 0 : 1;
-    return;
-  },
 
   "trace": async ({ args, context, rootDir }) => {
     const subcommand = args.positional[0];
@@ -452,24 +399,35 @@ const COMMANDS = {
       process.exitCode = result.ok ? 0 : 1;
       return;
     }
-    const result = await writeDocsModel(rootDir, { target, outputDir: subcommand === "model" ? args.out || undefined : undefined });
     if (subcommand === "model") {
+      const result = await writeDocsModel(rootDir, { target, outputDir: args.out || undefined });
       output(args.json ? result.model : formatDocsModelSummary(result), args.json, context);
       return;
     }
+    // The adapter is resolved BEFORE the corpus is walked: an optional package that is not installed,
+    // or a Node below Astro's floor, is answered in one line instead of after a build nobody can render.
+    const site = await resolveDocsSite(rootDir);
+    const result = await writeDocsModel(rootDir, { target });
+    // Always an explicit destination inside the ROOT (`.base-docs/` is git-ignored): the adapter may
+    // be installed under node_modules, and a default that wrote there would write into a dependency.
+    const siteOut = subcommand === "serve"
+      ? ""
+      : resolveDocsSiteOutput(rootDir, args.out, path.join(result.outputDir, "site"));
     if (subcommand === "preview") {
+      console.error(
+        "Attention: «base docs preview» est déprécié. Lancez «base docs build --out <dossier>», puis servez ce dossier avec le serveur statique de votre choix.",
+      );
       // Build the production site (Pagefind indexes the search at build time) then serve it, so
       // search and the deployed look work locally — `serve` (astro dev) cannot index the search.
       output("Construction du site avec l'index de recherche, puis prévisualisation locale…", false, context);
-      await runDocsSite(rootDir, "build", result.outputDir, {});
-      await runDocsSite(rootDir, "preview", result.outputDir, {});
+      await runDocsSite(site, { command: "build", root: rootDir, modelDir: result.outputDir, siteOut });
+      await runDocsSite(site, { command: "preview", root: rootDir, modelDir: result.outputDir, siteOut });
       return;
     }
-    const script = subcommand === "serve" ? "dev" : "build";
-    const siteOut = subcommand === "build" && args.out ? path.resolve(args.out) : "";
+    const command = subcommand === "serve" ? "dev" : "build";
     const siteLine = siteOut ? `\nSite output: ${path.relative(rootDir, siteOut)}` : "";
-    output(`Documentation model ready: ${path.relative(rootDir, result.outputDir)}${siteLine}\nLaunching docs site (${script})...`, false, context);
-    await runDocsSite(rootDir, script, result.outputDir, { siteOut });
+    output(`Documentation model ready: ${path.relative(rootDir, result.outputDir)}${siteLine}\nLaunching docs site (${command}) via ${site.id}...`, false, context);
+    await runDocsSite(site, { command, root: rootDir, modelDir: result.outputDir, siteOut });
     return;
   },
 };
@@ -500,7 +458,11 @@ async function main(argv = process.argv.slice(2)) {
   // init CREATES a BASE, so it must run on a directory that is not one yet — it resolves its own
   // target (--root or the cwd) and never goes through the strict context resolution below.
   if (command === "init") {
-    await runInit(args);
+    await runInit(args, output);
+    return;
+  }
+  if (command === "upgrade") {
+    await runUpgrade(args, output);
     return;
   }
 
@@ -510,6 +472,9 @@ async function main(argv = process.argv.slice(2)) {
     rootId: args.rootId,
     allowWorkspaceRouting: command === "route",
   });
+  for (const warning of context.workspace?.warnings ?? []) {
+    console.error(`Attention: ${warning.message}`);
+  }
   const rootDir = selectedRootPath(context);
   if (rootDir) await assertRootExists(rootDir, context);
   // Don't silently mis-target: --root-id only means something inside a workspace. Warn loudly so a
@@ -566,35 +531,6 @@ async function routeAcrossWorkspace(context, request, { limit, configPath } = /*
   return decideWorkspaceRoute(attempts, { request, workspaceScope: contextScope(context), unreachable });
 }
 
-async function runDocsSite(rootDir, script, modelDir, { siteOut = "" } = /** @type {{ siteOut?: string }} */ ({})) {
-  const siteDir = path.join(rootDir, "packages", "base-docs-site");
-  try {
-    const stat = await fs.stat(siteDir);
-    if (!stat.isDirectory()) throw new Error();
-  } catch {
-    throw new Error("Docs site package not found: packages/base-docs-site. Run the docs-site implementation step first.");
-  }
-
-  await new Promise((resolve, reject) => {
-    const child = spawn("npm", ["--prefix", siteDir, "run", script], {
-      cwd: rootDir,
-      stdio: "inherit",
-      env: {
-        ...process.env,
-        ASTRO_TELEMETRY_DISABLED: "1",
-        BASE_DOCS_ROOT: rootDir,
-        BASE_DOCS_MODEL_DIR: modelDir,
-        ...(siteOut ? { BASE_DOCS_DIST: siteOut } : {}),
-      },
-    });
-    child.on("error", reject);
-    child.on("exit", (code, signal) => {
-      if (code === 0) resolve(undefined);
-      else reject(new Error(`Docs site ${script} failed${signal ? ` (${signal})` : ""}${code == null ? "" : ` with exit code ${code}`}.`));
-    });
-  });
-}
-
 async function readStdin() {
   const chunks = [];
   for await (const chunk of process.stdin) chunks.push(chunk);
@@ -610,7 +546,7 @@ function help() {
     " base index [--check] [--root path | --workspace path --root-id id] [--json]",
     ' base discover "requete" [--root path | --workspace path --root-id id] [--limit n] [--config path] [--json]',
     ' base route "demande" [--limit n] [--config path] [--root path | --workspace path [--root-id id]] [--json]',
-    " base route-test [--from fixtures.json] [--examples] [--strategy lexical|production] [--config path] [--root path | --workspace path --root-id id] [--json]",
+    " base route-test [--from fixtures.json] [--examples] [--scaffold [--out fichier]] [--strategy lexical|production] [--config path] [--root path | --workspace path --root-id id] [--json]",
     "   (--examples rejoue les routing.examples déclarés dans les frontmatter, sans fichier de fixtures: le garde anti-dérive des formulations d'auteur)",
     " base route-eval [--ollama] [--golden path] [--json]",
     " base inventory [--root path] [--json]",
@@ -625,10 +561,10 @@ function help() {
     " base markers [--root path] [--json]",
     " base build [all|agents-md|tools|bootstrap|routing-index|routing-embeddings] [--write] [--root path] [--json]",
     "   (routing-index régénère .ai/routing/index.md et les index par agent, la carte que lit votre outil IA: à relancer après tout ajout ou retrait de process)",
-    " base docs [validate|model|serve|build|preview] [--public] [--out dir] [--root path] [--json]",
-    " base entretien [--root path] [--json] (marqueurs ouverts; lentille privée, lancée par vous, jamais de la télémétrie)",
+    " base docs [validate|model|serve|build|preview] [--public] [--out dir] [--root path] [--json] (preview est déprécié; préférez build puis un serveur statique)",
     " base doctor [--root path] [--json] (santé du corpus: liens morts, orphelines, évals périmées, relectures échues, frictions ouvertes)",
-    " base init [--root path] [--yes] [--json] (d'un dossier nu à un BASE: détecte, montre les fichiers à créer, n'écrit qu'avec --yes)",
+    " base init [--root path] [--tool claude-code|cursor|agents-md|autre] [--about \"…\"] [--language code] [--egress local-only|any] [--yes] [--json] (d'un dossier nu à un BASE: détecte, montre les fichiers à créer, n'écrit qu'avec --yes)",
+    " base upgrade [--root path] [--write] [--json] (aligne un dossier créé par une version antérieure)",
     " base studio [--root path] (l'atelier graphique: parcourir, éditer, évaluer — installe ses dépendances au premier lancement)",
     " base whereis [--json] (où vit le framework BASE, le fichier de config utilisateur, la version)",
     " base update [--channel stable|main] (met à jour le framework: canal stable = dernier tag de version; main = tête de branche)",

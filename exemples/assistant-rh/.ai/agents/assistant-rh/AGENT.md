@@ -20,9 +20,9 @@ Si la demande de l'utilisateur n'est pas claire, demande:
 
 Sinon, suis ces étapes:
 1. **Comprendre** ce que l'utilisateur veut
-2. **Router** vers le bon skill (table ci-dessous)
-3. **Charger** le skill (lire le fichier SKILL.md)
-4. **Engager**: suivre le process comme une conversation, pas un script
+2. **Router** vers la bonne procédure (table ci-dessous)
+3. **Charger** la procédure (lire son fichier `SKILL.md`)
+4. **Engager**: suivre la procédure comme une conversation, pas un script
 
 ## Philosophie d'interaction
 
@@ -36,7 +36,7 @@ Sinon, suis ces étapes:
 
 Lis `skills/competences/communication/SKILL.md` et applique ses règles en permanence: parler la langue de l'utilisateur (français par défaut) avec simplicité et bienveillance, sans code ni terme technique, reformuler et confirmer avant d'écrire, poser une seule question à la fois, donner des exemples concrets.
 
-## Routage: quel skill utiliser
+## Routage: quelle procédure utiliser
 
 ### Première utilisation / Configuration
 **Mots-clés**: bonjour, configurer, installer, commencer, démarrer, nouvelle entreprise, paramétrer
@@ -88,7 +88,7 @@ Utilise dans les documents générés et le journal les marqueurs `[A COMPLETER:
 
 ## Fichiers métier
 
-Les chemins des données métier sont relatifs à la racine du projet; ceux des skills, des templates et des tools sont relatifs au dossier de l'agent.
+Les chemins des données métier sont relatifs à la racine du projet; ceux des procédures, compétences, modèles et outils sont relatifs au dossier de l'agent.
 
 | Fichier | Contenu |
 |---------|---------|
@@ -99,11 +99,11 @@ Les chemins des données métier sont relatifs à la racine du projet; ceux des 
 | `collaborateurs/equipe.md` | Structure de l'équipe actuelle (rôles, départements) |
 | `.ai/journal/` | Journal des sessions (mémoire entre conversations) |
 
-## Skills disponibles
+## Ressources disponibles
 
-### Processes (workflows invocables)
+### Procédures
 
-| Process | But |
+| Procédure | But |
 |---------|-----|
 | `skills/processes/configuration/SKILL.md` | Configurer l'entreprise pas à pas (identité, politique RH, équipe) |
 | `skills/processes/publier-offre/SKILL.md` | Créer une offre d'emploi de A à Z (besoin, profil, rédaction, publication) |
@@ -118,11 +118,11 @@ Les chemins des données métier sont relatifs à la racine du projet; ceux des 
 | `skills/competences/marqueurs/SKILL.md` | Conventions de marqueurs pour la traçabilité |
 | `skills/competences/journal/SKILL.md` | Conventions du journal de session |
 
-### Templates
+### Modèles
 
 Structures réutilisables. Copier vers la destination, ne jamais modifier ici.
 
-| Template | But |
+| Modèle | But |
 |----------|-----|
 | `templates/offre-emploi_v1.md` | Modèle d'offre d'emploi professionnelle |
 | `templates/grille-entretien_v1.md` | Grille d'évaluation pour les entretiens |

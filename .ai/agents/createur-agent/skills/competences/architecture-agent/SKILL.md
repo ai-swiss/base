@@ -36,8 +36,8 @@ Tout agent BASE suit cette structure:
 .ai/agents/[nom-agent]/
 ├── AGENT.md                           Point d'entrée unique
 ├── skills/
-│   ├── processes/                     Workflows invocables
-│   │   └── [workflow]/SKILL.md
+│   ├── processes/                     Process invocables
+│   │   └── [procedure]/SKILL.md
 │   └── competences/                   Connaissances et capacités réutilisables
 │       ├── [domaine]/SKILL.md
 │       ├── marqueurs/SKILL.md         Standard (livré avec chaque agent)
@@ -67,7 +67,7 @@ Un skill est un fichier d'instructions en texte que l'IA lit et suit. Son format
 
 ### Deux types de skills
 
-**Process** = workflow invocable par l'utilisateur. Celui-ci le déclenche directement, ou BASE le choisit via le routeur; l'agent le suit ensuite étape par étape.
+**Process** = procédure invocable par l'utilisateur. Celui-ci le déclenche directement, ou BASE le choisit via le routeur; l'agent le suit ensuite étape par étape.
 
 **Compétence** = connaissance ou capacité réutilisable. L'agent la consulte lorsque c'est pertinent. Elle peut elle aussi être invocable (`/diagnostic`).
 
@@ -78,10 +78,10 @@ La distinction est dans le champ `user-invocable` du frontmatter.
 Ne mélange pas trois décisions différentes:
 
 1. **Sélection de l'agent**: l'utilisateur ou l'outil charge un `AGENT.md`.
-2. **Routage du process**: BASE choisit le workflow à suivre, ou s'abstient si la demande ne correspond pas.
+2. **Routage du process**: BASE choisit le process à suivre, ou s'abstient si la demande ne correspond pas.
 3. **Ouverture des ressources**: le process ouvre les compétences, templates, tools, documents et données nécessaires.
 
-Le routeur BASE se concentre volontairement sur les process. Une compétence ou un document se découvre ensuite, comme ressource, mais ne se présente jamais comme workflow principal.
+Le routeur BASE se concentre volontairement sur les process. Une compétence ou un document se découvre ensuite, comme ressource, mais ne se présente jamais comme process principal.
 
 ### Frontmatter minimal
 
@@ -105,7 +105,7 @@ D'autres champs existent selon les outils (`model`, `context`, `paths`, etc.): l
 
 ### Frontmatter BASE pour process routable
 
-Quand l'utilisateur veut que BASE choisisse automatiquement le bon workflow, ajoute les champs BASE au process. Reste sobre:
+Quand l'utilisateur veut que BASE choisisse automatiquement le bon process, ajoute les champs BASE au process. Reste sobre:
 
 ```yaml
 ---
@@ -150,7 +150,7 @@ L'AGENT.md est le fichier le plus important. Il doit se suffire à lui-même: un
    - L'agent contrôle mécaniquement, l'humain valide le sens
    - Être un collègue, pas un outil
 
-3. **Où router**: un pointeur vers l'index généré (`index.md`), et la règle: le routage se déclare dans le frontmatter des SKILL.md (`use_when`, `routing.examples`, `routing.avoid_when`), jamais dans une table tenue à la main. Au besoin, des fixtures (`route-tests.json`) gèlent les routes sensibles.
+3. **Où router**: un pointeur vers l'index généré (`index.md`), et la règle: le routage se déclare dans le frontmatter des SKILL.md (`use_when`, `routing.examples`, `routing.avoid_when`), jamais dans une table tenue à la main. Au besoin, des fixtures (`route-tests.json`) fixent les résultats sensibles du routeur déterministe pour les scripts et intégrations sans modèle. Un modèle lit la carte générée et juge lui-même le process à suivre.
 
 4. **Reprise de session**: "Si `.ai/journal/` contient des entrées récentes, lis-les."
 
@@ -199,6 +199,7 @@ Précède une création/modification de fichier, un engagement, une action diffi
 - Exemples de dialogue avec des citations (`>`)
 - Spécifier où écrire (chemin du fichier)
 - Vérifier les prérequis avant de demander des infos déjà disponibles
+- Nommer une à trois preuves observables qui permettent de conclure: fichier produit, source citée, calcul vérifié, commande réussie ou décision humaine explicite
 - Terminer par une étape Journal
 
 ## Comment écrire une bonne compétence

@@ -13,6 +13,7 @@ export function routeNextActions(): string[] {
   return [
     "Decide the route yourself from `routing_map` below: choose the process whose «Quand l'utiliser» (use_when) covers the request, honouring «Éviter si» (avoid). Any deterministic suggestion in this result is a hint to verify, not an order.",
     "If a process is suggested (see `guidance`), confirm its use_when covers the request before following it; if it does not, pick the right process from routing_map.",
+    "If fallback guidance asks you to choose another help process, use `guidance_map`; it is the framework agent's map delivered for a remote client.",
     "If nothing in routing_map fits, say so and ask a clarifying question. Never invent an id or path: use only those listed in routing_map.",
     "Once a process is chosen, open it (open_resource) and follow it. To change a file, call propose_change then commit_change, and never report a file as written without a commit_change receipt.",
   ];
@@ -44,6 +45,31 @@ export async function withRouteGuidance(
       // confidential/withheld or unreadable: routing_map + next_actions still guide the model.
     }
   }
+  // An honest abstention may carry a help target from the FRAMEWORK this root belongs to
+  // (FR-ROUTE-009). Its path is outside the root, and a remote client has no access to the server's
+  // filesystem, so a pointer alone would be a dead end: read it here and inline the author's words.
+  const fallback = result.fallback as {
+    source?: string;
+    root?: string;
+    agent?: { id?: string };
+    process?: { path?: string };
+  } | undefined;
+  if (!augmented.guidance && fallback?.source === "framework" && fallback.root && fallback.process?.path) {
+    const relative = fallback.process.path.startsWith(`${fallback.root}/`)
+      ? fallback.process.path.slice(fallback.root.length + 1)
+      : null;
+    if (relative) {
+      try {
+        const opened = await opener(fallback.root, relative, "full", "route_request fallback guidance");
+        if (typeof opened.content === "string") augmented.guidance = opened.content;
+        const frameworkMap = await brokerRoutingMap(fallback.root);
+        const helpAgent = frameworkMap.find((agent: { id?: string }) => agent.id === fallback.agent?.id);
+        if (helpAgent) augmented.guidance_map = [helpAgent];
+      } catch {
+        // unreadable framework copy: the pointer and next_actions still stand.
+      }
+    }
+  }
   return augmented;
 }
 
@@ -53,14 +79,16 @@ export interface ChangeToolDeps {
   scopeForRoot: (root: string) => Record<string, unknown> | undefined;
   json: (payload: unknown, scope?: Record<string, unknown>) => string;
   clientError: (err: unknown, root: string) => string;
+  /** The deployment's tool allow-list (`mcp.tools`), by name. Absent, everything registers. */
+  expose?: (tool: string) => boolean;
 }
 
 // Register the read-only change-status tools (available in every mode: they let a caller or a human
 // verify what is staged and whether a claimed write actually happened, against server truth).
 export function registerChangeStatusTools(server: McpServer, deps: ChangeToolDeps): void {
-  const { effectiveRoot, scopeForRoot, json, clientError } = deps;
+  const { effectiveRoot, scopeForRoot, json, clientError, expose = () => true } = deps;
 
-  server.tool(
+  if (expose("list_pending_changes")) server.tool(
     "list_pending_changes",
     "List mediated writes proposed (propose_change) but not yet committed in this project. Read-only. Shows what is staged awaiting approval; a committed change is consumed and no longer appears here.",
     {
@@ -78,7 +106,7 @@ export function registerChangeStatusTools(server: McpServer, deps: ChangeToolDep
     },
   );
 
-  server.tool(
+  if (expose("get_change_status")) server.tool(
     "get_change_status",
     "Report whether a change_id is still pending (staged, awaiting commit) or absent (committed and consumed, or never proposed). The authoritative proof a write LANDED is the commit_change receipt (written:true with content_hash); this is the pending-side view. Use it to verify a claimed write instead of trusting a narrated 'done'. Read-only.",
     {

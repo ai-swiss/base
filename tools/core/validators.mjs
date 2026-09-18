@@ -56,6 +56,15 @@ export function runValidators(resource, validators, ctx = {}) {
 // Messages are kept identical to the legacy validateResourceMetadata; codes are added alongside.
 // Only validates files that opt into the contract (schema_version present) — "progressive metadata".
 
+// An id is lowercase, digits and hyphens, and a DOT separates namespace segments:
+// `client.contrats.resiliation`. A corpus that grows past a few dozen resources needs a way to say
+// which family an id belongs to without inventing a prefix convention per project, and a dot reads
+// as a namespace everywhere a developer has met one. Every hyphen-only id stays valid, so nothing in
+// any existing root has to change: this widens the grammar, it does not replace it. Uniqueness is
+// still checked across the whole inventory (validateBase), because a namespace organises ids, it
+// does not create separate id spaces.
+const RESOURCE_ID = /^[a-z0-9][a-z0-9-]*(\.[a-z0-9][a-z0-9-]*)*$/;
+
 export function coreSchemaValidator(resource, n) {
   const m = resource.metadata ?? {};
   const p = resource.path;
@@ -69,8 +78,8 @@ export function coreSchemaValidator(resource, n) {
   for (const field of ["schema_version", "id", "type", "description"]) {
     if (!m[field]) n.error(p, "base.field.required", `Frontmatter ${SCHEMA_VERSION}: champ requis manquant "${field}".`);
   }
-  if (m.id && !/^[a-z0-9][a-z0-9-]*$/.test(m.id)) {
-    n.error(p, "base.id.invalid", `id invalide "${m.id}". Utiliser lowercase, chiffres et tirets.`);
+  if (m.id && !RESOURCE_ID.test(m.id)) {
+    n.error(p, "base.id.invalid", `id invalide "${m.id}". Minuscules, chiffres et tirets; un point sépare un espace de noms (client.contrats.resiliation).`);
   }
   if (m.type && !SCHEMA_TYPES.has(m.type)) n.error(p, "base.type.invalid", `type invalide "${m.type}".`);
   if (m.scope && !SCHEMA_SCOPES.has(m.scope)) n.error(p, "base.scope.invalid", `scope invalide "${m.scope}".`);
@@ -139,6 +148,9 @@ function validateRequires(m, p, n) {
     }
     if (!req.ref || typeof req.ref !== "string") n.error(p, "base.requires.ref_required", `requires[${i}].ref est requis.`);
     if (req.access && !REQUIRE_ACCESS.has(req.access)) n.error(p, "base.requires.access_invalid", `requires[${i}].access invalide "${req.access}".`);
+    if (req.purpose !== undefined && typeof req.purpose !== "string") {
+      n.error(p, "base.requires.purpose_type", `requires[${i}].purpose doit etre une chaine.`);
+    }
   });
 }
 
@@ -153,7 +165,6 @@ function validateExecution(m, p, n) {
   else if (!EXECUTION_TYPES.has(execution.type)) n.error(p, "base.execution.type_invalid", `execution.type invalide "${execution.type}".`);
   if (execution.runtime && !EXECUTION_RUNTIMES.has(execution.runtime)) n.error(p, "base.execution.runtime_invalid", `execution.runtime invalide "${execution.runtime}".`);
   if (execution.entrypoint && typeof execution.entrypoint !== "string") n.error(p, "base.execution.entrypoint_type", "execution.entrypoint doit etre une chaine.");
-  if (execution.dry_run !== undefined && typeof execution.dry_run !== "boolean") n.error(p, "base.execution.dry_run_type", "execution.dry_run doit etre un booleen.");
   if (execution.requires_confirmation !== undefined && typeof execution.requires_confirmation !== "boolean") {
     n.error(p, "base.execution.requires_confirmation_type", "execution.requires_confirmation doit etre un booleen.");
   }

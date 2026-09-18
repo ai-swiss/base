@@ -30,14 +30,14 @@ Ouvrez `AGENT.md` et remplacez les placeholders:
 
 Inspirez-vous de l'exemple dans `exemples/assistant-devis/.ai/agents/assistant-devis/AGENT.md`.
 
-### 3. Créer vos processes (workflows)
+### 3. Créer vos process (procédures)
 
-Dans `skills/processes/`, créez un dossier par workflow avec un fichier `SKILL.md`:
+Dans `skills/processes/`, créez un dossier par procédure avec un fichier `SKILL.md`:
 
 ```
 skills/processes/
-├── mon-workflow/SKILL.md
-└── autre-workflow/SKILL.md
+├── ma-procedure/SKILL.md
+└── autre-procedure/SKILL.md
 ```
 
 Un process typique contient:

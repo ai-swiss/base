@@ -5,14 +5,14 @@ Un assistant IA qui aide les PME et les indépendants à rédiger leurs courrier
 ## Essayez en 30 secondes
 
 1. Ouvrez **ce dossier** (pas la racine du dépôt) dans Claude Code ou Cursor.
-2. Dites, mot pour mot: **«Bonjour, je voudrais configurer mon activité»**
-3. Vous devriez voir ceci: l'assistant vous accueille et commence la configuration pas à pas (nom de l'entreprise, adresse, signataire, ton et formules de politesse), une question à la fois, avant d'écrire quoi que ce soit. Rien n'est écrit ni envoyé sans vous.
+2. Dites, mot pour mot: **«Bonjour, je veux configurer mon assistant courrier»**
+3. Vous devriez voir ceci: l'assistant vous accueille et commence la configuration pas à pas (nom de l'entreprise, adresse, signataire, ton et formules de politesse), une question à la fois, avant d'écrire quoi que ce soit. Demander votre confirmation est ici une consigne à l'assistant. Pour une écriture, la confirmation n'est mécanique que via `base propose` puis `base commit`, ou leurs équivalents MCP.
 
 ## Ce que fait cet agent
 
 | Vous dites | Il fait |
 |------------|---------|
-| «Bonjour, je voudrais configurer mon activité» (première fois) | Configure votre identité, votre signataire et votre style de correspondance pas à pas |
+| «Bonjour, je veux configurer mon assistant courrier» (première fois) | Configure votre identité, votre signataire et votre style de correspondance pas à pas |
 | «Rédige un courrier de relance pour...» | Rédige un courrier ou un email adapté à votre ton et à votre destinataire |
 | «Un client m'a écrit, aide-moi à répondre» | Lit le message reçu et propose une réponse calibrée |
 | «Montre-moi mes courriers» | Liste les courriers dans votre historique |
@@ -25,7 +25,7 @@ assistant-courrier/
 ├── .ai/agents/assistant-courrier/         L'intelligence de l'agent
 │   ├── AGENT.md                           Instructions principales
 │   ├── skills/
-│   │   ├── processes/                     Workflows (config, rédiger, répondre)
+│   │   ├── processes/                     Procédures (config, rédiger, répondre)
 │   │   └── competences/                   Connaissances (métier, communication, marqueurs, journal)
 │   └── templates/                         Modèles (courrier, email)
 │

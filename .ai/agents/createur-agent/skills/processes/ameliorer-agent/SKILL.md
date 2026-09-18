@@ -19,12 +19,12 @@ routing:
     - Auditer ou entretenir un BASE existant.
 argument-hint: "[nom de l'agent ou description du changement]"
 user-invocable: true
-allowed-tools: Read Write Edit Glob Grep
+allowed-tools: Read Write Glob Grep Bash
 ---
 
 # Améliorer un agent
 
-Enrichir ou modifier un agent existant: lui ajouter des workflows, des connaissances, corriger ses comportements, ajuster sa structure.
+Enrichir ou modifier un agent existant: lui ajouter des procédures, des connaissances, corriger ses comportements, ajuster sa structure.
 
 ## Inputs
 
@@ -40,7 +40,7 @@ Lis l'AGENT.md de l'agent visé, puis résume-le à l'utilisateur:
 
 > «Voici ce que fait actuellement votre assistant [nom]:
 > - **Rôle:** [description]
-> - **Workflows:** [liste des processes]
+> - **Procédures:** [liste des process]
 > - **Connaissances:** [liste des compétences]
 > - **Documents:** [liste des templates]
 >
@@ -50,7 +50,7 @@ Lis l'AGENT.md de l'agent visé, puis résume-le à l'utilisateur:
 
 Selon ce que dit l'utilisateur:
 
-**«Il manque un workflow»**:
+**«Il manque une procédure»**:
 > «D'accord, décrivez-moi cette tâche. Quelles sont les étapes quand vous la faites aujourd'hui?»
 → Créer un nouveau process dans `skills/processes/`
 
@@ -70,6 +70,15 @@ Selon ce que dit l'utilisateur:
 > «Quelles informations devrait-il connaître en permanence?»
 → Créer de nouveaux dossiers métier
 
+Avant de proposer une modification, consigne un cas témoin:
+
+- la demande exacte;
+- le résultat observé et sa preuve;
+- le résultat attendu;
+- un cas voisin qui ne servira pas à rédiger la correction.
+
+Si aucun échec n'est reproductible, distingue une préférence d'amélioration d'une correction de comportement et demande à l'utilisateur quel résultat permettra de conclure.
+
 ### 3. Proposer les modifications
 
 Présente un plan clair:
@@ -86,8 +95,10 @@ Attendre la validation explicite.
 ### 4. Implémenter
 
 Pour chaque modification validée:
-- Crée les nouveaux SKILL.md dans `skills/processes/` ou `skills/competences/`
-- S'il s'agit de modifier un fichier existant, crée une nouvelle version plutôt que d'écraser l'ancienne
+- Prépare le nouveau contenu dans `.temp/`, puis passe par `base propose <cible> --from <brouillon>`
+- Montre le diff produit et attends une confirmation explicite sur ce changement précis
+- Après confirmation, applique-le avec `base commit <change-id>`; ne modifie jamais la cible directement
+- Pour un nouveau process ou domaine de connaissance, la cible est son nouveau `SKILL.md`
 - Régénère l'index (`base build routing-index --write --root .`): le routage se lit dans les frontmatter des SKILL.md; AGENT.md n'a ni table de routage ni inventaire à aligner
 - Mets à jour la configuration outil au besoin (copie les nouveaux skills au bon endroit)
 
@@ -99,23 +110,29 @@ Modifier un agent change souvent ses process et leurs signaux: la carte de routa
 
 1. `node .ai/base.mjs validate --root .` (les fichiers modifiés passent la validation; corrige avant de continuer)
 2. `node .ai/base.mjs build routing-index --write --root .` (régénère `.ai/routing/index.md`; sans ce pas, un process modifié ou ajouté reste invisible au routage progressif)
-3. `node .ai/base.mjs route-test --root .` (rejoue `route-tests.json` s'il existe): confirme que les routes tiennent après ta modification. Si une route dérape, resserre les signaux `use_when`/`avoid_when`/`keywords` ou ajuste la fixture, puis rejoue.
+3. `node .ai/base.mjs route-test --root .` (rejoue `route-tests.json` s'il existe): confirme le résultat du routeur déterministe destiné aux scripts et intégrations sans modèle. Le modèle lit la carte régénérée et vérifie lui-même le process à suivre. Si une route déterministe dérape, resserre les signaux `use_when`/`avoid_when`/`keywords` ou ajuste la fixture, puis rejoue.
 
 Sans terminal, signale-le: «Pour que le routage reflète ces changements, il faudra régénérer l'index (`base build routing-index --write`) et rejouer `route-test`.»
 
 ### 6. Tester
 
-> «Les modifications sont en place. Essayez de demander à votre assistant: "[suggestion de test]".
->
-> Si le résultat n'est pas encore parfait, revenez, on peut ajuster.»
+1. Rejoue le cas témoin avec la modification.
+2. Joue le cas voisin, gardé hors de la rédaction, pour détecter une correction trop étroite.
+3. Compare les deux résultats aux attentes et aux preuves observables du process.
+4. Ne déclare l'amélioration acquise que si elle corrige le cas témoin sans dégrader le cas voisin. Sinon, prépare par la même écriture médiée une correction ou le rétablissement du contenu précédent, puis rejoue les deux cas.
+
+Présente les résultats à l'utilisateur et demande sa validation sur le sens:
+
+> «Le cas qui échouait donne maintenant [résultat]. Le cas voisin donne [résultat]. Les contrôles [liste] passent. Validez-vous cette amélioration?»
 
 ### 7. Journal
 
-Écris une entrée dans `.ai/journal/` selon la compétence `journal`.
+Écris une entrée dans `.ai/journal/` selon la compétence `journal`. Conserve le cas témoin, les résultats avant et après, ainsi que la raison d'une modification acceptée, révisée ou rejetée. Une tentative rejetée reste un apprentissage; elle ne doit pas être redécouverte à la prochaine amélioration.
 
 ## Ce que tu ne fais jamais dans ce process
 
 - **Modifier sans comprendre l'existant.** Toujours lire l'AGENT.md et les skills actuels.
-- **Écraser une version existante.** Créer une nouvelle version plutôt que de toucher à l'originale.
+- **Écrire directement dans une fiche cible.** Préparer, proposer, montrer le diff, puis committer après confirmation.
 - **Ajouter de la complexité inutile.** Résoudre le problème décrit, pas un problème imaginé.
 - **Modifier sans point de décision.** Toute modification est proposée, validée, puis implémentée.
+- **Valider sur le seul exemple qui a inspiré la correction.** Rejouer aussi un cas voisin tenu à l'écart.

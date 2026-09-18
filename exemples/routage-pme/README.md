@@ -3,18 +3,21 @@
 ## Essayez en 30 secondes
 
 1. Ouvrez **ce dossier** (pas la racine du dépôt) dans Claude Code ou Cursor.
-2. Dites, mot pour mot: **«prépare une proposition commerciale pour Dupont»**
-3. Vous devriez voir: le routage vers l'assistant commercial et son process «nouveau-devis», puis un devis rédigé (besoin, lignes chiffrées, conditions) avec un point de décision «Je suis prêt à enregistrer le devis. Confirmez-vous?». Rien n'est écrit ni envoyé sans vous.
+2. Dites, mot pour mot: **«Prépare une proposition commerciale pour Dupont»**
+3. Vous devriez voir: le routage vers l'assistant commercial et sa procédure «nouveau-devis», puis un devis rédigé (besoin, lignes chiffrées, conditions) avec un point de décision «Je suis prêt à enregistrer le devis. Confirmez-vous?». Demander votre confirmation est ici une consigne à l'assistant. Pour une écriture, la confirmation n'est mécanique que via `base propose` puis `base commit`, ou leurs équivalents MCP.
 
 Un exemple **centré sur le routage**, distinct des assistants métier complets. Il montre comment BASE
-choisit le bon agent et le bon process face à des demandes réalistes: synonymes, paraphrases,
+choisit le bon agent et la bonne procédure face à des demandes réalistes: synonymes, paraphrases,
 demandes ambiguës, demandes hors périmètre et **contre-exemples**.
+
+Ici, **Dupont** désigne une entreprise cliente fictive de la PME. Elle est sans lien avec
+**Dupont Conseil**, la racine cliente de l'exemple `agence-multi-clients`.
 
 ## Le piège que cet exemple illustre
 
-Deux agents, cinq process, dont plusieurs sont **volontairement proches**:
+Deux agents, cinq procédures, dont plusieurs sont **volontairement proches**:
 
-| Agent | Process | Se déclenche sur | Surtout pas sur |
+| Agent | Procédure | Se déclenche sur | Surtout pas sur |
 |---|---|---|---|
 | `commercial` | `nouveau-devis` | créer une offre, chiffrer | une facture contestée, une relance |
 | `commercial` | `relance-client` | devis sans réponse, facture impayée | créer un devis, une contestation |
@@ -23,17 +26,17 @@ Deux agents, cinq process, dont plusieurs sont **volontairement proches**:
 | `support` | `demande-evolution` | «ce serait bien si…», fonctionnalité | une panne |
 
 «Faire une offre» et «le client conteste sa facture» partagent le mot *facture*, mais ne mènent pas
-au même process. C'est tout le rôle de `use_when` (signal positif) et de `routing.avoid_when` (signal négatif).
+à la même procédure. C'est tout le rôle de `use_when` (signal positif) et de `routing.avoid_when` (signal négatif).
 
 ## Essayer
 
 ```bash
 # Router une demande (raisons de score incluses avec --json)
-node ../../tools/base.mjs route "le client conteste le montant de sa facture" --root .
-node ../../tools/base.mjs route "ce serait bien d'ajouter un export PDF" --root .
+node .ai/base.mjs route "le client conteste le montant de sa facture" --root .
+node .ai/base.mjs route "ce serait bien d'ajouter un export PDF" --root .
 
 # Rejouer les fixtures de routage (paraphrases + contre-exemples + hors périmètre)
-node ../../tools/base.mjs route-test --root .
+node .ai/base.mjs route-test --root .
 ```
 
 `base.config.json` ajoute le `semanticHybrid` zéro-dépendance (alias *proposition → offre/devis*,
@@ -42,7 +45,7 @@ node ../../tools/base.mjs route-test --root .
 
 ## Ce qu'il faut regarder
 
-- **`use_when`** sur chaque process: la phrase d'intention, premier maillon du `route_text`.
+- **`use_when`** sur chaque procédure: la phrase d'intention, premier maillon du `route_text`.
 - **`routing.examples`**: des paraphrases réelles, indexées comme signal de routage.
 - **`routing.avoid_when`**: les contre-exemples qui *annulent* un score, la clé de la désambiguïsation.
 - **`.ai/routing/route-tests.json`**: les routes attendues, protégées en CI comme un test.

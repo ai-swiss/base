@@ -7,7 +7,7 @@ allowed-tools: Read
 
 # Marqueurs
 
-Conventions pour rendre l'état du travail observable directement dans les fichiers. Les marqueurs sont du texte structuré, placé dans les documents générés (devis, fiches clients, rapports) et dans le journal. Ils ne sont jamais placés dans les fichiers du cadre (skills, AGENT.md).
+Conventions pour rendre l'état du travail observable directement dans les fichiers. Les marqueurs sont du texte structuré, placé dans les documents générés (comptes-rendus, relevés de décisions) et dans le journal. Ils ne sont jamais placés dans les fichiers du cadre (skills, AGENT.md).
 
 Chaque marqueur correspond à une phase de la boucle de co-pensée (Cadrer → Confier → Évaluer → Ajuster).
 
@@ -24,40 +24,36 @@ Chaque marqueur correspond à une phase de la boucle de co-pensée (Cadrer → C
 
 **[A COMPLETER]** - information manquante:
 ```
-- **TVA :** [A COMPLETER: numéro IDE si assujetti]
-- **Email :** [A COMPLETER]
+[A COMPLETER: responsable de l'action]
 ```
 
 **[A VALIDER]** - proposition en attente:
 ```
-[A VALIDER: Prix unitaire estimé à 150 CHF/h d'après le catalogue]
-[A VALIDER: Délai de livraison 3 semaines à confirmer avec le fournisseur]
+[A VALIDER: formulation de la décision prise en séance]
 ```
 
 **[ATTENTION]** - alerte:
 ```
-[ATTENTION: Montant supérieur à 10'000 CHF - conditions de paiement à vérifier]
-[ATTENTION: Numéro TVA toujours manquant dans la fiche entreprise]
+[ATTENTION: échéance mentionnée sans date précise]
 ```
 
 **[DECISION]** - choix confirmé:
 ```
-[DECISION: Remise de 10% | Client fidèle depuis 2 ans]
-[DECISION: Arche florale à 1'100 CHF | Pivoines plus coûteuses que les roses standard]
+[DECISION: compte-rendu synthétique | seules les décisions et actions sont conservées]
 ```
 
 ## Forme enrichie de [DECISION]
 
-La forme courante suffit dans la plupart des cas. Quand le choix a des conséquences importantes (montant élevé, engagement ferme, donnée difficile à corriger), la forme enrichie aide à retracer pourquoi le choix a été fait:
+La forme courante suffit dans la plupart des cas. Quand le choix a des conséquences importantes, la forme enrichie aide à retracer pourquoi il a été fait:
 
 **Forme courante** (par défaut):
 ```
-[DECISION: Arche florale à 1'100 CHF | Pivoines plus coûteuses que les roses standard]
+[DECISION: compte-rendu synthétique | seules les décisions et actions sont conservées]
 ```
 
 **Forme enrichie** (enjeux élevés):
 ```
-[DECISION: Arche florale à 1'100 CHF | Pivoines plus coûteuses | Alternative: roses standard 850 CHF | Confiance: haute | Conséquence si erreur: devis à refaire]
+[DECISION: reporter le lancement | dépendance externe non résolue | Alternative: lancement partiel | Confiance: haute | Conséquence si erreur: planning à revoir]
 ```
 
 ## Comment chercher les marqueurs

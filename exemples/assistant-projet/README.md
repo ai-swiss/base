@@ -3,8 +3,8 @@
 ## Essayez en 30 secondes
 
 1. Ouvrez **ce dossier** (pas la racine du dépôt) dans Claude Code ou Cursor.
-2. Dites, mot pour mot: **«Bonjour, je voudrais configurer mon activité»**
-3. Vous devriez voir: l'assistant vous accueille, puis vous demande, une question à la fois, votre prénom, votre rôle, votre organisation et votre lieu pour remplir votre profil. Rien n'est écrit ni envoyé sans vous.
+2. Dites, mot pour mot: **«Bonjour, je veux configurer mon profil»**
+3. Vous devriez voir: l'assistant vous accueille, puis vous demande, une question à la fois, votre prénom, votre rôle, votre organisation et votre lieu pour remplir votre profil. Demander votre confirmation est ici une consigne à l'assistant. Pour une écriture, la confirmation n'est mécanique que via `base propose` puis `base commit`, ou leurs équivalents MCP.
 
 Un assistant IA qui aide à structurer, planifier et suivre des projets professionnels ou personnels.
 
@@ -14,7 +14,7 @@ Il commence par configurer votre profil, puis vous accompagne projet après proj
 
 | Vous dites | Il fait |
 |------------|---------|
-| «Bonjour, je voudrais configurer mon activité» (première fois) | Configure votre profil et vos préférences de travail |
+| «Bonjour, je veux configurer mon profil» (première fois) | Configure votre profil et vos préférences de travail |
 | «J'ai un projet à organiser...» | Structure le projet: étapes, jalons, calendrier, risques |
 | «Où en est mon projet?» | Fait le point d'avancement et propose la suite |
 | «Modifie le planning» | Ajuste les étapes, les dates ou les responsabilités |
@@ -28,7 +28,7 @@ assistant-projet/
 ├── .ai/agents/assistant-projet/       L'intelligence de l'agent
 │   ├── AGENT.md                       Instructions principales
 │   ├── skills/
-│   │   ├── processes/                 Workflows (config, nouveau projet)
+│   │   ├── processes/                 Procédures (config, nouveau projet)
 │   │   └── competences/               Connaissances (méthodologie, marqueurs, journal)
 │   └── templates/                     Modèles (fiche projet, point d'avancement)
 │

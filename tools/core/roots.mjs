@@ -136,6 +136,13 @@ export async function readWorkspace(workspacePath) {
   if (!Array.isArray(data.roots) || data.roots.length === 0) {
     throw new Error(`${WORKSPACE_FILENAME} must define a non-empty roots array.`);
   }
+  const warnings = Object.prototype.hasOwnProperty.call(data, "name")
+    ? [{
+      code: "base.workspace.name_deprecated",
+      path: fullPath,
+      message: "«name» dans base.workspace.json est déprécié. Remplacez-le par «label».",
+    }]
+    : [];
 
   const baseDir = path.dirname(fullPath);
   const ids = new Set();
@@ -171,6 +178,7 @@ export async function readWorkspace(workspacePath) {
     label: typeof data.label === "string" ? data.label : typeof data.name === "string" ? data.name : typeof data.id === "string" ? data.id : path.basename(baseDir),
     path: fullPath,
     roots,
+    warnings,
   };
 }
 

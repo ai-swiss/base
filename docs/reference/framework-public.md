@@ -28,7 +28,7 @@ Le parcours de lecture par profil (personne seule, PME, grande entreprise) est t
 | ------ | ------- | -------------------- |
 | Usage | `README.md`, `docs/start/quickstart.md`, `exemples/` | Démarrer sans comprendre toute l'architecture |
 | Structure | `.ai/agents/`, `docs/reference/le-standard.md`, `docs/reference/framework-public.md`, `base.schema.json` | Stabiliser les agents, skills, ressources et workflows |
-| Intégration | `tools/`, `mcp/`, `tests/`, `docs/reference/specification-v0.md` | Vérifier, connecter et auditer sans enfermer BASE dans un outil |
+| Intégration | `tools/`, `mcp/`, `tests/`, `specs/current/README.md` | Vérifier, connecter et auditer sans enfermer BASE dans un outil |
 
 `CLAUDE.md` et `.cursor/rules/` sont des adaptateurs de harness. Ils aident Claude Code et Cursor à charger le bon contexte, mais ils ne constituent pas la source conceptuelle du cadre. Par confort, jamais par obligation, deux interfaces locales facultatives existent: Studio (`npm run studio -- <dossier>`, sur `127.0.0.1:5174`) pour parcourir et éditer les ressources selon le mode propose puis commit, et la documentation en local (`npm run docs:serve`).
 
@@ -65,7 +65,7 @@ Objectif: partager sans bureaucratie.
 - frontmatter minimal recommandé;
 - `base validate --root <dossier>` avant partage;
 - `base index --root <dossier>` pour générer le manifest;
-- `base entretien --root <dossier>` pour repérer liens cassés, marqueurs ouverts et descriptions manquantes;
+- `base doctor --root <dossier>` pour repérer liens cassés, marqueurs dormants, descriptions manquantes et process au signal de routage faible;
 - promotion contrôlée des ressources personnelles vers l'équipe.
 
 Le bon point de départ organisationnel est `docs/audiences/kit-demarrage-pme-suisse.md`: données autorisées, responsable de validation, versioning simple et rituel mensuel. Cela suffit souvent, avant d'ajouter des contrôles plus lourds.
@@ -102,16 +102,18 @@ Entreprise = intégration gouvernée + politiques internes + contrôles techniqu
 
 ## Abstractions stables
 
+Ces termes ont une définition en langage courant dans le [glossaire](glossaire.md).
+
 | Concept | Pour l'utilisateur | Rôle durable |
 |---------|--------------------|--------------|
-| Resource | fichier utile | Ce qui peut être découvert et utilisé |
+| Ressource | fichier utile | Ce qui peut être découvert et utilisé |
 | Source | endroit où ça vit | Origine locale ou future intégration |
-| Connector | accès | Mécanisme qui lit ou écrit une source |
+| Connecteur | accès | Mécanisme qui lit ou écrit une source |
 | Process | façon de faire | Workflow textuel réutilisable |
 | Tool | outil | Action invocable, souvent un script local |
 | Policy | règle d'accès | Intention ou limite d'usage |
-| Event | trace utile | Signal minimal pour entretien ou debug |
-| Adapter | intégration outil IA | Pont vers Cursor, Claude, ChatGPT ou autre |
+| Événement | trace utile | Signal minimal pour entretien ou debug |
+| Adaptateur | intégration outil IA | Pont vers Cursor, Claude, ChatGPT ou autre |
 
 Ces concepts n'ont pas tous vocation à apparaître dans l'expérience du débutant. Ils servent à éviter que la structure soit à jeter lorsqu'une organisation grandit.
 
@@ -158,8 +160,8 @@ Le broker public, partagé par la CLI et le MCP, fournit:
 
 - inventaire des ressources;
 - recherche locale explicable;
-- routage agent → process avec abstention structurée: `route_request` retourne une carte (agents → process avec «Quand l'utiliser») que le modèle lit pour décider, `base route` étant le plancher déterministe des appels sans modèle;
-- tests de routage métier (`base route-test`);
+- routage agent → process avec abstention structurée: `route_request` retourne une carte (agents → process avec «Quand l'utiliser») que le modèle lit pour décider; `base route` exécute la stratégie de production configurée;
+- tests de routage métier (`base route-test`), sur la stratégie lexicale par défaut ou sur la stratégie de production avec `--strategy production`;
 - écriture médiée propose-puis-commit (`base propose`/`base commit`, `propose_change`/`commit_change`), le reçu de commit portant un `content_hash` vérifiable;
 - vérification de l'état des écritures en lecture seule (`base changes`, `list_pending_changes`, `get_change_status`);
 - ouverture de ressource confinée avec projection `metadata`, `instructions` ou `full`;
@@ -171,11 +173,17 @@ Le Router choisit parmi les agents et processes dérivés des fichiers. Il ne fo
 
 BASE pourrait évoluer vers un routage plus large, par exemple pour retrouver directement une compétence ou un outil. Le cœur public s'en abstient par défaut: router une action et retrouver du contexte sont deux responsabilités distinctes, et les tenir séparées rend le système plus lisible et plus testable.
 
-La recherche locale s'appuie sur les métadonnées YAML, les titres Markdown, les descriptions, les mots-clés et un texte local simple. Le cœur livre aussi un `semanticHybridRanker` sans dépendance, activable par config. Pour de véritables embeddings, BASE fournit le package officiel séparé `@ai-swiss/base-ranker-semantic`, sans ajouter de modèle ni de SDK cloud au cœur. Il accepte un fournisseur explicite, offre un connecteur compatible OpenAI et propose un helper Ollama facultatif (`createOllamaEmbedder`, modèle `nomic-embed-text`) pour les équipes en quête d'un chemin local simple. Voir `docs/guides/routage-semantique-quickstart.md`, `docs/guides/choisir-provider-embeddings.md` et `docs/trust/securite-donnees-routage.md`.
+La recherche locale s'appuie sur les métadonnées YAML, les titres Markdown, les descriptions, les
+mots-clés et un texte local simple. Le cœur livre aussi un `semanticHybridRanker` sans dépendance,
+activable dans `base.config`. Le package séparé `@ai-swiss/base-ranker-semantic` ajoute des rankers à
+embeddings sans activer la stratégie de routage `embedding`; celle-ci dépend des deux modèles déclarés
+dans `.ai/studio.settings.json`. Voir [Mettre en place le routage sémantique](../guides/routage-semantique-quickstart.md),
+[Choisir son provider d'embeddings](../guides/choisir-provider-embeddings.md) et
+[Sécurité des données et routage](../trust/securite-donnees-routage.md).
 
-Pour l'échelle, `@ai-swiss/base-index-local` fournit un index local facultatif, dérivé et supprimable. Il ne devient pas source de vérité et demeure hors du cœur. Voir `docs/learn/comprendre-echelle.md` et `docs/guides/benchmarks-echelle.md`.
+Pour l'échelle, `@ai-swiss/base-index-local` fournit un index local facultatif, dérivé et supprimable. Il ne devient pas source de vérité et demeure hors du cœur. Voir [Comprendre l'échelle](../learn/comprendre-echelle.md) et [Benchmarks à l'échelle](../guides/benchmarks-echelle.md).
 
-L'index de routage (`base build routing-index`) est générable, mais il demeure une projection de lecture et de préparation à l'échelle. Il n'est pas source de vérité, et le Router n'en dépend pas à ce jour. Les limites précises sont listées dans `docs/reference/etat-implementation.md`.
+L'index de routage (`base build routing-index`) est générable, mais il demeure une projection de lecture et de préparation à l'échelle. Il n'est pas source de vérité, et le Router n'en dépend pas à ce jour. Les limites précises sont listées dans [État de l'implémentation](etat-implementation.md).
 
 ## Souveraineté autour des modèles
 

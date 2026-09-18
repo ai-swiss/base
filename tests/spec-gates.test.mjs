@@ -23,6 +23,7 @@ import { missingMarkers } from "../tools/spec/check-markers.mjs";
 import { BUSINESS_MARKERS, scanMarkers } from "../tools/core/markers.mjs";
 import { emDashLines } from "../tools/docs/check-emdash.mjs";
 import { offendingScalars, frontmatterLines } from "../tools/docs/check-frontmatter-yaml.mjs";
+import { bannedLines, frenchFiles } from "../tools/docs/check-lexique.mjs";
 import { linksToSource, recordedSyncHash } from "../tools/docs/check-translations.mjs";
 
 // Build IDs without ever writing a full literal (e.g. "FR" + "-FOO-001").
@@ -322,6 +323,35 @@ describe("French house-style and authority gates", () => {
     assert.deepEqual(emDashLines("```\ncode — fenced\n```"), [], "a fenced em-dash is not prose");
     assert.deepEqual(emDashLines("ligne — tolérée [EMDASH-OK: citation]"), []);
   });
+  it("lexicon gate rejects only the observed claims that collapse method, structure, reference and execution", () => {
+    const rejected = [
+      "BASE sort cette méthode de l'outil.",
+      "Vous obtenez un assistant, mais surtout quelque chose qui lui survit: **la méthode elle-même**.",
+      "BASE ne remplace ni le modèle ni l'outil. Il conserve la méthode que cet outil applique.",
+      "Ce qui reste commun est la méthode de référence.",
+    ];
+    for (const claim of rejected) {
+      assert.equal(bannedLines(claim).length, 1, `the observed overclaim must remain banned: ${claim}`);
+    }
+
+    const precise = [
+      "La méthode indique comment le travail est conduit.",
+      "La structure BASE réunit les ressources et les relations qui décrivent cette méthode.",
+      "La référence est sa description approuvée et versionnée.",
+      "L'exécution dépend du modèle, de l'outil et de l'intégration.",
+    ].join("\n");
+    assert.deepEqual(bannedLines(precise), [], "the four objects themselves remain valid vocabulary");
+  });
+  it("lexicon gate covers authoritative French docs, examples and operational prose", async () => {
+    const { files } = await frenchFiles();
+    assert.ok(files.includes("README.fr.md"));
+    assert.ok(files.includes("docs/reference/le-standard.md"));
+    assert.ok(files.includes("exemples/assistant-devis/README.md"));
+    assert.ok(files.includes(".ai/agents/createur-agent/AGENT.md"));
+    assert.equal(files.includes("README.md"), false, "the English repository front door is out of scope");
+    assert.equal(files.includes(".ai/agents/base-contributor/AGENT.md"), false, "English contributor prose is out of scope");
+    assert.equal(files.includes(".ai/agents/createur-agent/index.md"), false, "generated routing indexes are out of scope");
+  });
   it("frontmatter-yaml gate flags an unquoted value with a colon, accepts quoted, ignores URL schemes", () => {
     const bad = frontmatterLines("---\ntitle: Foo\ndescription: A thing: with a colon\n---\nbody\n");
     assert.deepEqual(offendingScalars(bad).map((h) => h.key), ["description"]);
@@ -335,5 +365,29 @@ describe("French house-style and authority gates", () => {
     assert.equal(linksToSource("> A translation with no backlink.", "README.md"), false);
     assert.equal(recordedSyncHash("<!-- fr-synced: a1b2c3d -->"), "a1b2c3d");
     assert.equal(recordedSyncHash("no marker here"), null);
+  });
+  it("translations gate: a language table records its fr.mjs the same way, as a JS line comment", () => {
+    // The word tables under tools/core/lang/ are translations of fr.mjs and carry the same marker;
+    // a source file has no HTML comments, so the JS spelling must be recognised too.
+    assert.equal(recordedSyncHash("// fr-synced: b60cd61eda32a816d93b02f7560545e19afe2641"), "b60cd61eda32a816d93b02f7560545e19afe2641");
+    assert.equal(recordedSyncHash("// The English table: every key of ./fr.mjs, translated.\n// fr-synced: a1b2c3d\n\nexport const EN = {};"), "a1b2c3d");
+    assert.equal(recordedSyncHash("// The English table, with nothing recorded.\nexport const EN = {};"), null);
+  });
+  it("translations gate: the tables that exist declare a fresh marker against fr.mjs", async () => {
+    // The gate's real subject: en.mjs today, de.mjs and it.mjs the day they land. A table with no
+    // marker, or one hashed against an older fr.mjs, must be a failure rather than a review note.
+    const { createHash } = await import("node:crypto");
+    const { readFile } = await import("node:fs/promises");
+    const { fileURLToPath } = await import("node:url");
+    const root = fileURLToPath(new URL("..", import.meta.url));
+    // `git hash-object` without git: sha1 over "blob <byte length>\0" plus the bytes.
+    const blobHash = (/** @type {Buffer} */ bytes) =>
+      createHash("sha1").update(`blob ${bytes.length}\0`).update(bytes).digest("hex");
+    const current = blobHash(await readFile(`${root}tools/core/lang/fr.mjs`));
+    for (const locale of ["en", "de", "it"]) {
+      const text = await readFile(`${root}tools/core/lang/${locale}.mjs`, "utf8").catch(() => null);
+      if (text === null) continue; // a locale with no table yet is absent, never stale
+      assert.equal(recordedSyncHash(text), current, `tools/core/lang/${locale}.mjs must record the current fr.mjs`);
+    }
   });
 });

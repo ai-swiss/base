@@ -1,4 +1,4 @@
-<!-- fr-synced: acb1031208d9fac5579c81f3210a8a945ce57d9f -->
+<!-- fr-synced: 70c84f83a0192b21996ccfbde1e965f2cd1fa6ef -->
 # Track 2, embedding-based routing (optional, for scale)
 
 BASE routes in two ways, and configuration is what decides. Track 1 is the default setting and is enough
@@ -8,21 +8,26 @@ chosen it.
 ## The two tracks, in one sentence each
 
 - **Track 1 (default, already active).** The assistant reads the generated index and chooses; a
-  deterministic keyword floor serves as an offline safety net. No model, nothing to install.
+  lexical keyword floor serves as an offline safety net. The strategy itself requires no model;
+  rankers added in `base.config` may nevertheless use their own provider.
 - **Track 2 (optional).** Embeddings bring back the few candidates closest to the request, then a small
-  model reads them and decides: it chooses, or asks for clarification. Locally.
+  model reads them and decides: it chooses, or asks for clarification. Both models may be local or
+  remote, depending on the configured providers.
 
 The two tracks are independent: Track 2 is not a layer set on top of Track 1, but another track that the
-configuration selects.
+configuration selects. A configurable ranker orders candidates within Track 1; it never activates
+Track 2, even when it uses embeddings.
 
 ## Do you need it?
 
-Be honest with yourself before the slightest installation.
+The trigger is **not catalog size**: on synthetic corpora of 15, 150, and 600 processes, lexical
+routing handles requests that share the vocabulary of the `use_when` at every scale. What it misses,
+at any scale, are **rephrasings** with no word in common, such as "I want an offer" when the process
+says "quote". These abstentions may be recorded in `.ai/feedback/abstentions.jsonl` on paths that
+write that journal.
 
-- **Small or medium BASE root** (a few agents, a few dozen processes): **Track 1 is enough**. Track 2
-  would add nothing but one more installation to maintain.
-- **Large BASE root** (many processes, or routing that hesitates because the list is too long to settle by
-  keywords): Track 2 sharpens the choice. That is where it truly comes into its own.
+Start by adding a recurring rephrasing to the target process's `routing.examples`. Consider Track 2
+when paraphrase-shaped abstentions persist across many processes despite good examples.
 
 ## The installation is essentially "just Ollama"
 
@@ -39,6 +44,10 @@ provider remains possible for anyone who wishes, but the default scenario is *Ol
 Track 2 activates only when **both** models are entered. A single one changes nothing, and BASE stays on
 Track 1. And if a model becomes unreachable, BASE falls back to Track 1 on its own: never a block, never a
 silence.
+
+With Track 2 active, `base route-test` still checks the lexical strategy by default. To replay the
+path actually used by `base route`, explicitly run `base route-test --strategy production`; this run
+calls the configured models and is not a deterministic CI gate.
 
 ## Which models should you choose? (you are free)
 

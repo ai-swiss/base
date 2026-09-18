@@ -66,6 +66,38 @@ catalogued in [`docs/reference/gates.md`](docs/reference/gates.md); the commands
 Cutting a release is a separate, governance-gated step with its own runbook,
 [`RELEASING.md`](RELEASING.md).
 
+## Withholding is tested on production-shaped data
+
+A test of anything that withholds a resource builds a real root, runs the inventory, and asserts
+on what the inventory returns. A hand-written `{ confidential: true }` proves only that the test
+agrees with itself: a checker that reads the flag where a real resource does not carry it stays
+green while withholding nothing. Every withholding path asks `isConfidential()` in
+`tools/core/egress.mjs`, the one reading of the flag; a new path calls it rather than reading the
+field.
+
+## Files describe a state, the changelog carries the history
+
+A shipped file (documentation, code comment, competence, entry point) describes what BASE does
+now. It never says since when, what it did before, or which incident taught it. That history is
+the CHANGELOG's, and a reader of any other file must be able to take it as the whole truth at the
+version they hold.
+
+## Two numbers that must be measured, never decided
+
+Both come from the same mistake: a number that looks obvious is written down, and nobody can
+say afterwards what it was worth.
+
+- **A stop-word list is measured on a labelled set in that language, and never copied from a
+  dictionary.** Function words carry no meaning for matching, which makes a stop list look free.
+  It is not: a list built by intuition removes words that separate real requests. When one was
+  measured against a golden set, recall at 1 went up and recall at 3 went down, so it was
+  rejected. No list is added or extended for a language without a labelled set in that language
+  showing what it does.
+- **A result budget is measured per client, never decreed.** How many passages, how many bytes of
+  page image, how long a citation may run: these depend on what the calling client can actually
+  carry, and a number fixed here is a guess about someone else's limits. Where a provisional
+  number exists in the code, it says so in a comment and names what would replace it.
+
 ## What we deliberately keep out
 
 Minimalism is a feature, and saying no protects it. BASE's development does **not** adopt:

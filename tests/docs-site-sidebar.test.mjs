@@ -1,13 +1,11 @@
 // Spec coverage: FR-DOCS-003
-// The sidebar is a projection of navigation.json with presentation rules (split, exclusions,
-// label uniqueness). This suite pins those rules against a synthetic navigation fixture, so
-// the contract in specs/current/10_core/docs.md ("Sidebar contract") is enforced, not hoped for.
 import assert from "node:assert/strict";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { afterEach, beforeEach, describe, it } from "node:test";
-import { buildSidebar, COMPRENDRE, CONSTRUIRE, ECHELLE } from "../packages/base-docs-site/src/lib/sidebar.mjs";
+import { buildSidebar, projectNavigation } from "../packages/base-docs-site/src/lib/sidebar.mjs";
+import { buildNavigation, validateNavigation } from "../tools/docs/navigation.mjs";
 
 let tmpDir;
 let previousModelDir;
@@ -24,305 +22,171 @@ afterEach(async () => {
   await fs.rm(tmpDir, { recursive: true, force: true });
 });
 
-async function writeNavigation(sections) {
-  await fs.writeFile(path.join(tmpDir, "navigation.json"), JSON.stringify({ target: "local", sections }), "utf8");
-}
-
-function item(id, title, itemPath, role = "reference") {
-  return { id, title, path: itemPath, role };
-}
-
-function flatLabels(sidebar) {
-  const labels = [];
-  const walk = (entries) => {
-    for (const entry of entries) {
-      if (entry.link) labels.push(entry.label);
-      else walk(entry.items);
-    }
+function resource(itemPath, title = itemPath, overrides = {}) {
+  const siteKey = itemPath.replace(/\.[^.]+$/, "").replace(/[^A-Za-z0-9]+/g, "-").replace(/^-+|-+$/g, "").toLowerCase();
+  return {
+    id: siteKey,
+    site_key: siteKey,
+    path: itemPath,
+    title,
+    doc_role: "guide",
+    ...overrides,
   };
-  for (const group of sidebar) {
-    if (group.link) labels.push(group.label);
-    else walk(group.items);
-  }
-  return labels;
 }
+
+function visibleSiteKeys(items) {
+  return items.flatMap((item) => item.type === "resource"
+    ? [item.site_key]
+    : item.type === "group"
+      ? visibleSiteKeys(item.items)
+      : []);
+}
+
+describe("final docs navigation", () => {
+  it("preserves the reader-journey order, pinning and nesting in navigation.json", () => {
+    const navigation = buildNavigation([
+      resource("docs/start/demo-60-secondes.md", "Démo"),
+      resource("docs/learn/co-penser-avec-lia.md", "Pourquoi BASE"),
+      resource("docs/start/quickstart.md", "Quickstart"),
+      resource("docs/start/installer-cursor.md", "Installer Cursor"),
+      resource("docs/tutoriel/index.md", "Tutoriel"),
+      resource("docs/tutoriel/decouverte-1-faites-le-parler.md", "Découverte"),
+      resource("docs/guides/idees-agents.md", "Idées"),
+      resource("docs/learn/comprendre-echelle.md", "Échelle"),
+      resource("exemples/assistant/README.md", "Assistant", { doc_role: "example" }),
+      resource("docs/trust/licence.md", "Licence", { doc_role: "audit" }),
+      resource("docs/reference/glossaire.md", "Glossaire", { doc_role: "reference" }),
+      resource("docs/reference/documentation-interactive.md", "Documentation interactive", { doc_role: "reference" }),
+      resource("MANIFESTO.md", "Manifeste", { doc_role: "reference" }),
+      resource("specs/current/README.md", "Spécification", { doc_role: "spec" }),
+      resource("packages/demo/README.md", "Package", { doc_role: "reference" }),
+    ], "local");
+
+    assert.deepEqual(navigation.items.map((item) => item.id), [
+      "home",
+      "decouvrir",
+      "comprendre",
+      "demarrer",
+      "apprendre",
+      "construire",
+      "exemples",
+      "confiance",
+      "reference",
+      "explorer",
+      "projet",
+      "specs",
+      "packages",
+    ]);
+    const start = navigation.items.find((item) => item.id === "demarrer");
+    assert.deepEqual(start.items.map((item) => item.id), ["docs-start-quickstart", "installer"]);
+    const tutorial = navigation.items.find((item) => item.id === "apprendre");
+    assert.deepEqual(tutorial.items.map((item) => item.id), ["docs-tutoriel-index", "decouverte"]);
+    const build = navigation.items.find((item) => item.id === "construire");
+    assert.deepEqual(build.items.map((item) => item.id), ["docs-guides-idees-agents", "echelle"]);
+  });
+
+  it("rejects a new editorial page that no final group claims", () => {
+    const resources = [resource("docs/learn/a-new-page.md", "New page")];
+    const navigation = buildNavigation(resources, "local");
+
+    assert.equal(visibleSiteKeys(navigation.items).length, 0);
+    assert.deepEqual(navigation.exclusions, []);
+    assert.deepEqual(validateNavigation(resources, navigation), [{
+      code: "base.docs.navigation_unassigned",
+      path: "docs/learn/a-new-page.md",
+      message: "Resource is neither present in navigation nor explicitly excluded with a reason.",
+    }]);
+  });
+
+  it("accounts for every resource exactly once, including reasoned exclusions", () => {
+    const resources = [
+      resource("docs/start/quickstart.md", "Quickstart"),
+      resource("package.json", "Package", { doc_role: "reference" }),
+      resource(".ai/agents/demo/AGENT.md", "Agent", { doc_role: "operational" }),
+      resource("decisions/0001.md", "Decision", { doc_role: "decision" }),
+    ];
+    const navigation = buildNavigation(resources, "local");
+    const accounted = [
+      ...visibleSiteKeys(navigation.items),
+      ...navigation.exclusions.map((item) => item.site_key),
+    ];
+
+    assert.equal(new Set(accounted).size, resources.length);
+    assert.equal(accounted.length, resources.length);
+    assert.equal(navigation.exclusions.every((item) => item.reason.length > 0), true);
+    assert.deepEqual(validateNavigation(resources, navigation), []);
+  });
+});
 
 describe("docs site sidebar projection", () => {
-  it("projects corpus sections with bilingual group labels and appends the model pages group", async () => {
-    await writeNavigation([
-      { id: "start", title: "Start", items: [item("quickstart", "Démarrage express", "docs/start/quickstart.md", "guide")] },
-    ]);
+  it("is a pure Starlight projection of final navigation, using site keys for resource routes", async () => {
+    const navigation = {
+      target: "local",
+      exclusions: [],
+      items: [
+        { type: "link", id: "home", labels: { fr: "Accueil", en: "Home" }, href: "/" },
+        {
+          type: "group",
+          id: "custom",
+          labels: { fr: "Groupe", en: "Group" },
+          collapsed: false,
+          items: [{
+            type: "resource",
+            id: "semantic-id",
+            site_key: "nested-path-resource",
+            title: "Titre",
+            path: "docs/custom/new.md",
+            role: "guide",
+          }],
+        },
+      ],
+    };
+    await fs.writeFile(path.join(tmpDir, "navigation.json"), JSON.stringify(navigation), "utf8");
 
-    const sidebar = buildSidebar(process.cwd());
-
-    const start = sidebar.find((group) => group.label === "Démarrer pour de vrai");
-    assert.equal(start.translations.en, "Really get started");
-    assert.deepEqual(start.items, [{ label: "Démarrage express", link: "/resources/quickstart/" }]);
-    const model = sidebar.find((group) => group.label === "Explorer le corpus");
-    assert.equal(model.translations.en, "Explore the corpus");
-    assert.equal(model.items.some((entry) => entry.link === "/explorer/"), true);
-  });
-
-  it("splits the reference catch-all by reading intent, in reader-priority order", async () => {
-    await writeNavigation([
+    assert.deepEqual(buildSidebar(process.cwd()), projectNavigation(navigation));
+    assert.deepEqual(projectNavigation(navigation, () => "Title"), [
+      { label: "Accueil", link: "/", translations: { en: "Home" } },
       {
-        id: "reference",
-        title: "Reference",
-        items: [
-          item("glossaire", "Glossaire", "docs/reference/glossaire.md"),
-          item("governance", "Gouvernance", "GOVERNANCE.md"),
-          item("spec-arch", "10 · Architecture", "specs/current/10_core/architecture.md", "spec"),
-          item("mcp-readme", "BASE MCP Server", "mcp/README.md"),
-        ],
+        label: "Groupe",
+        translations: { en: "Group" },
+        collapsed: false,
+        items: [{ label: "Titre", link: "/resources/nested-path-resource/", translations: { en: "Title" } }],
       },
     ]);
-
-    const sidebar = buildSidebar(process.cwd());
-    const labels = sidebar.map((group) => group.label);
-
-    assert.deepEqual(labels, [
-      "Accueil",
-      "Référence",
-      "Explorer le corpus",
-      "Le projet",
-      "Spécifications",
-      "Packages et outils",
-    ]);
-    assert.deepEqual(sidebar.find((group) => group.label === "Le projet").items.map((entry) => entry.label), [
-      "Gouvernance",
-    ]);
-    // Specifications read as one group; historical specs live in git tags, not a parallel tree.
-    const specs = sidebar.find((group) => group.label === "Spécifications");
-    assert.equal(specs.items[0].label, "10 · Architecture");
   });
 
-  it("excludes machine files and the operations inventory from the sidebar", async () => {
-    await writeNavigation([
-      {
-        id: "reference",
-        title: "Reference",
+  it("disambiguates duplicate display titles without changing navigation membership", () => {
+    const navigation = {
+      target: "local",
+      exclusions: [],
+      items: [{
+        type: "group",
+        id: "packages",
+        labels: { fr: "Packages", en: "Packages" },
+        collapsed: true,
         items: [
-          item("route-tests", "Route Tests", "exemples/demo/.ai/routing/route-tests.json"),
-          item("package", "Package", "package.json"),
-          item("pr-template", "PULL REQUEST TEMPLATE", ".github/PULL_REQUEST_TEMPLATE.md"),
-          item("schema", "Base.Config.V1", "specs/current/30_schemas/base.config.v1.json", "schema"),
+          {
+            type: "resource",
+            id: "one",
+            site_key: "one",
+            title: "README",
+            path: "packages/one/README.md",
+            role: "reference",
+          },
+          {
+            type: "resource",
+            id: "two",
+            site_key: "two",
+            title: "README",
+            path: "packages/two/README.md",
+            role: "reference",
+          },
         ],
-      },
-      { id: "operations", title: "Agents And Processes", items: [item("agent", "Concierge", ".ai/agents/demo/AGENT.md")] },
-    ]);
+      }],
+    };
 
-    const sidebar = buildSidebar(process.cwd());
-    const labels = flatLabels(sidebar);
-
-    assert.equal(labels.includes("Route Tests"), false);
-    assert.equal(labels.includes("Package"), false);
-    assert.equal(labels.includes("PULL REQUEST TEMPLATE"), false);
-    assert.equal(labels.includes("Concierge"), false);
-    assert.equal(sidebar.some((group) => group.label === "Agents et process"), false);
-    // JSON schemas under specs/ are part of the published contract and stay.
-    assert.equal(labels.includes("Base.Config.V1"), true);
-  });
-
-  it("excludes pages whose sidebar presence would mislead: README variants, manifesto translations, LICENSE, harness artifacts", async () => {
-    await writeNavigation([
-      {
-        id: "reference",
-        title: "Reference",
-        items: [
-          item("readme", "BASE", "README.md", "front-door"),
-          item("readme-fr", "BASE", "README.fr.md"),
-          item("manifeste", "Manifeste BASE", "MANIFESTO.md"),
-          item("manifesto-en", "BASE Manifesto", "MANIFESTO.en.md"),
-          item("manifest-de", "BASE-Manifest", "MANIFESTO.de.md"),
-          item("manifesto-it", "Manifesto BASE", "MANIFESTO.it.md"),
-          item("license", "License", "LICENSE"),
-          item("agents-md", "Agents", "AGENTS.md"),
-          item("claude-md", "BASE : Bâtir des Assistants", "CLAUDE.md"),
-          item("bootstrap", "BASE: bootstrap générique", "BASE_BOOTSTRAP.md"),
-          item("tools", "Matrice de capacité BASE", ".ai/tools.md"),
-        ],
-      },
-    ]);
-
-    const sidebar = buildSidebar(process.cwd());
-
-    assert.deepEqual(
-      sidebar.find((group) => group.label === "Le projet").items.map((entry) => entry.label),
-      ["Manifeste BASE"],
-      "only the canonical French manifesto survives; Explorer and search keep the rest",
-    );
-  });
-
-  it("keeps only package front doors in the packages group", async () => {
-    await writeNavigation([
-      {
-        id: "reference",
-        title: "Reference",
-        items: [
-          item("ranker-readme", "@ai-swiss/base-ranker-semantic", "packages/base-ranker-semantic/README.md"),
-          item("ranker-security", "Security & data handling", "packages/base-ranker-semantic/SECURITY.md"),
-          item("studio-readme", "BASE Studio (UI)", "tools/studio/ui/README.md"),
-        ],
-      },
-    ]);
-
-    const packages = buildSidebar(process.cwd()).find((group) => group.label === "Packages et outils");
-
-    assert.deepEqual(packages.items.map((entry) => entry.label), [
-      "@ai-swiss/base-ranker-semantic",
-      "BASE Studio (UI)",
-    ]);
-  });
-
-  it("pins the reading order per section and lets unpinned pages follow in model order", async () => {
-    await writeNavigation([
-      {
-        id: "trust",
-        title: "Trust",
-        items: [
-          item("licence", "Licence", "docs/trust/licence.md", "guide"),
-          item("evidence", "Preuves et limites", "docs/trust/evidence.md", "guide"),
-          item("nouveau", "Page future non épinglée", "docs/trust/nouveau.md", "guide"),
-          item("souverainete", "Souveraineté", "docs/trust/souverainete-et-confiance.md", "guide"),
-        ],
-      },
-    ]);
-
-    const trust = buildSidebar(process.cwd()).find((group) => group.label === "Confiance et preuves");
-
-    assert.deepEqual(trust.items.map((entry) => entry.label), [
-      "Souveraineté",
-      "Preuves et limites",
-      "Licence",
-      "Page future non épinglée",
-    ]);
-  });
-
-  it("nests Démarrer into profile sub-groups; installers under one entry, hub first", async () => {
-    await writeNavigation([
-      {
-        id: "start",
-        title: "Start",
-        items: [
-          item("quickstart", "Démarrage express", "docs/start/quickstart.md", "guide"),
-          item("installer-claude", "Installer Claude Code", "docs/start/installer-claude-code.md", "guide"),
-          item("installer-cursor", "Installer Cursor", "docs/start/installer-cursor.md", "guide"),
-          item("installer", "Installer un espace de travail IA", "docs/start/installer.md", "guide"),
-          item("obtenir", "Obtenir BASE", "docs/start/obtenir-base.md", "guide"),
-        ],
-      },
-    ]);
-
-    const start = buildSidebar(process.cwd()).find((group) => group.label === "Démarrer pour de vrai");
-
-    // The compass page stays at top; then the profile sub-groups follow in declared order.
-    assert.deepEqual(
-      start.items.map((entry) => entry.label),
-      ["Démarrage express", "Seul ou en PME", "Installer votre outil"],
-    );
-    const seul = start.items.find((entry) => entry.label === "Seul ou en PME");
-    assert.deepEqual(seul.items.map((entry) => entry.label), ["Obtenir BASE"]);
-    const installer = start.items.find((entry) => entry.label === "Installer votre outil");
-    assert.equal(installer.translations.en, "Install your tool");
-    assert.equal(installer.collapsed, true);
-    assert.deepEqual(installer.items.map((entry) => entry.label), [
-      "Installer un espace de travail IA",
-      "Installer Claude Code",
-      "Installer Cursor",
-    ]);
-  });
-
-  it("nests each example as one group labelled by its front door, hub at the top level", async () => {
-    await writeNavigation([
-      {
-        id: "examples",
-        title: "Examples",
-        items: [
-          item("hub", "Exemples", "exemples/README.md", "front-door"),
-          item("devis", "Assistant Devis", "exemples/assistant-devis/README.md"),
-          item("devis-clients", "Clients", "exemples/assistant-devis/clients/README.md"),
-          item("rh", "Assistant RH", "exemples/assistant-rh/README.md"),
-          item("rh-clients", "Clients", "exemples/assistant-rh/candidatures/README.md"),
-        ],
-      },
-    ]);
-
-    const examples = buildSidebar(process.cwd()).find((group) => group.label === "Exemples");
-
-    assert.equal(examples.collapsed, true);
-    assert.deepEqual(
-      examples.items.map((entry) => (entry.link ? entry.label : `[${entry.label}]`)),
-      ["Exemples", "[Assistant Devis]", "[Assistant RH]"],
-    );
-    const devis = examples.items.find((entry) => entry.label === "Assistant Devis");
-    assert.deepEqual(devis.items.map((entry) => entry.label), ["Assistant Devis", "Clients"]);
-  });
-
-  it("disambiguates colliding titles with the owning context (the package directory)", async () => {
-    await writeNavigation([
-      {
-        id: "reference",
-        title: "Reference",
-        items: [
-          item("ranker-readme", "README", "packages/base-ranker-semantic/README.md"),
-          item("index-readme", "README", "packages/base-index-local/README.md"),
-          item("studio-readme", "BASE Studio (UI)", "tools/studio/ui/README.md"),
-        ],
-      },
-    ]);
-
-    const packages = buildSidebar(process.cwd()).find((group) => group.label === "Packages et outils");
-    const labels = packages.items.map((entry) => entry.label);
-
-    assert.deepEqual(labels, [
-      "README · base-ranker-semantic",
-      "README · base-index-local",
-      "BASE Studio (UI)",
-    ]);
-    assert.equal(new Set(labels).size, labels.length, "every sidebar label must be unique within its group");
-  });
-
-  it("groups every docs/learn and docs/guides page (no orphan from an unlisted page)", async () => {
-    // docs/learn and docs/guides are the only editorial dirs assigned by EXPLICIT list (COMPRENDRE,
-    // CONSTRUIRE, ECHELLE) rather than by path prefix; every other docs/ dir is claimed by a prefix
-    // predicate, so a new page there is auto-grouped. This makes the one real orphan risk a mechanism:
-    // a page added to either dir but not to a list fails the build. EXCLUDED is the single escape hatch.
-    const EXCLUDED = new Set([
-      // (none today: every docs/learn and docs/guides page is meant to be reachable from the bar)
-    ]);
-    const grouped = new Set([...COMPRENDRE, ...CONSTRUIRE, ...ECHELLE]);
-    const orphans = [];
-    for (const dir of ["docs/learn", "docs/guides"]) {
-      for (const name of await fs.readdir(path.resolve(dir))) {
-        if (!name.endsWith(".md")) continue;
-        const rel = `${dir}/${name}`;
-        if (!EXCLUDED.has(rel) && !grouped.has(rel)) orphans.push(rel);
-      }
-    }
-    assert.deepEqual(
-      orphans,
-      [],
-      `these pages reach no sidebar group; add each to COMPRENDRE/CONSTRUIRE/ECHELLE in sidebar.mjs ` +
-        `(or to EXCLUDED with a reason):\n${orphans.join("\n")}`,
-    );
-  });
-
-  it("keeps every label unique on the real local and public navigation projections, when present", async () => {
-    for (const target of ["local", "public"]) {
-      const realDir = path.resolve("packages/base-docs-site/../../.base-docs", target);
-      try {
-        await fs.access(path.join(realDir, "navigation.json"));
-      } catch {
-        continue;
-      }
-      process.env.BASE_DOCS_MODEL_DIR = realDir;
-      const sidebar = buildSidebar(process.cwd());
-      const assertUnique = (label, entries) => {
-        const labels = entries.map((entry) => entry.label);
-        assert.equal(new Set(labels).size, labels.length, `duplicate label in group "${label}" (${target})`);
-        for (const entry of entries) if (!entry.link) assertUnique(entry.label, entry.items);
-      };
-      for (const group of sidebar) if (!group.link) assertUnique(group.label, group.items);
-    }
+    const [group] = projectNavigation(navigation);
+    assert.deepEqual(group.items.map((item) => item.label), ["README · one", "README · two"]);
+    assert.deepEqual(group.items.map((item) => item.link), ["/resources/one/", "/resources/two/"]);
   });
 });

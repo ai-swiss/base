@@ -20,10 +20,40 @@ export interface BrokerResource {
   reasons?: string[];
 }
 
+// The projections openResource accepts. `outline` (the table of contents) and `source` (the record
+// behind a converted document, with its printed pages) are section-grain reads: they answer about the
+// document rather than returning it, so they belong beside the three body projections, not beside a
+// separate tool.
+export type BrokerProjection = "metadata" | "instructions" | "full" | "outline" | "source";
+
 export interface BrokerOpenResult {
   resource?: BrokerResource;
   policy?: Record<string, unknown>;
   content: string;
+  // What the broker attaches BESIDE the content when a read is narrowed: the passage it landed on,
+  // the table of contents, the edition that answered a `lang` request, and the source record with its
+  // page images. Each is optional because a plain full read carries none of them; naming them here
+  // rather than casting keeps the siblings a contract instead of a lucky property access.
+  section?: { anchor: string; heading: string; heading_path: string; ref: string };
+  outline?: Array<{ anchor: string; heading: string; level: number; heading_path: string }>;
+  edition?: { requested: string | null; language: string | null; fallback: boolean; available?: string[] | null; note?: string };
+  source?: Record<string, unknown> | null;
+  images?: Array<{ page?: number | null; path: string; mime?: string; data?: string; bytes?: number; missing?: boolean; over_budget?: boolean; unsupported?: boolean }>;
+}
+
+/** One hit of a section-grain search: a passage, its heading path, and the citable `id#anchor`. */
+export interface BrokerSectionHit {
+  id: string;
+  path: string;
+  type: string;
+  title: string;
+  section: string | null;
+  ref: string;
+  heading_path: string;
+  passage: string;
+  citation: string | null;
+  score: number;
+  reasons: string[];
 }
 
 export interface BrokerInvokeResult {
@@ -39,6 +69,18 @@ export interface BrokerRouteRef {
   type: string;
   title: string;
   path: string;
+}
+
+/**
+ * The help target a root configures for the case where nothing fits. `source` says which corpus
+ * answered: `root` (paths relative to the root) or `framework` (absolute paths under `root`, the BASE
+ * framework this root belongs to, which may own a welcome process the root borrows rather than copies).
+ */
+export interface BrokerRoutingFallback {
+  agent: { id: string; path: string };
+  process: { id: string; path: string };
+  source: "root" | "framework";
+  root?: string;
 }
 
 export interface BrokerRouteCandidate {
@@ -69,15 +111,17 @@ interface BrokerModule {
   resolveConfig(rootDir: string): Promise<Record<string, unknown>>;
   rootEgressPolicy(rootDir: string): Promise<"local-only" | "any">;
   inventoryResources(rootDir: string, options?: { egress?: EgressContext }): Promise<BrokerResource[]>;
-  searchResources(rootDir: string, query: string, options?: { limit?: number; egress?: EgressContext }): Promise<BrokerResource[]>;
+  searchResources(rootDir: string, query: string, options?: { limit?: number; grain?: "resource" | "section"; scope?: string; egress?: EgressContext }): Promise<BrokerResource[] | BrokerSectionHit[]>;
   routeRequest(rootDir: string, request: string, options?: { limit?: number; egress?: EgressContext }): Promise<BrokerRouteResult>;
+  routingFallback(rootDir: string, options?: { egress?: EgressContext }): Promise<BrokerRoutingFallback | null>;
   buildRoutingRegistry(resources: BrokerResource[]): {
     agents: Array<{
       agent: { id: string; title: string | null; route_text?: string } | null;
       processes: Array<{ id: string; title: string | null; route_text?: string; avoid_text?: string; path: string }>;
     }>;
   };
-  openResource(rootDir: string, idOrPath: string, options?: { projection?: "metadata" | "instructions" | "full"; purpose?: string; confirmed?: boolean; grantToken?: string; egress?: EgressContext }): Promise<BrokerOpenResult>;
+  openResource(rootDir: string, idOrPath: string, options?: { projection?: BrokerProjection; section?: string; lang?: string; purpose?: string; confirmed?: boolean; grantToken?: string; egress?: EgressContext }): Promise<BrokerOpenResult>;
+  parseFrontmatter(content: string): { data: Record<string, unknown>; body: string; errors: unknown[] };
   accessResource(rootDir: string, idOrPath: string, options?: { projection?: "metadata" | "instructions" | "full"; purpose?: string; confirmed?: boolean; grantToken?: string; egress?: EgressContext }): Promise<BrokerOpenResult>;
   invokeTool(rootDir: string, idOrPath: string, args?: string[], options?: { dryRun?: boolean; confirmed?: boolean; grantToken?: string; egress?: EgressContext }): Promise<BrokerInvokeResult>;
   proposeChange(rootDir: string, target: string, content: string, options?: { purpose?: string; confirmed?: boolean; grantToken?: string; egress?: EgressContext }): Promise<BrokerProposeResult>;
@@ -293,6 +337,15 @@ export async function brokerResolveBaseContext(options: {
   return roots.resolveBaseContext(options);
 }
 
+export function brokerWorkspaceWarnings(context: Record<string, unknown>): Array<{ code?: string; path?: string; message: string }> {
+  const workspace = context.workspace;
+  if (!workspace || typeof workspace !== "object" || !("warnings" in workspace) || !Array.isArray(workspace.warnings)) return [];
+  return workspace.warnings.filter(
+    (warning): warning is { code?: string; path?: string; message: string } =>
+      Boolean(warning && typeof warning === "object" && "message" in warning && typeof warning.message === "string"),
+  );
+}
+
 export async function brokerContextScope(context: Record<string, unknown>, cwd = process.cwd()): Promise<Record<string, unknown>> {
   const roots = await loadRoots();
   return roots.contextScope(context, cwd);
@@ -333,15 +386,51 @@ async function mcpEgress(broker: BrokerModule, rootDir: string): Promise<EgressC
   return { modelLocality: process.env.BASE_MCP_ALLOW_CONFIDENTIAL === "1" ? "local" : "remote", rootPolicy };
 }
 
-export async function brokerSearchResources(rootDir: string, query: string, limit = 10): Promise<BrokerResource[]> {
+// `grain` chooses the unit of the answer (whole resources, or the passages inside them) and `scope`
+// narrows it to one folder. Both are the broker's own options: the adapter carries them rather than
+// re-deciding, so the MCP surface and the CLI discover the same way.
+export async function brokerSearchResources(
+  rootDir: string,
+  query: string,
+  limit = 10,
+  grain: "resource" | "section" = "resource",
+  scope?: string,
+): Promise<BrokerResource[] | BrokerSectionHit[]> {
   const broker = await loadBroker();
-  return broker.searchResources(rootDir, query, { limit, egress: await mcpEgress(broker, rootDir) });
+  return broker.searchResources(rootDir, query, { limit, grain, scope, egress: await mcpEgress(broker, rootDir) });
+}
+
+/**
+ * The `attribution` line declared on ONE folder's README.md card, or null when the folder has no card,
+ * no such line, or no readable file. A collection of converted material states once how it must be
+ * credited; the deployment decides whether that line travels (mcp.attribution_prefix).
+ *
+ * The walk up the tree stays with the caller, which is what decides how far to climb and how long a
+ * lookup may be trusted. This is the single confined read.
+ */
+export async function brokerAttributionFor(rootDir: string, relDir: string): Promise<string | null> {
+  const broker = await loadBroker();
+  try {
+    const card = broker.parseFrontmatter(await fs.promises.readFile(await broker.confineToRoot(rootDir, `${relDir}/README.md`), "utf8")).data;
+    return typeof card.attribution === "string" && card.attribution.trim() ? card.attribution.trim() : null;
+  } catch {
+    // no card here (or an unreadable one): the caller climbs to the parent folder
+    return null;
+  }
 }
 
 export async function brokerRouteRequest(rootDir: string, request: string, limit?: number): Promise<BrokerRouteResult> {
   const broker = await loadBroker();
   const egress = await mcpEgress(broker, rootDir);
   return broker.routeRequest(rootDir, request, typeof limit === "number" ? { limit, egress } : { egress });
+}
+
+// The help target, resolved by the ENGINE (root corpus, then the framework corpus the root belongs to),
+// never by a second read of `routing.fallback`: a root that borrows the framework's welcome process
+// would otherwise be reported as having no help at all, and a typo'd target as having one.
+export async function brokerRoutingFallback(rootDir: string): Promise<BrokerRoutingFallback | null> {
+  const broker = await loadBroker();
+  return broker.routingFallback(rootDir, { egress: await mcpEgress(broker, rootDir) });
 }
 
 export interface BrokerRoutingMapProcess {
@@ -385,16 +474,21 @@ export async function brokerRoutingMap(rootDir: string): Promise<BrokerRoutingMa
     .filter((a): a is BrokerRoutingMapAgent => a !== null);
 }
 
+// `section` narrows the read to one passage and `lang` picks the edition to read it from. The anchor
+// may also ride on `idOrPath` as `id#anchor`, which the broker splits itself: a ref copied out of a
+// section hit works wherever an id works, and the adapter has no reason to take it apart first.
 export async function brokerOpenResource(
   rootDir: string,
   idOrPath: string,
-  projection: "metadata" | "instructions" | "full" = "full",
+  projection: BrokerProjection = "full",
   purpose = "",
   confirmed = false,
   grantToken?: string,
+  section?: string,
+  lang?: string,
 ): Promise<BrokerOpenResult> {
   const broker = await loadBroker();
-  return broker.openResource(rootDir, idOrPath, { projection, purpose, confirmed, grantToken, egress: await mcpEgress(broker, rootDir) });
+  return broker.openResource(rootDir, idOrPath, { projection, section, lang, purpose, confirmed, grantToken, egress: await mcpEgress(broker, rootDir) });
 }
 
 export async function brokerAccessResource(

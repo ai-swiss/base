@@ -58,9 +58,9 @@ Avant de confier un travail réel à BASE, mieux vaut vérifier ses promesses qu
 
 **Limite.** Chaque couche ajoutée élargit la surface de maintenance. La simplicité par défaut reste une règle de conception.
 
-## Évaluer votre assistant, sans en faire une preuve
+## Une évaluation par un juge IA ne prouve pas la qualité de BASE {#evaluer-votre-assistant-sans-en-faire-une-preuve}
 
-**Un instrument, pas un argument.** BASE fournit l'évaluation (`npm run eval`): un utilisateur simulé dialogue avec votre assistant par le vrai broker, et un juge indépendant note la conversation au regard des objectifs d'un scénario. C'est un instrument fait pour juger *votre* assemblage (votre agent, votre modèle, vos scénarios), et non une preuve de la qualité de BASE: ce qu'il mesure tient à votre modèle, à votre exemple et à votre matériel, non à BASE.
+**Un instrument, pas un argument.** BASE fournit l'évaluation (`npm run eval`): un utilisateur simulé dialogue avec votre assistant par le vrai broker, et une invocation de juge distincte note la conversation au regard des objectifs d'un scénario. Cette séparation ne rend pas le verdict indépendant du modèle ni du barème. C'est un instrument fait pour juger *votre* assemblage (votre agent, votre modèle, vos scénarios), et non une preuve de la qualité de BASE: ce qu'il mesure tient à votre modèle, à votre exemple et à votre matériel, non à BASE.
 
 **Mécanismes.**
 
@@ -84,19 +84,22 @@ Avant de confier un travail réel à BASE, mieux vaut vérifier ses promesses qu
 
 ## Boucle terrain, égress et santé du corpus
 
-- **Contrôle d'égress**: une seule règle, un seul point de contrôle, `tools/core/egress.mjs`
-  (`checkEgress`, fonction pure testée en matrice localité × policy × confidentialité dans
-  `tests/base-egress.test.mjs`). Le chat refuse d'éditer un document confidentiel avec un modèle
-  distant. Le paquet de contexte (context pack) écarte les références concernées (badge «retenu» à l'écran) et la
-  trace d'évaluation consigne les documents expurgés.
-- **Journal de friction**: `.ai/feedback/` n'autorise que la création, et l'outil MCP
-  `report_friction` ne modifie jamais une entrée (collision = suffixe; vérifié par
-  `tests/base-feedback.test.mjs` et `mcp/tests/index.test.ts`). «Marquer résolu» repasse par la
-  porte propose → diff → commit, comme toute écriture.
-- **Abstentions du routeur**: chaque `out_of_scope` / `ambiguous` / `needs_clarification` est
-  journalisé par les adaptateurs (CLI et MCP) dans `.ai/feedback/abstentions.jsonl`; le broker,
-  lui, reste sans effet de bord. Les deux portes empruntent la même fonction d'écriture.
+- **Contrôle d'égress**: `tools/core/egress.mjs` expose la décision pure `checkEgress`, protégée par
+  `tests/base-egress.test.mjs` selon la localité du modèle, la policy de racine et le drapeau
+  `confidential` (`FR-EGRESS-001`). Le chat refuse une édition confidentielle avec un modèle distant;
+  le paquet de contexte et le prompt d'évaluation écartent les références retenues et annoncent
+  l'omission.
+- **Journal terrain**: `reportFriction` crée sans écraser les fiches Markdown de `.ai/feedback/`,
+  tandis que `appendAbstention` ajoute des lignes à `abstentions.jsonl`. Résoudre une friction
+  modifie ensuite sa fiche par propose → commit: seule sa création bénéficie de l'exception
+  creation-only (`FR-FEEDBACK-001/002/005`, `tests/base-feedback.test.mjs`).
+- **Abstentions du routeur**: les adaptateurs journalisent `out_of_scope`, `ambiguous` et
+  `needs_clarification` dans `.ai/feedback/abstentions.jsonl` uniquement lorsqu'une racine est
+  unique ou qu'un `root_id` est explicitement sélectionné. Le routage multi-racine et un serveur MCP en lecture seule
+  n'écrivent rien; le broker reste sans effet de bord (`FR-FEEDBACK-002`,
+  `mcp/tests/index.test.ts`).
 - **`base doctor`**: pure projection sur des données existantes (inventaire, graphe de
-  liens, runs, feedback), sans état propre. Six vérifications, deux sévérités, une piste de
-  correction imposée par signal (`tests/base-doctor.test.mjs`). Deux portes pour une seule
-  fonction: la CLI `base doctor [--json]` et `GET /api/doctor` (bandeau Studio).
+  liens, runs, feedback), sans état propre. `diagnoseData` produit 18 catégories de constats, deux
+  sévérités et un `fix_hint` obligatoire par constat (`FR-DOCTOR-001`,
+  `tests/base-doctor.test.mjs`). La CLI `base doctor [--json]` et `GET /api/doctor` appellent la
+  même fonction `diagnose`.

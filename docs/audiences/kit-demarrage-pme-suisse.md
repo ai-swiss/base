@@ -14,6 +14,8 @@ keywords: [pme, suisse, equipe, gouvernance, donnees, validation, nLPD, entretie
 
 Faire travailler une petite équipe suisse avec l'IA sans déraper ni déployer une plateforme lourde: voilà l'enjeu. Ce kit réunit le minimum nécessaire pour démarrer proprement avec BASE et cadrer un premier usage maîtrisé. Il ne tient lieu ni d'avis juridique, ni de politique de sécurité, ni de gouvernance documentaire.
 
+Pour distinguer méthode, structure, référence approuvée et exécution, consultez le [diagnostic de la carte des publics](pour-qui.md).
+
 ## 1. Choisir un premier workflow
 
 Commencez par une tâche répétable, visible et peu risquée:
@@ -35,7 +37,7 @@ On peut entrer: informations publiques, exemples fictifs, modèles internes non 
 On n'entre pas: secrets, mots de passe, données médicales, données RH sensibles, données client non nécessaires, documents confidentiels sans accord ou environnement adapté.
 ```
 
-BASE conserve les fichiers localement, mais l'outil IA employé peut traiter le contenu de la conversation selon ses propres conditions. Au regard de la nLPD, du RGPD ou d'obligations sectorielles, l'organisation demeure responsable du traitement, du fournisseur retenu et des droits d'accès.
+Les fichiers peuvent rester localement dans votre dossier, mais un outil peut projeter leur contenu vers un modèle distant selon ses propres conditions. Sur les chemins médiés, l'égress est permissif par défaut: marquez explicitement les ressources `confidential: true` ou la racine `local-only` pour qu'elles soient retenues. Une valeur `sensitivity` classe le contenu; elle ne bloque pas à elle seule son envoi. Au regard de la nLPD, du RGPD ou d'obligations sectorielles, l'organisation demeure responsable du traitement, du fournisseur retenu et des droits d'accès.
 
 ## 3. Nommer les responsabilités
 
@@ -57,18 +59,18 @@ Pour une petite équipe qui le maîtrise, Git est l'outil idéal. Sinon, commenc
 - consignez les changements importants, datés, dans un journal;
 - ne touchez pas aux modèles critiques sans relecture;
 - conservez une copie avant tout changement majeur;
-- lancez `base validate` avant de partager une nouvelle version.
+- lancez le validateur avant de partager une nouvelle version.
 
 À mesure que l'équipe grandit, passez à Git, à des relectures de changements et à des droits d'accès formalisés.
 
 ## 5. Installer le rituel mensuel
 
-Une fois par mois, ou avant chaque partage important, lancez ces trois commandes. Elles s'exécutent dans un terminal et supposent Node installé (comme lors de l'installation); si personne dans l'équipe n'est à l'aise avec le terminal, confiez ce rituel à celle ou celui qui a installé BASE, ou demandez à votre assistant IA de les lancer pour vous.
+Une fois par mois, ou avant chaque partage important, lancez ces trois commandes. Elles supposent Node 18 ou plus (`node --version`) et un dossier initialisé depuis le cadre, qui contient le lanceur `.ai/base.mjs`. Placez-vous à la racine de ce dossier. Si le lanceur manque, reprenez le [guide d'installation](../start/installer.md) avant de continuer.
 
 ```bash
-base validate --root <dossier>
-base entretien --root <dossier>
-base route-test --root <dossier>
+node .ai/base.mjs validate --root .
+node .ai/base.mjs doctor --root .
+node .ai/base.mjs route-test --root .
 ```
 
 Puis vérifiez en équipe:
@@ -82,7 +84,7 @@ Puis vérifiez en équipe:
 
 ## 6. Garder les limites visibles
 
-BASE aide une PME à structurer le travail avec l'IA. À lui seul, il ne fournit pas:
+Les fichiers, le routeur et le composant de médiation de BASE (le broker) aident une PME à structurer le travail avec l'IA. Ils ne fournissent pas:
 
 - IAM, SSO ou RBAC;
 - DLP;
@@ -92,16 +94,20 @@ BASE aide une PME à structurer le travail avec l'IA. À lui seul, il ne fournit
 - gestion centralisée des secrets;
 - garantie d'exactitude des réponses du modèle.
 
-Si ces besoins se présentent, conservez BASE comme couche de structuration et ajoutez les contrôles techniques tout autour.
+Si ces besoins se présentent, conservez les fichiers comme couche de structuration et ajoutez les contrôles techniques autour de leurs chemins d'accès et d'exécution.
 
 ## 7. Règle de décision
 
-Un usage BASE est prêt pour l'équipe quand:
+Un usage est prêt pour l'équipe quand:
 
 1. un premier workflow réel fonctionne;
 2. les données autorisées sont écrites;
 3. une personne responsable valide les sorties;
-4. `base validate` passe;
+4. `node .ai/base.mjs validate --root .` passe;
 5. l'équipe sait quoi faire quand l'assistant marque `[A VALIDER]` ou `[ATTENTION]`.
 
 S'il manque l'un de ces points, gardez l'usage au stade de l'expérimentation.
+
+## Votre prochaine action
+
+Choisissez aujourd'hui une tâche répétable et peu risquée, puis écrivez avec son responsable la règle des données autorisées avant d'ouvrir le moindre document dans l'outil IA.

@@ -20,9 +20,9 @@ Tu aides à préparer des devis, relancer des clients et traiter les litiges de 
 
 ## Routage
 
-Trois process proches mais distincts; le bon dépend de l'intention réelle, pas des mots isolés.
+Trois procédures proches mais distinctes; le choix dépend de l'intention réelle, pas des mots isolés.
 «Faire une offre» et «le client conteste sa facture» contiennent tous deux le mot *facture*, mais ne
-mènent pas au même process. C'est pourquoi chaque process déclare son «Quand l'utiliser» (`use_when`)
+mènent pas à la même procédure. C'est pourquoi chaque procédure déclare son «Quand l'utiliser» (`use_when`)
 et ses «Éviter si» (`routing.avoid_when`) dans son frontmatter: le routage se dérive des fichiers,
 rien n'est tenu à la main ici.
 

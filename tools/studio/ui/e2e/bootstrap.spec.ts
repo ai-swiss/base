@@ -28,17 +28,19 @@ test.describe("Bienvenue — du dossier nu au Studio", () => {
     // The SKILL.md imitation is noticed and welcomed, not ignored.
     await expect(page.getByText(/vous parlez déjà BASE/)).toBeVisible();
 
-    // The creation gate: every file is listed and its full content is readable BEFORE creating —
-    // tool artifacts included (the folder must speak to Claude Code/Cursor right away).
+    // The creation gate: every file is listed and its full content is readable BEFORE creating.
+    // Welcome has no tool choice, so it uses the generic entry point and must not silently add
+    // files for specific tools.
     const plan = page.getByRole("region", { name: "Fichiers à créer" });
     await expect(plan).toContainText("AGENT.md");
     await expect(plan).toContainText("base.config.json");
-    await expect(plan).toContainText("CLAUDE.md");
-    await expect(plan).toContainText(".cursor/rules/assistant.mdc");
+    await expect(plan.locator("summary code", { hasText: /^BASE_BOOTSTRAP\.md$/ })).toHaveCount(1);
+    await expect(plan.locator("summary code", { hasText: /^CLAUDE\.md$/ })).toHaveCount(0);
+    await expect(plan.locator("summary code", { hasText: /^\.cursor\/rules\/assistant\.mdc$/ })).toHaveCount(0);
     await plan.locator("summary code", { hasText: /agents\/.*AGENT\.md/ }).click();
     await expect(plan.getByText(/type: agent/)).toBeVisible();
-    await plan.locator("summary code", { hasText: /^CLAUDE\.md$/ }).click();
-    await expect(plan.getByText(/point d'entrée pour Claude Code/)).toBeVisible();
+    await plan.locator("summary code", { hasText: /^BASE_BOOTSTRAP\.md$/ }).click();
+    await expect(plan.getByText(/Point d'entrée générique pour un harness IA/)).toBeVisible();
   });
 
   test("«Créer ces fichiers» bootstraps the BASE and the app reloads into root mode — no restart", async ({ page }) => {

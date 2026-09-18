@@ -1,24 +1,25 @@
-<!-- fr-synced: 03e73ce13cf7a8a1a4c4909775f352b965ca5a56 -->
+<!-- fr-synced: 387e55a71d4b07c27e0927aef19582dd50cb1c7c -->
 # Data protection
 
 When you use BASE, where does the data go? The answer determines your compliance with the Swiss Federal Act on Data Protection (nLPD) and the GDPR, as well as the trust you can place in BASE. For the DPO, the compliance officer, or the executive troubled by the question, this summary gathers what is documented elsewhere and points back to the sources.
 
 ## What data BASE processes
 
-- **Your local files.** BASE structures text files (Markdown, JSON) that reside in your folders and belong to you. It reads and writes them in place: the only copies are local (a snapshot of the proposed change in `.ai/changes/`, and the local journal `.ai/trace/`, which records identifiers and paths, never content). Nothing is sent elsewhere without an action on your part.
-- **Minimal technical traces.** Actions that go through BASE write a local JSONL line in `.ai/trace/`: resource identifiers and paths of mediated operations (locally), decisions, durations, never the file content. These traces serve local maintenance and auditing, not surveillance, and are managed with `base trace prune`.
+- **Your local files.** BASE structures text files (Markdown, JSON) that reside in your folders and belong to you. It reads and writes them in place. A proposed change is stored locally in `.ai/changes/`. An AI tool that opens these files may nevertheless transmit them under its own configuration.
+- **Minimal technical traces.** Instrumented points attempt to write a local JSONL line in `.ai/trace/`: resource identifiers, paths, decisions, and durations. No business content appears there by default. This trace is best-effort and non-exhaustive: an action outside the broker, an uninstrumented point, or a write failure may leave no line. It supports local maintenance, not surveillance or a complete audit. You control retention with `base trace prune --keep-days <n>` and `base trace clear`.
 
-## What leaves your machine, and when
+## What can leave your computer, and when {#what-leaves-your-machine-and-when}
 
-Nothing, by default. The core of BASE makes no network calls: the default routing is local and lexical. Any data leaving the machine stems from an explicit choice on your part, never from a hidden setting.
+The BASE core contacts no remote service by default. In an AI tool, the model normally routes by reading the local map; the local lexical router provides the deterministic floor for callers without a model and for tests. The AI tool nevertheless retains its own network policy.
 
 | Possible egress | When | Who decides | Where it's documented |
 | --------------- | ----- | ---------- | ------------------ |
 | The AI tool you use on top of BASE | In every conversation where you entrust content to it | You, by choosing the tool and what you show it | [Security and limits](securite-et-limites.md), section "Data and AI providers" |
-| An embeddings provider | Only if you enable the optional semantic ranker | You, through explicit configuration; a local option (Ollama) exists | [Routing security and data](securite-donnees-routage.md) |
-| The MCP server | Only if you expose it to a chat app | You, through explicit configuration; read-only by default | [`mcp/README.md`](../../../mcp/README.md) |
+| The shipped Way 2 models | Only if you enable `routing.embedding_model` and `refiner_model`; the query and necessary routing text may leave | You, through explicit configuration; a local option (Ollama) exists | [Routing security and data](securite-donnees-routage.md) |
+| A direct integration of the semantic package | If you supply an embedder; its default scope may include resource bodies | The integrator, who chooses the embedder and `textOf` | [Routing security and data](securite-donnees-routage.md) |
+| The MCP server | When a client requests a resource | You, by choosing the client and transport; HTTP is read-only by default, while `stdio` exposes mediated writes unless read-only mode is enabled | [`mcp/README.md`](../../../mcp/README.md) |
 
-For each row, the rule is the same: egress is disabled by default, enabled by you alone, and documented at the indicated place.
+These paths do not share one authority. BASE configures its Way 2 and server; the AI tool and a custom integration retain their own authorities and settings.
 
 ## What BASE does not do
 

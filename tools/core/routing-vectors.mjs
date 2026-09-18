@@ -23,6 +23,7 @@ import { createHash } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { deriveRoutingSignals, ROUTABLE_KINDS } from "./routing.mjs";
+import { isConfidential } from "./egress.mjs";
 
 export const ROUTING_VECTORS_FILE = ".ai/routing/embeddings.json";
 export const ROUTING_VECTORS_SCHEMA = "base.routing_vectors.v1";
@@ -48,9 +49,9 @@ export function hashRouteText(text) {
  */
 export async function precomputeRoutingVectors(resources, embed, { onProgress } = {}) {
   const live = resources.filter((r) => ROUTABLE_KINDS.has(r.type) && r.status !== "deprecated" && r.status !== "archived");
-  const skippedConfidential = live.filter((r) => r.confidential === true).length;
+  const skippedConfidential = live.filter(isConfidential).length;
   const embeddable = live
-    .filter((r) => r.confidential !== true)
+    .filter((r) => !isConfidential(r))
     .map((r) => ({ path: r.path, route_text: deriveRoutingSignals(r).route_text }))
     .filter((r) => r.route_text);
   /** @type {Record<string, { h: string, v: number[] }>} */
@@ -82,7 +83,7 @@ export function applyRoutingVectors(resources, vectors) {
  * - `byPath`: the verified bare map applyRoutingVectors consumes (null when nothing usable);
  * - `stale`: paths whose route_text changed since the precompute — dropped, and REPORTED by the
  *   caller (a trace event, a doctor finding), never silently served;
- * - `legacy`: a pre-v1 bare map (no hashes) — trusted as before, but flagged so doctor can suggest
+ * - `legacy`: a pre-v1 bare map (no hashes) — trusted, but flagged so doctor can suggest
  *   a rebuild (staleness is undetectable in that format);
  * - `embedder`: the `<provider>/<model>` the cache was built with (v1), for the model-mismatch check.
  * @param {Array<{ type: string, path: string, status?: string, [k: string]: any }>} resources

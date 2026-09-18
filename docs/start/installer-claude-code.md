@@ -14,11 +14,11 @@ keywords: [installer, claude code, cli, terminal, anthropic, npm, demarrer]
 
 # Installer Claude Code
 
-À la fin de cette page, vous disposerez d'un assistant qui lit et modifie vos fichiers sous votre contrôle, prêt à travailler sur vos vrais documents: BASE cesse alors d'être un texte qu'on lit pour devenir un cadre qui agit. Il faut pour cela être à l'aise dans un terminal et posséder un compte Anthropic. En quelques minutes, vous installez Claude Code, vous le lancez dans un exemple BASE et vous faites une première demande; vous saurez aussi comment réagir en cas de blocage.
+À la fin de cette page, vous disposerez d'un assistant qui lit et modifie vos fichiers sous votre contrôle, prêt à travailler sur vos vrais documents: Claude Code exécute alors le travail en s'appuyant sur une structure conforme à la convention BASE. Il faut pour cela être à l'aise dans un terminal et posséder un compte Anthropic. En quelques minutes, vous installez Claude Code, vous le lancez dans un exemple BASE et vous faites une première demande; vous saurez aussi comment réagir en cas de blocage.
 
 Claude Code, l'agent IA d'Anthropic en ligne de commande, n'est qu'une porte d'entrée parmi d'autres: la plupart des outils IA capables de lire et de modifier vos fichiers font l'affaire. Cette page décrit Claude Code; pour les autres, reportez-vous à leur installateur.
 
-Il vous faut un compte Anthropic (abonnement Claude ou accès API). L'installateur natif ne réclame aucune autre dépendance.
+Il vous faut un compte Anthropic (abonnement Claude ou accès API), un terminal et un `PATH` dans lequel l'installateur peut rendre la commande `claude` accessible. L'installateur natif ne réclame aucune autre dépendance.
 
 ## 1. Installer Claude Code
 
@@ -68,4 +68,6 @@ L'assistant vous guide, propose des fichiers et attend votre validation pour les
 
 ---
 
-BASE est un cadre porté par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).
+**Prochaine action:** poursuivez avec le [démarrage express](quickstart.md) pour créer votre premier devis vérifiable.
+
+BASE est une convention ouverte accompagnée d'une implémentation de référence, portée par [AI Swiss](https://a-i.swiss). Cas d'usage en partenariat avec [Innovaud](https://innovaud.ch).

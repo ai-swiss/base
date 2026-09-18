@@ -1,6 +1,6 @@
 ---
 import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-import { byTitleThenPath, loadModel, resourceHref, type DocsResource } from "../lib/model";
+import { byTitleThenPath, loadModel, resourceHref, resourcesByUniqueId, type DocsResource } from "../lib/model";
 import { useTranslations, type Locale } from "../lib/i18n";
 import { LEARN_PATHS } from "../lib/content";
 
@@ -12,12 +12,14 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const model = loadModel();
 const resources = [...model.resources].sort(byTitleThenPath);
+const byId = resourcesByUniqueId(resources);
+const byPath = new Map(resources.map((resource) => [resource.path, resource]));
 const examples = resources.filter((resource) => resource.path.startsWith("exemples/") && resource.path.endsWith("README.md"));
 const specs = resources.filter((resource) => resource.family === "specs").slice(0, 12);
 
 function pick(ids: string[]): DocsResource[] {
   return ids
-    .map((id) => resources.find((resource) => resource.id === id || resource.source_id === id || resource.path === id))
+    .map((id) => byId.get(id) ?? byPath.get(id))
     .filter((resource): resource is DocsResource => Boolean(resource));
 }
 ---

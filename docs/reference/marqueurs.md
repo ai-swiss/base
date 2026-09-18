@@ -53,11 +53,11 @@ Pour chaque marqueur: son sens, le moment où le poser et qui le ferme.
 - **Forme enrichie (enjeux élevés).** Lorsque le choix a des conséquences importantes (montant élevé, engagement ferme, donnée difficile à corriger), on consigne l'alternative écartée, le niveau de confiance et le coût d'un retour en arrière, par exemple: `[DECISION: Arche florale à 1100 CHF | Pivoines plus coûteuses | Alternative: roses standard 850 CHF | Confiance: haute | Réversibilité: faible (devis à refaire)]`. Vocabulaire suggéré, lu par l'humain comme par l'agent (ce n'est pas un champ analysé par le scanner): **Confiance: haute | moyenne | basse**, **Réversibilité: facile | moyenne | difficile**.
 - **Règle d'escalade.** Un agent qui s'apprête à figer un `[DECISION]` en **confiance basse** *ou* dont le retour en arrière serait **difficile** ne tranche pas seul: il pose un `[A VALIDER]` et laisse l'humain décider. On automatise ce qui est sûr et aisément réversible; on remonte le reste. C'est une convention de jugement, non une syntaxe imposée.
 
-### Règles communes aux marqueurs métier
+### Quand `base doctor` signale un marqueur métier dormant {#regles-communes-aux-marqueurs-metier}
 
 - Ils vivent dans les **documents générés** (devis, fiches clients, rapports) et dans le **journal**, jamais dans les fichiers du cadre (`AGENT.md`, `SKILL.md`, templates) ni dans la spec.
 - Ils sont scannés par `base markers` (et par l'outil MCP `list_markers`), qui ne retourne que les fichiers métier: `listMarkers` ignore `.ai/agents/`, `docs/`, `specs/`, `tests/`, `tools/`, `mcp/`, les README et les fichiers de test (FR-MARKERS-001). Au début d'une session, l'agent peut résumer l'état ouvert en une ligne (par exemple «2 `[A VALIDER]`, 1 `[DECISION]` enregistrée»).
-- Le rapport de maintenance (`base entretien`, FR-CORE-010) compte ces mêmes marqueurs comme éléments ouverts et signale les marqueurs **périmés**: un marqueur resté ouvert dans un fichier métier dont la date de modification remonte à plus de 30 jours, le signe du «théâtre de la vérification».
+- `base doctor` signale les marqueurs **dormants** (`stale_marker`): un marqueur resté ouvert dans un fichier métier dont la date de modification remonte à plus de 30 jours, le signe du «théâtre de la vérification».
 - L'ensemble est **fermé et insensible à la casse** dans le scanner; tout autre crochet n'est pas un marqueur métier et n'est pas remonté.
 
 ### Variantes de domaine

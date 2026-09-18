@@ -24,7 +24,7 @@ learning_level: intermediate
 1. Dans Studio, onglet **Évaluations**, bouton «▶ Évaluer».
 2. Le panneau s'ouvre, déjà rempli. L'office du tourisme de Veytaux fournit deux scénarios (un visiteur
    de passage déçu par la météo, un responsable de groupe peu clair dans sa demande). Lancez.
-3. Patientez: un utilisateur simulé joue le scénario, puis un juge indépendant note chaque
+3. Patientez: un utilisateur simulé joue le scénario, puis une invocation de juge distincte note chaque
    conversation. Les cartes de résultat arrivent une à une.
 4. Cliquez sur une carte pour dérouler le verdict du juge et sa piste de correction.
 

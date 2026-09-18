@@ -1,7 +1,7 @@
-# `base eval` — evaluate a BASE assistant with simulated users + an independent judge
+# `base eval`: evaluate a BASE assistant with simulated users and a separate judge
 
 **The idea, in one sentence:** a *simulated user* (an LLM) talks to your assistant through the **real
-broker**; an *independent judge* (another LLM) scores the conversation against the scenario's goals.
+broker**; a separate *judge invocation* (another LLM) scores the conversation against the scenario's goals.
 You get a structured verdict per scenario — outcome · failure-mode · severity · evidence · fix-hint —
 a report, and a Studio page to browse it all.
 

@@ -103,7 +103,9 @@ describe("routing quality corpus", () => {
     const result = await runRouteTests(tmpDir);
 
     assert.equal(result.ok, true, JSON.stringify(result.failures, null, 2));
-    assert.equal(result.passed, 5);
+    // A default run certifies BOTH promises, and the report keeps them apart: these five cases are
+    // the fixtures suite, the declared phrasings of the cards are the other.
+    assert.equal(result.suites.find((s) => s.source === "fixtures").passed, 5);
   });
 
   it("abstains when near-duplicate processes are deliberately too close", async () => {

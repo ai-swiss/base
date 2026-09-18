@@ -1,4 +1,4 @@
-<!-- fr-synced: 386edd8c8291f6fca9f3b1d1a02aae7e8341b00a -->
+<!-- fr-synced: 8e8b7b124697df7c37dc0091c2f519dae979e225 -->
 # What you can do with BASE
 
 You have the right to copy, adapt, and redistribute BASE, including for commercial use. Here is precisely what that allows, and under what conditions. Whether you come from the public sector or work independently, start with this: BASE rests on a dual license, one for the code and one for the content, and those rights do not cover quite the same scope from one file to the next.
@@ -9,7 +9,7 @@ The code, tests, schemas, and packages are under Apache-2.0.
 
 This license suits a code project like BASE: it sets a clear frame for reuse, distribution, modification, and contribution, with a patent clause.
 
-## Content: CC BY 4.0
+## Adapting agents, examples, and documents in a commercial offering: CC BY 4.0 {#content-cc-by-4-0}
 
 The documentation, agents, skills, examples, templates, and educational content are under CC BY 4.0.
 

@@ -94,7 +94,11 @@ Si `.ai/journal/` contient des entrées récentes liées à ce process, lis-les 
 
 [Après confirmation, l'agent exécute l'action.]
 
-### 4. Récapitulatif
+### 4. Vérification
+
+[Nommez une à trois preuves observables qui permettent de conclure: fichier produit, source citée, calcul vérifié, commande réussie ou décision humaine explicite.]
+
+### 5. Récapitulatif
 
 > «Voici ce que nous avons fait:
 > - [Point 1]
@@ -102,7 +106,7 @@ Si `.ai/journal/` contient des entrées récentes liées à ce process, lis-les 
 >
 > [Prochaine action suggérée.]»
 
-### 5. Journal
+### 6. Journal
 
 Écris une entrée dans `.ai/journal/` selon la compétence `journal`.
 
@@ -111,6 +115,7 @@ NOTES POUR L'AUTEUR DU PROCESS:
 - Distinguez la reformulation (légère, qui vérifie la compréhension) du point de décision (avant une action irréversible)
 - Ne diluez pas les points de décision: réservez-les aux moments qui comptent
 - L'agent reformule souvent, mais ne pose un point de décision qu'avant d'écrire
+- Chaque process nomme une à trois preuves observables qui permettent de conclure
 - Chaque process se termine par une étape Journal
 - Référencez les compétences et templates par leur chemin relatif
 - 3 à 7 étapes au maximum; au-delà, découpez en plusieurs processes

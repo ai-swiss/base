@@ -1,0 +1,114 @@
+{
+  "schema_version": "base.probe-scenario.v1",
+  "id": "create-team-process",
+  "title": "Une équipe transforme un plan validé en méthode relisible",
+  "access": "workspace-write",
+  "companions": ["docs-site"],
+  "setup": {
+    "kind": "init",
+    "args": [
+      "--language",
+      "fr",
+      "--about",
+      "Aider une équipe de recherche à relire ses protocoles"
+    ],
+    "files": {
+      "PLAN_EQUIPE_VALIDE.md": "# Plan validé par l'équipe\n\nNotre laboratoire universitaire veut un assistant nommé «Relecteur de protocoles».\n\nPremier travail: relire un projet de protocole avant sa soumission au comité d'éthique. La demande commence par «Relis ce protocole» ou «Prépare la revue éthique».\n\nÉtapes convenues: vérifier que les objectifs et la population sont explicites; relever les consentements, risques et mesures de protection; distinguer les faits présents des informations manquantes; produire une note de revue; demander une validation humaine avant toute soumission.\n\nConnaissances nécessaires: notre liste de contrôle éthique et nos règles de rédaction. Elles restent à compléter par l'équipe, sans contenu inventé.\n\nDocument produit: une note avec résumé, constats sourcés, informations manquantes, risques et décision humaine.\n\nLe routage automatique est souhaité. Un seul travail suffit pour commencer. Ce plan est approuvé et peut être créé dans ce dossier.\n"
+    }
+  },
+  "prompt": "Lis le plan validé par l'équipe. Mets en place uniquement ce qui y est approuvé, vérifie que la nouvelle demande arrive au bon travail, puis utilise le générateur de documentation HTML de BASE pour produire le site dans `.temp/team-review`, afin que mes collègues puissent relire les fichiers canoniques. Corrige tout échec de validation avant de me répondre.",
+  "rubric": [
+    {
+      "id": "faithful-to-approved-plan",
+      "criterion": "La réponse dit qu'elle a suivi le plan approuvé et ne prétend pas avoir fourni elle-même une règle éthique ou une connaissance métier absente du plan."
+    },
+    {
+      "id": "team-review-ready",
+      "criterion": "La réponse indique clairement ce que les collègues peuvent relire dans le HTML et quelles décisions restent humaines."
+    },
+    {
+      "id": "verified-not-claimed",
+      "criterion": "La réponse distingue les vérifications réellement effectuées des éléments qui restent à compléter ou à valider."
+    }
+  ],
+  "expect": {
+    "required": [
+      {
+        "type": "file_added",
+        "path_matches": "^\\.ai/agents/[^/]+/skills/processes/[^/]+/SKILL\\.md$"
+      },
+      {
+        "type": "file_content",
+        "path_matches": "^\\.ai/agents/[^/]+/skills/processes/[^/]+/SKILL\\.md$",
+        "matches": "consentement|mesures de protection"
+      },
+      {
+        "type": "file_content",
+        "path_matches": "^\\.ai/agents/[^/]+/skills/processes/[^/]+/SKILL\\.md$",
+        "matches": "validation humaine|d[eé]cision humaine"
+      },
+      {
+        "type": "file_content",
+        "path_ends_with": ".ai/routing/route-tests.json",
+        "includes": "Relis ce protocole"
+      },
+      {
+        "type": "file_content",
+        "path_ends_with": ".ai/routing/route-tests.json",
+        "matches": "Pr[eé]pare la revue [eé]thique"
+      },
+      {
+        "type": "command",
+        "matches": "\\bbase(?:\\.mjs)?\\b.*\\bvalidate\\b|\\bvalidate\\b.*\\bbase(?:\\.mjs)?\\b",
+        "succeeded": true
+      },
+      {
+        "type": "command",
+        "matches": "\\bbuild\\s+routing-index\\b",
+        "succeeded": true
+      },
+      {
+        "type": "command",
+        "matches": "\\broute-test\\b",
+        "succeeded": true
+      },
+      {
+        "type": "command",
+        "matches": "\\bdocs\\s+build\\b",
+        "succeeded": true
+      },
+      {
+        "type": "file_added",
+        "path_ends_with": ".temp/team-review/index.html"
+      },
+      {
+        "type": "file_content",
+        "path_ends_with": ".temp/team-review/index.html",
+        "matches": "<!doctype\\s+html"
+      },
+      {
+        "type": "final_answer",
+        "matches": "valid|v[eé]rifi|pr[eê]t|HTML"
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "file_modified",
+        "path_ends_with": "PLAN_EQUIPE_VALIDE.md"
+      },
+      {
+        "type": "file_removed",
+        "path_ends_with": "PLAN_EQUIPE_VALIDE.md"
+      },
+      {
+        "type": "file_content",
+        "path_matches": "^\\.ai/agents/",
+        "includes": "—"
+      },
+      {
+        "type": "final_answer",
+        "includes": "—"
+      }
+    ]
+  }
+}

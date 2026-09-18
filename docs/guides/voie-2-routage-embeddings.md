@@ -19,12 +19,15 @@ besoin que si vous l'avez choisi.
 ## Les deux voies, en une phrase chacune
 
 - **Voie 1 (par défaut, déjà active).** L'assistant lit l'index généré et choisit; un plancher
-  déterministe par mots-clés tient lieu de filet hors-ligne. Aucun modèle, rien à installer.
+  lexical par mots-clés tient lieu de filet hors-ligne. La stratégie elle-même ne requiert aucun
+  modèle; des rankers ajoutés dans `base.config` peuvent toutefois utiliser leur propre fournisseur.
 - **Voie 2 (optionnelle).** Les embeddings ramènent les quelques candidats les plus proches de la
-  demande, puis un petit modèle les lit et tranche: il choisit, ou réclame une précision. En local.
+  demande, puis un petit modèle les lit et tranche: il choisit, ou réclame une précision. Les deux
+  modèles peuvent être locaux ou distants selon les fournisseurs configurés.
 
 Les deux voies sont indépendantes: la Voie 2 n'est pas un étage posé sur la Voie 1, mais une autre voie,
-que la configuration sélectionne.
+que la configuration sélectionne. Un ranker configurable ordonne des candidats dans la Voie 1; il
+n'active jamais la Voie 2, même s'il emploie des embeddings.
 
 ## En avez-vous besoin?
 
@@ -33,7 +36,7 @@ catalogue**: mesuré sur des corpus synthétiques de 15, 150 et 600 process, le 
 100 % les demandes qui partagent le vocabulaire des `use_when`, quelle que soit l'échelle. Ce qui lui
 échappe, à toute échelle pareillement, ce sont les **reformulations** (des synonymes sans mot commun:
 «je veux une offre» quand le process dit «devis»); et elles se voient: chaque abstention du routeur
-est journalisée dans `.ai/feedback/abstentions.jsonl`, avec un compteur par demande récurrente.
+peut être journalisée dans `.ai/feedback/abstentions.jsonl` sur les chemins qui écrivent ce journal.
 
 L'échelle de réponse, du gratuit au plus lourd:
 
@@ -58,6 +61,11 @@ compatible OpenAI demeure possible pour qui le souhaite, mais le scénario par d
 La Voie 2 ne s'active que lorsque **les deux** modèles sont renseignés. Un seul n'y change rien, et BASE
 reste sur la Voie 1. Et si un modèle devient injoignable, BASE revient d'elle-même à la Voie 1: jamais de
 blocage, jamais de silence.
+
+Avec la Voie 2 active, `base route-test` vérifie encore la stratégie lexicale par défaut. Pour
+rejouer le chemin que prend réellement `base route`, lancez explicitement
+`base route-test --strategy production`; ce run appelle les modèles configurés et n'est pas un
+contrôle déterministe de CI.
 
 ## Quels modèles choisir? (vous êtes libre)
 

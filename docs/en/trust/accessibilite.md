@@ -1,4 +1,4 @@
-<!-- fr-synced: f5560abca390c2428b0c650db79539030e060fef -->
+<!-- fr-synced: 197bac7bc782fc99f3473610842e10a57833f527 -->
 # Accessibility: commitment and status
 
 Before adopting BASE, a public institution needs to be able to gauge what its accessibility is worth, and what it is not. This page sets out our commitment, the evidence we can show today, and the honest limits of that evidence. None of it amounts to a formal declaration of conformance: in our view, such a declaration remains a goal to reach, not a settled fact (see below).
@@ -16,12 +16,10 @@ This commitment is a design target. It guides our interface choices and our revi
 
 ## An important distinction: mechanism and consigne
 
-Everywhere, BASE distinguishes what applies mechanically from what rests on a *consigne* (model-followed, so fallible) followed in good faith. Accessibility follows the same grid.
+The [glossary](../reference/glossaire.md) defines the distinction between mechanism and *consigne*. For accessibility, it applies as follows:
 
-- Mechanism: an automated accessibility check runs within Studio's Playwright (end-to-end) test suite. It runs on every pass of the suite and fails if it detects serious or critical violations. It thus weighs on Studio's interface as a real constraint, not a mere intention.
+- Mechanism, within the tested scope: an automated accessibility check runs within Studio's Playwright (end-to-end) suite. It fails when it detects serious or critical violations on the covered views and criteria.
 - Consigne: the WCAG 2.1 AA and eCH-0059 target, like the care taken with page structure, contrast, and keyboard navigation, all rest on a design discipline. On their own, they do not amount to a verified guarantee.
-
-See also the [Security and limits](securite-et-limites.md) page, which sets out this same distinction for BASE's guardrails.
 
 ## The evidence we have
 

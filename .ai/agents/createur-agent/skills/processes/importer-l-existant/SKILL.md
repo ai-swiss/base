@@ -19,6 +19,7 @@ routing:
     - Ajouter un workflow à un agent déjà en place.
     - Créer un agent de zéro sans matériau existant.
     - Signaler un dysfonctionnement de l'assistant.
+    - Faire le point sur un dossier en service et dire ce qui pourrait aller mieux dans ses process.
 ---
 
 # Importer l'existant
@@ -38,7 +39,8 @@ Demande à l'utilisateur:
 ### 1. Explorer le matériau
 
 Commence par un survol de **métadonnées**, jamais une lecture intégrale de tout: la liste des fichiers
-(noms, dossiers, premiers titres: `discover_resources`, ou la liste du dossier), puis un ordre de
+(noms, dossiers, premiers titres: `discover_resources` si le MCP est disponible,
+`node .ai/base.mjs discover "<besoin>" --root .` depuis un terminal, ou la liste du dossier), puis un ordre de
 lecture proposé; n'ouvre en entier (`open_resource`) que ce qui est retenu pour la carte. Sur un
 dossier volumineux, c'est la différence entre une analyse qui tient et un contexte saturé avant la
 première proposition. Range chaque contenu:
@@ -66,14 +68,33 @@ conversation.
 
 ### 3. Convertir, une ressource à la fois
 
-Pour chaque ressource validée, rédige le fichier complet (frontmatter `base.resource.v1`: id,
-type, title, description, et un `use_when` digne du routeur), puis propose-le via `propose_change`.
+Pour chaque ressource validée, rédige le fichier complet avec son frontmatter `base.resource.v1`:
+`id`, `type`, `title`, `description`, portée, statut et sensibilité. Un process reçoit un `use_when`
+et des exemples dignes du routeur. Un document reçoit des mots-clés et des titres de section qui
+correspondent aux questions du terrain. Propose ensuite le fichier via `propose_change`.
 **N'appelle jamais `commit_change` toi-même**: l'humain valide chaque diff.
 
 ### 4. Vérifier la santé après import
 
-Recommande `base doctor`: il signalera les liens cassés par la copie et les ressources orphelines.
-C'est le filet de sécurité après toute migration.
+`base doctor` signale notamment les liens cassés et les ressources orphelines, mais il ne prouve pas
+que les connaissances importées sont retrouvables ni qu'elles répondent aux questions du terrain.
+
+Avant de déclarer le corpus sain:
+
+1. recueille avec l'utilisateur un petit ensemble représentatif de questions réelles;
+2. pour chacune, lance la découverte au grain section avec une limite de cinq résultats;
+3. choisis le passage canonique attendu, ouvre son `id#ancre` exact et vérifie avec l'utilisateur
+   que ce passage répond réellement à la question;
+4. consigne la question, la référence attendue, son rang et tout échec;
+5. corrige seulement les métadonnées exactes ou le découpage en sections qui expliquent les échecs,
+   puis rejoue les mêmes questions;
+6. termine par une question voisine, choisie après les corrections et jamais utilisée pour les
+   ajuster, afin de vérifier que le corpus ne répond pas seulement aux formulations travaillées.
+
+**Condition de fin observable:** `base doctor` ne signale aucun blocage lié à l'import, chaque
+question représentative retrouve dans les cinq premiers résultats un passage exact qui s'ouvre et
+répond à la question, les échecs restants sont consignés et acceptés par l'utilisateur, et la
+question voisine réussit sans nouvelle correction.
 
 ## Ce que tu ne fais jamais dans ce process
 

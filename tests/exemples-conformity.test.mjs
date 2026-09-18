@@ -66,6 +66,33 @@ describe("exemples: structural conformity", () => {
     assert.equal(demo, template, "assistant-devis-demo/AGENT.md drifted from assistant-devis/AGENT.md; edit both together");
   });
 
+  it("keeps exported French decision sheets free of em dashes and spaced punctuation", async () => {
+    for (const agent of ["concierge-base", "base-contributor"]) {
+      const file = path.join(repoRoot, ".ai", "agents", agent, "templates", "decision-sheet.html");
+      const content = await fs.readFile(file, "utf8");
+      assert.equal(content.includes("—"), false, `${path.relative(repoRoot, file)} exports an em dash`);
+      for (const label of ["Ma reco", "Ton choix", "Commentaire"]) {
+        assert.equal(content.includes(`${label} :`), false, `${path.relative(repoRoot, file)} exports a space before a colon`);
+      }
+    }
+  });
+
+  it("keeps the quote examples' central business documents section-citable", async () => {
+    const files = [
+      ["assistant-devis", "entreprise/identite.md"],
+      ["assistant-devis", "entreprise/conditions-generales.md"],
+      ["assistant-devis", "catalogue/regles-tarification.md"],
+      ["assistant-devis-demo", "entreprise/identite.md"],
+      ["assistant-devis-demo", "entreprise/conditions-generales.md"],
+      ["assistant-devis-demo", "catalogue/regles-tarification.md"],
+      ["assistant-devis-demo", "clients/dupont-sa.md"],
+    ];
+    for (const [example, relativePath] of files) {
+      const content = await fs.readFile(path.join(exemplesDir, example, relativePath), "utf8");
+      assert.match(content, /^---\nschema_version: base\.resource\.v1\nid: [a-z0-9-]+\ntype: document\n/, `${example}/${relativePath} is not section-citable`);
+    }
+  });
+
   it("keeps French example content free of em-dashes (release checklist, mechanized)", async () => {
     const agents = await listAgentFiles();
     for (const { file, content } of agents) {

@@ -1,7 +1,7 @@
 # BASE Manifesto
 
 > This is a translation. The [French version](MANIFESTO.md) is authoritative. Also available: [Deutsch](MANIFESTO.de.md) · [Italiano](MANIFESTO.it.md).
-<!-- fr-synced: 8a190af89ffcfb6922bbf5d1d57aa5a4d99acd23 -->
+<!-- fr-synced: d1c30b7cea1ed76715983b57edcf52e4f3be4520 -->
 
 **Owning the structure of your expertise, in the age of AI.**
 
@@ -26,7 +26,7 @@ The tipping point is simple. Producing now takes almost no effort; verifying rem
 3. **Generating takes little effort; verifying takes much.** Every AI output is to be held as a hypothesis, not a settled conclusion. A solid structure lightens verification, never the other way around.
 4. **A guarantee is only real if it is enforced.** We honestly distinguish the instruction (a text, followed by a cooperative model) from the mechanism (enforced by the broker). We document this boundary instead of papering over it.
 5. **The important decision stays human and visible.** Decision points, markers and the journal keep control and memory on the side of people.
-6. **Sovereignty is not negotiable.** The local core of BASE lets nothing slip out by default. If you plug an AI tool, an embeddings provider or an API into it, you are the one who chooses what is entrusted to them. You remain free to switch tools; your files, they remain. The sovereignty that matters lies **around the models**: the freedom to articulate, to structure, to think with these intelligences.
+6. **Sovereignty is built, not proclaimed.** BASE's local core does not call a remote service by itself. Data can nevertheless leave through a connected AI tool, embeddings provider or API; BASE's filters apply only to paths that actually pass through BASE. Cognitive sovereignty has a concrete foundation: your reference files remain yours, readable and portable, and let you switch tools. It lies **around the models**: in the freedom to articulate, structure and think with these intelligences.
 7. **What matters must stay visible.** You should never have to go digging to reach what is essential. BASE puts forward what needs verifying or deciding, points the way rather than leaving you hanging, and keeps help within a word's reach. Burying what matters is already a small loss of verification.
 
 ## What we do not promise

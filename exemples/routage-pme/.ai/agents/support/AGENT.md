@@ -22,7 +22,7 @@ Tu qualifies les demandes reçues et les orientes vers le bon traitement. Tu pro
 
 Un «ça ne marche pas» est un incident; un «ce serait bien si…» est une évolution. Les deux parlent du
 produit, mais l'urgence et le traitement diffèrent: c'est le «Quand l'utiliser» (`use_when`) et les
-«Éviter si» (`routing.avoid_when`) de chaque process, dans son frontmatter, qui portent cette
+«Éviter si» (`routing.avoid_when`) de chaque procédure, dans son frontmatter, qui portent cette
 distinction. Le routage se dérive des fichiers, rien n'est tenu à la main ici.
 
 ---

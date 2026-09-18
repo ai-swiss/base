@@ -12,8 +12,8 @@ import { describe, it } from "node:test";
 
 const CAPS = [
   ["tools/base.mjs", 650], // parse-args + format + framework-mgmt extracted to cli/* (966->611); the rest is dispatch + thin handlers + main + help — the legitimate core of a CLI entrypoint; +`context` (the retrieval planner) → 630; +`changes` (pending-write status, local-first; formatting extracted to cli/format) → 646
-  ["tools/base-core.mjs", 1275], // facade; route-service+hashing+diff+frontmatter-edit+atomic+writes extracted (1701→1222); +egress gating at the read chokepoint → 1262; egressWithheld went home to egress.mjs so contextPack fits — next candidates: projections, maintenance report
-  ["mcp/src/index.ts", 1170], // types/logger/transport extracted to src/* (1334->1106); +egress-visible-agents gating on the load_agent/list_agents path (1127); +get_context_pack (mirrors the CLI `context` verb) → ~1160; the rest is discovery + broker wrappers + the SDK tool registry, cohesive here
+  ["tools/base-core.mjs", 1070], // facade; route-service+hashing+diff+frontmatter-edit+atomic+writes extracted (1701→1222); +egress gating at the read chokepoint → 1262; egressWithheld went home to egress.mjs so contextPack fits — the operational journal went home to core/trace.mjs (1277→1155), then the build projections to core/projections.mjs (1157→1053) — next candidates: projections, maintenance report
+  ["mcp/src/index.ts", 1135], // types/logger/transport extracted to src/* (1334->1106); +egress-visible-agents gating on the load_agent/list_agents path (1127); +get_context_pack (mirrors the CLI `context` verb) → ~1160; response formatting went home to src/format.ts (1178→1127); the rest is discovery + broker wrappers + the SDK tool registry, cohesive here
 ];
 
 async function lineCount(file) {

@@ -1,0 +1,55 @@
+{
+  "schema_version": "base.probe-scenario.v1",
+  "id": "quote-ordinary",
+  "title": "Une demande ordinaire ouvre le travail de devis",
+  "access": "workspace-write",
+  "setup": {
+    "kind": "example",
+    "example": "assistant-devis-demo"
+  },
+  "prompt": "Dupont SA me demande trois jours de conseil en stratégie. Prépare le devis.",
+  "rubric": [
+    {
+      "id": "uses-known-request",
+      "criterion": "La réponse montre qu'elle a compris le client, la prestation et la quantité déjà donnés, sans les redemander."
+    },
+    {
+      "id": "asks-only-useful-next-question",
+      "criterion": "L'unique question porte sur une information réellement utile qui manque avant de préparer le devis."
+    }
+  ],
+  "expect": {
+    "required": [
+      {
+        "type": "file_read",
+        "path_ends_with": ".ai/agents/assistant-devis/skills/processes/nouveau-devis/SKILL.md"
+      },
+      {
+        "type": "final_answer",
+        "includes": "Dupont SA"
+      },
+      {
+        "type": "final_answer",
+        "question_marks": 1
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "command",
+        "includes": "base route"
+      },
+      {
+        "type": "file_added",
+        "path_matches": "^(catalogue|clients|devis|entreprise)/"
+      },
+      {
+        "type": "file_modified",
+        "path_matches": "^(catalogue|clients|devis|entreprise)/"
+      },
+      {
+        "type": "file_removed",
+        "path_matches": "^(catalogue|clients|devis|entreprise)/"
+      }
+    ]
+  }
+}

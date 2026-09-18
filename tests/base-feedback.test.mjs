@@ -129,3 +129,20 @@ describe("feedback — the pile and the gated resolution", () => {
     await assert.rejects(() => resolveFriction(root, "devis/SKILL.md"), (e) => e.code === "BAD_REQUEST");
   });
 });
+
+// T-05: a friction is a cost paid on every request. The entry asks where that cost is paid and
+// where it should live, so the answer exists while the case is fresh, and the pile becomes a list
+// of structure changes rather than a list of complaints.
+describe("friction triage", () => {
+  it("carries the triage question, asked while the case is fresh", async () => {
+  const dir = await mkdtemp(path.join(tmpdir(), "base-friction-triage-"));
+  try {
+    const { path: rel } = await reportFriction(dir, { process: "devis/SKILL.md", summary: "barème faux", detail: "corrigé à la main" });
+    const written = await readFile(path.join(dir, rel), "utf8");
+    assert.match(written, /## Où ce coût est-il payé aujourd'hui, et où devrait-il vivre\?/);
+    assert.match(written, /status: open/);
+  } finally {
+    await rm(dir, { recursive: true, force: true });
+  }
+  });
+});

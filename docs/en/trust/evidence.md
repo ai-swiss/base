@@ -1,4 +1,4 @@
-<!-- fr-synced: ecd7dbfe81b5028797b689624cdebe67995f23c1 -->
+<!-- fr-synced: 8ea2935ebd5fde50c045b5b8f049e560f4e4d50b -->
 # Verifying BASE's promises, and its limits
 
 Before you hand real work to BASE, you are better off verifying its promises than taking them on faith: for each one, you'll find here the mechanism, the test, or the example that backs it, along with the limit you should know. That is what anyone who has to audit BASE before relying on it expects: developer, maintainer, institution, enterprise. A promise holds only if it points to a verifiable file, test, example, or limit.
@@ -43,9 +43,9 @@ Before you hand real work to BASE, you are better off verifying its promises tha
 
 **Limit.** Every layer you add widens the maintenance surface. Simplicity by default remains a design rule.
 
-## Evaluating your assistant, without making it a proof
+## An AI judge evaluation does not prove BASE's quality {#evaluating-your-assistant-without-making-it-a-proof}
 
-**An instrument, not an argument.** BASE provides the evaluation (`npm run eval`): a simulated user converses with your assistant through the real broker, and an independent judge scores the conversation against the goals of a scenario. It's an instrument built to assess *your* assembly (your agent, your model, your scenarios), not a proof of BASE's quality: what it measures comes down to your model, your example, and your hardware, not to BASE.
+**An instrument, not an argument.** BASE provides the evaluation (`npm run eval`): a simulated user converses with your assistant through the real broker, and a separate judge invocation scores the conversation against the goals of a scenario. This separation does not make the verdict independent of the model or rubric. It's an instrument built to assess *your* assembly (your agent, your model, your scenarios), not a proof of BASE's quality: what it measures comes down to your model, your example, and your hardware, not to BASE.
 
 **Mechanisms.**
 
@@ -69,19 +69,20 @@ Before you hand real work to BASE, you are better off verifying its promises tha
 
 ## Field loop, egress, and corpus health
 
-- **Egress control**: a single rule, a single checkpoint, `tools/core/egress.mjs`
-  (`checkEgress`, a pure function tested across the locality × policy × confidentiality matrix in
-  `tests/base-egress.test.mjs`). The chat refuses to edit a confidential document with a remote
-  model. The context pack sets aside the affected references ("held back" badge on screen) and the
-  evaluation trace logs the redacted documents.
-- **Friction log**: `.ai/feedback/` allows only creation, and the MCP tool
-  `report_friction` never modifies an entry (collision = suffix; verified by
-  `tests/base-feedback.test.mjs` and `mcp/tests/index.test.ts`). "Mark resolved" goes back through the
-  propose → diff → commit gate, like any write.
-- **Router abstentions**: each `out_of_scope` / `ambiguous` / `needs_clarification` is
-  logged by the adapters (CLI and MCP) in `.ai/feedback/abstentions.jsonl`; the broker, for
-  its part, stays side-effect-free. Both gates go through the same write function.
+- **Egress control**: `tools/core/egress.mjs` exposes the pure `checkEgress` decision, protected by
+  `tests/base-egress.test.mjs` across model locality, root policy, and the `confidential` flag
+  (`FR-EGRESS-001`). Chat refuses a confidential edit with a remote model; the context pack and
+  evaluation prompt withhold the affected references and announce the omission.
+- **Field journal**: `reportFriction` creates Markdown cards under `.ai/feedback/` without
+  overwriting, while `appendAbstention` appends lines to `abstentions.jsonl`. Resolving a friction
+  later modifies its card through propose → commit: only card creation has the creation-only
+  exemption (`FR-FEEDBACK-001/002/005`, `tests/base-feedback.test.mjs`).
+- **Router abstentions**: adapters log `out_of_scope`, `ambiguous`, and `needs_clarification` to
+  `.ai/feedback/abstentions.jsonl` only when one root is available or a `root_id` is explicitly selected.
+  Multi-root routing and a read-only MCP server write nothing; the broker stays side-effect-free
+  (`FR-FEEDBACK-002`, `mcp/tests/index.test.ts`).
 - **`base doctor`**: a pure projection over existing data (inventory, link graph,
-  runs, feedback), with no state of its own. Six checks, two severities, one
-  remediation lead imposed per signal (`tests/base-doctor.test.mjs`). Two gates for a single
-  function: the CLI `base doctor [--json]` and `GET /api/doctor` (Studio banner).
+  runs, feedback), with no state of its own. `diagnoseData` produces 18 finding kinds, two
+  severities, and a mandatory `fix_hint` per finding (`FR-DOCTOR-001`,
+  `tests/base-doctor.test.mjs`). The CLI `base doctor [--json]` and `GET /api/doctor` call the same
+  `diagnose` function.

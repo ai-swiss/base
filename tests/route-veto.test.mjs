@@ -8,6 +8,7 @@ import assert from "node:assert/strict";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
+import { fileURLToPath } from "node:url";
 import { afterEach, beforeEach, describe, it } from "node:test";
 import { routeRequest } from "../tools/base-core.mjs";
 
@@ -56,4 +57,30 @@ describe("routeRequest — the deny veto (Phase 5b wiring)", () => {
       `denied target leaked into candidates: ${JSON.stringify(out.candidates)}`,
     );
   });
+});
+
+// The avoid veto over the framework's OWN corpus, where two processes share vocabulary: importing
+// documents and improving a folder already in service both talk about «process». The import card is
+// the only process a freshly initialized folder holds, so without a counter-example it answers
+// «améliore mes process» with a confident wrong route instead of yielding to the maintenance process.
+describe("routeRequest — the import process yields the folder-maintenance request", () => {
+  const frameworkRoot = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
+
+  for (const request of ["fais le point sur mes process et propose des améliorations", "qu'est-ce qui pourrait aller mieux dans mes process"]) {
+    it(`routes «${request}» to the maintenance process`, async () => {
+      const out = await routeRequest(frameworkRoot, request);
+      assert.equal(out.status, "routed");
+      assert.equal(out.process.id, "ameliorer-mes-process");
+    });
+  }
+
+  // The counter-example must cost the card nothing it exists for: same corpus, the author's own
+  // declared phrasings (`base route-test --examples` replays all of them).
+  for (const request of ["importer mes procédures existantes", "transformer ce document en process", "j'ai déjà un wiki, comment le réutiliser ?"]) {
+    it(`still routes «${request}» to the import process`, async () => {
+      const out = await routeRequest(frameworkRoot, request);
+      assert.equal(out.status, "routed");
+      assert.equal(out.process.id, "importer-l-existant");
+    });
+  }
 });

@@ -6,7 +6,7 @@ Un assistant IA qui aide les enseignantes et enseignants à préparer leur ensei
 
 1. Ouvrez **ce dossier** (pas la racine du dépôt) dans Claude Code ou Cursor.
 2. Dites, mot pour mot: **«Bonjour, je voudrais configurer mon profil d'enseignant»**
-3. Vous devriez voir: l'assistant vous accueille et propose de configurer votre profil pas à pas (degré, branches, plan d'études), une question à la fois, en cinq minutes environ. Rien n'est écrit ni envoyé sans vous.
+3. Vous devriez voir: l'assistant vous accueille et propose de configurer votre profil pas à pas (degré, branches, plan d'études), une question à la fois, en cinq minutes environ. Demander votre confirmation est ici une consigne à l'assistant. Pour une écriture, la confirmation n'est mécanique que via `base propose` puis `base commit`, ou leurs équivalents MCP.
 
 ## Ce que fait cet agent
 
@@ -25,7 +25,7 @@ assistant-enseignant/
 ├── .ai/agents/assistant-enseignant/   L'intelligence de l'agent
 │   ├── AGENT.md                        Instructions principales
 │   ├── skills/
-│   │   ├── processes/                  Workflows (config, séquences, évaluations)
+│   │   ├── processes/                  Procédures (config, séquences, évaluations)
 │   │   └── competences/                Connaissances (pédagogie, marqueurs, journal)
 │   └── templates/                      Modèles (séquence, grille d'évaluation)
 │

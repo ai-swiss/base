@@ -4,12 +4,17 @@
 // produce a workspace the existing resolver accepts; nothing is ever overwritten.
 
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { after, before, describe, it } from "node:test";
-import { applyInitPlan, buildInitPlan, detectPerimeter } from "../tools/core/perimeter.mjs";
+import { applyInitPlan, buildInitPlan, detectPerimeter, FRAMEWORK_HELP_TARGET } from "../tools/core/perimeter.mjs";
 import { renderBootstrapMd, renderToolMatrix, renderClaudeMd, renderCursorRule } from "../tools/core/bootstrap.mjs";
+import { FR } from "../tools/core/lang/fr.mjs";
+import { EN } from "../tools/core/lang/en.mjs";
+import { DE } from "../tools/core/lang/de.mjs";
+import { IT } from "../tools/core/lang/it.mjs";
+import { availableLanguages } from "../tools/core/lang/index.mjs";
 import { LAUNCHER_SOURCE } from "../tools/core/launcher.mjs";
 import { routeRequest, validateBase } from "../tools/base-core.mjs";
 
@@ -99,33 +104,69 @@ describe("buildInitPlan — pure decision, exact files", () => {
     assert.equal(ws.roots[1].default, undefined);
   });
 
-  it("loose/empty plan a full root: agent + config + launcher + the five tool artifacts, dated, valid frontmatter", () => {
+  it("loose/empty plan a full root: agent + config + launcher + ONE tool entry point, valid frontmatter", () => {
     const plan = buildInitPlan(
       { type: "loose", markdownCount: 3, hasSkillNames: false },
-      { dirName: "Mon Cabinet", now: NOW, frameworkDir: "/opt/base" },
+      { dirName: "Mon Cabinet", frameworkDir: "/opt/base" },
     );
+    // Unanswered, the tool question yields the tool-agnostic entry point and nothing else: a folder
+    // never receives the entry files of three tools its owner did not name.
     assert.deepEqual(plan.map((e) => e.path), [
       ".ai/agents/mon-cabinet/AGENT.md",
       ".ai/agents/mon-cabinet/skills/processes/importer-l-existant/SKILL.md",
+      ".ai/agents/mon-cabinet/index.md",
+      ".ai/routing/index.md",
+      "README.md",
       ".gitignore",
       "base.config.json",
       ".ai/base.mjs",
-      "CLAUDE.md",
-      "AGENTS.md",
-      ".cursor/rules/assistant.mdc",
       "BASE_BOOTSTRAP.md",
       ".ai/tools.md",
     ]);
     assert.match(plan[0].content, /id: mon-cabinet/);
     assert.match(plan[0].content, /type: agent/);
-    assert.match(plan[0].content, /created: 2026-06-11/);
+    assert.doesNotMatch(plan[0].content, /^created:/m);
     assert.match(plan[0].content, /importer-l-existant/); // the next step is IN the scaffold
     // The promised process ships with the agent, so the invitation actually routes.
     assert.match(plan[1].content, /id: importer-l-existant\ntype: process/);
     assert.match(plan[1].content, /Importer l'existant/);
+    assert.match(plan[1].content, /Au premier échange, ne récite ni les étapes ni les catégories/);
+    assert.match(plan[2].content, /importer-l-existant/);
+    assert.match(plan[2].content, /skills\/processes\/importer-l-existant\/SKILL\.md/);
+    assert.match(plan[3].content, /mon-cabinet/);
+    assert.match(plan[3].content, /\.\.\/agents\/mon-cabinet\/index\.md/);
+    const bootstrap = plan.find((entry) => entry.path === "BASE_BOOTSTRAP.md").content;
+    assert.match(bootstrap, /ta première lecture est `\.ai\/routing\/index\.md`/);
+    assert.match(bootstrap, /Parle de son travail et de ses documents, pas de la mécanique de BASE/);
     // The project self-describes its engine, so its launcher can find it later.
     const config = JSON.parse(plan.find((e) => e.path === "base.config.json").content);
     assert.equal(config.framework_dir, "/opt/base");
+  });
+
+  it("pins line endings only inside a git working copy, and never writes LFS patterns", () => {
+    const outside = buildInitPlan({ type: "empty" }, { dirName: "atelier", now: NOW });
+    assert.equal(outside.some((e) => e.path === ".gitattributes"), false, "outside a repository the file would mean nothing");
+
+    const inside = buildInitPlan({ type: "empty", hasGit: true }, { dirName: "atelier", now: NOW });
+    const entry = inside.find((e) => e.path === ".gitattributes");
+    assert.match(entry.content, /^\* text=auto$/m);
+    assert.match(entry.content, /\*\.sh text eol=lf/);
+    // LFS patterns break a clone where `git lfs` is absent, silently: a folder that needs them adds
+    // them knowingly.
+    assert.doesNotMatch(entry.content, /lfs/i);
+  });
+
+  it("gives the folder a README carrying the attribution the method content asks for", () => {
+    const plan = buildInitPlan({ type: "empty" }, { dirName: "mon atelier", now: NOW });
+    const readme = plan.find((e) => e.path === "README.md");
+    assert.match(readme.content, /^# Mon Atelier/);
+    assert.match(readme.content, /par AI Swiss, https:\/\/a-i\.swiss/);
+    assert.match(readme.content, /CC BY 4\.0/);
+  });
+
+  it("keeps the manifest out of the shared repository: it is a build product", () => {
+    const plan = buildInitPlan({ type: "empty" }, { dirName: "atelier", now: NOW });
+    assert.match(plan.find((e) => e.path === ".gitignore").content, /^base\.manifest\.json$/m);
   });
 
   it("the framework_dir is omitted when not injected (a pure function never invents it)", () => {
@@ -134,28 +175,199 @@ describe("buildInitPlan — pure decision, exact files", () => {
     assert.equal("framework_dir" in config, false);
   });
 
+  it("declares the help target, so a request nothing covers never ends nowhere", () => {
+    // A fresh folder holds ONE process, the starter import. Without a declared door, a request none of
+    // its processes covers dies on an abstention, and the person is left to find the framework's own
+    // help by reading somebody's absolute path. Only DECLARED: nothing is copied, so no copy ages.
+    const config = JSON.parse(
+      buildInitPlan({ type: "empty" }, { dirName: "atelier", now: NOW }).find((e) => e.path === "base.config.json").content,
+    );
+    assert.deepEqual(config.routing.fallback, FRAMEWORK_HELP_TARGET);
+    assert.notEqual(config.routing.fallback, FRAMEWORK_HELP_TARGET, "a copy, so a caller cannot mutate the constant");
+  });
+
+  it("records a local-only egress decision, and omits the default", () => {
+    const configFor = (egress) => JSON.parse(
+      buildInitPlan(
+        { type: "empty" },
+        { dirName: "atelier", now: NOW, intake: egress === undefined ? {} : { egress } },
+      ).find((entry) => entry.path === "base.config.json").content,
+    );
+
+    assert.equal(configFor("local-only").egress, "local-only");
+    assert.equal("egress" in configFor("any"), false);
+    assert.equal("egress" in configFor(undefined), false);
+  });
+
   it("the tool artifacts are byte-for-byte the canonical renders — never a copy", () => {
-    const plan = buildInitPlan({ type: "empty" }, { dirName: "atelier", now: NOW });
-    const byPath = Object.fromEntries(plan.map((e) => [e.path, e.content]));
-    assert.equal(byPath[".ai/base.mjs"], LAUNCHER_SOURCE);
-    assert.equal(byPath["CLAUDE.md"], renderClaudeMd());
-    assert.equal(byPath["BASE_BOOTSTRAP.md"], renderBootstrapMd());
-    assert.equal(byPath[".cursor/rules/assistant.mdc"], renderCursorRule());
-    assert.equal(byPath[".ai/tools.md"], renderToolMatrix());
+    const byPath = (intake) => Object.fromEntries(buildInitPlan({ type: "empty" }, { dirName: "atelier", now: NOW, intake }).map((e) => [e.path, e.content]));
+    const minimum = byPath(undefined);
+    assert.equal(minimum[".ai/base.mjs"], LAUNCHER_SOURCE);
+    assert.equal(minimum["BASE_BOOTSTRAP.md"], renderBootstrapMd());
+    assert.equal(minimum[".ai/tools.md"], renderToolMatrix());
+    const claudeMd = byPath({ tools: ["claude-code"] })["CLAUDE.md"];
+    assert.equal(claudeMd, renderClaudeMd());
+    assert.match(claudeMd, /^@\.ai\/routing\/index\.md$/m);
+    assert.match(claudeMd, /Commence par la réponse utile/);
+    assert.equal(byPath({ tools: ["cursor"] })[".cursor/rules/assistant.mdc"], renderCursorRule());
     // AGENTS.md catalogues the PLANNED agent: its id and description, before it exists on disk.
-    assert.match(byPath["AGENTS.md"], /\*\*atelier\*\* - Assistant de travail pour Atelier/);
-    assert.match(byPath["AGENTS.md"], /\.ai\/agents\/atelier\/AGENT\.md/);
+    const agentsMd = byPath({ tools: ["agents-md"] })["AGENTS.md"];
+    assert.match(agentsMd, /\*\*atelier\*\* - Assistant de travail pour Atelier/);
+    assert.match(agentsMd, /\.ai\/agents\/atelier\/AGENT\.md/);
+  });
+
+  it("writes one entry point per tool named, and only those", () => {
+    const paths = (tools) => buildInitPlan({ type: "empty" }, { dirName: "atelier", now: NOW, intake: { tools } }).map((e) => e.path);
+    assert.ok(paths(["claude-code"]).includes("CLAUDE.md"));
+    assert.equal(paths(["claude-code"]).includes(".cursor/rules/assistant.mdc"), false);
+    // A team that genuinely uses two tools names two; a repeated or unknown answer changes nothing.
+    const two = paths(["claude-code", "cursor", "claude-code", "inconnu"]);
+    assert.deepEqual(two.filter((p) => /CLAUDE\.md|assistant\.mdc|AGENTS\.md|BOOTSTRAP/.test(p)), ["CLAUDE.md", ".cursor/rules/assistant.mdc"]);
+  });
+
+  it("makes the owner's sentence the agent's description and its «Quand l'utiliser»", () => {
+    const plan = buildInitPlan(
+      { type: "empty" },
+      { dirName: "atelier", now: NOW, intake: { about: "Nous réparons des vélos et gérons un atelier partagé" } },
+    );
+    const card = plan[0].content;
+    assert.match(card, /description: Nous réparons des vélos et gérons un atelier partagé/);
+    assert.match(card, /use_when: Quand la demande porte sur: Nous réparons des vélos/);
+  });
+
+  it("records the language it was given, and writes French for a language no table covers yet", () => {
+    // `rm` has no table in this build. The declaration is recorded all the same, so it survives
+    // until the table lands and nobody answers the question twice; the words fall back to French,
+    // key by key, rather than leaving the folder half empty.
+    const plan = buildInitPlan({ type: "empty" }, { dirName: "atelier", now: NOW, intake: { tools: ["claude-code"] }, lang: "rm-CH" });
+    const config = JSON.parse(plan.find((e) => e.path === "base.config.json").content);
+    assert.equal(config.language, "rm", "recorded, normalized to its primary subtag");
+    assert.equal(plan.find((e) => e.path === "CLAUDE.md").content, renderClaudeMd(), "no table for `rm`: the French bytes, exactly");
+
+    // A plan asked for nothing declares nothing: a French root carries no language key.
+    const french = JSON.parse(buildInitPlan({ type: "empty" }, { dirName: "atelier", now: NOW }).find((e) => e.path === "base.config.json").content);
+    assert.equal("language" in french, false);
+  });
+
+  it("writes an English root when the folder declares `en`", () => {
+    const plan = buildInitPlan({ type: "empty" }, { dirName: "bike workshop", now: NOW, intake: { tools: ["claude-code"] }, lang: "en" });
+    const byPath = Object.fromEntries(plan.map((e) => [e.path, e.content]));
+
+    assert.equal(JSON.parse(byPath["base.config.json"]).language, "en");
+    assert.equal(byPath["CLAUDE.md"], renderClaudeMd("en"));
+    assert.match(byPath["CLAUDE.md"], /entry point for Claude Code/);
+    assert.match(byPath["CLAUDE.md"], /Lead with the useful answer/);
+    assert.match(byPath[".ai/tools.md"], /^# BASE tool matrix/m);
+
+    // The README speaks the root's language and still carries the credit LICENSING.md asks for.
+    // `upgrade` and `doctor` match the URL, which every translation keeps.
+    assert.match(byPath["README.md"], /^# Bike Workshop/);
+    assert.match(byPath["README.md"], /This folder is a BASE/);
+    assert.match(byPath["README.md"], /by AI Swiss, https:\/\/a-i\.swiss/);
+    assert.match(byPath["README.md"], /CC BY 4\.0/);
+
+    // The starter process keeps its id: a stable identifier, like a tool id. Only its words move.
+    const process = byPath[".ai/agents/bike-workshop/skills/processes/importer-l-existant/SKILL.md"];
+    assert.match(process, /^id: importer-l-existant$/m);
+    assert.match(process, /^title: Import what you already have$/m);
+    assert.match(process, /^use_when: When the user wants to start from their existing documents/m);
+  });
+
+  it("writes a German root when the folder declares `de`", () => {
+    const plan = buildInitPlan({ type: "empty" }, { dirName: "velowerkstatt", now: NOW, intake: { tools: ["claude-code"] }, lang: "de-CH" });
+    const byPath = Object.fromEntries(plan.map((e) => [e.path, e.content]));
+
+    assert.equal(JSON.parse(byPath["base.config.json"]).language, "de", "a table is per language, not per region");
+    assert.equal(byPath["CLAUDE.md"], renderClaudeMd("de"));
+    assert.match(byPath["CLAUDE.md"], /Einstiegspunkt für Claude Code/);
+    assert.match(byPath["CLAUDE.md"], /Beginne mit der nützlichen Antwort/);
+    assert.match(byPath[".ai/tools.md"], /^# BASE-Werkzeugmatrix/m);
+
+    // The README speaks the root's language and still carries the credit LICENSING.md asks for.
+    // `upgrade` and `doctor` match the URL, which every translation keeps.
+    assert.match(byPath["README.md"], /Dieser Ordner ist ein BASE/);
+    assert.match(byPath["README.md"], /von AI Swiss, https:\/\/a-i\.swiss/);
+    assert.match(byPath["README.md"], /CC BY 4\.0/);
+
+    // The starter process keeps its id: a stable identifier, like a tool id. Only its words move,
+    // `use_when` first — it is the field the router actually reads.
+    const process = byPath[".ai/agents/velowerkstatt/skills/processes/importer-l-existant/SKILL.md"];
+    assert.match(process, /^id: importer-l-existant$/m);
+    assert.match(process, /^title: Das Vorhandene importieren$/m);
+    assert.match(process, /^use_when: Wenn von den eigenen vorhandenen Dokumenten ausgegangen werden soll/m);
+  });
+
+  it("writes an Italian root when the folder declares `it`", () => {
+    const plan = buildInitPlan({ type: "empty" }, { dirName: "officina bici", now: NOW, intake: { tools: ["claude-code"] }, lang: "it" });
+    const byPath = Object.fromEntries(plan.map((e) => [e.path, e.content]));
+
+    assert.equal(JSON.parse(byPath["base.config.json"]).language, "it");
+    assert.equal(byPath["CLAUDE.md"], renderClaudeMd("it"));
+    assert.match(byPath["CLAUDE.md"], /punto di ingresso per Claude Code/);
+    assert.match(byPath["CLAUDE.md"], /Inizia dalla risposta utile/);
+    assert.match(byPath[".ai/tools.md"], /^# Matrice degli strumenti BASE/m);
+
+    assert.match(byPath["README.md"], /^# Officina Bici/);
+    assert.match(byPath["README.md"], /Questa cartella è un BASE/);
+    assert.match(byPath["README.md"], /da AI Swiss, https:\/\/a-i\.swiss/);
+    assert.match(byPath["README.md"], /CC BY 4\.0/);
+
+    const process = byPath[".ai/agents/officina-bici/skills/processes/importer-l-existant/SKILL.md"];
+    assert.match(process, /^id: importer-l-existant$/m);
+    assert.match(process, /^title: Importare l'esistente$/m);
+    assert.match(process, /^use_when: Quando l'utente vuole partire dai propri documenti esistenti/m);
+  });
+
+  it("the shipped importer proves retrieval on real questions before declaring a corpus healthy", async () => {
+    const process = await readFile(
+      new URL("../.ai/agents/createur-agent/skills/processes/importer-l-existant/SKILL.md", import.meta.url),
+      "utf8",
+    );
+
+    assert.match(process, /doctor.*ne prouve pas[^.]*retrouvables/is);
+    assert.match(process, /questions réelles/);
+    assert.match(process, /découverte au grain section avec une limite de cinq résultats/);
+    assert.match(process, /ouvre son `id#ancre` exact/);
+    assert.match(process, /consigne la question, la référence attendue, son rang et tout échec/);
+    assert.match(process, /métadonnées exactes ou le découpage en sections/);
+    assert.match(process, /Condition de fin observable/);
+    assert.match(process, /question voisine/);
+    assert.match(process, /jamais utilisée pour les\s+ajuster/);
+  });
+
+  it("every translated table covers every key of the French one, with the same shape", () => {
+    // A missing key degrades to French per key (stringsFor merges over FR), which is readable but
+    // half translated. A table that claims to be full must be full — and all four ship full today.
+    const TABLES = { en: EN, de: DE, it: IT };
+    // «# Agents» and «## Agents» read the same in English as in French; every other string moves.
+    const SAME_AS_FRENCH = { en: new Set(["agentsTitle", "indexAgentsHeading"]), de: new Set(), it: new Set() };
+    assert.deepEqual(availableLanguages(), ["fr", ...Object.keys(TABLES)], "the resolver knows exactly these four");
+
+    for (const [lang, table] of Object.entries(TABLES)) {
+      assert.deepEqual(Object.keys(table), Object.keys(FR), `${lang}: same keys, same order`);
+      for (const [key, fr] of Object.entries(FR)) {
+        const value = table[key];
+        assert.equal(typeof value, typeof fr, `${lang}.${key}: same kind of value`);
+        if (Array.isArray(fr)) {
+          assert.ok(Array.isArray(value), `${lang}.${key}: still an array`);
+          assert.equal(value.length, fr.length, `${lang}.${key}: same number of lines`);
+        }
+        if (typeof fr === "function") assert.equal(value.length, fr.length, `${lang}.${key}: same placeholders`);
+        if (fr && typeof fr === "object" && !Array.isArray(fr)) assert.deepEqual(Object.keys(value), Object.keys(fr), `${lang}.${key}: same ids`);
+        if (typeof fr === "string" && !SAME_AS_FRENCH[lang].has(key)) assert.notEqual(value, fr, `${lang}.${key}: actually translated`);
+      }
+    }
   });
 
   it("artifacts already on disk leave the plan (creation-only is decided BEFORE showing)", () => {
     const plan = buildInitPlan(
       { type: "loose", markdownCount: 1, hasSkillNames: false, existingArtifacts: ["CLAUDE.md", "base.config.json"] },
-      { dirName: "atelier", now: NOW },
+      { dirName: "atelier", now: NOW, intake: { tools: ["claude-code"] } },
     );
     const paths = plan.map((e) => e.path);
     assert.ok(!paths.includes("CLAUDE.md"));
     assert.ok(!paths.includes("base.config.json"));
-    assert.ok(paths.includes("AGENTS.md"));
+    assert.ok(paths.includes(".ai/base.mjs"));
   });
 
   it("root and workspace plan nothing", () => {
@@ -220,6 +432,23 @@ describe("applyInitPlan — creation-only, end to end", () => {
       assert.equal(route.status, "routed", "the phrase the scaffold invites must actually route");
       assert.equal(route.process.id, "importer-l-existant");
       assert.equal(route.agent.id, "cabinet");
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
+  it("the English scaffold keeps the same promise: an English request routes to the starter process", async () => {
+    const dir = await mkdtemp(path.join(tmpdir(), "perimeter-route-en-"));
+    try {
+      await applyInitPlan(dir, buildInitPlan({ type: "loose", markdownCount: 1, hasSkillNames: false }, { dirName: "practice", now: NOW, lang: "en" }));
+      const route = await routeRequest(dir, "import my existing procedures");
+      assert.equal(route.status, "routed", "the phrase the English card invites must actually route");
+      assert.equal(route.process.id, "importer-l-existant");
+      assert.equal(route.agent.id, "practice");
+
+      // And the root it produced is a valid BASE, frontmatter included.
+      const report = await validateBase(dir);
+      assert.equal(report.errors.length, 0, JSON.stringify(report.errors));
     } finally {
       await rm(dir, { recursive: true, force: true });
     }

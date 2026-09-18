@@ -14,6 +14,17 @@ import path from "node:path";
  * resources: Array<{ path: string, metadata?: { confidential?: boolean }, confidential?: boolean }> }} input
  * → { allowed: resource[], withheld: [{ resource, reason: "confidential" | "root_local_only" }] }
  */
+/**
+ * The ONE reading of "this never leaves toward a remote model". A frontmatter field lives under
+ * `metadata`, and some callers hold a resource whose fields were projected to the top level, so both
+ * spellings are accepted HERE, once: every path that withholds a resource asks this function, so a
+ * new withholding path cannot ship with a check that silently never fires.
+ * @param {{ confidential?: boolean, metadata?: { confidential?: boolean } }} resource
+ */
+export function isConfidential(resource) {
+  return resource?.confidential === true || resource?.metadata?.confidential === true;
+}
+
 export function checkEgress({ modelLocality, rootPolicy = "any", resources }) {
   if (modelLocality !== "remote") return { allowed: [...resources], withheld: [] };
 
@@ -22,7 +33,7 @@ export function checkEgress({ modelLocality, rootPolicy = "any", resources }) {
   for (const resource of resources) {
     if (rootPolicy === "local-only") {
       withheld.push({ resource, reason: "root_local_only" });
-    } else if (resource.confidential === true || resource.metadata?.confidential === true) {
+    } else if (isConfidential(resource)) {
       withheld.push({ resource, reason: "confidential" });
     } else {
       allowed.push(resource);

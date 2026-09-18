@@ -18,12 +18,22 @@ export async function loadCompanion(specifier, feature) {
       error?.code === "ERR_PACKAGE_PATH_NOT_EXPORTED" ||
       /Cannot find (package|module)/.test(String(error?.message ?? ""));
     if (!missing) throw error;
-    throw Object.assign(
-      new Error(
-        `${feature} demande le paquet optionnel ${specifier}, qui n'est pas installé.\n` +
-          `  Installez-le puis relancez: npm install ${specifier}`,
-      ),
-      { code: "BASE_COMPANION_MISSING" },
-    );
+    throw missingCompanionError(specifier, feature);
   }
+}
+
+/**
+ * The branded «install it» failure for an absent optional companion — ONE wording, whichever entry
+ * point asked. A companion that is not imported but RESOLVED (the docs site adapter: a bin, not a
+ * module) fails the same way, so the sentence a user learns never depends on how BASE looked.
+ * @param {string} specifier @param {string} feature
+ */
+export function missingCompanionError(specifier, feature) {
+  return Object.assign(
+    new Error(
+      `${feature} demande le paquet optionnel ${specifier}, qui n'est pas installé.\n` +
+        `  Installez-le puis relancez: npm install ${specifier}`,
+    ),
+    { code: "BASE_COMPANION_MISSING" },
+  );
 }

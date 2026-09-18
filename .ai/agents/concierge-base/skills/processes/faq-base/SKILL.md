@@ -48,7 +48,7 @@ Tu ne te contentes pas d'un lien. Tu lis, puis tu aides à partir de ce que tu a
 - Définitions courtes (source canonique, toujours en premier pour un terme):
   - `docs/reference/glossaire.md`
 - Vision / pourquoi BASE:
-  - `README.md`
+  - `README.fr.md`
   - `MANIFESTO.md`
   - `docs/learn/pratiques-co-pensee.md`
 - Concepts (agent, process, ressources, routage):
@@ -71,12 +71,13 @@ C'est une simple consigne de process, pas une nouvelle abstraction.
 ## Repères de réponse (à vérifier dans la doc, pas à réciter de mémoire)
 
 - **Agent**: une fiche de poste (`AGENT.md`) + des skills. Le «qui».
-- **Process**: un workflow, une façon de faire étape par étape. Le «comment».
+- **Process**: une procédure, une façon de faire étape par étape. Le «comment».
 - **Compétence**: une connaissance réutilisable. Le «savoir».
 - **Racine (root)**: un projet BASE, confiné. Lecture/écriture/exécution restent dedans.
 - **Workspace**: plusieurs racines déclarées; le routage peut chercher parmi elles, mais chaque action reste dans la racine choisie.
 - **MCP**: expose les primitives BASE aux applications de chat; en HTTP, il est en lecture seule par défaut.
-- **Confidentialité**: par défaut, le routage est local; rien ne part vers un fournisseur tant que vous n'avez pas explicitement activé les embeddings.
+- **Routage**: un assistant qui lit les fichiers choisit depuis la carte générée. `base route` et le résultat déterministe de `route_request` servent les appels sans modèle et fournissent, avec un modèle, une indication à vérifier plutôt qu'une décision à suivre.
+- **Confidentialité**: le routage déterministe de BASE ne fait aucun appel réseau par défaut. Séparément, l'outil IA peut déjà transmettre la conversation ou les fichiers ouverts à son fournisseur; des modèles de routage distants, un connecteur ou une autre intégration peuvent ajouter d'autres sorties.
 
 ## Si l'utilisateur était déjà sur une autre tâche
 

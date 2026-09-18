@@ -1,31 +1,43 @@
-<!-- fr-synced: 21482e781e02bb413bba210a0657cd5e0a410041 -->
+<!-- fr-synced: 4dd8d694f396fca6174fc1fe6ab54e0b35546a6e -->
 # BASE Glossary: the vocabulary at a glance
 
 You come across a BASE term and want its exact definition: this page gives it in one sentence, with a link to the document that develops it. It is the canonical source of the vocabulary; other pages point here rather than redefining the same terms. The order is alphabetical.
 
-**Abstention.** When no route is clear enough, the router refuses to guess and returns an explicit status (`ambiguous`, `needs_clarification`, `out_of_scope`) with a readable reason. Note: "deterministic" applies to the code router (`base route` / `route_request`), which returns the same result for the same request and corpus; when the assistant routes by reading the index itself, that is a model following a *consigne* and can vary, with the code router serving as confirmation. Abstention is an honest fallback, not a guarantee of correctness. See [Routing, processes, and resources](routage-process-et-ressources.md).
+**Abstention.** When no route is clear enough, the strategy being run returns an explicit status (`ambiguous`, `needs_clarification`, `out_of_scope`) with a readable reason instead of fabricating a route. The result depends on the configured strategy and rankers; abstention is an honest fallback, not a guarantee of correctness. See [Routing, processes, and resources](routage-process-et-ressources.md).
 
-**Agent.** A file of instructions (`AGENT.md` and its skills): Markdown that tells the model which role to play, which processes it knows, which files to consult, and which guardrails to respect. It is its job description, and it is text that you write, own, and carry from one AI tool to another. BASE keeps the word "agent" for compatibility with the ecosystem, because models recognize it, and not to designate an autonomous creature: an agent is a file, not a person. Put plainly, it is simply a train of thought laid down in text files. See [Understanding the approach](../learn/comprendre.md).
+**Adapter.** The connection between a BASE interface and a concrete technology, such as a model provider or AI tool. See [Public framework](framework-public.md).
 
-**Assistant.** Your agent brought to life by a model: what the end user uses. You own the agent (your files), you rent the model (the AI tool, which will change), and the assistant is born of their meeting. The same agent can become one assistant in Claude Code and another in Cursor: the agent is what you keep, the assistant is what you use. See [Understanding the approach](../learn/comprendre.md).
+**Agent.** An `AGENT.md` entry point and its related skills: it describes a role and gives access to the corresponding ways of working, without being an execution unit. See [Understanding the approach](../learn/comprendre.md).
 
-**Broker.** The local core that enforces the guarantees (confinement, policy, dry-run, trace) for the actions that pass through it, via the CLI or the MCP. See [Security and limits](../trust/securite-et-limites.md).
+**Assistant.** An agent animated by a model in a harness. See [Understanding the approach](../learn/comprendre.md).
 
-**Human-AI co-thinking.** The applied science of human-AI interaction: how to think, work, and decide with an entity whose internal representations of the world are close enough to ours to communicate in natural language, yet without sharing our context, our memory, or our guarantees. It starts from the fundamentals, what must be made explicit, structured, and verified for such a collaboration to be reliable, and it is invented domain by domain, trade by trade, person by person. See [Why BASE: co-thinking with AI](../learn/co-penser-avec-lia.md).
+**BASE structure.** The resources and relations that describe the method. See [The BASE standard](le-standard.md).
+
+**Broker.** The local core that mediates operations passing through it and applies its controls there, including confinement, policies, and dry-run. See [Security and limits](../trust/securite-et-limites.md).
+
+**Human-AI co-thinking.** A practical framework for human-AI interaction: how to think, work, and decide with an entity whose internal representations of the world are close enough to ours to communicate in natural language, yet without sharing our context, our memory, or our guarantees. It draws on research and starts from what must be made explicit, structured, and verified to make such collaboration more reliable; it is then adapted domain by domain, trade by trade, and person by person. See [Why BASE: co-thinking with AI](../learn/co-penser-avec-lia.md).
 
 **Competence.** A reusable knowledge (VAT, communication tone, markers) that several processes can consult; one of the two types of skill, the other being the process. See [Understanding the approach](../learn/comprendre.md).
 
-***Consigne.*** An instruction in text, followed by a cooperative model. Useful, but prone to drift, where a mechanism holds by construction. See [Security and limits](../trust/securite-et-limites.md).
+**Connector.** The component that attempts to read or write a source with the rights of the system concerned. See [Public framework](framework-public.md).
 
 **Dry-run.** The trial execution of a tool: BASE shows the intended action without executing anything; the real execution requires a confirmation. See [Security and limits](../trust/securite-et-limites.md).
 
 **Embedding.** The vector representation of a text, used by the optional semantic ranker, never by the core by default. See [Choosing your embeddings provider](../guides/choisir-provider-embeddings.md).
 
-**Routing fixture.** An expected route, declared in `.ai/routing/route-tests.json` and replayed by `base route-test` to protect business routes from regressions. See [Semantic routing quickstart](../guides/routage-semantique-quickstart.md).
+**Egress.** The transfer of data from a root to a remote model; BASE withholds resources marked `confidential: true` and every resource in a `local-only` root on surfaces that apply this control. See [The boundary between local and outbound](../trust/frontiere-local-vs-sortant.md).
+
+**Event.** A minimal technical fact emitted for tracing or maintenance, without by itself forming an exhaustive history. See [Verified mechanisms](../trust/mecanismes-verifies.md).
+
+**Evidence.** A verifiable element supporting a claim, such as a function, test, example, or explicit limit; it does not guarantee the accuracy of a model output. See [Verifying BASE's promises](../trust/evidence.md).
+
+**Execution.** What a model, tool, or integration actually does from a reference in a given context. See [The BASE standard](le-standard.md).
 
 **Frontmatter.** The YAML header of a resource (id, title, description, scope): the metadata that BASE validates and uses to discover and route. See [Public framework](framework-public.md).
 
 **Harness.** The AI tool in which you open your BASE (Cursor, Claude Code, ChatGPT via MCP). The real guarantees vary by harness. See [Harness compatibility](compatibilite-harnesses.md).
+
+**Instruction.** Text that a cooperative model is asked to follow. It is useful but fallible, unlike a mechanism enforced by code. See [Security and limits](../trust/securite-et-limites.md).
 
 **Journal.** The working memory between sessions, in files in `.ai/journal/`: the agent writes an entry there at the end of each workflow. See [Understanding the approach](../learn/comprendre.md).
 
@@ -33,11 +45,15 @@ You come across a BASE term and want its exact definition: this page gives it in
 
 **Marker.** A searchable text marker in brackets, designed to be found and processed by tools. Two levels that do not mix: the business markers in your documents (`[A VALIDER]`, `[A COMPLETER]`, `[ATTENTION]`, `[DECISION]`), and the specification-plan markers in the spec and the code (`[NEEDS CLARIFICATION]`, `[SPEC-NEUTRAL]`). Complete and closed registry: [Markers](marqueurs.md).
 
-**MCP.** The open protocol, and the BASE server that implements it, to expose the broker's primitives to chat apps. Read-only by default. See [MCP server](../../../mcp/README.md).
+**MCP.** The open protocol, and the BASE server that implements it, to expose mediated operations to chat apps according to the selected transport and configuration. See [MCP server](../../../mcp/README.md).
 
-**Mechanism.** A guarantee actually enforced by the broker, the CLI, or the MCP, as opposed to a *consigne* in text. See [Security and limits](../trust/securite-et-limites.md).
+**Mechanism.** A guarantee enforced by code and protected by a test, with explicit paths to both, as opposed to a text instruction. See [Verified mechanisms](../trust/mecanismes-verifies.md).
 
-**Deterministic floor.** The code router (`base route` / `route_request`), without a model: for the same request and the same corpus, it returns the same route or a motivated abstention. It is the deterministic mechanism beneath the model-led progressive discovery. See [Routing, processes, and resources](routage-process-et-ressources.md).
+**Method.** How work is conducted, including its steps, authoritative sources, rules, controls, and human decisions. See [The BASE standard](le-standard.md).
+
+**Lexical floor.** The model-free lexical ranking of the default strategy. With no external ranker, it is deterministic for the same request, corpus, and configuration; `route_request` presents it as an indication to verify when a model reads the map. See [Routing, processes, and resources](routage-process-et-ressources.md).
+
+**Policy.** An access or usage rule that BASE applies only to operations passing through the mechanism concerned. See [Public framework](framework-public.md).
 
 **Process.** A workflow skill: a step-by-step way of doing, with reformulations and decision points. It is the target of routing. See [Routing, processes, and resources](routage-process-et-ressources.md).
 
@@ -47,21 +63,33 @@ You come across a BASE term and want its exact definition: this page gives it in
 
 **Propose/commit.** The two-step mediated write: `base propose` shows a diff without writing anything, `base commit` applies after your validation. See [Security and limits](../trust/securite-et-limites.md).
 
-**Ranker.** The component that scores the candidates of a search or a routing. Lexical by default, semantic optionally. See [Semantic routing quickstart](../guides/routage-semantique-quickstart.md).
+**Ranker.** A configurable component that adds a score to candidates in the lexical strategy or in search; even when based on embeddings, it does not select the routing strategy. See [Semantic routing quickstart](../guides/routage-semantique-quickstart.md).
+
+**Reference.** The approved, versioned description of the method at a given time, distinct from its execution by a model or tool. See [The BASE standard](le-standard.md).
 
 **Resource.** Any useful file that BASE can inventory, discover, and open: agent, process, competence, template, document, data. See [Public framework](framework-public.md).
 
+**Root.** A confined BASE project selected as the perimeter of a read, write, or execution. See [Root and workspace](routage-process-et-ressources.md).
+
+**Route.** The result of routing: a selected root, agent, and process, or an explicit abstention when no choice is clear enough. See [Routing, processes, and resources](routage-process-et-ressources.md).
+
 **Router.** The component that chooses an agent-then-process pair for a request, or abstains with a readable reason. Rudimentary but effective, extensible through adapters, it spares you from searching for the right process yourself and never loads everything. See [Routing, processes, and resources](routage-process-et-ressources.md).
+
+**Routing.** The operation that chooses a route from a request and the available corpus. See [Routing, processes, and resources](routage-process-et-ressources.md).
+
+**Routing fixture.** A written case that associates a request with an expected result and that `base route-test` replays on the selected strategy. See [Semantic routing quickstart](../guides/routage-semantique-quickstart.md).
 
 **Scope.** The declared sharing perimeter of a resource: `personal`, `team`, `org`, `public`. The validation requirements grow with the scope. See [Public framework](framework-public.md).
 
-**Skill.** A `SKILL.md` file: Markdown with frontmatter, portable across tools. Two types: process and competence. See [Understanding the approach](../learn/comprendre.md).
+**Skill.** A portable container defined by `SKILL.md`, classified in one of two categories: process or competence. See [Understanding the approach](../learn/comprendre.md).
+
+**Source.** The location or originating system of a resource, such as the local project, a Drive, or an API. See [Public framework](framework-public.md).
 
 **Tool.** An executable tool, often a local script, that a process can invoke: in dry-run by default, then with confirmation. See [Public framework](framework-public.md).
 
-**Trace.** The minimal technical log in JSONL (`.ai/trace/`): identifiers, decisions, durations, never the business content by default. See [Data protection](../trust/protection-des-donnees.md).
+**Trace.** A best-effort technical JSONL log (`.ai/trace/`) with no business content by default; recording may fail without blocking the work, so completeness is not guaranteed. See [Data protection](../trust/protection-des-donnees.md).
 
-**Track 1 / Track 2.** The two routing strategies, chosen by configuration. **Track 1** is the default: the assistant reads the generated index and chooses, under a deterministic floor; the code calls it the *lexical strategy*. **Track 2** is optional, for large catalogs: embeddings retrieve a few candidates and a small model refines; the code calls it the *embedding strategy*. The two tracks are independent. See [Routing quickstart](../guides/routage-semantique-quickstart.md) and [Track 2, embedding-based routing](../guides/voie-2-routage-embeddings.md).
+**Track 1 / Track 2.** The two routing strategies selected by `.ai/studio.settings.json`. **Track 1**, or the `lexical` strategy, is the default; **Track 2**, or the `embedding` strategy, retrieves candidates through embeddings and submits them to a refiner. The rankers in `base.config` are separate ranking extensions and activate neither track. See [Routing quickstart](../guides/routage-semantique-quickstart.md) and [Track 2, embedding-based routing](../guides/voie-2-routage-embeddings.md).
 
 **Workspace.** Several BASE roots declared in `base.workspace.json`: routing can search across them, each action stays confined to one root. See [Routing, processes, and resources](routage-process-et-ressources.md).
 

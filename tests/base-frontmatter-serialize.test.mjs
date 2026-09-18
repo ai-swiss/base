@@ -76,7 +76,7 @@ describe("frontmatter serialize — golden round-trips (the tricky cases)", () =
         examples: ["Je veux un devis", "Nouveau devis client"],
         avoid_when: ["Auditer un BASE existant."],
       },
-      execution: { type: "script", runtime: "python", dry_run: true },
+      execution: { type: "script", runtime: "python", requires_confirmation: true },
     });
   });
 

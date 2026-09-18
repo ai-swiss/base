@@ -1,20 +1,20 @@
-<!-- fr-synced: 04f70bc61e7471c3fce124f16abe70a03bc8b793 -->
+<!-- fr-synced: 407776c357103f235e2fc97c0c2916ed7de1c47e -->
 # Impact assessment template (DPIA)
 
-Before you put an assistant in your teams' hands, you need to be able to justify what it does with the data, to your institution and to your data protection officer (DPO). This skeleton gives you a defensible outline for that assessment, and draws a clean line between what BASE guarantees technically and what remains your responsibility: you know exactly what you are committing to.
+Before you put an assistant in your teams' hands, you need to be able to justify what each person, tool, and model does with the data. This skeleton separates technical controls from institutional responsibilities.
 
-> **Informative page, not legal advice.** This document is a reusable starting point. It does not replace a data protection impact assessment (DPIA under the GDPR, AIPD under the nLPD/nFADP). The actual assessment, its validation, and keeping it up to date are the responsibility of your institution and its data protection officer (DPO). BASE provides neither IAM, nor DLP, nor SIEM, nor regulatory retention (see [Security and limits](../trust/securite-et-limites.md)).
+> **Informative page, not legal advice.** This document is a reusable starting point. It does not replace a data protection impact assessment (DPIA under the GDPR, AIPD under the nLPD/nFADP). The actual assessment, its validation, and keeping it up to date are the responsibility of your institution and its data protection officer (DPO). The files and tools provide neither IAM, DLP, SIEM, nor regulatory retention (see [Security and limits](../trust/securite-et-limites.md)).
 
-## How to use this skeleton
+## Use this skeleton without confusing an instruction with a technical control {#how-to-use-this-skeleton}
 
 Copy this structure into your records. Replace each `[A COMPLETER]` marker with the elements specific to your processing. The structure follows an outline compatible with the nLPD/nFADP and the GDPR, but whether it fits your exact legal framework is for your DPO to verify.
 
-One distinction runs through the entire document, because it is at the heart of BASE's honesty:
+The [audience map diagnosis](pour-qui.md) distinguishes method, structure, approved reference, and execution. A second distinction runs through this document:
 
-- **Mechanism**: a rule enforced by BASE's mediator (the code), so it is enforceable and verifiable.
-- **Consigne**: an instruction followed by the model, so useful but not guaranteed.
+- **Mechanism**: a rule enforced by BASE's mediation component (the broker) on the mediated path, and therefore verifiable on that path.
+- **Instruction**: a direction followed by the model, so useful but not guaranteed.
 
-A measure is a guarantee only if it rests on a mechanism. Do not credit a *consigne* as a technical control in your risk analysis.
+A measure is a guarantee only if it rests on a mechanism. Do not credit an *instruction* as a technical control in your risk analysis.
 
 ## 1. Description of the processing
 
@@ -22,12 +22,12 @@ A measure is a guarantee only if it rests on a mechanism. Do not credit a *consi
 - **Data controller:** [A COMPLETER]
 - **Department or business unit:** [A COMPLETER]
 - **Functional description:** [A COMPLETER] (for example: an assistant for drafting internal correspondence, structuring procedures, helping respond to requests).
-- **Role of BASE:** BASE structures domain knowledge into files you own and mediates sensitive actions. BASE is not an agent runtime, an orchestration engine, a RAG system, or a compliance platform.
-- **Role of the model:** generative execution (the model) is your choice and lives outside BASE. The model can be local (for example via Ollama) or remote (API). This choice is decisive for the assessment (see section 5).
+- **Role of the files and broker:** the files structure domain knowledge; the broker mediates actions that pass through it. The structure is not an agent runtime, an orchestration engine, a RAG system, or a compliance platform.
+- **Role of the model:** generative execution is your choice and sits outside the document structure. The model can be local (for example via Ollama) or remote (API). This choice is decisive for the assessment (see section 5).
 
 ## 2. Data categories
 
-BASE itself stores only what you put into it:
+The folder contains what you put into it:
 
 - the **resource files** you deposit (the domain knowledge, in Markdown);
 - a **local trace log** (`.ai/trace`) that records mediated operations: operation, resource, status, duration, with no business content by default.
@@ -58,11 +58,13 @@ Determining the legal basis is the responsibility of your institution and its DP
 
 ## 5. Data flows and the boundary
 
-By default, everything stays local. The point to analyze first is **egress**: the call to the remote model, if it happens. See the tutorial [Perimeters and egress governance](../tutoriel/equipe-2-perimetres-et-egress.md).
+Files may remain local while a tool sends a remote model the context it projects from them. The first point to analyze is this **egress**. See the tutorial [Perimeters and egress governance](../tutoriel/equipe-2-perimetres-et-egress.md).
 
-Mechanism enforced by BASE: a resource marked `confidential: true`, or an entire root marked `egress: local-only`, **is not sent to a remote model**. The check happens **before** the call, so the data does not leave the machine; the refusal is shown, never silent. This is a mechanism, not a *consigne*.
+On surfaces that pass through the broker, a resource marked `confidential: true`, or an entire root marked `egress: local-only`, **is not sent to a remote model**. The check happens before the call. This is a mechanism, not an *instruction*.
 
-Scope to frame in your assessment: this control applies to BASE's own model-calling surfaces (chat, evaluation, MCP read), not as a network firewall around your machine. The default policy is permissive (`egress: any`): nothing is withheld until you mark a resource `confidential: true` or a root `egress: local-only`. BASE cannot stop a human, or another tool reading the files directly on disk, from sending that data elsewhere. The mechanism guarantees BASE's behavior, not your whole environment's.
+Scope to frame in your assessment: this control applies to model calls mediated by the broker (chat, evaluation, MCP read), not as a network firewall around your machine. The default policy is permissive (`egress: any`): nothing is withheld until you mark a resource `confidential: true` or a root `egress: local-only`. The broker cannot stop a human, or another tool reading the files directly on disk, from sending that data elsewhere. The mechanism guarantees the mediated path, not your whole environment.
+
+The `sensitivity` metadata classifies a resource and can feed validators. It does not trigger egress withholding. Never present a classification as a technical prohibition on sending.
 
 Caveat: the local/remote determination relies on the declared or deduced provider locality (`tools/core/model-settings.mjs`), which a misconfigured proxy placed in front of a remote service could misrepresent; it is therefore an honest control, not an absolute proof.
 
@@ -70,19 +72,19 @@ To fill in for your processing:
 
 - **Flow mapping:** [A COMPLETER] (who enters what, where the files are stored, which flows leave the machine).
 - **Location of file storage:** [A COMPLETER].
-- **Location of the trace log:** local, on the machine where BASE runs (`.ai/trace`).
+- **Location of the trace log:** local, on the machine where the tools run (`.ai/trace`).
 - **Model chosen:** [A COMPLETER] (local or remote). If remote, describe the network call to the provider as the egress flow to evaluate.
 - **Data marked `confidential: true` / roots set to `egress: local-only`:** [A COMPLETER].
 
 ## 6. Recipients and processors
 
 - **Internal recipients:** [A COMPLETER].
-- **Main processor to evaluate:** the provider of the remote model chosen, where applicable. BASE ties you to no provider; if you run a local model, there is no transfer to a third party on that count.
+- **Main processor to evaluate:** the provider of the remote model chosen, where applicable. The files tie you to no provider; if you run a local model, there is no transfer to a third party on that count.
 - **Contractual clauses to verify (if remote model):** [A COMPLETER] (data location, onward processing, retention period on the provider's side, use for training, security).
 - **Transfers outside the country / outside the applicable zone:** [A COMPLETER].
 - **Jurisdiction of the host and extraterritorial exposure:** [A COMPLETER]. The location of execution does not settle jurisdiction: a host subject to a foreign law, such as the U.S. CLOUD Act, can be compelled to hand over data wherever it is stored, whereas a Swiss actor remains bound by Swiss law. See [`souverainete-et-confiance.md`](../trust/souverainete-et-confiance.md).
 
-Note: BASE stores **names** of environment variables, not API keys in plaintext, in its settings. Actual secrets management remains your responsibility.
+Note: the settings store **names** of environment variables, not API keys in plaintext. Actual secrets management remains your responsibility.
 
 ## 7. Retention and deletion
 
@@ -90,32 +92,34 @@ Note: BASE stores **names** of environment variables, not API keys in plaintext,
 - **Retention period for the trace log:** [A COMPLETER]. The `.ai/trace` log is local and can be purged according to your policy. Describe the purge procedure you adopt.
 - **Deletion procedure / right to erasure:** [A COMPLETER].
 
-Reminder: BASE does not provide automatic regulatory retention or legal archiving. These obligations fall to your systems and your procedures.
+Reminder: the files and tools do not provide automatic regulatory retention or legal archiving. These obligations fall to your systems and procedures.
 
 ## 8. Risks and mitigation measures
 
-For each risk, distinguish what is covered by a BASE **mechanism** from what falls to a **consigne** or to your own systems.
+For each risk, distinguish what is covered by a **broker mechanism** from what falls to an **instruction** or to your own systems.
 
 | Risk | Measure | Type |
 |---|---|---|
 | Leak of confidential data to a remote model | Egress refusal before the call (resource `confidential: true` or root `egress: local-only`) | Mechanism |
 | Writing outside the authorized perimeter | Path confinement and refusal of symlink escapes (`tools/core/confine.mjs`) | Mechanism |
-| Unvalidated modification of a file | Propose-then-commit discipline; mediated, atomic writes; a diff is shown before writing | Mechanism |
+| Unconfirmed modification of a file | The broker refuses to apply it without the confirmation required by policy and writes atomically | Mechanism |
+| Diff not presented to a person | The client must present the diff before supplying confirmation; the confirmation parameter does not prove that presentation occurred | Integration / organization |
 | Unintended execution of an action | Tools in dry-run by default | Mechanism |
 | Answer invented by the router | Abstention rather than false certainty (`out_of_scope`, `ambiguous`, `needs_clarification`) | Mechanism |
 | Uncontrolled access to the MCP server | MCP HTTP read-only by default, bearer-token option | Mechanism |
 | Network exposure of Studio | Studio on loopback only | Mechanism |
 | Lack of action traceability | Local log of mediated operations (`.ai/trace`) | Mechanism |
-| Entry of sensitive data into an assistant | Resource classification, handling consignes | Consigne / organization |
-| Accuracy of the model's outputs | Human validation (propose then commit); review | Consigne / organization |
-| Authentication, RBAC, DLP, SIEM | Outside BASE: to be covered by your systems | Out of scope |
+| Entry of sensitive data into an assistant | Resource classification, handling instructions | Instruction / organization |
+| Prompt injection through external content | Readable separation of instructions and content, context reduction, source review | Instruction / organization unless a path-specific technical control enforces it |
+| Inaccurate model output | Human review against approved sources and criteria; the propose-then-commit flow does not prove accuracy | Instruction / organization |
+| Authentication, RBAC, DLP, SIEM | To be covered by your external systems | Out of scope |
 
 Additional measures to document: [A COMPLETER].
 
 ## 9. Residual risk
 
 - **Assessment of residual risk after measures:** [A COMPLETER] (low / medium / high, with justification).
-- **Risks not covered by BASE:** [A COMPLETER] (for example: authentication, data leak prevention in the DLP sense, centralized logging, regulatory retention).
+- **Risks not covered by the files and broker:** [A COMPLETER] (for example: authentication, data leak prevention in the DLP sense, centralized logging, regulatory retention).
 - **Decision:** [A COMPLETER] (processing acceptable as is, subject to conditions, or to be reviewed).
 
 ## 10. Validation
@@ -126,6 +130,6 @@ Additional measures to document: [A COMPLETER].
 - **Approval of the data controller:** [A COMPLETER], on [A COMPLETER].
 - **Planned review date:** [A COMPLETER].
 
----
+## Your next action
 
-Your institution's DPO owns the actual DPIA. This skeleton only makes it easier to write. For the public threat model and the limits of the local core, see [Security and limits](../trust/securite-et-limites.md) and [Sovereignty and trust](../trust/souverainete-et-confiance.md).
+Copy this skeleton into your records and have the controller complete all ten sections with the DPO before any real personal data is used.

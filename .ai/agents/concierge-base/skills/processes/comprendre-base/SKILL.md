@@ -42,6 +42,9 @@ Expliquer BASE **à la bonne profondeur**, en lisant d'abord la doc canonique. C
 
 ## Sources à lire selon le sujet
 
+- Première découverte / ce que BASE change pour une personne ou une équipe:
+  - `README.fr.md` (promesse, premiers parcours, rôles et limites)
+  - `docs/reference/framework-public.md` (adoption du particulier à l'équipe)
 - Vision / pourquoi:
   - `docs/learn/co-penser-avec-lia.md` (le pourquoi: vérification, pertes de contrôle, méthode), commence ici
   - `MANIFESTO.md`
@@ -69,7 +72,7 @@ Expliquer BASE **à la bonne profondeur**, en lisant d'abord la doc canonique. C
 
 ## Profondeur selon le profil
 
-- **Débutant**: la métaphore du collègue venu d'ailleurs, amnésique (riche représentation du monde, mais pas du vôtre); des fichiers texte qui restent les vôtres; l'IA suit vos process.
+- **Débutant**: commence par le geste concret, la personne décrit un travail qu'elle connaît, l'outil d'IA propose une structure qu'elle approuve, puis l'assistant suit cette méthode conservée dans ses fichiers. La métaphore du collègue venu d'ailleurs, amnésique (riche représentation du monde, mais pas du vôtre), peut ensuite expliquer pourquoi cette structure est nécessaire. Ne donne jamais l'impression qu'il faut apprendre un format technique avant de commencer.
 - **Praticien**: agent / process / compétences / ressources; route d'abord, ouvre ensuite.
 - **Architecte**: les six plans (texte = vérité, routeur = choix, broker = garanties, index = échelle, MCP = exposition, LLM = orchestration), ports & adaptateurs, confinement racine/workspace, abstention honnête.
 

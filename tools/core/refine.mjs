@@ -136,7 +136,7 @@ function resolveTargets(picked, candidates) {
 // signals only (never a file body) — exactly the «Quand l'utiliser» / «Éviter si» the rule weighs.
 function renderPrompt(query, candidates) {
   const lines = candidates.map((c) => {
-    const avoid = c.avoid_text ? ` — Éviter si: ${c.avoid_text}` : "";
+    const avoid = c.avoid_text ? `, éviter si: ${c.avoid_text}` : "";
     return `- id: ${c.resource.id}\n  Quand l'utiliser: ${c.route_text || "(non précisé)"}${avoid}`;
   });
   return [

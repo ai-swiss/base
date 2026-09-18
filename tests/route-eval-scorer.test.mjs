@@ -5,10 +5,11 @@
 //   • recall@k (model-INDEPENDENT: the expected process surfaced in the top-k?)
 //   • the refiner diagnostic (per-model SHAPE: over-routes vs over-asks — a count, never a target)
 //
-// Spec coverage: FR-ROUTE-014
+// Spec coverage: FR-ROUTE-014 FR-ROUTE-015
 
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
+import { resolveEvalTarget } from "../tools/eval/route-eval-cli.mjs";
 import {
   scoreCase,
   summarizeEval,
@@ -172,5 +173,40 @@ describe("validateGoldenSet — a malformed set is not silently run", () => {
     const ok = validateGoldenSet({ corpus: "x", cases: [{ query: "q", category: "c", outcome: "abstain_ambiguous" }] });
     assert.equal(ok.cases.length, 1);
     assert.equal(ok.corpus, "x");
+  });
+});
+
+// R-06: the model diagnostic must be runnable on ANY root, not only on the framework's own corpus.
+// Pure resolution (an injected `pathExists`), so the rule is proven with no filesystem and no model.
+describe("resolveEvalTarget — which corpus and which labelled set a run measures", () => {
+  const has = (...present) => async (p) => present.some((suffix) => p.endsWith(suffix));
+
+  it("measures the selected root when it carries its own labelled set", async () => {
+    const target = await resolveEvalTarget({
+      frameworkRoot: "/opt/base",
+      rootDir: "/home/pme/dossier",
+      pathExists: has(".ai/routing/route-eval-golden.json"),
+    });
+    assert.equal(target.source, "root");
+    assert.equal(target.goldenFile, "/home/pme/dossier/.ai/routing/route-eval-golden.json");
+    assert.equal(target.corpusDefault, "/home/pme/dossier");
+  });
+
+  it("resolves an explicit --golden against the selected root", async () => {
+    const target = await resolveEvalTarget({
+      frameworkRoot: "/opt/base",
+      rootDir: "/home/pme/dossier",
+      goldenPath: "mesures/set.json",
+      pathExists: has(),
+    });
+    assert.equal(target.source, "flag");
+    assert.equal(target.goldenFile, "/home/pme/dossier/mesures/set.json");
+  });
+
+  it("falls back to the framework's own set and example corpus, and says so", async () => {
+    const target = await resolveEvalTarget({ frameworkRoot: "/opt/base", rootDir: "/home/pme/dossier", pathExists: has() });
+    assert.equal(target.source, "framework");
+    assert.equal(target.goldenFile, "/opt/base/tests/fixtures/route-eval-golden.json");
+    assert.equal(target.corpusDefault, "/opt/base/exemples/routage-pme");
   });
 });

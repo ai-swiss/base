@@ -1,4 +1,4 @@
-// Spec coverage: UR-CORE-001 FR-INIT-005 RC-INIT-002 FR-STUDIO-001 FR-STUDIO-004 FR-STUDIO-005 FR-STUDIO-007
+// Spec coverage: UR-CORE-001 FR-INIT-005 RC-INIT-002 FR-STUDIO-001 FR-STUDIO-004 FR-STUDIO-005 FR-STUDIO-007 NFR-CORE-003
 
 import assert from "node:assert/strict";
 import { mkdtemp, mkdir, readFile, rm, writeFile } from "node:fs/promises";

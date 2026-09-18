@@ -14,20 +14,20 @@ keywords: [versions, stabilite, garantie, compatibilite, mise, jour, update, sem
 
 Cette page s'adresse à celles et ceux qui construisent sur BASE: un indépendant, une PME, une école, une administration. Elle précise ce que la version 1.x garantit et ce qui peut encore évoluer, afin que vous puissiez adopter BASE et le mettre à jour sans craindre qu'une nouvelle version ne casse ce que vous avez bâti.
 
-## Versionnage sémantique
+## Politique de versionnage
 
-À partir de la **1.0**, BASE suit le [Semantic Versioning](https://semver.org/lang/fr/):
+À partir de la **1.0**, BASE utilise des versions `MAJEUR.MINEUR.CORRECTIF` avec une politique de compatibilité explicite:
 
-- **MAJEUR** (`2.0.0`): une modification incompatible de la surface publique stable (décrite ci-dessous).
-- **MINEUR** (`1.1.0`): des ajouts rétrocompatibles (nouvelles commandes, nouveaux champs optionnels, nouveaux points d'extension).
+- **MAJEUR** (`2.0.0`): une modification incompatible de la surface publique stable qui n'a pas suivi la voie de dépréciation ci-dessous.
+- **MINEUR** (`1.1.0`): des ajouts rétrocompatibles (nouvelles commandes, nouveaux champs optionnels, nouveaux points d'extension) et, après leur fenêtre annoncée, le retrait d'éléments explicitement dépréciés.
 - **CORRECTIF** (`1.0.1`): des corrections rétrocompatibles.
 
 ## Ce que la 1.x garantit (surface stable)
 
-Ces éléments ne changent pas de façon incompatible sans incrément **majeur**:
+Ces éléments ne changent pas de façon incompatible sans incrément **majeur**, sauf après une dépréciation explicite et sa fenêtre de transition:
 
 - **Le format des ressources, [le standard `base.resource.v1`](le-standard.md)**: la frontmatter `schema_version: base.resource.v1`, ses champs et ses `type`. Un fichier valide reste valide au fil des versions mineures; seule exception, assumée et documentée dans le CHANGELOG: une valeur que rien ne consomme (aucun mécanisme, aucun fichier connu) peut être retirée en mineure: la 1.2.0 l'a fait pour onze valeurs de `type` spéculatives.
-- **Les commandes CLI existantes**: `validate`, `index`, `inventory`, `discover`, `route`, `route-test`, `open`, `access`, `invoke`, `propose`, `commit`, `promote`, `context`, `markers`, `trace`, `build` et `doctor`, avec leurs drapeaux documentés (`entretien` reste présente mais **dépréciée**, voir plus bas).
+- **Les commandes CLI existantes**: `validate`, `index`, `inventory`, `discover`, `route`, `route-test`, `open`, `access`, `invoke`, `propose`, `commit`, `promote`, `context`, `markers`, `trace`, `build` et `doctor`, avec leurs drapeaux documentés.
 - **Les outils MCP existants**: leurs noms et leurs paramètres.
 - **Les schémas des projections**: `base.manifest.v1`, `base.routing.v1`.
 - **Le contrat des points d'extension**: `base.config` (rankers, validateurs, policy, auth) est purement **additif**; votre configuration continue de fonctionner, à la réserve près d'une clé explicitement **dépréciée** (voir plus bas).
@@ -38,7 +38,7 @@ C'est l'engagement **NFR-CORE-002**, dit «pas de rupture»: l'existant non dép
 
 - Le **contenu** des projections dérivées (le détail d'un manifeste, d'un registre): ce sont des projections régénérables, jamais une source de vérité.
 - Le **classement** d'un routeur: un meilleur ranker peut modifier l'ordre des candidats, mais le *contrat* de routage (statuts, abstention) reste stable.
-- Les **paquets compagnons** optionnels suivent leur propre versionnage: `@ai-swiss/base-ranker-semantic` (embeddings), `@ai-swiss/base-index-local` (index à l'échelle), `@ai-swiss/base-llm` (le port LLM, sur lequel reposent le Studio et l'évaluation) et `@ai-swiss/base-eval` (le moteur d'évaluation). Le cœur n'en **exige aucun**: ce sont des pairs optionnels, installés uniquement si vous utilisez la fonction concernée, et ils n'ajoutent aucune dépendance tierce au cœur.
+- Les **paquets compagnons** optionnels suivent leur propre versionnage: `@ai-swiss/base-ranker-semantic` (embeddings), `@ai-swiss/base-index-local` (index à l'échelle), `@ai-swiss/base-llm` (le port LLM, sur lequel reposent le Studio et l'évaluation), `@ai-swiss/base-eval` (le moteur d'évaluation) et `@ai-swiss/base-docs-site` (le renderer HTML). Le cœur n'en **exige aucun**: ils sont installés uniquement si vous utilisez la fonction concernée et n'ajoutent aucune dépendance tierce au cœur.
 - Les **exemples** et la documentation peuvent s'enrichir sans préavis.
 
 ## Compatibilité d'exécution
@@ -55,6 +55,11 @@ C'est l'engagement **NFR-CORE-002**, dit «pas de rupture»: l'existant non dép
 
 C'est la voie normale par laquelle une surface disparaît. Un élément d'abord **déprécié**, signalé comme tel dans le `CHANGELOG`, continue de fonctionner le temps de l'annonce, puis il est retiré après cette fenêtre, y compris en version mineure. La dépréciation est la courtoisie de compatibilité: aucun retrait n'arrive sans elle, mais le retrait qui la suit n'attend pas nécessairement une version majeure.
 
-Sont dépréciés aujourd'hui, pour retrait à la prochaine version mineure: la commande `entretien` (ses signaux vivent dans `doctor`, la requête brute des marqueurs dans `markers`), le drapeau MCP `include_data` de `load_agent` (sans effet, un champ inconnu reste toléré) et la clé de configuration `routing.embedder` (remplacée par la référence unique `routing.embedding_model`).
+La 1.5.0 exécute les trois retraits annoncés en 1.3.0. La commande `entretien` est retirée: ses signaux vivent dans `base doctor` (marqueurs dormants, descriptions manquantes, routage faible) et la requête brute des marqueurs dans `base markers`. Le drapeau MCP `include_data` de `load_agent` est retiré: un appel qui le porte encore fonctionne à l'identique, le champ inconnu étant écarté avant le traitement. La clé de configuration `routing.embedder` est retirée: elle était inerte depuis sa dépréciation en 1.3.0, et une configuration qui la porte encore reçoit un message nommant la référence qui la remplace, `routing.embedding_model`.
+
+Deux surfaces sont dépréciées. `base docs preview` reste fonctionnel, mais son avertissement demande
+de lancer `base docs build --out <dossier>`, puis de servir le dossier statique produit. L'alias
+`name` de `label` dans `base.workspace.json` reste lu et déclenche un avertissement; sa suppression
+attendra une version du contrat workspace qui autorise cette rupture.
 
 Voir le [CHANGELOG](../../CHANGELOG.md) pour l'historique et le détail, et [Sécurité et limites](../trust/securite-et-limites.md) pour la frontière honnête des garanties.

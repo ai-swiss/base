@@ -1,0 +1,66 @@
+{
+  "schema_version": "base.probe-scenario.v1",
+  "id": "first-contact-public-url",
+  "title": "Une personne comprend BASE depuis l'URL publique publiée",
+  "access": "web-read",
+  "setup": {
+    "kind": "empty"
+  },
+  "prompt": "Read https://github.com/ai-swiss/base/tree/v1.5.0 and explain in plain language what BASE is, what it could change for a small team, and what it does not do. Do not assume I'm technical.",
+  "rubric": [
+    {
+      "id": "plain-explanation",
+      "criterion": "The answer explains in non-technical language that BASE stores a team's AI working method and knowledge in inspectable files while the chosen AI tool performs the work; it does not rely on implementation jargon."
+    },
+    {
+      "id": "day-to-day-impact",
+      "criterion": "The answer gives a concrete and balanced account of what could change in a small team's day-to-day work."
+    },
+    {
+      "id": "build-from-intent",
+        "criterion": "The answer presents adoption as starting from work the team already understands and having BASE or the AI tool help organize it, not from learning a technical agent format; it makes the resulting shared method inspectable or improvable."
+    },
+    {
+      "id": "structured-ai-literacy",
+      "criterion": "The answer explains why procedures, knowledge, authoritative sources, controls, and human decisions need distinct roles for reliable AI-assisted work; it presents this as a practical way to organize context, authority, delegation, and verification rather than as prompt technique."
+    },
+    {
+      "id": "honest-boundary",
+      "criterion": "The answer clearly distinguishes what BASE does from what the AI tool does and names at least one meaningful limitation."
+    },
+    {
+      "id": "distribution-fidelity",
+      "criterion": "The answer does not claim that the English or French root README is absent: the release contains both README.md and README.fr.md."
+    },
+    {
+      "id": "proportionate-depth",
+      "criterion": "The answer leads with the decision-relevant explanation and remains scannable for a non-technical newcomer; passing the separate length cap does not excuse exhaustive architecture, caveats, or implementation detail."
+    }
+  ],
+  "expect": {
+    "required": [
+      {
+        "type": "web_read",
+        "includes": "github.com/ai-swiss/base"
+      },
+      {
+        "type": "final_answer",
+        "max_chars": 9000
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "command"
+      },
+      {
+        "type": "file_added"
+      },
+      {
+        "type": "file_modified"
+      },
+      {
+        "type": "file_removed"
+      }
+    ]
+  }
+}

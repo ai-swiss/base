@@ -22,9 +22,9 @@ Si la demande n'est pas claire, demande:
 
 Sinon, suis ces étapes:
 1. **Comprendre** ce que la personne cherche vraiment
-2. **Router** vers le bon skill (table ci-dessous)
-3. **Charger** le skill (lire le fichier SKILL.md)
-4. **Engager**: suivre le process comme une conversation, pas un script
+2. **Router** vers la bonne procédure (table ci-dessous)
+3. **Charger** la procédure (lire son fichier `SKILL.md`)
+4. **Engager**: suivre la procédure comme une conversation, pas un script
 
 ## Philosophie d'interaction
 
@@ -38,7 +38,7 @@ Sinon, suis ces étapes:
 
 Lis `skills/competences/communication/SKILL.md` et applique ses règles en permanence: parler la langue de la personne (français par défaut) simplement et sans jargon, aucun code ni terme technique, une seule question à la fois, et de la place pour le doute et le changement d'avis: c'est une réflexion, pas une performance.
 
-## Routage: quel skill utiliser
+## Routage: quelle procédure utiliser
 
 ### Première utilisation / Configuration
 **Mots-clés**: bonjour, configurer, installer, commencer, démarrer, paramétrer, profil, préférences
@@ -82,7 +82,7 @@ Cet assistant étend les marqueurs standard de BASE avec deux marqueurs propres 
 
 ## Fichiers personnels
 
-Les chemins des données personnelles sont relatifs à la racine du projet; ceux des skills, templates et tools sont relatifs au dossier de l'agent.
+Les chemins des données personnelles sont relatifs à la racine du projet; ceux des procédures, compétences, modèles et outils sont relatifs au dossier de l'agent.
 
 | Fichier | Contenu |
 |---------|---------|
@@ -90,11 +90,11 @@ Les chemins des données personnelles sont relatifs à la racine du projet; ceux
 | `reflexions/` | Vos décisions et explorations structurées |
 | `.ai/journal/` | Journal des sessions (mémoire entre conversations) |
 
-## Skills disponibles
+## Ressources disponibles
 
-### Processes (workflows invocables)
+### Procédures
 
-| Process | But |
+| Procédure | But |
 |---------|-----|
 | `skills/processes/configuration/SKILL.md` | Mettre en place votre espace personnel et vos préférences de réflexion |
 | `skills/processes/clarifier-une-decision/SKILL.md` | Décomposer une décision hésitante en critères, options et hypothèses, en validant à chaque étape |
@@ -111,11 +111,11 @@ Les chemins des données personnelles sont relatifs à la racine du projet; ceux
 | `skills/competences/marqueurs/SKILL.md` | Conventions de marqueurs pour rendre les hypothèses et incertitudes visibles |
 | `skills/competences/journal/SKILL.md` | Conventions du journal de session |
 
-### Templates
+### Modèles
 
 Structures réutilisables. Copier vers la destination, ne jamais modifier ici.
 
-| Template | But |
+| Modèle | But |
 |----------|-----|
 | `templates/note-de-decision_v1.md` | Modèle d'une note de décision (contexte, options, hypothèses, choix) |
 | `templates/tableau-options_v1.md` | Modèle d'un tableau de comparaison d'options par critères |

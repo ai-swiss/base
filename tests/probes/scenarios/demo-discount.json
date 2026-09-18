@@ -1,0 +1,53 @@
+{
+  "schema_version": "base.probe-scenario.v1",
+  "id": "demo-discount",
+  "title": "La remise fidélité croise les deux sources et reste à valider",
+  "access": "workspace-write",
+  "setup": {
+    "kind": "example",
+    "example": "assistant-devis-demo"
+  },
+  "prompt": "Dupont SA a-t-il droit à la remise fidélité?",
+  "expect": {
+    "required": [
+      {
+        "type": "file_read",
+        "path_ends_with": "catalogue/regles-tarification.md"
+      },
+      {
+        "type": "file_read",
+        "path_ends_with": "clients/dupont-sa.md"
+      },
+      {
+        "type": "final_answer",
+        "matches": "\\bnon\\b"
+      },
+      {
+        "type": "final_answer",
+        "matches": "r[eè]gles de tarification|regles-tarification"
+      },
+      {
+        "type": "final_answer",
+        "matches": "fiche client dupont sa|dupont-sa"
+      },
+      {
+        "type": "final_answer",
+        "matches": "\\[A VALIDER: [^\\]]+\\]"
+      }
+    ],
+    "forbidden": [
+      {
+        "type": "file_added",
+        "path_matches": "^(catalogue|clients|devis|entreprise)/"
+      },
+      {
+        "type": "file_modified",
+        "path_matches": "^(catalogue|clients|devis|entreprise)/"
+      },
+      {
+        "type": "file_removed",
+        "path_matches": "^(catalogue|clients|devis|entreprise)/"
+      }
+    ]
+  }
+}

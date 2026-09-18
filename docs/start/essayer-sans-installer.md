@@ -30,7 +30,7 @@ Si vous disposez déjà d'un outil d'IA dans un navigateur, comme ChatGPT ou Cla
 
 Vérifiez que la réponse distingue ce que l'assistant peut préparer de ce que vous devez décider. La remise fidélité, elle, croise deux sources absentes du pack, une règle tarifaire et une fiche client: elle se teste plus bas, dans un outil qui ouvre le dossier.
 
-Un chat web ne maintient aucun dossier structuré par BASE sur votre ordinateur. Les fichiers lui donnent le contexte de cette conversation, mais les corrections ne reviennent pas automatiquement dans votre dossier. Pour générer un pack depuis la racine du projet: `npm run browser-pack -- --root exemples/assistant-devis-demo --out assistant-devis-demo.pack.md`.
+Un chat web ne maintient aucun dossier structuré selon la convention BASE sur votre ordinateur. Les fichiers lui donnent le contexte de cette conversation, mais les corrections ne reviennent pas automatiquement dans votre dossier.
 
 ## Le plus complet: un outil d'IA qui ouvre le dossier
 
@@ -50,4 +50,6 @@ Pour partir de vos données: copiez `base/exemples/starter-perso` où bon vous s
 
 ## Ce que cet essai ne garantit pas
 
-Dans cet essai, le modèle suit les consignes de `CLAUDE.md` ou des règles de l'éditeur; il peut se tromper. Pour utiliser les mécanismes de BASE, comme le routage sans modèle ou les écritures médiées, passez par [la lettre à votre IA](installer-par-votre-ia.md), puis consultez [Installer](installer.md) et [Sécurité et limites](../trust/securite-et-limites.md). Une garantie ne vaut que lorsque l'action passe par le composant qui l'applique.
+Dans cet essai, le modèle suit les consignes de `CLAUDE.md` ou des règles de l'éditeur; il peut se tromper. Pour utiliser les mécanismes de l'implémentation de référence, comme le routage sans modèle ou les écritures médiées, passez par [la lettre à votre IA](installer-par-votre-ia.md), puis consultez [Sécurité et limites](../trust/securite-et-limites.md). Une garantie ne vaut que lorsque l'action passe par le composant qui l'applique.
+
+**Prochaine action:** téléchargez le pack navigateur et posez-lui la question indiquée dans la première section.

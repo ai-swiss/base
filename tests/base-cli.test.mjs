@@ -1,4 +1,4 @@
-// Spec coverage: FR-CLI-001 FR-CLI-002 FR-CLI-003 FR-CLI-004 UR-CORE-002 FR-BUILD-005
+// Spec coverage: FR-CLI-001 FR-CLI-002 FR-CLI-003 FR-CLI-004 UR-CORE-002 FR-BUILD-005 NFR-CORE-002 NFR-CORE-004
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import * as fs from "node:fs/promises";
@@ -107,6 +107,22 @@ describe("base CLI", () => {
     assert.match(stdout, /BASE root: innovaud/);
     assert.match(stdout, /BASE valide/);
     assert.equal(await fileExists(path.join(rootPath, ".ai", "trace")), true);
+  });
+
+  it("warns on the workspace name alias without contaminating stdout", async () => {
+    await write("root/.ai/agents/demo/AGENT.md", "---\nid: demo\ntype: agent\ndescription: Demo.\n---\n# Demo\n");
+    await write("base.workspace.json", JSON.stringify({
+      schema_version: "base.workspace.v1",
+      id: "portfolio",
+      name: "Mes projets",
+      roots: [{ id: "root", path: "root" }],
+    }));
+
+    const { stdout, stderr } = await execFileAsync("node", [cliPath, "validate", "--workspace", tmpDir]);
+
+    assert.match(stdout, /BASE workspace: Mes projets/);
+    assert.doesNotMatch(stdout, /déprécié/);
+    assert.match(stderr, /«name».*déprécié.*«label»/);
   });
 
   it("routes across workspace roots and asks when several roots match", async () => {
@@ -233,21 +249,55 @@ describe("base CLI", () => {
     assert.match(routeResult.stdout, /nouveau-devis/);
 
     const routeTestResult = await execFileAsync("node", [cliPath, "route-test", "--root", tmpDir]);
-    assert.match(routeTestResult.stdout, /1\/1 OK/);
+    assert.match(routeTestResult.stdout, /fixtures 1\/1 OK/);
+    // The second promise is named even when nothing declares it, so a green line is not read as more
+    // than it certifies.
+    assert.match(routeTestResult.stdout, /Aucun `routing.examples` déclaré/);
 
   });
 
-  it("prints entretien report", async () => {
-    await write("todo.md", "# Todo\n\nTODO: relire.\n");
+  it("route-test --scaffold drafts a fixtures file, once, from the corpus", async () => {
+    await write(".ai/agents/sales/AGENT.md", "---\nid: sales\ntype: agent\ndescription: Ventes et devis clients.\n---\n# Sales\n");
+    await write(
+      ".ai/agents/sales/skills/processes/devis/SKILL.md",
+      "---\nid: nouveau-devis\ntype: process\ndescription: Créer un devis.\nuse_when: Quand une cliente ou un client demande une offre chiffrée.\n---\n# Devis\n",
+    );
 
-    const { stdout } = await execFileAsync("node", [cliPath, "entretien", "--root", tmpDir]);
-    assert.match(stdout, /Entretien BASE/);
-    assert.match(stdout, /Fichiers avec marqueurs ouverts: 1/);
-    assert.match(stdout, /Fichiers avec marqueurs d'action: 1/);
-    assert.match(stdout, /fusionne dans «base doctor».*retiré dès la prochaine version mineure/, "the deprecation referral rides the text door");
+    const first = await execFileAsync("node", [cliPath, "route-test", "--scaffold", "--root", tmpDir]);
+    assert.match(first.stdout, /\.ai\/routing\/route-tests\.json rédigé: 1 cas/);
+    const drafted = JSON.parse(await fs.readFile(path.join(tmpDir, ".ai/routing/route-tests.json"), "utf8"));
+    assert.deepEqual(drafted, [
+      { request: "Quand une cliente ou un client demande une offre chiffrée.", expect: { agent: "sales", process: "nouveau-devis" } },
+    ]);
 
-    const { stdout: asJson } = await execFileAsync("node", [cliPath, "entretien", "--root", tmpDir, "--json"]);
-    assert.doesNotMatch(asJson, /fusionne dans/, "the --json shape stays the 1.x contract, untouched");
+    // Creation-only: the file is the author's from the moment it exists.
+    await assert.rejects(() => execFileAsync("node", [cliPath, "route-test", "--scaffold", "--root", tmpDir]), /existe déjà/);
+
+    // And what it drafted passes, so the author starts from a green bench and tightens the wording.
+    const run = await execFileAsync("node", [cliPath, "route-test", "--root", tmpDir]);
+    assert.match(run.stdout, /fixtures 1\/1 OK/);
+  });
+
+  it("discovers and opens at section grain, the same two words the MCP tools use", async () => {
+    // Parity: a person checks on the CLI exactly what a remote client will get. Without it, an
+    // author cannot verify an anchor before citing it.
+    await write(
+      "notes/guide.md",
+      "---\nschema_version: base.resource.v1\nid: guide\ntype: document\ndescription: Guide.\n---\n# Guide\n\n## Évaluer un risque\n\nLa méthode d'évaluation du risque exceptionnel tient en trois questions.\n\n## Faisabilité\n\nQuatre domaines à couvrir.\n",
+    );
+
+    const hits = await execFileAsync("node", [cliPath, "discover", "risque exceptionnel", "--grain", "section", "--root", tmpDir]);
+    assert.match(hits.stdout, /Passages trouvés/);
+    assert.match(hits.stdout, /guide#evaluer-un-risque/);
+    assert.match(hits.stdout, /Guide › Évaluer un risque/);
+
+    const section = await execFileAsync("node", [cliPath, "open", "guide#faisabilite", "--root", tmpDir]);
+    assert.match(section.stdout, /## Faisabilité/);
+    assert.ok(!section.stdout.includes("trois questions"), "one passage, not the whole body");
+
+    const outline = await execFileAsync("node", [cliPath, "open", "guide", "--projection", "outline", "--root", tmpDir]);
+    assert.match(outline.stdout, /#evaluer-un-risque/);
+    assert.match(outline.stdout, /#faisabilite/);
   });
 
   it("opens resources and dry-runs tools", async () => {

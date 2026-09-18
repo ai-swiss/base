@@ -62,6 +62,7 @@ try {
     ".ai/agents/createur-agent/AGENT.md",
     ".ai/agents/concierge-base/AGENT.md",
     ".ai/agents/_template/AGENT.md",
+    ".ai/routing/index.md",
     "base.config.json",
     "SECURITY.md",
     "CHANGELOG.md",
@@ -94,6 +95,22 @@ try {
   const validate = await execFileAsync(binPath(coreApp), ["validate"], { cwd: coreApp });
   assert.match(validate.stdout, /BASE valide/);
 
+  // The documentation SITE is an optional companion (Astro, Starlight, Pagefind: ~180 MB), so the
+  // core alone cannot render HTML. It must say WHICH package to install, before walking any corpus,
+  // and never name a path that exists only in a contributor checkout (the bug this pins).
+  const docsBuild = await execFileAsync(binPath(coreApp), ["docs", "build"], { cwd: coreApp }).then(
+    () => assert.fail("`base docs build` must fail when @ai-swiss/base-docs-site is not installed"),
+    (error) => error,
+  );
+  assert.match(docsBuild.stderr, /@ai-swiss\/base-docs-site, qui n'est pas installé/);
+  assert.match(docsBuild.stderr, /npm install @ai-swiss\/base-docs-site/);
+  assert.doesNotMatch(docsBuild.stderr, /packages\/base-docs-site/, "the refusal must not point at the contributor tree");
+  assert.equal(
+    await fs.stat(path.join(coreApp, ".base-docs")).then(() => true, () => false),
+    false,
+    "the refusal comes BEFORE the model is written: nothing half-built is left behind",
+  );
+
   const coreCheck = await execFileAsync("node", [
     "--input-type=module",
     "-e",
@@ -101,12 +118,16 @@ try {
       "import { ROUTING_DEFAULTS } from '@ai-swiss/base/routing';",
       "import { WORKSPACE_FILENAME, resolveBaseContext } from '@ai-swiss/base/roots';",
       "import { compareByCodePoint } from '@ai-swiss/base/ordering';",
+      // The documentation adapter renders anchors with THIS function: the published core must expose
+      // it, or the site would grow a second slug implementation and deep links would drift.
+      "import { slugifyText } from '@ai-swiss/base/docs-model';",
       "import { readFileSync } from 'node:fs';",
       "const schema = JSON.parse(readFileSync(new URL(import.meta.resolve('@ai-swiss/base/routing-schema')), 'utf8'));",
       "const wsSchema = JSON.parse(readFileSync(new URL(import.meta.resolve('@ai-swiss/base/workspace-schema')), 'utf8'));",
       "const cfgSchema = JSON.parse(readFileSync(new URL(import.meta.resolve('@ai-swiss/base/config-schema')), 'utf8'));",
       "if (ROUTING_DEFAULTS.floor_score !== 30) throw new Error('bad routing export');",
       "if (compareByCodePoint('z', '\\u00e9') !== -1) throw new Error('bad ordering export');",
+      "if (slugifyText('Démarrer vite !') !== 'demarrer-vite') throw new Error('bad docs-model export');",
       "if (WORKSPACE_FILENAME !== 'base.workspace.json' || typeof resolveBaseContext !== 'function') throw new Error('bad roots export');",
       "if (schema.properties.schema_version.const !== 'base.routing.v1') throw new Error('bad schema export');",
       "if (wsSchema.properties.schema_version.const !== 'base.workspace.v1') throw new Error('bad workspace-schema export');",

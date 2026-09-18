@@ -1,4 +1,4 @@
-<!-- fr-synced: 086ae56b486808025b82155b3a7fd94fb128c95e -->
+<!-- fr-synced: f587e0181422b7f4edbd991f471d6a3ef339f71e -->
 # The BASE standard: `base.resource.v1`
 
 BASE is not yet another platform: it is an **open standard we propose**, with its reference
@@ -31,8 +31,8 @@ schema_version: base.resource.v1
 
 The machine truth is [`base.schema.json`](../../../base.schema.json), under the stable
 identifier `https://a-i.swiss/base/schemas/base.resource.v1.json`. That identifier only changes with
-a **major** version of the format. The format follows semantic versioning (see [Its stability
-promise](#its-stability-promise)): a backward-compatible addition stays `base.resource.v1`; a break
+a **major** version of the format. The format follows [BASE's compatibility policy](#its-stability-promise):
+a backward-compatible addition stays `base.resource.v1`; a schema break
 would increment the `v`.
 
 `base.resource.v1` is the schema an author writes. It belongs to a small versioned family:
@@ -181,15 +181,16 @@ the core never pretends to know an organization's rules. The specification is
 
 ## Its stability promise
 
-The format follows semantic versioning: no incompatible change without prior deprecation and a
-major increment. This is the **NFR-CORE-002** commitment, called "no breakage", detailed in
+The format follows BASE's compatibility policy: no incompatible change without prior deprecation;
+a break that does not follow that path requires a major increment. This is the **NFR-CORE-002**
+commitment, called "no breakage", detailed in
 [Versions and stability](versions-et-stabilite.md). The `base.resource.v1` identifier only changes
 with a major version of the format. A stable element that must disappear is first deprecated, kept
 working for at least one minor version, before any removal. A young standard owns one further
 pruning rule: a value nothing consumes (no mechanism behind it, no known file relying on it) may be
-removed in a minor version, stated as such in the CHANGELOG (1.2.0 did so for eleven speculative
-`type` values). The stable surface spans the format and its six `type` values, the existing CLI
-commands and MCP tools, and the projection schemas (`base.manifest.v1`, `base.routing.v1`).
+removed in a minor version, provided the removal is documented in the CHANGELOG. The stable surface
+spans the format and its six `type` values, the existing CLI commands and MCP tools, and the
+projection schemas (`base.manifest.v1`, `base.routing.v1`).
 
 ## The reference implementation, and the others
 

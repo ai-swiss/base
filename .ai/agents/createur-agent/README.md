@@ -4,7 +4,7 @@ Un méta-agent qui accompagne chacun dans la création de son propre assistant I
 
 ## Pourquoi ce méta-agent existe
 
-Créer un bon agent IA demande un savoir-faire: décomposer un besoin en workflows, repérer les connaissances métier à capturer, structurer les documents types. Ce savoir-faire est inscrit dans les skills (processes et compétences) de ce méta-agent, qui le met à la portée de tous au fil de la conversation.
+Créer un bon agent IA demande un savoir-faire: décomposer un besoin en procédures, repérer les connaissances métier à capturer, structurer les documents types. Ce savoir-faire est inscrit dans les skills (process et compétences) de ce méta-agent, qui le met à la portée de tous au fil de la conversation.
 
 ## Comment ça fonctionne
 
@@ -15,7 +15,7 @@ Créer un bon agent IA demande un savoir-faire: décomposer un besoin en workflo
 AGENT.md (créateur d'agent)
     │
     ├── Cerne votre métier (questions ouvertes)
-    ├── Repère vos workflows → futurs processes (SKILL.md)
+    ├── Repère vos procédures → futurs process (SKILL.md)
     ├── Repère vos connaissances → futures compétences (SKILL.md)
     ├── Repère vos documents → futurs templates
     │

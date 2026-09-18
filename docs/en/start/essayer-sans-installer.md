@@ -1,4 +1,4 @@
-<!-- fr-synced: f2998e607113b1b51703841c7c773c2eacd933fa -->
+<!-- fr-synced: 47c036535decbf6a0c6b78780cc52a1d2f4f9603 -->
 # Try BASE without installing BASE
 
 Before handing a real folder to an AI, try BASE on an example whose answer you can check. This page offers two paths with nothing to install on the BASE side. A single AI tool is all you need: the one you already use.
@@ -15,9 +15,9 @@ If you already have an AI tool in a browser, such as ChatGPT or Claude, there is
 
 Check that the reply separates what the assistant can prepare from what you must decide. The loyalty discount, for its part, crosses two sources absent from the pack, a pricing rule and a client record: it is tested further down, in a tool that opens the folder.
 
-A web chat maintains no folder structured by BASE on your computer. The files give it the context of this conversation, but the corrections do not come back into your folder automatically. To generate a pack from the project root: `npm run browser-pack -- --root exemples/assistant-devis-demo --out assistant-devis-demo.pack.md`.
+A web chat maintains no folder structured under the BASE convention on your computer. The files give it the context of this conversation, but the corrections do not come back into your folder automatically.
 
-## The fullest way: an AI tool that opens the folder
+## The complete path: an AI tool that opens the folder
 
 To read the files separately and keep your changes in the folder, use an AI tool able to open a folder, for example Claude Code, Codex, Cursor, GitHub Copilot, or OpenCode. Some run in a window, others in the terminal. BASE favors none of them.
 
@@ -35,4 +35,6 @@ To start from your data: copy `base/exemples/starter-perso` wherever you like (y
 
 ## What this trial does not guarantee
 
-In this trial, the model follows the instructions in `CLAUDE.md` or the editor's rules; it can be wrong. To use BASE's mechanisms, such as model-free routing or mediated writes, go through [the letter to your AI](installer-par-votre-ia.md), then see [Install](installer.md) and [Security and limits](../trust/securite-et-limites.md). A guarantee holds only when the action passes through the component that enforces it.
+In this trial, the model follows the instructions in `CLAUDE.md` or the editor's rules; it can be wrong. To use the reference implementation's mechanisms, such as model-free routing or mediated writes, go through [the letter to your AI](installer-par-votre-ia.md), then see [Security and limits](../trust/securite-et-limites.md). A guarantee holds only when the action passes through the component that enforces it.
+
+**Next action:** download the browser pack and ask it the question given in the first section.

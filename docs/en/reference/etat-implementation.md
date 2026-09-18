@@ -1,4 +1,4 @@
-<!-- fr-synced: c967b0666f54db43308f48879e026b11ff0fb4f3 -->
+<!-- fr-synced: abd028d3dc25efe00a7086301b2c6dfdd7c9e110 -->
 # What the public core of BASE does today
 
 This page is for anyone who wants to know, in the present tense, what the public core of BASE can and cannot do, without guessing. It exists to give an honest reference point, and it points to the three authoritative sources rather than copying them:
@@ -15,7 +15,9 @@ If any of these sources disagrees with this page, the source is authoritative. T
 - Validation of BASE frontmatter, identifiers, relative links, local sources, and tool entrypoints.
 - Explainable local search over identifier, title, description, keywords, path, and text.
 - Local agent-to-process routing with structured abstention: `base route` and the MCP tool `route_request` return `routed`, `ambiguous`, `needs_clarification`, or `out_of_scope`, with candidates and reasons.
-- Domain routing tests: `base route-test` reads JSON fixtures and fails on drift.
+- Domain routing tests: `base route-test` replays the available fixtures and `routing.examples` on
+  the lexical strategy by default; `--strategy production` replays the configured strategy, with
+  model calls when Track 2 is active.
 - Official semantic ranker package with real embeddings: `@ai-swiss/base-ranker-semantic`, separate from the core, accepts any embeddings provider, ships an OpenAI-compatible connector with no cloud SDK, and an optional Ollama helper (`createOllamaEmbedder`, model `nomic-embed-text`). Production-grade: per-call timeouts, cancellation via `AbortSignal`, bounded retries on transient errors only (backoff plus jitter), explicit batching via `createBatchingEmbedder`, a configurable cache with no poisoning by transient failure, typed errors (`.code`), strict vector validation, and observability with no domain content.
 - Official optional local index package: `@ai-swiss/base-index-local`, separate from the core, projects a derived, deletable index from the inventory and the routing signals. Indexed routing reuses the injected Ranker and Router and returns the same statuses as in-memory by default, including with a semantic ranker and no lexical match; `candidateMode:"lexical"` is an explicit optimization. Reproducible benchmarks from 100 to 50,000 documents. The core stays the default for small and medium corpora.
 - Resource opening with `metadata`, `instructions`, and `full` projections.

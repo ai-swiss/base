@@ -6,7 +6,7 @@
 2. Dites, mot pour mot: **«Quelles activités à faire cet après-midi?»**
 3. Voici ce que vous devriez voir: l'assistant cherche dans l'agenda et les fiches infos, cite sa source et signale un événement périmé plutôt que de l'annoncer. Rien n'est réservé ni envoyé sans vous.
 
-Un assistant complet pour l'office du tourisme d'un hameau de montagne imaginaire, **Veytaux-les-Bains**, dont l'ambition dépasse de loin la taille: un car postal, une webcam sur le parking et le rêve tranquille de devenir Saint-Moritz. Il sait deux choses et les fait bien: renseigner un visiteur, préparer une sortie de groupe. Il sert de fil rouge au tutoriel «Apprendre en faisant» de la documentation BASE, mais il fonctionne tel quel.
+Un exemple approfondi pour l'office du tourisme d'un hameau de montagne imaginaire, **Veytaux-les-Bains**, dont l'ambition dépasse de loin la taille: un car postal, une webcam sur le parking et le rêve tranquille de devenir Saint-Moritz. Il illustre deux tâches: renseigner un visiteur et préparer une sortie de groupe. Ses données fictives permettent d'essayer ces deux parcours sans configuration préalable.
 
 ## Démarrer
 
@@ -16,7 +16,7 @@ Un assistant complet pour l'office du tourisme d'un hameau de montagne imaginair
 
 ## Ce qu'il contient
 
-- **L'assistant** office-tourisme et deux process: renseigner un visiteur, réserver une sortie de groupe.
+- **L'assistant** office-tourisme et deux procédures: renseigner un visiteur, réserver une sortie de groupe.
 - **Les données**: les tarifs (`infos/tarifs.md`), l'agenda (`infos/agenda.md`, avec une date de validité passée, exprès, pour l'exercice doctor du tutoriel), les accès et horaires (`infos/acces-et-horaires.md`), les hébergeurs partenaires (`partenaires/hebergeurs.md`).
 - **Un template** d'offre de sortie de groupe (Markdown + JSON).
 - **Des scénarios d'évaluation** dans `.ai/experiments/scenarios/`.

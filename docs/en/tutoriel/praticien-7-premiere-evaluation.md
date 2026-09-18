@@ -1,4 +1,4 @@
-<!-- fr-synced: 0658bf687842c5e00c73c374fac7e19bc7147a84 -->
+<!-- fr-synced: 62fcbf8b4b753e7efcecf6a1e13fe2c2b9fb53a0 -->
 # Your first evaluation
 
 *⏱ ~15 min · module 7/9, Practitioner track*
@@ -10,7 +10,7 @@
 1. In Studio, the **Evaluations** tab, the "▶ Evaluate" button.
 2. The panel opens, already filled in. The Veytaux tourist office provides two scenarios (a passing visitor
    disappointed by the weather, a group leader whose request is unclear). Launch it.
-3. Wait: a simulated user plays out the scenario, then an independent judge scores each
+3. Wait: a simulated user plays out the scenario, then a separate judge invocation scores each
    conversation. The result cards arrive one by one.
 4. Click a card to expand the judge's verdict and its fix hint.
 

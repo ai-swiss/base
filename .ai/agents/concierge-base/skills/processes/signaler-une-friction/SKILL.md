@@ -33,7 +33,7 @@ on ne modifie jamais. C'est le détecteur de lacunes le moins coûteux qui soit.
 ### 1. Identifier le process concerné
 
 Demande (ou déduis de la conversation):
-- **Quel process** était en cours (chemin ou id; `discover_resources` si le nom est flou).
+- **Quel process** était en cours (chemin ou id; `discover_resources` si le MCP est disponible, sinon `node .ai/base.mjs discover "<nom ou besoin>" --root .`).
 - **À quelle étape** le problème est apparu.
 
 ### 2. Cerner l'écart
@@ -42,7 +42,23 @@ Fais préciser chacun en une phrase:
 - **Attendu**: ce que le process annonce.
 - **Observé**: ce qui s'est réellement passé (montant faux, donnée périmée, étape impossible…).
 
-### 3. Consigner
+### 3. Situer le coût
+
+Une friction est presque toujours un coût payé à chaque demande: une information retrouvée une
+nouvelle fois, une règle réexpliquée, un fichier cherché. Pose la question pendant que le cas est
+frais, et note la réponse: **où ce coût est-il payé aujourd'hui, et où devrait-il vivre?**
+
+Deux exemples:
+
+- «Je redemande le taux de TVA applicable à chaque devis.» Le coût est payé à chaque devis, par la
+  personne qui le rédige. Il devrait vivre dans une ligne du dossier client, tenue à l'écriture.
+- «L'assistant cherche le bon modèle de courrier dans trois dossiers.» Le coût est payé à chaque
+  courrier. Il devrait vivre dans un lien depuis le process, ou dans une compétence qui nomme le
+  modèle à utiliser.
+
+La réponse peut rester vide: la friction est consignée quand même.
+
+### 4. Consigner
 
 Appelle l'outil `report_friction`:
 
@@ -55,7 +71,7 @@ Si l'outil n'est pas disponible sur cet hôte, propose le contenu du fichier
 `.ai/feedback/<date>_<process>.md` (frontmatter `process`, `reported`, `via`, `status: open`)
 en passant par le gate propose → commit.
 
-### 4. Confirmer la suite
+### 5. Confirmer la suite
 
 Indique à l'utilisateur où vit la friction (`.ai/feedback/`) et ce qu'elle déclenche: elle figure
 dans la pile Terrain de Studio et chez `base doctor` tant qu'un humain n'a pas amendé le process et

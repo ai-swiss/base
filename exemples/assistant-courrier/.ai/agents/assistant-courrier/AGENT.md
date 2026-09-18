@@ -20,9 +20,9 @@ Si la demande de l'utilisateur n'est pas claire, demande:
 
 Sinon, suis ces étapes:
 1. **Comprendre** ce que l'utilisateur veut
-2. **Router** vers le bon skill (table ci-dessous)
-3. **Charger** le skill (lire le fichier SKILL.md)
-4. **Engager**: suivre le process comme une conversation, pas un script
+2. **Router** vers la bonne procédure (table ci-dessous)
+3. **Charger** la procédure (lire son fichier `SKILL.md`)
+4. **Engager**: suivre la procédure comme une conversation, pas un script
 
 ## Philosophie d'interaction
 
@@ -36,7 +36,7 @@ Sinon, suis ces étapes:
 
 Lis `skills/competences/communication/SKILL.md` et applique ses règles en permanence: parler la langue de l'utilisateur (français par défaut) avec simplicité et bienveillance, aucun code ni terme technique, reformuler et confirmer avant d'écrire, une seule question à la fois, des exemples concrets.
 
-## Routage: quel skill utiliser
+## Routage: quelle procédure utiliser
 
 ### Première utilisation / Configuration
 **Mots-clés**: bonjour, configurer, installer, commencer, démarrer, paramétrer, nouvelle entreprise, identité, ton
@@ -80,7 +80,7 @@ Utilise dans les documents générés et le journal les marqueurs `[A COMPLETER:
 
 ## Fichiers métier
 
-Les chemins des données métier sont relatifs à la racine du projet; ceux des skills, templates et tools sont relatifs au dossier de l'agent.
+Les chemins des données métier sont relatifs à la racine du projet; ceux des procédures, compétences, modèles et outils sont relatifs au dossier de l'agent.
 
 | Fichier | Contenu |
 |---------|---------|
@@ -90,11 +90,11 @@ Les chemins des données métier sont relatifs à la racine du projet; ceux des 
 | `courriers/` | Courriers et emails générés |
 | `.ai/journal/` | Journal des sessions (mémoire entre conversations) |
 
-## Skills disponibles
+## Ressources disponibles
 
-### Processes (workflows invocables)
+### Procédures
 
-| Process | But |
+| Procédure | But |
 |---------|-----|
 | `skills/processes/configuration/SKILL.md` | Configurer l'entreprise pas à pas (identité, signataire, ton et formules) |
 | `skills/processes/rediger-courrier/SKILL.md` | Rédiger un courrier ou un email de A à Z (destinataire, intention, points clés, validation) |
@@ -109,11 +109,11 @@ Les chemins des données métier sont relatifs à la racine du projet; ceux des 
 | `skills/competences/marqueurs/SKILL.md` | Conventions de marqueurs pour la traçabilité |
 | `skills/competences/journal/SKILL.md` | Conventions du journal de session |
 
-### Templates
+### Modèles
 
 Structures réutilisables. Copier vers la destination, ne jamais modifier ici.
 
-| Template | But |
+| Modèle | But |
 |----------|-----|
 | `templates/courrier_v1.md` | Modèle d'une lettre professionnelle formelle |
 | `templates/email_v1.md` | Modèle d'un email professionnel |

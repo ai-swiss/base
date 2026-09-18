@@ -13,10 +13,38 @@ import { normalizeExcludeList } from "./walk-policy.mjs";
 import { keywordIntentRanker, semanticHybridRanker } from "./rankers.mjs";
 import { requireFields, requireSchemaVersion, forbidSensitivity, piiScanner, routabilityWarnings } from "./validators.mjs";
 import { strictPolicy } from "./policy.mjs";
+import { TOOL_ENTRY_POINTS } from "./perimeter.mjs";
+import { DEFAULT_LANGUAGE, normalizeLanguage } from "./lang/index.mjs";
+
+const TOOL_IDS = new Set(Object.keys(TOOL_ENTRY_POINTS));
+
+// The tools the MCP server registers, and therefore the whole vocabulary of the `mcp.tools`
+// allow-list. The list lives here because the allow-list is validated here: a name that matches no
+// tool removes nothing, and «I mistyped it» and «the tool was renamed» are indistinguishable from the
+// outside, so both must stop a deployment that claims a provable surface. Pinned against the server's
+// own registrations by mcp/tests/exposure.test.ts, so the two cannot drift apart in silence.
+export const MCP_TOOL_NAMES = [
+  "load_agent",
+  "discover_resources",
+  "route_request",
+  "get_routing_map",
+  "open_resource",
+  "get_context_pack",
+  "access_resource",
+  "list_pending_changes",
+  "get_change_status",
+  "report_friction",
+  "invoke_tool",
+  "propose_change",
+  "commit_change",
+  "promote_resource",
+  "list_markers",
+];
+const MCP_TOOLS = new Set(MCP_TOOL_NAMES);
 
 // Default adapters. An empty/null slot means "use the broker's built-in behaviour" (neutral ranking,
 // advisory policy, no auth, default routing thresholds).
-export const DEFAULTS = { rankers: [], validators: [], policy: null, auth: null, routing: null, inventory: { exclude: [] } };
+export const DEFAULTS = { rankers: [], validators: [], policy: null, auth: null, routing: null, inventory: { exclude: [] }, language: DEFAULT_LANGUAGE };
 
 // Conventional basenames, in priority order. JSON (declarative, safe) is preferred over MJS.
 const CONFIG_BASENAMES = ["base.config.json", "base.config.mjs"];
@@ -67,7 +95,7 @@ export function mergeConfig(raw) {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) {
     throw fail("config default export must be an object.");
   }
-  const out = /** @type {{ rankers: any[], validators: any[], policy: any, auth: any, routing: any, contextPack?: { budget: number } | null, inventory: { exclude: string[] } }} */ ({ ...DEFAULTS });
+  const out = /** @type {{ rankers: any[], validators: any[], policy: any, auth: any, routing: any, contextPack?: { budget: number } | null, inventory: { exclude: string[] }, language: string, framework_dir?: string, tools?: string[], views?: Record<string, any>, mcp?: { tools?: string[], agents?: string[], attribution_prefix?: boolean } | null }} */ ({ ...DEFAULTS });
   if (raw.rankers !== undefined) {
     if (!Array.isArray(raw.rankers)) throw fail("`rankers` must be an array.");
     out.rankers = raw.rankers.map(instantiateRanker);
@@ -76,6 +104,47 @@ export function mergeConfig(raw) {
     if (!Array.isArray(raw.validators)) throw fail("`validators` must be an array.");
     out.validators = raw.validators.map(instantiateValidator);
   }
+  // `framework_dir` (written by `base init`) is the root's statement of which BASE framework it
+  // belongs to. The launcher reads it from disk to find the engine; the router reads it here to
+  // resolve a help target the root does not own (routing.fallback → framework-root.mjs).
+  if (raw.framework_dir !== undefined) {
+    if (typeof raw.framework_dir !== "string" || !raw.framework_dir.trim()) throw fail("`framework_dir` must be a non-empty path.");
+    out.framework_dir = raw.framework_dir.trim();
+  }
+  // `tools`: which AI tools read this root, answered at `base init --tool`. Its reader is the build:
+  // a root gets the entry point of ITS tools and no other, so a `base build --write` cannot put back
+  // a CLAUDE.md that a Cursor-only folder never wanted. Absent, the build keeps whatever is already
+  // on disk (an older root changes nothing by upgrading).
+  if (raw.tools !== undefined) {
+    if (!Array.isArray(raw.tools)) throw fail("`tools` must be an array of tool ids (claude-code, cursor, agents-md, autre).");
+    const ids = raw.tools.map((id) => String(id).trim().toLowerCase()).filter(Boolean);
+    const unknown = ids.filter((id) => !TOOL_IDS.has(id));
+    if (unknown.length) throw fail(`unknown tool id(s): ${unknown.join(", ")} (expected: ${[...TOOL_IDS].join(", ")}).`);
+    out.tools = ids;
+  }
+  // `language`: which language BASE writes this root's own files in, answered at `base init
+  // --language` and read by every renderer through `stringsFor`. Normalised to the primary subtag
+  // (`de-CH` → `de`), because a table is written per language and not per region.
+  //
+  // An UNKNOWN language is recorded, not refused — deliberately unlike `tools` just above. A tool id
+  // decides which FILE is written, so a wrong one leaves a folder no tool can open and must stop the
+  // load; a language decides only which words are inside the files, so a wrong one degrades to
+  // French (stringsFor's fallback) and the CLI says so. A root written against a newer BASE that
+  // knows more languages than this build must stay loadable by this build.
+  if (raw.language !== undefined) {
+    if (typeof raw.language !== "string" || !raw.language.trim()) throw fail("`language` must be a language tag (e.g. \"fr\", \"en\", \"de-CH\").");
+    out.language = normalizeLanguage(raw.language);
+  }
+  // `views`: named doors onto a subset of this root (`base view <nom>`). A view is a lens, never a
+  // boundary: it changes what the router proposes first, not what anyone may read.
+  if (raw.views !== undefined) {
+    if (!raw.views || typeof raw.views !== "object" || Array.isArray(raw.views)) throw fail("`views` must be an object of named views.");
+    out.views = Object.fromEntries(Object.entries(raw.views).map(([name, view]) => [name, instantiateView(name, view)]));
+  }
+  // `mcp`: what a deployment exposes over MCP. Validated here like every other key, rather than read
+  // raw by the server: a config that fails open would answer «expose everything» to exactly the file
+  // an operator wrote to expose less.
+  if (raw.mcp !== undefined) out.mcp = instantiateMcp(raw.mcp);
   if (raw.policy !== undefined) out.policy = instantiatePolicy(raw.policy);
   if (raw.auth !== undefined) out.auth = raw.auth; // auth descriptors are interpreted by the MCP layer
   if (raw.routing !== undefined) {
@@ -189,10 +258,9 @@ function instantiateRouting(routing) {
       continue;
     }
     if (key === "embedder") {
-      // DEPRECATED (shipped in tagged v1.0.0 and v1.1.0): tolerated so an existing config still loads
-      // — the stability promise is that base.config stays additive across minors. It is now inert; the
-      // build and query paths read the single `routing.embedding_model` reference. Removed in the next minor version.
-      continue;
+      // `routing.embedder` is not a configuration key. Name `routing.embedding_model` explicitly
+      // so a stale file is corrected rather than silently ignored.
+      throw fail("`routing.embedder` n'est pas une clé de configuration: la Voie 2 lit une seule référence de modèle, `routing.embedding_model` dans .ai/studio.settings.json (Studio → Routage). Retirez la clé de base.config.json.");
     }
     if (key === "max_candidates") {
       if (!Number.isInteger(value) || value < 1) throw fail("`routing.max_candidates` must be a positive integer.");
@@ -223,6 +291,60 @@ function instantiateRoutingPolicy(value) {
     out.deny = value.deny;
   }
   return out;
+}
+
+// mcp: { tools?: [<tool-name>…], agents?: [<agent-name>…], attribution_prefix?: boolean } — what a
+// deployment exposes over MCP. The two lists are ALLOW-lists: absent, the whole surface; present, only
+// what they name. `attribution_prefix` makes every read of a resource return the `attribution` line of
+// the nearest folder card, so a rule of use travels with the content into any client. Tool names are
+// checked against the server's vocabulary, because an unknown one would silently narrow nothing; agent
+// names are not, since an agent exists only in the root's live inventory and a view of fewer agents
+// than expected is visible at once in `load_agent`.
+function instantiateMcp(value) {
+  if (value === null) return null;
+  if (typeof value !== "object" || Array.isArray(value)) throw fail("`mcp` must be an object ({ tools, agents, attribution_prefix }).");
+  const { tools, agents, attribution_prefix: attributionPrefix, ...rest } = value;
+  const extra = Object.keys(rest);
+  if (extra.length) throw fail(`unknown mcp option(s): ${extra.join(", ")}`);
+  const out = {};
+  if (tools !== undefined) {
+    const names = nameList(tools, "mcp.tools");
+    const unknown = names.filter((name) => !MCP_TOOLS.has(name));
+    if (unknown.length) throw fail(`unknown mcp tool name(s): ${unknown.join(", ")} (expected: ${MCP_TOOL_NAMES.join(", ")}).`);
+    out.tools = names;
+  }
+  if (agents !== undefined) out.agents = nameList(agents, "mcp.agents");
+  if (attributionPrefix !== undefined) {
+    if (typeof attributionPrefix !== "boolean") throw fail("`mcp.attribution_prefix` must be a boolean (true attaches the folder card's attribution line to every read).");
+    out.attribution_prefix = attributionPrefix;
+  }
+  return out;
+}
+
+/** @param {any} value @param {string} key */
+function nameList(value, key) {
+  if (!Array.isArray(value) || !value.every((name) => typeof name === "string" && name.trim().length > 0)) {
+    throw fail(`\`${key}\` must be an array of non-empty names.`);
+  }
+  return value.map((name) => name.trim());
+}
+
+// views.<name>: { entry?: <agent-id>, agents: [<agent-id>…], include?: [<folder>…] }. Shape only;
+// ids resolve against the live inventory when the view is generated, so a typo degrades to a view
+// that lists less, and `base view` says which id it could not find.
+function instantiateView(name, value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw fail(`\`views.${name}\` must be an object.`);
+  const { entry, agents, include, ...rest } = value;
+  const extra = Object.keys(rest);
+  if (extra.length) throw fail(`unknown views.${name} keys: ${extra.join(", ")}`);
+  if (entry !== undefined && (typeof entry !== "string" || !entry.trim())) throw fail(`\`views.${name}.entry\` must be an agent id.`);
+  if (!Array.isArray(agents) || agents.length === 0) throw fail(`\`views.${name}.agents\` must be a non-empty array of agent ids.`);
+  if (include !== undefined && !Array.isArray(include)) throw fail(`\`views.${name}.include\` must be an array of folders.`);
+  return {
+    ...(entry ? { entry: entry.trim() } : {}),
+    agents: agents.map((id) => String(id).trim()).filter(Boolean),
+    ...(include ? { include: include.map((folder) => String(folder).trim()).filter(Boolean) } : {}),
+  };
 }
 
 // routing.fallback: { agent: "<agent-id>", process: "<process-id>" } — the help target the Router

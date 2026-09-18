@@ -1,3 +1,5 @@
+// Spec coverage: NFR-MCP-001
+
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
 import * as fs from "node:fs/promises";
@@ -31,6 +33,7 @@ try {
   assert.ok(files.has("dist/index.js"), "packed MCP server must include dist/index.js");
   assert.ok(files.has("dist/base-core.mjs"), "packed MCP server must include bundled dist/base-core.mjs");
   assert.ok(files.has("dist/core/ordering.mjs"), "packed MCP server must include core modules imported by base-core.mjs");
+  assert.ok(files.has("dist/core/lang/index.mjs"), "packed MCP server must include nested core modules");
   assert.ok(![...files].some((file) => file.startsWith("dist/dist-backup/")), "packed MCP server must not include dist/dist-backup");
 
   const tarball = path.join(packDir, packed[0].filename);
@@ -42,6 +45,7 @@ try {
   const broker = await import(pathToFileURL(brokerPath).href);
   assert.equal(typeof broker.inventoryResources, "function");
   assert.equal(broker.compareByCodePoint("b", "a"), 1);
+  await import(pathToFileURL(path.join(installedRoot, "dist", "core", "bootstrap.mjs")).href);
 
   const binName = process.platform === "win32" ? "base-mcp.cmd" : "base-mcp";
   const binPath = path.join(appDir, "node_modules", ".bin", binName);

@@ -1,4 +1,4 @@
-// Spec coverage: FR-CLI-005
+// Spec coverage: FR-CLI-005 NFR-CORE-002
 import assert from "node:assert/strict";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
@@ -81,6 +81,23 @@ describe("readWorkspace — normalization", () => {
     assert.equal(ws.roots[1].type, "client");
     assert.equal(ws.roots[0].label, "zeta"); // defaults to id
     assert.equal(ws.roots[0].type, "project"); // default type
+  });
+
+  it("keeps the name alias working while returning one actionable deprecation warning", async () => {
+    const file = await writeWorkspace({
+      id: "portfolio",
+      name: "Mes projets",
+      roots: [{ id: "a", path: "a" }],
+    });
+
+    const ws = await readWorkspace(file);
+
+    assert.equal(ws.label, "Mes projets");
+    assert.deepEqual(ws.warnings, [{
+      code: "base.workspace.name_deprecated",
+      path: file,
+      message: "«name» dans base.workspace.json est déprécié. Remplacez-le par «label».",
+    }]);
   });
 });
 

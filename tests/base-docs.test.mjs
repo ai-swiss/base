@@ -7,6 +7,8 @@ import * as path from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
 import { afterEach, beforeEach, describe, it } from "node:test";
+import { parseFrontmatter } from "../tools/core/frontmatter.mjs";
+import { splitSections } from "../tools/core/sections.mjs";
 import { buildDocsModel, validateDocsModel, writeDocsModel } from "../tools/docs/model.mjs";
 
 const execFileAsync = promisify(execFile);
@@ -32,6 +34,31 @@ function paths(model) {
   return model.resources.map((resource) => resource.path).sort();
 }
 
+function navigationResources(items) {
+  return items.flatMap((item) => item.type === "resource"
+    ? [item]
+    : item.type === "group"
+      ? navigationResources(item.items)
+      : []);
+}
+
+function canonicalHeadings(body) {
+  return splitSections(body)
+    .filter((section) => section.heading !== null)
+    .map((section) => ({ depth: section.level, text: section.heading, slug: section.anchor }));
+}
+
+async function frenchDocsPages(dir) {
+  const pages = [];
+  for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
+    if (entry.isDirectory() && entry.name === "en") continue;
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) pages.push(...(await frenchDocsPages(fullPath)));
+    else if (entry.isFile() && entry.name.endsWith(".md")) pages.push(fullPath);
+  }
+  return pages;
+}
+
 describe("docs model", () => {
   it("flags a broken #anchor (cross-page and same-page), accepts a valid one", async () => {
     await write("docs/guides/a.md", "---\ntitle: A\nsensitivity: public\n---\n# A\n\n## Une section\n\nVoir [B](b.md#sa-section), [interne](#une-section), [cassé](b.md#nope), [cassé local](#absent).\n");
@@ -41,6 +68,50 @@ describe("docs model", () => {
     assert.equal(anchors.length, 2, `expected exactly the two bad anchors, got:\n${anchors.join("\n")}`);
     assert.ok(anchors.some((m) => m.includes("#nope")), "a cross-page anchor with no matching heading is flagged");
     assert.ok(anchors.some((m) => m.includes("#absent")), "a same-page anchor with no matching heading is flagged");
+  });
+
+  it("uses canonical headings for explicit anchors, repeats and fenced code", async () => {
+    const body = [
+      "# Guide",
+      "## Risk",
+      "First.",
+      "## Risk",
+      "Second.",
+      "## Stable wording {#fixed}",
+      "Third.",
+      "```md",
+      "## Not a heading",
+      "```",
+    ].join("\n");
+    await write("docs/guides/sections.md", `---\ntitle: Sections\nsensitivity: public\n---\n${body}\n`);
+
+    const model = await buildDocsModel(tmpDir);
+    const resource = model.resources.find((item) => item.path === "docs/guides/sections.md");
+
+    assert.deepEqual(resource.headings, canonicalHeadings(body));
+    assert.deepEqual(resource.headings.map((heading) => heading.slug), ["guide", "risk", "risk-2", "fixed"]);
+  });
+
+  it("keeps docs-model headings equal to splitSections across every authoritative French docs page", async () => {
+    const pages = await frenchDocsPages(path.join(repoRoot, "docs"));
+    const model = await buildDocsModel(repoRoot);
+    const byPath = new Map(model.resources.map((resource) => [resource.path, resource]));
+    let fencedPages = 0;
+    let explicitAnchorPages = 0;
+
+    for (const page of pages) {
+      const content = await fs.readFile(page, "utf8");
+      const body = parseFrontmatter(content).body;
+      const relativePath = path.relative(repoRoot, page).split(path.sep).join("/");
+      const resource = byPath.get(relativePath);
+      assert.ok(resource, `${relativePath}: authoritative page is absent from the docs model`);
+      assert.deepEqual(resource.headings, canonicalHeadings(body), `${relativePath}: headings diverge from splitSections`);
+      if (/^\s*(```|~~~)/m.test(body)) fencedPages += 1;
+      if (/^#{1,6}\s+.*\{#[a-z0-9]+(?:-[a-z0-9]+)*\}\s*$/m.test(body)) explicitAnchorPages += 1;
+    }
+
+    assert.ok(fencedPages > 0, "the real-corpus parity covers fenced code");
+    assert.ok(explicitAnchorPages > 0, "the real-corpus parity covers explicit anchors");
   });
 
   it("models docs, specs, examples and operational files while excluding private workspaces", async () => {
@@ -80,16 +151,34 @@ describe("docs model", () => {
     assert.equal(model.errors.length, 0);
   });
 
-  it("errors when two source paths collide on the same path-derived id (slug)", async () => {
-    // slugifyPath collapses every non-alphanumeric run to "-", so these distinct paths both become
-    // the id "docs-guide-a". Unguarded, the collision would make two pages share one route and
-    // silently drop one; the model must surface it as an error instead.
+  it("derives unique stable site keys when readable path slugs collide", async () => {
     await write("docs/guide-a.md", "---\ntitle: A\nsensitivity: public\n---\n# A\n");
     await write("docs/guide/a.md", "---\ntitle: B\nsensitivity: public\n---\n# B\n");
 
     const model = await buildDocsModel(tmpDir, { target: "public" });
-    const collisions = model.errors.filter((e) => e.code === "base.docs.duplicate_id");
-    assert.equal(collisions.length, 1, `expected one duplicate_id error, got ${JSON.stringify(model.errors)}`);
+    const siteKeys = model.resources.map((resource) => resource.site_key);
+    assert.equal(new Set(siteKeys).size, 2);
+    assert.equal(siteKeys.every((siteKey) => siteKey.startsWith("docs-guide-a--")), true);
+    assert.equal(model.resources.every((resource) => resource.id === resource.site_key), true);
+    assert.equal(model.errors.some((error) => error.code === "base.docs.duplicate_site_key"), false);
+  });
+
+  it("uses authored ids as semantic identity and publishes aliases only when globally unique", async () => {
+    await write("docs/guides/unique.md", "---\nid: unique-guide\ntitle: Unique\nsensitivity: public\n---\n# Unique\n");
+    await write("exemples/one/.ai/agents/helper/AGENT.md", "---\nid: helper\ntype: agent\n---\n# One\n");
+    await write("exemples/two/.ai/agents/helper/AGENT.md", "---\nid: helper\ntype: agent\n---\n# Two\n");
+
+    const model = await buildDocsModel(tmpDir);
+    const unique = model.resources.find((resource) => resource.path === "docs/guides/unique.md");
+    const duplicates = model.resources.filter((resource) => resource.id === "helper");
+
+    assert.equal(unique.id, "unique-guide");
+    assert.equal(unique.site_key, "docs-guides-unique");
+    assert.equal(unique.id_is_authored, true);
+    assert.deepEqual(model.resource_aliases, [{ id: "unique-guide", site_key: "docs-guides-unique" }]);
+    assert.equal(duplicates.length, 2);
+    assert.equal(new Set(duplicates.map((resource) => resource.site_key)).size, 2);
+    assert.equal(model.resource_aliases.some((alias) => alias.id === "helper"), false);
   });
 
   it("adds backlinks and real route results to the docs model", async () => {
@@ -104,7 +193,7 @@ describe("docs model", () => {
     const model = await buildDocsModel(tmpDir);
     const quickstart = model.resources.find((resource) => resource.path === "docs/start/quickstart.md");
 
-    assert.deepEqual(quickstart.incoming_links, [{ source_id: "readme", source_path: "README.md", label: "Quickstart" }]);
+    assert.deepEqual(quickstart.incoming_links, [{ source_id: "readme", source_site_key: "readme", source_path: "README.md", label: "Quickstart" }]);
     assert.equal(model.route_fixtures[0].actual.status, "routed");
     assert.equal(model.route_fixtures[0].actual.agent.id, "sales");
     assert.equal(model.route_fixtures[0].actual.process.id, "nouveau-devis");
@@ -122,12 +211,13 @@ describe("docs model", () => {
     const decision = model.resources.find((resource) => resource.path === "decisions/0001-docs.md");
 
     assert.equal(decision.doc_role, "decision");
-    assert.equal(model.navigation.sections.find((section) => section.id === "reference").items.some((item) => item.id === decision.id), true);
+    assert.equal(navigationResources(model.navigation.items).some((item) => item.site_key === decision.site_key), false);
+    assert.equal(model.navigation.exclusions.some((item) => item.site_key === decision.site_key && item.reason), true);
   });
 
   it("public target keeps public resources and excludes internal operational resources", async () => {
     await write("README.md", "# Demo\n\nFront door.");
-    await write("docs/public.md", "---\ntitle: Public\nsensitivity: public\n---\n# Public\n");
+    await write("docs/public/page.md", "---\ntitle: Public\nsensitivity: public\n---\n# Public\n");
     await write("exemples/demo/.ai/routing/route-tests.json", JSON.stringify([
       { request: "public route", expect: { status: "routed", agent: "demo", process: "start" } },
     ]));
@@ -135,7 +225,7 @@ describe("docs model", () => {
 
     const model = await buildDocsModel(tmpDir, { target: "public" });
 
-    assert.deepEqual(paths(model), ["README.md", "docs/public.md", "exemples/demo/.ai/routing/route-tests.json"]);
+    assert.deepEqual(paths(model), ["README.md", "docs/public/page.md", "exemples/demo/.ai/routing/route-tests.json"]);
     assert.equal(model.resources.every((resource) => resource.sensitivity === "public"), true);
     assert.equal(model.route_fixtures.length, 1);
     assert.equal(model.errors.length, 0);
@@ -151,7 +241,7 @@ describe("docs model", () => {
     assert.deepEqual(first, second);
 
     const { outputDir, model } = await writeDocsModel(tmpDir);
-    assert.equal(model.schema_version, "base.docs_model.v1");
+    assert.equal(model.schema_version, "base.docs_model.v2");
     assert.equal(await fs.stat(path.join(outputDir, "model.json")).then((stat) => stat.isFile()), true);
     assert.equal(await fs.stat(path.join(outputDir, "graph.json")).then((stat) => stat.isFile()), true);
     assert.equal(await fs.stat(path.join(outputDir, "navigation.json")).then((stat) => stat.isFile()), true);
@@ -208,6 +298,8 @@ describe("docs model", () => {
       assert.equal(await fs.stat(path.join(deployDir, "examples", "index.html")).then((stat) => stat.isFile()), true);
       assert.equal(await fs.stat(path.join(deployDir, "explorer", "index.html")).then((stat) => stat.isFile()), true);
       assert.equal(await fs.stat(path.join(deployDir, "quality", "index.html")).then((stat) => stat.isFile()), true);
+      const quickstartAlias = await fs.readFile(path.join(deployDir, "resources", "quickstart", "index.html"), "utf8");
+      assert.match(quickstartAlias, /\/resources\/docs-start-quickstart\//);
 
       // Bilingual chrome: the English locale is a full route tree, not a stub.
       assert.equal(await fs.stat(path.join(deployDir, "en", "index.html")).then((stat) => stat.isFile()), true);

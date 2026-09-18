@@ -7,7 +7,7 @@
 
 import { normalize, lexicalRanker, composeRankers } from "./rankers.mjs";
 import { compareByCodePoint } from "./ordering.mjs";
-import { deriveRoutingSignals, decideRoute, ROUTING_DEFAULTS, ROUTABLE_KINDS } from "./routing.mjs";
+import { deriveRoutingSignals, decideRoute, ROUTING_DEFAULTS, ROUTABLE_KINDS, agentDirOf } from "./routing.mjs";
 
 // Stopwords for routing and keyword term extraction: articles, fillers, and greetings must not
 // carry a route. Shared with base-core's keyword derivation (imported from here).
@@ -160,7 +160,7 @@ export const STOPWORDS = new Set([
   "assez",
   "aussi",
   "meme",
-  // Impersonal modals — a single «il faut» used to clear the routing floor (70 > 30) on its own:
+  // An impersonal modal («il faut») alone must not clear the routing floor (70 > 30):
   "faut",
   "faudrait",
   // Polite request formulas — they express THAT one asks, never WHAT:
@@ -206,6 +206,36 @@ export function routeAvoidReasons(avoidEntries, terms) {
   return [...hits].map((term) => `route_avoid:${term}`);
 }
 
+// A counter-example written with the process's OWN words vetoes the requests the process exists for.
+// The veto zeroes a candidate's score (see rankResources), so «éviter si: pas pour l'intégration
+// d'une personne, la procédure le décrit» removes «transformer notre intégration en procédure» from
+// the race — the author's own avoid line beats their own use_when, and the user hears "no process
+// covers this".
+//
+// The check replays the author's DECLARED phrasings (routing.examples: real requests, in their
+// words) through the SAME veto the router applies, so a warning states what will happen, never a
+// resemblance. A process without declared examples raises nothing here: there is no phrasing to
+// judge, and inventing one from the use_when sentence would flag well-written cards (a sentence
+// carries far more words than a request, and two shared words are enough to veto).
+/**
+ * @param {any} resource
+ * @returns {{ phrasing: string, terms: string[] }[]} the declared phrasings this resource's own
+ * `avoid_when` would discard, each with the shared words that cause it.
+ */
+export function selfVetoedPhrasings(resource) {
+  const declared = resource?.metadata?.routing?.examples;
+  if (!Array.isArray(declared) || declared.length === 0) return [];
+  const signals = deriveRoutingSignals(resource);
+  if (!signals.avoid_entries?.length) return [];
+  const vetoed = [];
+  for (const phrasing of declared) {
+    if (typeof phrasing !== "string" || !phrasing.trim()) continue;
+    const reasons = routeAvoidReasons(signals.avoid_entries, routeTerms(phrasing));
+    if (reasons.length) vetoed.push({ phrasing, terms: reasons.map((r) => r.replace(/^route_avoid:/, "")) });
+  }
+  return vetoed;
+}
+
 // Replay corpus: the authors' OWN declared phrasings (metadata.routing.examples) as route-test
 // cases — the drift guard for «formulations telles que vos utilisateurs les emploient», with a
 // scope-aware expect (an agent example asserts the agent; a process example asserts the process).
@@ -219,11 +249,36 @@ export function casesFromExamples(resources) {
   });
 }
 
+// A first fixtures file, drafted from the corpus. The blank page is what keeps most roots from
+// having fixtures at all, and a root without fixtures has no guard on the routes it promises.
+// One case per routable process: its first declared example when it has one (a real phrasing), else
+// its «Quand utiliser» sentence, which the author then rewrites in their users' words. Pure: the
+// caller writes the file.
+/** @param {any[]} resources @returns {{ request: string, expect: { agent?: string, process: string } }[]} */
+export function scaffoldRouteCases(resources) {
+  const agentOf = new Map();
+  for (const resource of resources) {
+    if (resource.type === "agent") agentOf.set(agentDirOf(resource.path), resource.id);
+  }
+  const cases = [];
+  for (const resource of resources) {
+    if (resource.type !== "process") continue;
+    if (resource.status === "deprecated" || resource.status === "archived") continue;
+    const declared = resource.metadata?.routing?.examples;
+    const example = Array.isArray(declared) ? declared.find((e) => typeof e === "string" && e.trim()) : null;
+    const request = (example ?? deriveRoutingSignals(resource).route_text ?? "").trim();
+    if (!request) continue;
+    const agent = agentOf.get(agentDirOf(resource.path));
+    cases.push({ request, expect: agent ? { agent, process: resource.id } : { process: resource.id } });
+  }
+  return cases;
+}
+
 // Router orchestration: derive a routing signal per routable resource, score candidates with the
 // SAME Ranker contract as discovery (ctx.mode="route" + an enriched `route_text` field), then apply
 // the structural decision rules. Returns { status, reason_code, agent, process, candidates,
 // explanation, next_question } — a route or an honest abstention, never a fabricated confidence.
-export async function computeRoute(root, request, resources, cfg, { limit, signal } = /** @type {{ limit?: number, signal?: AbortSignal }} */ ({})) {
+export async function computeRoute(root, request, resources, cfg, { limit, signal, framework } = /** @type {{ limit?: number, signal?: AbortSignal, framework?: { root: string, resources: any[] } | null }} */ ({})) {
   const terms = routeTerms(request);
   const thresholds = { ...ROUTING_DEFAULTS, ...(cfg.routing ?? {}) };
   if (typeof limit === "number" && limit > 0) thresholds.max_candidates = limit;
@@ -231,7 +286,7 @@ export async function computeRoute(root, request, resources, cfg, { limit, signa
   const rankers = [lexicalRanker, ...(cfg.rankers ?? [])];
   const { ranked, agentsByDir } = await rankResources(resources, terms, composeRankers(rankers), ctx);
   const decision = decideRoute(ranked, agentsByDir, thresholds);
-  const fallback = resolveFallback(cfg.routing?.fallback, resources, decision);
+  const fallback = resolveFallback(cfg.routing?.fallback, resources, decision, framework ?? null);
   return fallback ? { ...decision, fallback } : decision;
 }
 
@@ -265,16 +320,48 @@ async function rankResources(resources, terms, rank, ctx) {
 // and route tests stay truthful. Eligible: out_of_scope (nothing above the floor), or a
 // needs_clarification with no useful question. Target ids are resolved against the live inventory; a
 // missing/typo'd target yields no fallback (graceful degradation), which `validateBase` warns about.
-export function resolveFallback(configured, resources, decision) {
+//
+// A root may name a target it does not own: the framework's welcome process is the obvious help for
+// "I am lost", and copying it into every root would mean every root ages its own copy. So a second
+// corpus may be passed, the FRAMEWORK's (see framework-root.mjs), searched only when the root's own
+// corpus does not hold the target. Its paths are ABSOLUTE, because they lie outside the root and a
+// root-relative path would be a lie; `source` says which corpus answered, so a caller can say where
+// the process lives instead of pointing at a file the root does not have.
+/**
+ * @param {{ agent: string, process: string } | null | undefined} configured
+ * @param {any[]} resources @param {{ status: string, next_question?: string | null }} decision
+ * @param {{ root: string, resources: any[] } | null} [framework]
+ */
+export function resolveFallback(configured, resources, decision, framework = null) {
   if (!configured) return null;
   const eligible =
     decision.status === "out_of_scope" ||
     (decision.status === "needs_clarification" && !decision.next_question);
   if (!eligible) return null;
+  return pickFallback(configured, resources, "root", null) ??
+    (framework ? pickFallback(configured, framework.resources ?? [], "framework", framework.root) : null);
+}
+
+/** @param {any} configured @param {any[]} resources @param {"root" | "framework"} source @param {string | null} absoluteBase */
+function pickFallback(configured, resources, source, absoluteBase) {
   const agent = resources.find((r) => r.type === "agent" && r.id === configured.agent);
   const process = resources.find((r) => r.type === "process" && r.id === configured.process);
   if (!agent || !process) return null;
-  return { agent: { id: agent.id, path: agent.path }, process: { id: process.id, path: process.path } };
+  const at = (resource) => (absoluteBase ? `${absoluteBase}/${resource.path}` : resource.path);
+  return {
+    agent: { id: agent.id, path: at(agent) },
+    process: { id: process.id, path: at(process) },
+    source,
+    // The BASE root these paths belong to, when it is not the root that was routed. A remote MCP
+    // client has no access to the server's filesystem, so the server reads the help process from
+    // here and inlines it; a local harness uses the absolute paths above.
+    ...(absoluteBase ? { root: absoluteBase } : {}),
+  };
+}
+
+/** Does this corpus hold both ends of the configured fallback? (Cheap pre-check before any I/O.) */
+export function fallbackResolvesIn(configured, resources) {
+  return Boolean(configured) && Boolean(pickFallback(configured, resources, "root", null));
 }
 
 export function compareRoute(expect, actual) {

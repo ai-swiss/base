@@ -1,4 +1,4 @@
-<!-- fr-synced: dce54944bd9d411833205d26a066f15e4cb2b2d4 -->
+<!-- fr-synced: 875426ca6ca638ee4fe555dfb4153503188c343d -->
 # Releasing BASE as open source
 
 Releasing BASE as open source means letting others pick up and adapt a structure of work that is their own, without depending on a vendor or a platform. The point is not to show off a finished product, but to make this foundation reusable and honest about what it does, so anyone can try it, criticize it, and help it grow. This guide brings together what you need to decide, check, and write so that this release keeps its promise.
@@ -59,7 +59,7 @@ Documentation:
 - `docs/trust/securite-et-limites.md` spells out the security model, the limits, and the responsibilities.
 - `docs/trust/souverainete-et-confiance.md` brings together sovereignty, compliance, license, and governance.
 - `docs/trust/licence.md` explains the dual license in plain language.
-- `docs/reference/specification-v0.md` provides the architecture read.
+- `docs/reference/specification-v0.md` points to the current engineering specification.
 - `mcp/README.md` explains the MCP adapter without confusing it with the broker.
 - `SECURITY.md` explains how to report a problem.
 - `CODE_OF_CONDUCT.md` defines the rules for public participation.
@@ -71,7 +71,7 @@ Code and validation:
 
 - `npm test` passes.
 - `npm run validate` passes.
-- `npm run entretien` reports no critical action.
+- `npm run doctor` reports no error.
 - `npm test` and `npm run build` pass in `mcp/`.
 - `npm run smoke:pack` passes.
 - `base.manifest.json` is regenerated.

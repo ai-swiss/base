@@ -29,10 +29,12 @@ When a caller threads an `egress` context, the broker enforces the rule at every
 
 | Surface | Behaviour when withheld |
 |---|---|
-| `openResource` / `accessResource` | `content` becomes the notice; the result's `resource` sibling is reduced to `{id, type, path, withheld:true}` (no `content`/`body`/`description`/`title`/`metadata` leaks); the trace records `egress_withheld` |
+| `openResource` / `accessResource` | `content` becomes the notice; the result's `resource` sibling is reduced to `{id, type, path, withheld:true}` (no `content`/`body`/`description`/`title`/`metadata` leaks); the projections describing the body (`outline`, `section`) are not computed and are stripped; the trace records `egress_withheld` |
 | `inventoryResources` / `searchResources` / `routeRequest` / `listMarkers` | the resource's **existence** is hidden: absent from listings, candidates, scores, the route explanation, `next_question`, and marker output |
 | `invokeTool` | refuses a confidential / local-only tool **before** resolving its entrypoint, so a dry-run cannot reveal the on-disk path |
 | `proposeChange` / `promoteResource` | the diff (which embeds current content) is withheld; promote treats the resource as not-found, never revealing its id/path/scope |
+
+**A withheld resource is not described either, and the order proves it.** A table of contents is content: the headings of a confidential file give its structure, its order and its vocabulary, so a remote model that asked for an outline and was told the body is withheld would still get what it came for. `openResource` therefore takes the egress verdict **before** it derives anything from the body, and computes `outline`/`section` only on the branch where the resource may travel. The withheld branch strips them as well, as the guard that keeps this true if the computation ever moves: the guarantee must not depend on the order two lines happen to sit in. The same rule governs every projection added later — it is computed under the verdict, never computed then deleted.
 
 The local CLI passes **no** `egress` context, because the human at the terminal is trusted, so terminal reads are unchanged. The context is opt-in per call surface; the surface that makes it default-on is the MCP server.
 
@@ -44,10 +46,13 @@ The MCP server cannot know whether its connecting client is a local or a cloud m
 
 The decision lives **only** in `tools/core/egress.mjs` and the broker's `egressWithheld` wrapper. The three model-facing consumers (the Studio chat pack, the eval harness, and the MCP read surface) import the same rule rather than re-implementing it, so the guarantee cannot diverge by surface. The chat surface refuses a confidential edit with `BAD_REQUEST` and reports `egress.withheld`/`egress.notice`; the eval harness expurgates the context pack and says so in the system prompt.
 
+Reading the flag is part of the decision, so it lives here too: `isConfidential(resource)` accepts both spellings once, the frontmatter field under `metadata` and the projected top-level field some callers hold. A path that re-reads the flag itself can inspect a projection where the field does not exist and let withheld content through. Every withholding path therefore asks `isConfidential`.
+
 ## How it's proven
 
 - The pure rule, the notice, and `rootEgressPolicy` (`tests/base-egress.test.mjs`).
 - The read/write chokepoint: open/access withhold plus sibling stripping, discover/inventory hide existence, a local-only root withholds even non-confidential resources, invoke refuses without leaking the entrypoint, propose withholds the diff, promote treats withheld as not-found (`tests/base-core.test.mjs`).
+- Open at section grain: a withheld resource asked for an outline, or for one section, returns neither sibling and nothing of its headings, while the same two calls answer in full without an egress context (`tests/base-core-sections.test.mjs`).
 - The MCP remote-by-default posture and the `BASE_MCP_ALLOW_CONFIDENTIAL` release (`mcp/tests/index.test.ts`).
 - The one-control-point invariant end-to-end through the harness and chat (`tests/base-egress.test.mjs`).
 

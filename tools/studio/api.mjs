@@ -10,12 +10,15 @@ import path from "node:path";
 import os from "node:os";
 import { fileURLToPath } from "node:url";
 import {
+  buildArtifacts,
   commitChange,
   composeMarkdown,
   inventoryResources,
   parseFrontmatter,
   proposeChange,
+  resolveConfig,
   searchResources,
+  writeArtifacts,
 } from "../base-core.mjs";
 import { confineToRoot, pathExists } from "../core/confine.mjs";
 import { walkTree } from "../core/fswalk.mjs";
@@ -245,6 +248,7 @@ export async function resolveStudioContext(rootArg) {
   const workspaceFile = path.join(dir, WORKSPACE_FILENAME);
   if (await pathExists(workspaceFile)) {
     const resolved = await resolveBaseContext({ cwd: dir, explicitWorkspace: workspaceFile, allowWorkspaceRouting: true });
+    for (const warning of resolved.workspace.warnings ?? []) console.warn(`Attention: ${warning.message}`);
     const defaultRoot = selectWorkspaceRoot(resolved.workspace);
     return {
       mode: "workspace",
@@ -259,7 +263,13 @@ export async function resolveStudioContext(rootArg) {
   // ALSO welcome: the right move is to create the workspace file, not to pick one root.
   const detection = await detectPerimeter(dir);
   if (detection.type !== "root") {
-    return { mode: "welcome", dirPath: dir, detection, settingsDir: dir };
+    // The language the bootstrap will write in, resolved here so the Welcome screen and the init
+    // endpoint agree on it. Without this, a folder whose base.config.json already declares `en`
+    // (the file pre-exists an init) would be shown a French plan and initialised in French, while
+    // the CLI on the same folder writes English. A malformed config is not Welcome's problem: it
+    // degrades to the default language, as the rest of Studio degrades to the default config.
+    const language = await resolveConfig(dir).then((cfg) => cfg.language, () => undefined);
+    return { mode: "welcome", dirPath: dir, detection, language, settingsDir: dir };
   }
   return { mode: "root", rootPath: dir, settingsDir: dir };
 }
@@ -278,7 +288,7 @@ export function tildify(p) {
 // a contributor's home directory.
 export function contextPayload(context) {
   if (context.mode === "welcome") {
-    const plan = buildInitPlan(context.detection, { dirName: path.basename(context.dirPath), now: new Date().toISOString(), frameworkDir: FRAMEWORK_DIR });
+    const plan = buildInitPlan(context.detection, { dirName: path.basename(context.dirPath), frameworkDir: FRAMEWORK_DIR, lang: context.language });
     return { mode: "welcome", label: path.basename(context.dirPath), path: tildify(context.dirPath), detection: context.detection, plan };
   }
   if (context.mode === "root") {
@@ -306,9 +316,15 @@ export function contextPayload(context) {
  */
 export async function initPerimeter(context) {
   if (context.mode !== "welcome") throw new ApiError("already a BASE: nothing to initialize", "CONFLICT");
-  const plan = buildInitPlan(context.detection, { dirName: path.basename(context.dirPath), now: new Date().toISOString(), frameworkDir: FRAMEWORK_DIR });
+  const plan = buildInitPlan(context.detection, { dirName: path.basename(context.dirPath), frameworkDir: FRAMEWORK_DIR, lang: context.language });
   if (plan.length === 0) throw new ApiError("nothing to initialize", "CONFLICT");
-  return applyInitPlan(context.dirPath, plan);
+  const applied = await applyInitPlan(context.dirPath, plan);
+  // Refresh the routing index through the real projection, exactly as `base init` does and for the
+  // same reason (see runInit): the pure plan cannot resolve the help target it declares.
+  if (applied.created.includes(".ai/routing/index.md")) {
+    await writeArtifacts(context.dirPath, await buildArtifacts(context.dirPath, { targets: ["routing-index"] }));
+  }
+  return applied;
 }
 
 /**

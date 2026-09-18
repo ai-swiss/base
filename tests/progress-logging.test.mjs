@@ -16,7 +16,7 @@ import { reportProgress } from "../tools/core/progress.mjs";
 import { precomputeRoutingVectors } from "../tools/core/routing-vectors.mjs";
 import { validateBase } from "../tools/base-core.mjs";
 import { runOllamaEval } from "../tools/eval/route-eval-ollama.mjs";
-import { filterAstroBuildOutput } from "../packages/base-docs-site/scripts/build.mjs";
+import { filterAstroBuildOutput } from "../packages/base-docs-site/scripts/base-docs-site.mjs";
 
 const ROOT = path.resolve(fileURLToPath(new URL("..", import.meta.url)));
 

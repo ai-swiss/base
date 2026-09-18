@@ -43,13 +43,7 @@ The **default** posture is advisory + neutral + local-only. Strictness, business
 
 ## 5. Non-negotiable properties
 
-These constrain every design decision in `10_core/`:
-
-- **NFR-CORE-001: Zero-(third-party-)dependency core.** The default CLI path (validate, lexical routing) runs with bare `node`, no `npm install`: `tools/base-core.mjs` and the `core/*.mjs` it loads import only `node:*`. Opt-in capabilities (embeddings, the LLM port, eval) are separate first-party `@ai-swiss/*` companions: OPTIONAL peers, loaded LAZILY on their own path (via the broker, or the `studio/settings.mjs` resolvers), never on the core path; a missing one either fails closed (routing) or prompts to install it (explicit commands). No third-party runtime dependency, ever. (The MCP layer and Studio web app may have their own.)
-- **NFR-CORE-002: No breaking changes.** Existing CLI commands, MCP tools, and the frontmatter format keep working. Extension config is purely additive.
-- **NFR-CORE-003: Safe by default.** With no config: neutral ranking, advisory policy, loopback-only network.
-- **NFR-CORE-004: Fail loudly.** Ambiguous input produces an *error*, never a silently guessed value.
-- **NFR-CORE-005: Extensible without forking.** Anything an integrator might add (strong auth, RBAC, DLP, vector index, org validation rules) attaches through a port; the core is never patched for it.
-- **NFR-CORE-006: Portability.** No mandatory database or cloud. Files stay readable everywhere.
-
-See `10_core/requirements.md` for the full indexed list.
+Six properties constrain every design decision in `10_core/`: a zero-third-party-dependency core,
+no unannounced breakage, safe defaults, loud failure, extension without forking, and portability.
+Their canonical definitions are the rows **NFR-CORE-001** through **NFR-CORE-006** in
+[`10_core/requirements.md`](../10_core/requirements.md#non-functional-requirements-nfr).

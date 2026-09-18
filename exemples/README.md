@@ -1,6 +1,6 @@
 # Exemples
 
-Des assistants IA prêts à l'emploi pour vos métiers. La démo pré-remplie montre d'emblée un résultat; les autres exemples vous guident pour configurer vos propres données.
+Des exemples d'assistants IA à découvrir et à adapter. La démo pré-remplie montre d'emblée un résultat; les autres dossiers illustrent un usage ou servent de point de départ avec des données à personnaliser.
 
 Pour voir BASE avant de lire l'architecture, suivez la [démo 60 secondes](../docs/start/demo-60-secondes.md).
 
@@ -17,7 +17,9 @@ Pour voir BASE avant de lire l'architecture, suivez la [démo 60 secondes](../do
 | [assistant-projet](assistant-projet/) | Gestion de projet | Structure les projets, jalons, décisions et points d'avancement |
 | [assistant-reunion](assistant-reunion/) | Réunions | Transforme vos notes en comptes-rendus structurés et suit décisions et actions |
 | [assistant-enseignant](assistant-enseignant/) | Éducation | Prépare séquences d'enseignement et évaluations, sur profils de classe anonymisés |
-| [routage-pme](routage-pme/) | Routage | Montre le routage déterministe par défaut (process proches, contre-exemples, abstention) et ses fixtures |
+| [starter-perso](starter-perso/) | Personnel | Fournit la plus petite structure à copier avant d'y décrire votre métier et vos procédures |
+| [veytaux-tourisme](veytaux-tourisme/) | Tourisme | Illustre deux parcours guidés avec des données fictives: renseigner un visiteur et préparer une sortie de groupe |
+| [routage-pme](routage-pme/) | Routage | Montre le routage déterministe par défaut (procédures proches, contre-exemples, abstention) et ses fixtures |
 | [agence-multi-clients](agence-multi-clients/) | Workspace | Plusieurs BASE (un par client) via `base.workspace.json`: routage entre racines et confinement par racine |
 
 > **Devis: démo ou point de départ?** `assistant-devis-demo` et `assistant-devis` sont le **même assistant** sous deux angles. La **démo** est livrée avec des données fictives (un client, un devis déjà généré) pour voir un résultat tout de suite. La version **`assistant-devis`** part vide: c'est le modèle à copier pour construire le vôtre. Commencez par la démo pour comprendre, partez de l'autre pour produire.
@@ -34,11 +36,11 @@ Ouvrez le dossier copié dans votre outil IA (Cursor, Claude Code, etc.).
 
 ### 3. Parler
 
-Dites une demande concrète, par exemple «Bonjour, je voudrais configurer mon activité». Un simple «Bonjour» est une salutation: avec le routeur, il mène à l'accueil plutôt qu'à un workflow métier.
+Dites une demande concrète, par exemple «Bonjour, je veux configurer mon assistant devis». Un simple «Bonjour» est une salutation: avec le routeur, il mène à l'accueil plutôt qu'à une procédure métier.
 
 ## Ajouter un exemple
 
-La plupart des exemples métier sont des **dossiers agent unique**: `CLAUDE.md` et `.cursor/rules/assistant.mdc` donnent à l'outil le contexte BASE, puis le routeur choisit le process à partir d'une demande concrète. Les exemples de routage ou de workspace montrent un autre modèle: un routeur choisit entre plusieurs agents, process ou racines.
+La plupart des exemples métier sont des **dossiers agent unique**: `CLAUDE.md` et `.cursor/rules/assistant.mdc` donnent à l'outil le contexte BASE, puis le routeur choisit la procédure à partir d'une demande concrète. Les exemples de routage ou de workspace montrent un autre modèle: un routeur choisit entre plusieurs agents, procédures ou racines.
 
 Structure recommandée pour un exemple agent unique:
 
@@ -50,7 +52,7 @@ mon-exemple/
 ├── .ai/agents/[nom-agent]/        # L'intelligence de l'agent
 │   ├── AGENT.md
 │   ├── skills/
-│   │   ├── processes/             # Workflows invocables
+│   │   ├── processes/             # Procédures invocables
 │   │   └── competences/           # Connaissances et capacités
 │   ├── templates/
 │   └── tools/                     # Optionnel

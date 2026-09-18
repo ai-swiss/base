@@ -1,4 +1,4 @@
-<!-- fr-synced: fec6e4fb553ec8b47b34572ff202bc73afe87e25 -->
+<!-- fr-synced: 5c74b07cda3b6658f584c6a1ce2b8036b4df9cd1 -->
 # BASE markers and when to place them
 
 A marker placed badly, or understood differently by the human, the agent, and the tooling, loses track of the real state of the work. To prevent that, the vocabulary is defined once, here: which markers exist, what each one means, and when to place it. A marker is a searchable text cue, written in brackets inside a document, that makes that state visible without leaving the file. It serves as a shared reference for anyone writing or reviewing in BASE, as well as for the agent assisting them.
@@ -42,11 +42,11 @@ For each marker: its meaning, when to place it, and who closes it.
 - **Enriched form (high stakes).** When the choice has significant consequences (a large amount, a firm commitment, data that is hard to correct), you document the alternative ruled out, the level of confidence, and the cost of reversing course, for example: `[DECISION: Arche florale à 1100 CHF | Pivoines plus coûteuses | Alternative: roses standard 850 CHF | Confiance: haute | Réversibilité: faible (devis à refaire)]`. Suggested vocabulary, read by human and agent alike (it is not a field parsed by the scanner): **Confiance: haute | moyenne | basse**, **Réversibilité: facile | moyenne | difficile**.
 - **Escalation rule.** An agent about to lock in a `[DECISION]` at **low confidence** *or* whose reversal would be **hard** does not decide alone: it places an `[A VALIDER]` and lets the human decide. We automate what is certain and easily reversible; we escalate the rest. This is a convention of judgment, not an imposed syntax.
 
-### Rules common to domain markers
+### When `base doctor` flags a dormant domain marker {#rules-common-to-domain-markers}
 
 - They live in **generated documents** (quotes, client sheets, reports) and in the **journal**, never in framework files (`AGENT.md`, `SKILL.md`, templates) or in the spec.
 - They are scanned by `base markers` (and the MCP tool `list_markers`), which returns only domain files: `listMarkers` ignores `.ai/agents/`, `docs/`, `specs/`, `tests/`, `tools/`, `mcp/`, the READMEs, and test files (FR-MARKERS-001). At the start of a session, the agent can summarize the open state in one line (for example "2 `[A VALIDER]`, 1 `[DECISION]` recorded").
-- The maintenance report (`base entretien`, FR-CORE-010) counts these same markers as open items, and flags **stale** markers: a marker left open in a domain file whose modification date is more than 30 days old, the signal of "verification theater".
+- `base doctor` flags **dormant** markers (`stale_marker`): a marker left open in a domain file whose modification date is more than 30 days old, the signal of "verification theater".
 - The set is **closed and case-insensitive** in the scanner; any other bracket is not a domain marker and is not surfaced.
 
 ### Domain variants

@@ -81,9 +81,16 @@ export function routeText(resource) {
   const examples = Array.isArray(routing.examples) ? routing.examples.filter((s) => typeof s === "string" && s.trim()) : [];
 
   const primary = pickPrimarySignal(resource, meta);
-  const text = [primary.text, ...examples].map((s) => s.trim()).filter(Boolean).join(" — ");
+  const text = joinRoutingPhrases([primary.text, ...examples]);
   return { text, source: primary.source, has_examples: examples.length > 0 };
 }
+
+// The "when to use" heading, in the languages BASE generates for. A corpus is written in the
+// language of its users (docs/reference/langues.md): a process that states its trigger as a body
+// section rather than in `use_when` must be routable whatever that language is, or an English root
+// silently falls through to its path. Matching is accent-insensitive and substring-based
+// (extractSection), so "When to use this process" is found by "when to use".
+const WHEN_TO_USE_HEADINGS = ["quand utiliser", "when to use", "wann verwenden", "quando usare"];
 
 function pickPrimarySignal(resource, meta) {
   const useWhen = stringOrEmpty(resource.use_when ?? meta.use_when);
@@ -92,9 +99,18 @@ function pickPrimarySignal(resource, meta) {
   if (stringOrEmpty(resource.title)) return { text: resource.title.trim(), source: "title" };
   const keywords = (resource.keywords ?? []).filter(Boolean).join(" ").trim();
   if (keywords) return { text: keywords, source: "keywords" };
-  const section = extractSection(resource.body ?? "", "quand utiliser");
-  if (section) return { text: section, source: "section" };
+  for (const heading of WHEN_TO_USE_HEADINGS) {
+    const section = extractSection(resource.body ?? "", heading);
+    if (section) return { text: section, source: "section" };
+  }
   return { text: humanizePath(resource.path), source: "path" };
+}
+
+function joinRoutingPhrases(values) {
+  return values.map((value) => value.trim()).filter(Boolean).reduce(
+    (joined, value) => joined ? `${joined}${/[.!?;:]$/u.test(joined) ? " " : "; "}${value}` : value,
+    "",
+  );
 }
 
 // Normalise a resource into the internal routing form. NOT a port: a plain function until a second
@@ -109,7 +125,7 @@ export function deriveRoutingSignals(resource) {
     // avoid_entries feeds the per-entry veto; avoid_text is their joined DISPLAY form (index cards,
     // refiner prompt) — never re-split for matching.
     avoid_entries: avoid,
-    avoid_text: avoid.join(" — "),
+    avoid_text: joinRoutingPhrases(avoid),
     route_scope: routeScopeOf(resource.type),
     agent_path: agentDirOf(resource.path),
     reasons: [`route_text:${source}`, ...(has_examples ? ["route_text:examples"] : [])],

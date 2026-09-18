@@ -1,4 +1,4 @@
-// Spec coverage: FR-VALID-001 FR-VALID-002 FR-VALID-003 FR-VALID-004 FR-VALID-005 FR-ONTOLOGY-002
+// Spec coverage: FR-VALID-001 FR-VALID-002 FR-VALID-003 FR-VALID-004 FR-VALID-005 FR-ONTOLOGY-002 FR-ROUTE-017
 import assert from "node:assert/strict";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";
@@ -32,6 +32,36 @@ describe("Notification + runValidators", () => {
     const n = createNotification();
     coreSchemaValidator(resource({}), n); // no schema_version
     assert.deepEqual(n.errors, []);
+  });
+
+  it("does not interpret the removed execution.dry_run extension", () => {
+    const n = createNotification();
+    coreSchemaValidator(
+      resource({
+        schema_version: "base.resource.v1",
+        id: "r",
+        type: "tool",
+        description: "A tool.",
+        execution: { type: "script", dry_run: "uninterpreted extension" },
+      }),
+      n,
+    );
+    assert.ok(!n.errors.some((error) => error.code === "base.execution.dry_run_type"));
+  });
+
+  it("requires requires[].purpose to be explanatory text when present", () => {
+    const n = createNotification();
+    coreSchemaValidator(
+      resource({
+        schema_version: "base.resource.v1",
+        id: "r",
+        type: "process",
+        description: "A process.",
+        requires: [{ ref: "source", purpose: ["not", "text"] }],
+      }),
+      n,
+    );
+    assert.equal(n.errors.find((error) => error.code === "base.requires.purpose_type")?.path, "x.md");
   });
 });
 
@@ -156,5 +186,82 @@ describe("validateBase consumes config.validators (extension path)", () => {
     const result = await validateBase(tmpDir);
     assert.equal(result.ok, false);
     assert.match(result.errors.map((e) => e.message).join("\n"), /owner required/);
+  });
+});
+
+// A card whose counter-examples are written with its own words refuses the requests it exists for.
+// The router's veto zeroes such a candidate, so the author must hear it while writing, not from a
+// user whose request was refused.
+describe("validateBase names a card that vetoes its own declared examples", () => {
+  let tmpDir;
+  beforeEach(async () => {
+    tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), "base-self-veto-"));
+  });
+  afterEach(async () => {
+    await fs.rm(tmpDir, { recursive: true, force: true });
+  });
+
+  const writeProcess = (frontmatter) =>
+    fs.mkdir(path.join(tmpDir, ".ai/agents/rh/skills/processes/procedure"), { recursive: true })
+      .then(() => fs.writeFile(path.join(tmpDir, ".ai/agents/rh/skills/processes/procedure/SKILL.md"), frontmatter, "utf8"));
+
+  it("names the phrasing, the shared words and what to change", async () => {
+    await writeProcess(
+      "---\nschema_version: base.resource.v1\nid: ecrire-procedure\ntype: process\ndescription: Écrire une procédure.\n" +
+      "use_when: Quand une façon de faire doit devenir une procédure écrite.\n" +
+      "routing:\n  avoid_when:\n    - Pas pour l'intégration d'une personne, la procédure d'intégration le décrit.\n" +
+      "  examples:\n    - transformer notre intégration en procédure écrite\n---\n# Procédure\n",
+    );
+    const result = await validateBase(tmpDir);
+    const warning = result.warnings.find((w) => w.code === "base.route.self_veto");
+    assert.ok(warning, `expected a self_veto warning, got ${JSON.stringify(result.warnings)}`);
+    assert.match(warning.message, /transformer notre intégration en procédure écrite/);
+    assert.match(warning.message, /intégration/); // the shared word is named
+    assert.match(warning.message, /éviter si/);   // and what to rewrite
+  });
+
+  it("stays silent when the counter-example uses the words of the case it excludes", async () => {
+    await writeProcess(
+      "---\nschema_version: base.resource.v1\nid: ecrire-procedure\ntype: process\ndescription: Écrire une procédure.\n" +
+      "use_when: Quand une façon de faire doit devenir une procédure écrite.\n" +
+      "routing:\n  avoid_when:\n    - Pas pour un contrat de travail ni une fiche de salaire.\n" +
+      "  examples:\n    - transformer notre intégration en procédure écrite\n---\n# Procédure\n",
+    );
+    const result = await validateBase(tmpDir);
+    assert.equal(result.warnings.some((w) => w.code === "base.route.self_veto"), false);
+  });
+
+  it("says nothing about a card with no declared examples: there is no phrasing to judge", async () => {
+    await writeProcess(
+      "---\nschema_version: base.resource.v1\nid: ecrire-procedure\ntype: process\ndescription: Écrire une procédure.\n" +
+      "use_when: Quand une façon de faire doit devenir une procédure écrite.\n" +
+      "routing:\n  avoid_when:\n    - Pas pour l'intégration d'une personne, la procédure d'intégration le décrit.\n---\n# Procédure\n",
+    );
+    const result = await validateBase(tmpDir);
+    assert.equal(result.warnings.some((w) => w.code === "base.route.self_veto"), false);
+  });
+});
+
+// S-11: an id may carry a namespace, and every id written before this stays valid.
+describe("the id grammar accepts a dotted namespace", () => {
+  const check = (id) => runValidators(resource({ schema_version: "base.resource.v1", id, type: "process", description: "d" }), [coreSchemaValidator]);
+  const refused = (id) => check(id).errors.some((e) => e.code === "base.id.invalid");
+
+  it("accepts a namespace, and still every hyphen-only id", () => {
+    assert.equal(refused("devis"), false);
+    assert.equal(refused("nouveau-devis"), false);
+    assert.equal(refused("client.contrats.resiliation"), false);
+  });
+
+  it("refuses what would make an id ambiguous", () => {
+    // A dot is a separator, so it needs a segment on each side; the rest of the grammar is unchanged.
+    for (const id of [".resiliation", "contrats.", "a..b", "Client.contrats", "client contrats"]) {
+      assert.equal(refused(id), true, id);
+    }
+  });
+
+  it("names the namespace in the message, so the fix is readable", () => {
+    const message = check("Client.Contrats").errors.find((e) => e.code === "base.id.invalid").message;
+    assert.match(message, /espace de noms/);
   });
 });

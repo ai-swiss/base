@@ -10,7 +10,7 @@ sensitivity: public
 keywords: [decouverte, progressive, lecture, ordre, harnais, integration, routage, contexte, budget, playbook]
 ---
 
-# La découverte progressive, du premier fichier au geste final
+# L'ordre de lecture: racine, agent, process et contexte {#la-decouverte-progressive-du-premier-fichier-au-geste-final}
 
 Un BASE est fait pour être découvert petit à petit. Cette page répond à la question d'un intégrateur
 de harnais: dans quel ordre je lis quoi, et quand est-ce que je m'arrête? Elle décrit chaque étape au
@@ -18,7 +18,15 @@ niveau des **gestes du contrat** (router, lire, lier, chercher, invoquer, propos
 niveau des commandes d'un outil particulier: la CLI, le serveur MCP et un harnais fichier offrent
 chacun leur porte vers les mêmes gestes (voir [BASE et vos outils d'IA](base-et-vos-outils-ia.md)).
 
-Une seule règle gouverne toute la page:
+L'ordre est: trouver la racine, lire le point d'entrée, router si nécessaire, lire l'agent puis le
+process choisi, et enfin lier le contexte utile avant d'ouvrir ou d'exécuter autre chose.
+
+La portée diffère selon la porte. Dans un harnais fichier, cet ordre est une **consigne au modèle**:
+elle guide un modèle coopératif, sans empêcher techniquement une autre lecture. La CLI et le MCP
+appliquent seulement les mécanismes de leurs opérations nommées, par exemple le confinement d'une
+ouverture ou le plan de contexte; ils n'imposent pas à eux seuls tout l'ordre de lecture au harnais.
+
+Une seule consigne gouverne toute la page:
 
 > À chaque étape, lis le plus petit objet qui prouve la décision suivante. Si la preuve manque,
 > abstiens-toi et demande.
@@ -36,7 +44,7 @@ Le point d'entrée dit si le dossier a déjà choisi son agent. S'il pointe dire
 `AGENT.md`, lire cet agent et travailler: le routage global serait une dépense inutile. S'il décrit
 un routeur (le cas général), passer à l'étape suivante au premier besoin de process.
 
-## 3. Router quand le process est inconnu
+## 3. Si le résultat est `ambiguous`, questionner avant d'ouvrir les process concurrents {#3-router-quand-le-process-est-inconnu}
 
 Le geste `router` prend la demande et rend une route ou une abstention honnête. L'ordre du premier
 mouvement dépend de la surface:
@@ -45,12 +53,13 @@ mouvement dépend de la surface:
   déterministe confirme ou sert de repli.
 - **Broker ou MCP**: `route_request` d'abord, parce que la politique d'accès et l'audit vivent dans
   le broker.
-- **Preuve et CI**: la CLI d'abord, parce que la route doit être reproductible.
+- **Preuve et CI**: `route-test` avec la stratégie lexicale d'abord; `--strategy production` appelle
+  les modèles lorsque la Voie 2 est configurée et n'est pas un contrôle déterministe.
 - **Mode dégradé** (ni index, ni CLI, ni MCP): recherche sur les métadonnées seulement (voir la
   dernière section).
 
-Dans tous les cas: **jamais de corps complets avant une shortlist**. Le routeur rend quatre statuts,
-et chacun commande un geste précis:
+La consigne donnée au modèle reste la même: **ne pas ouvrir de corps complets avant une shortlist**.
+Le routeur rend quatre statuts, et chacun appelle un geste précis:
 
 | Statut | Le geste qui suit |
 | --- | --- |
@@ -110,8 +119,9 @@ et n'exécuter qu'après confirmation explicite.
 
 Le geste d'écriture se fait en deux temps (`proposer` puis `committer`): proposer le diff ou la
 liste des fichiers, obtenir la validation, appliquer par la voie médiée quand elle existe, tracer.
-Jamais de fichier final sans confirmation; jamais de modification du noyau `.ai/` au milieu d'un
-process métier.
+Sur cette voie, la confirmation avant écriture est un mécanisme. Dans un harnais qui édite
+directement les fichiers, «pas de fichier final sans confirmation» et «pas de modification du noyau
+`.ai/` au milieu d'un process métier» restent des consignes au modèle.
 
 ## 10. La conversation qui continue
 
@@ -122,8 +132,9 @@ Le routage a lieu aux frontières de tâche, pas à chaque message. Deux cas raf
 - **Un changement de finalité** («finalement je veux contester une facture déjà envoyée»): rerouter,
   parce que l'unité de travail change.
 
-Et quand une longue conversation résumée fait perdre le fil: rouvrir le `SKILL.md` du process actif
-et son `AGENT.md` sur le disque avant d'agir. Le fichier fait foi, pas la mémoire de la conversation.
+Et si le harnais résume une longue conversation au point de faire perdre le fil: rouvrir le
+`SKILL.md` du process actif et son `AGENT.md` sur le disque avant d'agir. Le fichier fait foi, pas le
+résumé conservé par le harnais.
 
 ## Mode dégradé (diagnostic seulement)
 

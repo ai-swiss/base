@@ -22,6 +22,8 @@ allowed-tools: Read Write
 
 # Nouveau devis (Dupont Conseil)
 
-Préparer un devis à partir d'une demande client, dans la racine Dupont Conseil uniquement.
-Les remises négociées (`tarifs/remises-confidentielles.md`) sont confidentielles: consulte-les
-pour fixer le prix, mais ne les recopie jamais telles quelles dans l'offre envoyée.
+1. Recueille le besoin et la catégorie du client nécessaires au chiffrage.
+2. Consulte `tarifs/remises-confidentielles.md` localement pour appliquer la remise pertinente,
+   sans recopier la grille ni ses catégories dans l'offre.
+3. Prépare le devis dans la racine Dupont Conseil uniquement.
+4. Demande confirmation avant de l'enregistrer. Tu ne l'envoies jamais.

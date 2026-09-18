@@ -126,10 +126,9 @@ describe("Settings — provider actions (every action has a test)", () => {
     );
   });
 
-  it("the default pickers list a provider's discovered models even when the catalog fetch is empty (regression: the pickers used to go stale and show «No models»)", async () => {
-    // The reported bug: ollama is configured with models (visible in the cards above), yet the
-    // «Default models» pickers showed «No models. Configure a provider.». They now read the same
-    // derived list the cards do — so a discovered model is selectable without a remount or a refetch.
+  it("the default pickers list a provider's discovered models even when the catalog fetch is empty", async () => {
+    // The cards and default-model pickers read the same derived list, so a discovered model remains
+    // selectable without depending on this catalog response.
     vi.mocked(api.settings).mockResolvedValue(withOllama({ discovered: { ollama: { models: ["llama3.1"], at: "" } } }));
     vi.mocked(api.models).mockResolvedValue([]); // catalog empty on purpose: the picker must not depend on it
     render(<Settings />);

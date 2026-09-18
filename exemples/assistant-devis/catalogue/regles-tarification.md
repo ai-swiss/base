@@ -1,3 +1,13 @@
+---
+schema_version: base.resource.v1
+id: regles-tarification
+type: document
+title: Règles de tarification
+description: Tarifs, remises, suppléments et règles de calcul applicables aux devis.
+scope: team
+status: active
+sensitivity: internal
+---
 # Règles de tarification
 
 ## Tarifs de base

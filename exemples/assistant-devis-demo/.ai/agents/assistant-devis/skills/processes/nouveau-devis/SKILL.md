@@ -64,11 +64,12 @@ Lis la demande client et reformule-la en termes clairs:
 > - [point 1]
 > - [point 2]
 >
-> Est-ce correct? Y a-t-il des précisions à ajouter?»
+> Est-ce correct, ou y a-t-il des précisions à ajouter?»
 
 ← Reformulation
 
-Clarifie si nécessaire: date de livraison, contraintes, nouveau ou ancien client.
+Arrête-toi là et attends la réponse avant l'étape 2. Clarifie ensuite, une question à la fois, ce
+qui manque réellement: date de livraison, contraintes, nouveau ou ancien client.
 
 ### 2. Identifier le client
 

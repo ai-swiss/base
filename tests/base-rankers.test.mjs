@@ -1,4 +1,4 @@
-// Spec coverage: FR-RANK-001 FR-RANK-002 FR-RANK-003 FR-RANK-004
+// Spec coverage: FR-RANK-001 FR-RANK-002 FR-RANK-003 FR-RANK-004 NFR-CORE-003 NFR-CORE-005
 import assert from "node:assert/strict";
 import * as fs from "node:fs/promises";
 import * as os from "node:os";

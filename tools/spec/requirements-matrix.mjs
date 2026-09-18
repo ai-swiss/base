@@ -73,13 +73,20 @@ export function extractDescopedIds(markdown) {
   return ids;
 }
 
-/**
- * Every full-form ID mentioned anywhere (defined rows + cross-references): the set a test may cite.
- * @param {string} markdown
- * @returns {Set<string>}
- */
+/** Every full-form ID mentioned anywhere (defined rows + cross-references). */
 export function extractKnownIds(markdown) {
   return new Set([...markdown.matchAll(ID_PATTERN())].map((m) => m[1]));
+}
+
+/**
+ * Every requirement mentioned in the canonical index must have its own row. Otherwise prose can
+ * make a test citation look valid while the requirement silently disappears from the matrix.
+ * @param {string} markdown
+ * @returns {string[]}
+ */
+export function extractUnrowedIds(markdown) {
+  const defined = new Set(extractDefinedIds(markdown));
+  return [...extractKnownIds(markdown)].filter((id) => !defined.has(id));
 }
 
 /**
@@ -172,9 +179,9 @@ export async function listTestFiles() {
     .filter((entry) => entry.isDirectory())
     .map((entry) => path.posix.join("packages", entry.name, "tests"));
   const groups = await Promise.all([
-    listFiles("tests", isMjsTest),
+    listFiles("tests", (name) => isMjsTest(name) || name === "smoke-pack.mjs" || name === "smoke-pack-docs.mjs"),
     ...packageDirs.map((dir) => listFiles(dir, isMjsTest)),
-    listFiles("mcp/tests", isTsTest),
+    listFiles("mcp/tests", (name) => isTsTest(name) || name === "smoke-pack.mjs"),
     listFilesRec("tools/studio/ui/src", isUiTest),
     listFilesRec("tools/studio/ui/e2e", isE2eSpec),
   ]);
@@ -304,7 +311,13 @@ export function renderMatrix(definedIds, citations, options = {}) {
 export async function buildMatrix() {
   const requirements = await fs.readFile(path.join(ROOT, REQUIREMENTS_FILE), "utf8");
   const definedIds = extractDefinedIds(requirements);
-  const knownIds = extractKnownIds(requirements);
+  const unrowedIds = extractUnrowedIds(requirements);
+  if (unrowedIds.length > 0) {
+    throw new Error(
+      `Requirements referenced without a canonical table row in ${REQUIREMENTS_FILE}:\n- ${unrowedIds.join("\n- ")}`,
+    );
+  }
+  const knownIds = new Set(definedIds);
   const descopedIds = extractDescopedIds(requirements);
   const citations = new Map(definedIds.map((id) => [id, /** @type {string[]} */ ([])]));
   const strongIds = new Set();

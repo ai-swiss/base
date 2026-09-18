@@ -8,11 +8,13 @@
 
 import { readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
-import { buildArtifacts, inventoryResources } from "../base-core.mjs";
-import { extractLinks, extractReferences } from "../core/context-pack.mjs";
+import { buildArtifacts, inventoryResources, resolveConfig } from "../base-core.mjs";
+import { extractLinks, extractReferences, stripFencedBlocks } from "../core/context-pack.mjs";
+import { isGeneratedProjection } from "../core/runtime-artifacts.mjs";
 import { readFeedback } from "../core/feedback.mjs";
 import { listFiles, walkTree } from "../core/fswalk.mjs";
 import { isDocumentationMarkerPath, isMarkerReferencePath, scanMarkers } from "../core/markers.mjs";
+import { everyLanguage } from "../core/lang/index.mjs";
 import { loadRoutingVectors, verifyRoutingVectors } from "../core/routing-vectors.mjs";
 
 // Runtime conventions: directories BASE itself fills at run time. Referencing them is normal even
@@ -54,8 +56,39 @@ function refResolves(ref, fromPath, paths) {
 }
 
 const RECURRING_ABSTENTION_THRESHOLD = 3;
+const ACTIONABLE_ABSTENTIONS = new Set(["ambiguous", "needs_clarification"]);
 const STALE_MARKER_DAYS = 30;
 const MAINTENANCE_TOKENS = /\b(?:TODO|FIXME|PLACEHOLDER)\b/;
+
+// The four files an AI tool may read to recognise this folder. A root carries the one its owner's
+// tool reads (FR-INIT-002), so every check here asks for ONE of them, never for a named one.
+const ENTRY_POINTS = ["CLAUDE.md", "AGENTS.md", ".cursor/rules/assistant.mdc", "BASE_BOOTSTRAP.md"];
+const TOOL_PATHS = { "claude-code": "CLAUDE.md", "agents-md": "AGENTS.md", cursor: ".cursor/rules/assistant.mdc", autre: "BASE_BOOTSTRAP.md" };
+// The attribution the method content asks for (LICENSING.md, CC BY 4.0), recognised by its URL so a
+// reworded line still counts.
+const ATTRIBUTION_MARK = "a-i.swiss";
+const SHARED_SCOPES = new Set(["team", "org", "public"]);
+
+/** The sources a document declares it was written from (`derived_from`), as trimmed strings. */
+function derivedFrom(resource) {
+  const declared = resource?.derived_from ?? resource?.metadata?.derived_from;
+  return Array.isArray(declared) ? declared.filter((ref) => typeof ref === "string" && ref.trim()).map((ref) => ref.trim()) : [];
+}
+// Template residue: a card that still carries what the scaffold or a template left in it. A
+// `{placeholder}` is meant to be replaced, and the starter sentence is meant to be rewritten; either
+// one still present means the card routes on words nobody chose. Fenced blocks are stripped first
+// (an example that SHOWS a placeholder is teaching, not residue), and `template` resources are
+// exempt by definition.
+const TEMPLATE_PLACEHOLDER = /\{[A-Za-z0-9][A-Za-z0-9 _-]*\}/;
+// The scaffold's own starter sentence, in EVERY language this build can write it. A French literal
+// here would go blind on an English or German root the moment the scaffold was translated: the check
+// would keep passing while the card it exists to catch sat untouched. Asking the tables is the only
+// reading that cannot drift from what the scaffold emits.
+const SCAFFOLD_SENTENCES = everyLanguage("scaffoldAgentDescription")
+  .map((render) => (typeof render === "function" ? render("{}") : String(render)))
+  .map((sentence) => sentence.slice(sentence.indexOf("{}") + 2).trim())
+  .filter(Boolean);
+const RESIDUE_KINDS = new Set(["agent", "process", "competence"]);
 
 /**
  * The pure rule set — everything injected, fully testable without disk.
@@ -63,11 +96,11 @@ const MAINTENANCE_TOKENS = /\b(?:TODO|FIXME|PLACEHOLDER)\b/;
  * runs?: { process: string | null, outcome: string | null, at: string }[],
  * feedback?: { frictions: { path: string, process: string, status: string }[], abstentions?: { query: string, verdict: string, count: number, lastAt: string }[] }, generated?: string[],
  * routingVectors?: { byPath: Record<string, number[]> | null, stale: string[], legacy: boolean, embedder: string | null } | null,
- * staleProjections?: { path: string, target: string }[], now?: string }} data
+ * staleProjections?: { path: string, target: string }[], declaredTools?: string[], now?: string }} data
  * `files`: every file on disk (links may target non-resources like JSON templates).
  * → [{ severity: "error" | "warn", type, path, message, fix_hint }]
  */
-export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], feedback = { frictions: [], abstentions: [] }, generated = [], routingVectors = null, staleProjections = [], now = new Date().toISOString() }) {
+export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], feedback = { frictions: [], abstentions: [] }, generated = [], routingVectors = null, staleProjections = [], declaredTools = [], now = new Date().toISOString() }) {
   const findings = [];
   const today = now.slice(0, 10);
   const paths = new Set([...inventory.map((r) => r.path), ...files]);
@@ -77,12 +110,45 @@ export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], fe
   // counts as reaching it. DEAD-LINK detection is narrow (Markdown links only): prose code-spans
   // illustrate paths (`.cursor/rules`, a tutorial's example agent) that are not links and must not
   // be reported as broken — the same contract docs validation holds.
+  // A resource also reaches what it DECLARES in its frontmatter: `may_use` (competences a process
+  // may open) and `requires[].ref` (what it needs). These declarations are as deliberate as a link
+  // in the body, so the graph follows them: a competence a process declares is reachable, and no
+  // longer has to be repeated as an inline path in the prose just to escape the orphan check. A
+  // declaration names an id or a path; ids resolve first, since that is how authors write them.
+  const pathById = new Map(inventory.filter((r) => r.id).map((r) => [r.id, r.path]));
+  const declaredRefs = (resource) => {
+    const refs = [];
+    for (const ref of Array.isArray(resource.may_use) ? resource.may_use : []) {
+      if (typeof ref === "string" && ref.trim()) refs.push(ref.trim());
+    }
+    for (const req of Array.isArray(resource.requires) ? resource.requires : []) {
+      if (req && typeof req.ref === "string" && req.ref.trim()) refs.push(req.ref.trim());
+    }
+    // `derived_from` names the sources a document was written FROM. It is a declaration like the
+    // others: it must resolve, and it makes the source reachable from the summary.
+    for (const ref of derivedFrom(resource)) refs.push(ref);
+    return refs;
+  };
+
   const outRefs = new Map();
   for (const resource of inventory) {
     const out = new Set();
     for (const ref of extractReferences(resource.body ?? "")) {
       const resolved = refResolves(ref, resource.path, paths);
       if (resolved) out.add(resolved);
+    }
+    for (const ref of declaredRefs(resource)) {
+      const resolved = pathById.get(ref) ?? refResolves(ref, resource.path, paths);
+      if (resolved) out.add(resolved);
+      else {
+        findings.push({
+          severity: "warn",
+          type: "unresolved_declaration",
+          path: resource.path,
+          message: `déclaration sans cible: ${ref}`,
+          fix_hint: "Corrigez l'identifiant ou le chemin déclaré (may_use, requires), ou retirez la déclaration si la ressource a disparu.",
+        });
+      }
     }
     outRefs.set(resource.path, out);
     for (const ref of extractLinks(resource.body ?? "")) {
@@ -237,22 +303,24 @@ export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], fe
     }
   }
 
-  // A BASE without its tool entry point is invisible expertise: no AI tool recognises the
-  // folder. `base init` proposes exactly the missing artifacts (creation-only).
-  if (!paths.has("CLAUDE.md")) {
+  // A BASE without ANY tool entry point is invisible expertise: no AI tool recognises the folder.
+  // Which file it is depends on the tool its owner uses (`base init --tool`), so the check asks for
+  // one of them, never for a particular one: a Cursor-only root is not missing a CLAUDE.md.
+  const entryPoint = ENTRY_POINTS.find((rel) => paths.has(rel));
+  if (!entryPoint) {
     findings.push({
       severity: "warn",
       type: "missing_tool_artifacts",
-      path: "CLAUDE.md",
-      message: "aucun point d'entrée pour les outils IA (CLAUDE.md absent)",
-      fix_hint: "Lancez `base init` dans ce dossier: il propose les artefacts manquants, sans rien écraser.",
+      path: ENTRY_POINTS[0],
+      message: "aucun point d'entrée pour les outils IA (ni CLAUDE.md, ni AGENTS.md, ni règle Cursor, ni BASE_BOOTSTRAP.md)",
+      fix_hint: "Lancez `base init --tool <votre outil>` dans ce dossier: il propose le point d'entrée manquant, sans rien écraser.",
     });
   }
 
   // The SAME class, second member: a root with an entry file but no launcher gives a raw Node stack
   // trace at the first `base validate` after a copy — exactly what the launcher exists to prevent.
   // The heal exists (`base init` on an existing BASE proposes it, creation-only); name it here.
-  if (paths.has("CLAUDE.md") && !paths.has(".ai/base.mjs")) {
+  if (entryPoint && !paths.has(".ai/base.mjs")) {
     findings.push({
       severity: "warn",
       type: "missing_tool_artifacts",
@@ -262,6 +330,86 @@ export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], fe
     });
   }
 
+  // Attribution, but only where it is actually owed. The method content BASE ships is CC BY 4.0:
+  // sharing it asks for a line naming the source. A private folder shares nothing, so this fires
+  // only for a root that DECLARES sharing (a resource with scope team/org/public) and whose README
+  // carries no attribution. `base init` writes the line; this names it when a root grew past its
+  // first reader without it.
+  const sharesSomething = inventory.some((r) => SHARED_SCOPES.has(r.scope));
+  const readme = inventory.find((r) => r.path === "README.md");
+  if (sharesSomething && readme && !readme.content.includes(ATTRIBUTION_MARK)) {
+    findings.push({
+      severity: "warn",
+      type: "missing_attribution",
+      path: "README.md",
+      message: "ce dossier partage des ressources (scope team/org/public) et son README ne crédite pas la méthode",
+      fix_hint: "Ajoutez au README: «Construit avec BASE, Bâtir des Assistants avec une Structure d'Expertise, par AI Swiss, https://a-i.swiss (contenus de méthode sous licence CC BY 4.0).»",
+    });
+  }
+
+  for (const resource of inventory) {
+    if (!RESIDUE_KINDS.has(resource.type)) continue;
+    if (resource.path.includes("/templates/")) continue;
+    // Fenced blocks AND inline code are stripped: a process that TELLS its reader to build
+    // `{YYYY-MM-DD}_{slug}.html` is teaching a pattern, not carrying residue. What counts is a
+    // placeholder left in prose, or in a frontmatter value, where it was meant to be replaced.
+    const body = stripFencedBlocks(resource.body ?? resource.content ?? "").replace(/`[^`\n]*`/g, " ");
+    const inMetadata = Object.values(resource.metadata ?? {}).find((value) => typeof value === "string" && TEMPLATE_PLACEHOLDER.test(value));
+    const placeholder = (typeof inMetadata === "string" ? inMetadata.match(TEMPLATE_PLACEHOLDER) : null) ?? body.match(TEMPLATE_PLACEHOLDER);
+    const haystack = `${body}\n${resource.description ?? ""}`;
+    const scaffold = SCAFFOLD_SENTENCES.some((sentence) => haystack.includes(sentence));
+    if (!placeholder && !scaffold) continue;
+    findings.push({
+      severity: "warn",
+      type: "template_residue",
+      path: resource.path,
+      message: placeholder
+        ? `reste de gabarit non rempli: ${placeholder[0]}`
+        : "cette fiche porte encore la phrase de départ du gabarit",
+      fix_hint: "Remplacez ce texte par le vôtre: la description et le «Quand l'utiliser» sont ce que lit le routage.",
+    });
+  }
+
+  // A harness entry point this root does not declare. `tools` in base.config.json is the answer to
+  // «quel outil lit ce dossier»; every other entry point is outside that declaration. Named, never
+  // removed.
+  if (declaredTools.length) {
+    const wanted = new Set(declaredTools.map((id) => TOOL_PATHS[id]).filter(Boolean));
+    for (const rel of ENTRY_POINTS) {
+      if (!paths.has(rel) || wanted.has(rel)) continue;
+      findings.push({
+        severity: "warn",
+        type: "undeclared_harness_file",
+        path: rel,
+        message: `point d'entrée d'un outil non déclaré (tools: ${declaredTools.join(", ")})`,
+        fix_hint: "Ajoutez cet outil à `tools` dans base.config.json si vous l'utilisez, sinon supprimez ce fichier: il n'est plus régénéré.",
+      });
+    }
+  }
+
+  // A summary never replaces its sources. `derived_from` says where to go back to, and this lens
+  // says when going back is necessary: a source modified after the document that derives from it.
+  // mtime is the same honest approximation the dormant-marker lens uses (any edit resets it), and
+  // an unreadable date yields no signal rather than a false one.
+  for (const resource of inventory) {
+    const sources = derivedFrom(resource);
+    if (sources.length === 0) continue;
+    const derivedAt = mtimes[resource.path];
+    if (!derivedAt) continue;
+    for (const ref of sources) {
+      const sourcePath = pathById.get(ref) ?? refResolves(ref, resource.path, paths);
+      const sourceAt = sourcePath ? mtimes[sourcePath] : null;
+      if (!sourceAt || sourceAt <= derivedAt) continue;
+      findings.push({
+        severity: "warn",
+        type: "derived_stale",
+        path: resource.path,
+        message: `dérive de ${sourcePath}, modifié depuis`,
+        fix_hint: "Relisez la source et reprenez ce document, ou retirez `derived_from` s'il ne la résume plus.",
+      });
+    }
+  }
+
   for (const friction of feedback.frictions) {
     if (friction.status !== "open") continue;
     findings.push({
@@ -269,15 +417,15 @@ export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], fe
       type: "open_friction",
       path: friction.path,
       message: `friction ouverte sans réponse (process: ${friction.process})`,
-      fix_hint: "Lisez la friction, amendez le process concerné, puis «Marquer résolu» dans Studio.",
+      fix_hint: "Lisez la friction et situez son coût: ce qui se paie à chaque demande se déplace une fois dans la structure (une ligne dans une fiche, une colonne tenue à l'écriture, un lien, une compétence). Amendez le process, puis marquez la friction résolue.",
     });
   }
 
-  // A request the router keeps refusing is a process waiting to exist. The pile is already aggregated
-  // by query with a count (FR-FEEDBACK-004); surface it as a low-severity finding once it recurs, so a
-  // headless team (not only someone opening Studio) gets the nudge.
+  // A recurring ambiguous or underspecified request can expose weak routing or a missing process.
+  // `out_of_scope` is a successful boundary decision, not evidence that the corpus should grow.
   for (const abstention of feedback.abstentions ?? []) {
     if ((abstention.count ?? 0) < RECURRING_ABSTENTION_THRESHOLD) continue;
+    if (!ACTIONABLE_ABSTENTIONS.has(abstention.verdict)) continue;
     findings.push({
       severity: "warn",
       type: "recurring_abstention",
@@ -297,7 +445,7 @@ export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], fe
       type: "stale_generated_projection",
       path: stale.path,
       message: "projection générée en retard sur ses sources (le contenu régénéré diffère du fichier présent)",
-      fix_hint: `Régénérez-la: «base build ${stale.target} --write».`,
+      fix_hint: `Régénérez-la: «base build ${stale.target} --write». Si ce fichier est devenu le vôtre, retirez sa bannière de provenance: BASE cesse alors de le régénérer et de le signaler.`,
     });
   }
 
@@ -333,17 +481,14 @@ export async function diagnose(root) {
   const files = listFiles(await walkTree(root));
   /** @type {Record<string, number>} */
   const mtimes = {};
-  // Generated artifacts (the routing indexes) carry a "Généré par … Ne pas éditer" header on line 1;
-  // they are reachable by convention and never hand-referenced, so the orphan check must skip them.
-  // Detect by PROVENANCE, not a hardcoded path: a hand-written index.md (no header) stays flagged.
-  const generated = [];
+  // Generated artifacts (the routing indexes, the harness entry points) are reachable by convention
+  // and never hand-referenced, so the orphan check must skip them. Detect by PROVENANCE, not by a
+  // hardcoded path: a hand-written index.md stays flagged, and a file whose author removed the
+  // banner is that author's. One predicate, shared with discovery (core/runtime-artifacts.mjs).
+  const generated = inventory.filter((resource) => isGeneratedProjection(resource.body)).map((r) => r.path);
   for (const resource of inventory) {
     try {
       mtimes[resource.path] = (await stat(path.join(root, resource.path))).mtimeMs;
-      if (/(^|\/)index\.md$/.test(resource.path)) {
-        const head = (await readFile(path.join(root, resource.path), "utf8")).slice(0, 160);
-        if (/^<!--\s*Généré par /.test(head)) generated.push(resource.path);
-      }
     } catch {
       /* raced deletion: skip */
     }
@@ -362,6 +507,15 @@ export async function diagnose(root) {
   } catch {
     /* no runs yet */
   }
+  // Which tools this root declares (base.config.json `tools`). A malformed config is validate's
+  // finding: the doctor degrades to "nothing declared" and keeps serving its other lenses.
+  let declaredTools = [];
+  try {
+    const declared = (await resolveConfig(root)).tools;
+    if (Array.isArray(declared)) declaredTools = declared;
+  } catch {
+    /* unreadable config: no declaration to compare against */
+  }
   const feedback = await readFeedback(root, { status: "open" });
   const loadedVectors = await loadRoutingVectors(root);
   const routingVectors = loadedVectors ? verifyRoutingVectors(inventory, loadedVectors) : null;
@@ -378,13 +532,13 @@ export async function diagnose(root) {
       } catch {
         continue;
       }
-      if (!/<!--\s*Généré par /.test(disk.slice(0, 400))) continue;
+      if (!isGeneratedProjection(disk)) continue;
       if (disk !== artifact.content) staleProjections.push({ path: artifact.path, target: artifact.target });
     }
   } catch {
     /* config unreadable: build cannot plan, validate owns that signal */
   }
-  return diagnoseData({ inventory, files, mtimes, runs, feedback, generated, routingVectors, staleProjections });
+  return diagnoseData({ inventory, files, mtimes, runs, feedback, generated, routingVectors, staleProjections, declaredTools });
 }
 
 /** Plain-text rendering for the CLI (the `--json` door returns the findings untouched). */

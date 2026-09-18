@@ -42,7 +42,10 @@ Cette matrice est **générée** depuis le noyau (`base build tools`), ce qui la
 
 - **Pour un usage personnel**, le mode advisory suffit: de toute façon, vous relisez et validez.
 - **Pour une équipe ou une organisation**, faites passer les actions sensibles par le broker (CLI, MCP) ou un hook, et configurez une policy stricte (`base.config`). C'est alors que les garanties deviennent réelles.
-- **Le serveur MCP** offre l'enforcement le plus étanche, puisque l'agent n'a accès qu'aux outils et jamais directement aux fichiers; c'est aussi celui qui demande le plus de mise en place; voir [serveur MCP](../../mcp/).
+- **Le serveur MCP** offre l'enforcement le plus étanche lorsque l'agent ne reçoit que ses outils:
+  l'accès aux fichiers passe alors par les opérations médiées que le serveur expose. Un autre accès
+  au même disque reste hors de cette garantie. C'est aussi le mode qui demande le plus de mise en
+  place; voir [serveur MCP](../../mcp/).
 
 Pour le détail d'ingénierie (le port `PolicyEnforcer`, le tracé exact de la frontière), voir `specs/current/10_core/policy.md`.
 

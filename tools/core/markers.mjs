@@ -28,6 +28,7 @@ export function isMarkerReferencePath(relativePath) {
     || normalized.startsWith("tests/")
     || normalized.startsWith("tools/")
     || normalized.startsWith("mcp/")
+    || normalized.endsWith("TRANSLATING.md")
     || normalized.endsWith("README.md")
     || normalized.endsWith(".test.mjs")
     || normalized.endsWith(".test.ts");

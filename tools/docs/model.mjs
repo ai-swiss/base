@@ -3,9 +3,12 @@ import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { compareByCodePoint } from "../core/ordering.mjs";
 import { parseFrontmatter } from "../core/frontmatter.mjs";
+import { slugify as slugifyText, splitSections } from "../core/sections.mjs";
 import { routeRequest } from "../base-core.mjs";
+import { buildNavigation, validateNavigation } from "./navigation.mjs";
 
-export const DOCS_MODEL_SCHEMA_VERSION = "base.docs_model.v1";
+export { slugifyText, splitSections };
+export const DOCS_MODEL_SCHEMA_VERSION = "base.docs_model.v2";
 export const DEFAULT_DOCS_OUTPUT_DIR = ".base-docs";
 
 const DOC_EXTENSIONS = new Set([".md", ".json"]);
@@ -24,6 +27,10 @@ const SKIP_DIRS = new Set([
   "test-results",
   "playwright-report",
   "blob-report",
+  // A git worktree checked out INSIDE the repository (a parallel branch, an agent's isolated copy)
+  // holds a second copy of every resource. Walking it produces a duplicate id for each one, and the
+  // docs model refuses duplicates by design. The tool that creates such a worktree puts it here.
+  ".claude",
 ]);
 const GENERATED_OR_PRIVATE_PREFIXES = [
   ".ai/trace",
@@ -74,23 +81,29 @@ export async function buildDocsModel(rootDir, options = {}) {
   const sourceFiles = await walkDocsFiles(root);
   const allResources = await Promise.all(sourceFiles.map((relativePath) => readDocResource(root, relativePath)));
   allResources.sort((a, b) => compareByCodePoint(a.path, b.path));
+  assignSiteKeys(allResources);
   attachIncomingBacklinks(allResources);
 
   // A broken internal link is a defect, not a note: it fails the model (and so the on-PR
   // `docs validate` gate), instead of scrolling past as a warning nobody reads.
   const brokenLinks = await detectBrokenLinks(root, allResources);
   const warnings = [
-    ...detectDuplicateSourceIds(allResources),
+    ...detectDuplicateAuthoredIds(allResources),
     ...detectThinResources(allResources),
   ].sort(compareWarning);
 
   const resources = allResources.filter((resource) => canPublishToTarget(resource, target));
   const graph = buildGraph(resources);
   const navigation = buildNavigation(resources, target);
+  const resource_aliases = buildResourceAliases(resources);
   const search = buildSearch(resources);
   const route_fixtures = await buildRouteFixtures(root, resources, target);
   const families = await buildFamilies(root);
-  const errors = [...validateModelInvariants(resources, target), ...brokenLinks].sort(compareWarning);
+  const errors = [
+    ...validateModelInvariants(resources, target),
+    ...validateNavigation(resources, navigation),
+    ...brokenLinks,
+  ].sort(compareWarning);
 
   return {
     schema_version: DOCS_MODEL_SCHEMA_VERSION,
@@ -106,6 +119,7 @@ export async function buildDocsModel(rootDir, options = {}) {
     resources,
     graph,
     navigation,
+    resource_aliases,
     search,
     route_fixtures,
     warnings,
@@ -207,23 +221,28 @@ async function readDocResource(root, relativePath) {
   const content = await fs.readFile(fullPath, "utf8");
   const parsed = relativePath.endsWith(".md") ? parseFrontmatter(content) : { data: {}, body: content, errors: [] };
   const metadata = parsed.data || {};
-  const title = stringOrNull(metadata.title) || extractTitle(relativePath, parsed.body);
+  const sections = relativePath.endsWith(".md") ? splitSections(parsed.body) : [];
+  const title = stringOrNull(metadata.title) || extractTitle(relativePath, sections);
   const description = stringOrNull(metadata.description) || deriveDescription(parsed.body);
   const sensitivity = stringOrNull(metadata.sensitivity) || inferSensitivity(relativePath);
   const docRole = stringOrNull(metadata.doc_role) || inferDocRole(relativePath, metadata);
   const audience = arrayOfStrings(metadata.audience);
   const learningLevel = stringOrNull(metadata.learning_level) || inferLearningLevel(relativePath, docRole);
   const related = arrayOfStrings(metadata.related);
-  const headings = extractHeadings(parsed.body);
+  const headings = sections
+    .filter((section) => section.heading !== null)
+    .map((section) => ({ depth: section.level, text: section.heading, slug: section.anchor }));
   // Markdown links live in Markdown. Scanning a JSON resource's body (e.g. base.manifest.json, whose
   // embedded descriptions may quote a relative link) would resolve that link against the JSON file's
   // own path and report a phantom broken link.
   const links = relativePath.endsWith(".md") ? extractLinks(parsed.body, relativePath) : [];
   const family = familyOf(relativePath);
 
+  const authoredId = stringOrNull(metadata.id);
   return {
-    id: slugifyPath(relativePath),
-    source_id: stringOrNull(metadata.id),
+    id: authoredId || slugifyPath(relativePath),
+    id_is_authored: authoredId !== null,
+    site_key: slugifyPath(relativePath),
     path: relativePath,
     family,
     extension: path.extname(relativePath) || path.basename(relativePath),
@@ -335,58 +354,64 @@ function canPublishToTarget(resource, target) {
 
 function buildGraph(resources) {
   const nodes = resources.map((resource) => ({
-    id: resource.id,
+    id: resource.site_key,
+    resource_id: resource.id,
+    site_key: resource.site_key,
     label: resource.title,
     type: resource.type,
     role: resource.doc_role,
     path: resource.path,
   }));
   const edges = [];
-  const bySourceId = new Map(resources.map((resource) => [resource.source_id || resource.id, resource]));
+  const byId = uniqueResourcesById(resources);
   const byPath = new Map(resources.map((resource) => [resource.path, resource]));
 
   for (const resource of resources) {
-    if (resource.owning_agent) edges.push(edge(`agent:${resource.owning_agent}`, resource.id, "owns"));
-    if (resource.owning_example) edges.push(edge(`example:${resource.owning_example}`, resource.id, "contains"));
+    if (resource.owning_agent) edges.push(edge(`agent:${resource.owning_agent}`, resource.site_key, "owns"));
+    if (resource.owning_example) edges.push(edge(`example:${resource.owning_example}`, resource.site_key, "contains"));
     for (const related of resource.related) {
-      const target = bySourceId.get(related);
-      if (target) edges.push(edge(resource.id, target.id, "related"));
+      const target = byId.get(related);
+      if (target) edges.push(edge(resource.site_key, target.site_key, "related"));
     }
     for (const link of resource.links) {
       const target = byPath.get(link.resolved_path);
-      if (target) edges.push(edge(resource.id, target.id, "links"));
+      if (target) edges.push(edge(resource.site_key, target.site_key, "links"));
     }
   }
 
   return { nodes, edges: dedupeEdges(edges).sort(compareEdge) };
 }
 
-function buildNavigation(resources, target) {
-  const sections = [
-    section("start", "Start", resources, (r) => (r.doc_role === "front-door" || r.path.startsWith("docs/start/")) && !r.path.startsWith("docs/tutoriel/")),
-    section("tutoriel", "Learn by doing", resources, (r) => r.path.startsWith("docs/tutoriel/")),
-    section("learn", "Concepts", resources, (r) => r.path.startsWith("docs/learn/")),
-    section("guides", "Guides", resources, (r) => r.path.startsWith("docs/guides/")),
-    section("audiences", "Audiences", resources, (r) => r.path.startsWith("docs/audiences/")),
-    section("trust", "Trust And Evidence", resources, (r) => r.path.startsWith("docs/trust/")),
-    section("public", "Public Materials", resources, (r) => r.path.startsWith("docs/public/")),
-    section("examples", "Examples", resources, (r) => r.path.startsWith("exemples/") && r.path.endsWith("README.md")),
-    section("reference", "Reference", resources, (r) => ["reference", "spec", "schema", "decision", "release", "legal"].includes(r.doc_role)),
-    section("operations", "Agents And Processes", resources, (r) => r.doc_role === "operational"),
-  ].filter((item) => item.items.length > 0);
-  return { target, sections };
-}
-
 function buildSearch(resources) {
   return {
     documents: resources.map((resource) => ({
-      id: resource.id,
+      id: resource.site_key,
+      resource_id: resource.id,
+      site_key: resource.site_key,
       title: resource.title,
       description: resource.description,
       path: resource.path,
       text: [resource.title, resource.description, resource.path, resource.type, resource.doc_role, ...resource.headings.map((h) => h.text)].filter(Boolean).join("\n"),
     })),
   };
+}
+
+function buildResourceAliases(resources) {
+  const authoredIdCounts = new Map();
+  const canonicalKeys = new Set(resources.map((resource) => resource.site_key));
+  for (const resource of resources) {
+    if (resource.id_is_authored) {
+      authoredIdCounts.set(resource.id, (authoredIdCounts.get(resource.id) ?? 0) + 1);
+    }
+  }
+  return resources
+    .filter((resource) =>
+      resource.id_is_authored &&
+      resource.id !== resource.site_key &&
+      authoredIdCounts.get(resource.id) === 1 &&
+      !canonicalKeys.has(resource.id))
+    .map((resource) => ({ id: resource.id, site_key: resource.site_key }))
+    .sort((a, b) => compareByCodePoint(a.id, b.id));
 }
 
 async function buildRouteFixtures(root, resources, target = "local") {
@@ -405,7 +430,7 @@ async function buildRouteFixtures(root, resources, target = "local") {
       if (!fixture || typeof fixture.request !== "string") continue;
       const fixtureRoot = routeFixtureRoot(resource.path);
       fixtures.push({
-        id: `${resource.id}-${index + 1}`,
+        id: `${resource.site_key}-${index + 1}`,
         root: fixtureRoot,
         source_path: resource.path,
         request: fixture.request,
@@ -429,6 +454,7 @@ function attachIncomingBacklinks(resources) {
       if (!target) continue;
       target.incoming_links.push({
         source_id: resource.id,
+        source_site_key: resource.site_key,
         source_path: resource.path,
         label: link.label,
       });
@@ -487,7 +513,7 @@ async function buildFamilies(root) {
 
 function validateModelInvariants(resources, target) {
   const errors = [];
-  const idOwner = new Map();
+  const siteKeyOwner = new Map();
   for (const resource of resources) {
     if (resource.path.startsWith(".plans/") || resource.path.startsWith(".temp/")) {
       errors.push({ code: "base.docs.private_workspace_included", path: resource.path, message: "Private planning/work files must not enter the docs model." });
@@ -495,32 +521,29 @@ function validateModelInvariants(resources, target) {
     if (target === "public" && resource.sensitivity !== "public") {
       errors.push({ code: "base.docs.public_leak", path: resource.path, message: "Public docs model contains a non-public resource." });
     }
-    // Path-derived ids (slugifyPath) become site routes, so they must be unique. slugifyPath is lossy
-    // (every non-alphanumeric run collapses to "-"), so distinct paths CAN collide; an unguarded
-    // collision would make two pages share one route, silently dropping one. Fail loudly instead.
-    const prior = idOwner.get(resource.id);
+    const prior = siteKeyOwner.get(resource.site_key);
     if (prior) {
-      errors.push({ code: "base.docs.duplicate_id", path: resource.path, message: `Path-derived id "${resource.id}" collides with ${prior}; rename one file so their slugs differ.` });
+      errors.push({ code: "base.docs.duplicate_site_key", path: resource.path, message: `Site key "${resource.site_key}" collides with ${prior}.` });
     } else {
-      idOwner.set(resource.id, resource.path);
+      siteKeyOwner.set(resource.site_key, resource.path);
     }
   }
   return errors.sort(compareWarning);
 }
 
-function detectDuplicateSourceIds(resources) {
+function detectDuplicateAuthoredIds(resources) {
   const seen = new Map();
   const warnings = [];
   for (const resource of resources) {
-    if (!resource.source_id) continue;
+    if (!resource.id_is_authored) continue;
     const scope = resource.owning_example || "root";
-    const key = `${scope}\0${resource.source_id}`;
+    const key = `${scope}\0${resource.id}`;
     const prior = seen.get(key);
     if (prior) {
       warnings.push({
-        code: "base.docs.duplicate_source_id",
+        code: "base.docs.duplicate_authored_id",
         path: resource.path,
-        message: `Source id "${resource.source_id}" is also used by ${prior} in the same docs scope. The docs model keeps path-based ids to avoid collisions.`,
+        message: `Authored id "${resource.id}" is also used by ${prior} in the same docs scope.`,
       });
     } else {
       seen.set(key, resource.path);
@@ -579,9 +602,9 @@ async function pathExists(fullPath) {
   }
 }
 
-function extractTitle(relativePath, body) {
-  const heading = body.match(/^#\s+(.+)$/m);
-  if (heading) return cleanHeading(heading[1]);
+function extractTitle(relativePath, sections) {
+  const heading = sections.find((section) => section.level === 1 && section.heading !== null);
+  if (heading) return heading.heading;
   if (relativePath === "LICENSE") return "License";
   return titleize(path.basename(relativePath, path.extname(relativePath)));
 }
@@ -593,16 +616,6 @@ function deriveDescription(body) {
     .find((part) => part && !part.startsWith("#") && !part.startsWith("```") && !part.startsWith("---"));
   if (!paragraph) return null;
   return paragraph.replace(/\s+/g, " ").slice(0, 220);
-}
-
-function extractHeadings(body) {
-  const headings = [];
-  const pattern = /^(#{1,6})\s+(.+)$/gm;
-  let match;
-  while ((match = pattern.exec(body))) {
-    headings.push({ depth: match[1].length, text: cleanHeading(match[2]), slug: slugifyText(match[2]) });
-  }
-  return headings;
 }
 
 function extractLinks(body, relativePath) {
@@ -692,10 +705,6 @@ function arrayOfStrings(value) {
   return Array.isArray(value) ? value.filter((item) => typeof item === "string" && item.trim()).map((item) => item.trim()) : [];
 }
 
-function cleanHeading(value) {
-  return String(value).replace(/\s+#*$/, "").trim();
-}
-
 function titleize(value) {
   return value
     .replace(/[-_]+/g, " ")
@@ -711,19 +720,34 @@ function slugifyPath(value) {
     .toLowerCase() || "root";
 }
 
-/**
- * Heading slug used for the model's heading anchors. Exported because presentation
- * adapters must produce identical anchors when they render the same sources
- * (resource page contract, FR-DOCS-004): one implementation, no mirror to drift.
- * @param {string} value
- */
-export function slugifyText(value) {
-  return String(value)
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^A-Za-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .toLowerCase();
+function assignSiteKeys(resources) {
+  const byCandidate = new Map();
+  for (const resource of resources) {
+    const bucket = byCandidate.get(resource.site_key) ?? [];
+    bucket.push(resource);
+    byCandidate.set(resource.site_key, bucket);
+  }
+  for (const [candidate, bucket] of byCandidate) {
+    if (bucket.length > 1) {
+      for (const resource of bucket) {
+        resource.site_key = `${candidate}--${Buffer.from(resource.path, "utf8").toString("base64url")}`;
+      }
+    }
+    for (const resource of bucket) {
+      if (!resource.id_is_authored) resource.id = resource.site_key;
+    }
+  }
+}
+
+function uniqueResourcesById(resources) {
+  const byId = new Map();
+  const duplicates = new Set();
+  for (const resource of resources) {
+    if (byId.has(resource.id)) duplicates.add(resource.id);
+    else byId.set(resource.id, resource);
+  }
+  for (const id of duplicates) byId.delete(id);
+  return byId;
 }
 
 function sha256(content) {
@@ -748,17 +772,6 @@ function dedupeEdges(edges) {
     out.push(item);
   }
   return out;
-}
-
-function section(id, title, resources, predicate) {
-  return {
-    id,
-    title,
-    items: resources
-      .filter(predicate)
-      .map((resource) => ({ id: resource.id, title: resource.title, path: resource.path, role: resource.doc_role }))
-      .sort((a, b) => compareByCodePoint(a.path, b.path)),
-  };
 }
 
 function compareWarning(a, b) {

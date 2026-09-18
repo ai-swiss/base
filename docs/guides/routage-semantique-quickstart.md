@@ -3,7 +3,7 @@ schema_version: base.resource.v1
 id: routage-semantique-quickstart
 type: document
 title: Mettre en place le routage sémantique, du zéro config aux embeddings réels
-description: Le routage de BASE en deux voies (Voie 1 par défaut, Voie 2 opt-in), et au sein de la Voie 1 les trois chemins de classement (zéro config, semanticHybrid, embeddings réels) avec lecture des raisons de score.
+description: Distinguer les deux stratégies de routage de BASE des rankers configurables, puis choisir le classement lexical, hybride ou par embeddings adapté au projet.
 scope: public
 status: active
 sensitivity: public
@@ -16,14 +16,20 @@ Dès l'installation de BASE, les demandes doivent atteindre le bon agent et le b
 configuration initiale, puis gagner en qualité le jour où le besoin s'en fait sentir: c'est ce que
 vous réglez ici. BASE route une demande, ou s'abstient honnêtement quand rien ne convient.
 
-BASE route de **deux façons, que fixe la configuration**. La **Voie 1** s'applique par défaut: l'assistant
-lit l'index généré et choisit, un plancher déterministe par mots-clés lui servant de filet hors-ligne.
-La **Voie 2** est facultative, pensée pour les grands catalogues: des embeddings retrouvent quelques
-candidats, qu'un petit modèle local affine (il choisit, ou demande une précision); voir
-[Voie 2, le routage par embeddings](voie-2-routage-embeddings.md). La présente page détaille la Voie 1
-et, en son sein, la **qualité du classement** des candidats: un ranker classe, mais c'est le routeur
-qui décide. Vous suivrez trois chemins, du plus simple au plus robuste; commencez par le premier,
-et n'allez plus loin que si le besoin l'exige.
+Deux réglages distincts ne doivent pas être confondus:
+
+- la **stratégie de routage** choisit le chemin complet. La stratégie `lexical` (Voie 1) est celle par
+  défaut. La stratégie `embedding` (Voie 2), activée quand `.ai/studio.settings.json` nomme à la fois
+  un modèle d'embedding et un raffineur, retrouve quelques candidats puis demande au raffineur de
+  choisir ou de demander une précision;
+- les **rankers configurables** de `base.config` ne sélectionnent pas une stratégie. Ils ajoutent des
+  scores au classement de la Voie 1 et à la recherche. Un ranker peut lui-même utiliser des embeddings
+  sans activer la Voie 2.
+
+Voir [Voie 2, le routage par embeddings](voie-2-routage-embeddings.md) pour la stratégie `embedding`.
+La présente page montre surtout comment régler les rankers de la Voie 1. Un ranker classe les
+candidats; la stratégie de routage produit la décision. Commencez sans extension et n'ajoutez un
+ranker ou la Voie 2 que si vos cas réels le justifient.
 
 Le routage BASE choisit le workflow primaire, non toutes les ressources possibles. La chaîne complète
 est la suivante: choisir un agent, router vers un process, puis ouvrir les compétences, tools, templates,
@@ -39,23 +45,22 @@ bon agent, du plus simple au plus automatique:
   c'est le seul fichier à charger. «Lis `exemples/assistant-devis/.ai/agents/assistant-devis/AGENT.md`»
   suffit (chemin relatif au dépôt; dans un projet d'assistant, ce n'est rien d'autre que `.ai/agents/<agent>/AGENT.md`).
   Aucun routage, aucune installation.
-- **CLI.** `base route "<demande>" --root <projet>` choisit l'agent → process de façon déterministe, et s'abstient
-  honnêtement si rien ne convient. Le même routeur, au terminal.
+- **CLI.** `base route "<demande>" --root <projet>` exécute la stratégie de production configurée et
+  s'abstient honnêtement si rien ne convient.
 - **MCP.** L'outil `route_request` expose ce même routeur à un outil IA capable de lire vos fichiers
  .
   Pour le brancher, suivez le process `activer-routage`.
 
-Le routage (CLI/MCP), déterministe par défaut, sert surtout lorsque plusieurs process ou agents
-peuvent répondre, ou lorsque vous voulez des garanties (abstention testée, fixtures). Il épargne à
-l'utilisateur la peine de chercher le bon process. Sitôt qu'un ranker à embeddings entre en jeu, le
-classement dépend du fournisseur choisi; les statuts et les fixtures, eux, ne changent pas. Pour un
-seul assistant simple, le chargement manuel suffit.
+Le routage CLI/MCP sert surtout lorsque plusieurs process ou agents peuvent répondre. Sans modèle ni
+ranker externe, la Voie 1 est déterministe. Un ranker à embeddings rend son classement dépendant du
+fournisseur; la Voie 2 ajoute en plus un raffineur. Les deux chemins conservent les mêmes statuts de
+décision, mais leur résultat n'est pas pour autant identique ni reproductible. Pour un seul assistant
+simple, le chargement manuel suffit.
 
-Les trois «chemins» ci-dessous traitent une autre question: la qualité du classement des candidats
-au sein de la Voie 1, du lexical zéro-config aux embeddings réels. (À ne pas confondre avec la Voie 2,
-qui est une autre voie de routage, et non un ranker.)
+Les options ci-dessous traitent de la qualité du classement au sein de la Voie 1. Elles sont
+indépendantes de la stratégie Voie 2.
 
-## Chemin 1: zéro configuration
+## Classement par défaut: zéro configuration
 
 Écrivez des agents et des process en Markdown, avec un `use_when` par process. BASE route grâce à son
 cœur zéro-dépendance: lexical + `semanticHybridRanker` (token overlap, alias par sous-ensemble de
@@ -86,7 +91,7 @@ validateurs), et `base.config.mjs` aux cas où vous devez importer du code, par 
 d'embeddings. Si les deux coexistent, BASE préfère le JSON déclaratif; ne gardez donc qu'un seul format
 par projet dès lors que vous activez des embeddings réels.
 
-## Chemin 2: embeddings réels
+## Ranker optionnel: embeddings réels
 
 Installez `@ai-swiss/base-ranker-semantic`, choisissez un fournisseur, ajoutez un ranker dans
 `base.config.mjs` (config exécutable, car un ranker est du code). Le cœur, lui, ne gagne aucune
@@ -137,7 +142,7 @@ concurrents, enveloppez le provider dans `createBatchingEmbedder`. Détails:
 [`packages/base-ranker-semantic/README.md`](../../packages/base-ranker-semantic/README.md) et
 [la page provider](choisir-provider-embeddings.md).
 
-## Chemin 3: index local optionnel
+## Index local optionnel
 
 Quand le corpus s'étoffe, dérivez un index local supprimable avec `@ai-swiss/base-index-local`.
 Le modèle utilisateur reste le même, sans catalogue à tenir à la main, et les statuts de routage par
@@ -145,12 +150,25 @@ défaut ne bougent pas. Voir [Comprendre l'échelle](../learn/comprendre-echelle
 
 ## Lancer les fixtures
 
-`.ai/routing/route-tests.json` liste des demandes et la route attendue (statut, agent, process). C'est
-un test de régression, non une mesure de performance académique:
+`.ai/routing/route-tests.json` liste des demandes et la route attendue (statut, agent, process).
+Par défaut, `route-test` rejoue les fixtures et les `routing.examples` disponibles avec la stratégie
+lexicale et les rankers de `base.config`. Il vérifie ces cas écrits, pas toutes les formulations
+possibles, ni la décision d'un modèle qui lit l'index:
 
 ```bash
 node tools/base.mjs route-test --root <projet>          # sortie lisible, exit ≠ 0 si une route casse
 ```
+
+Si les deux modèles de la Voie 2 sont configurés, `base route` prend la stratégie `embedding`.
+Rejouez alors volontairement le chemin réel:
+
+```bash
+node tools/base.mjs route-test --strategy production --root <projet>
+```
+
+Cette seconde commande appelle les modèles configurés. Elle vérifie le chemin de production pendant
+ce run; elle n'est ni déterministe ni destinée au contrôle reproductible de CI. De même, un ranker
+externe branché dans `base.config` peut rendre le run lexical dépendant de son fournisseur.
 
 ## Lire les raisons de score
 

@@ -69,7 +69,7 @@ export function Welcome({ context, onInitialized }: { context: WelcomeContext; o
               {copy.welcome.step2Pre}<strong>{copy.welcome.step2Strong}</strong>
               {copy.welcome.step2Post}<code>{copy.welcome.step2Code}</code>{copy.welcome.step2End}
             </p>
-            <CopyableCommand command={`cd "${context.path}" && claude`} />
+            <CopyableCommand command={copy.welcome.step2Prompt(context.path)} />
           </div>
         </li>
 

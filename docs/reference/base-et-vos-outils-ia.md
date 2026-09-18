@@ -1,6 +1,13 @@
 ---
+schema_version: base.resource.v1
+id: base-et-vos-outils-ia
+type: document
 title: Garder vos outils IA, posséder l'intelligence qu'ils exécutent
 description: "Comment BASE se combine avec vos outils IA sans les remplacer: périmètre par tâche, texte que vous possédez, agents planifiés sous validation humaine, et aide pour intégrer votre outil précis."
+scope: public
+status: active
+sensitivity: public
+license: CC-BY-4.0
 keywords: [outils, plateforme, suite, integration, interoperabilite, mcp, souverainete, execution, agents planifies, valides]
 ---
 

@@ -9,7 +9,6 @@ import {
   formatSearchResults,
   formatRouteResult,
   formatRouteTestResult,
-  formatMaintenanceReport,
 } from "../tools/core/formatters.mjs";
 import { scanMarkers } from "../tools/core/markers.mjs";
 import { compareByCodePoint as indexCompareByCodePoint } from "../packages/base-index-local/src/ordering.mjs";
@@ -143,10 +142,12 @@ test("formatRouteResult never prints an unlabelled agent on competing_intents �
 });
 
 test("formatRouteTestResult reports pass count and lists failures", () => {
-  assert.match(
-    formatRouteTestResult({ ok: true, passed: 3, total: 3, failures: [] }),
-    /^Tests de routage: 3\/3 OK\.\nToutes les routes attendues sont stables\.$/,
-  );
+  const green = formatRouteTestResult({ ok: true, passed: 3, total: 3, failures: [] });
+  assert.match(green, /^Tests de routage: 3\/3 OK\.\nToutes les routes attendues sont stables\./);
+  // A green run says WHAT it certifies: the lexical floor, which serves callers with no model. The
+  // same sentence stands in the guide, so a reader of either learns the same thing (R-05).
+  assert.match(green, /plancher lexical.*sans modèle/s);
+  assert.match(green, /c'est le modèle qui route/);
 
   const withFail = formatRouteTestResult({
     ok: false,
@@ -155,7 +156,7 @@ test("formatRouteTestResult reports pass count and lists failures", () => {
     failures: [{ index: 1, request: "x", mismatches: ["status: attendu routed, obtenu out_of_scope"] }],
   });
   assert.match(withFail, /Tests de routage: 1\/2 OK\./);
-  assert.match(withFail, /- \[1\] "x"\n    status: attendu routed, obtenu out_of_scope/);
+  assert.match(withFail, /- \[cas 1\] "x"\n    status: attendu routed, obtenu out_of_scope/);
 
   const withWhy = formatRouteTestResult({
     ok: false,
@@ -172,14 +173,3 @@ test("formatRouteTestResult reports pass count and lists failures", () => {
   assert.match(withWhy, /candidat: b \[100; route:x\]/);
 });
 
-test("formatMaintenanceReport renders summary and recommendations", () => {
-  const out = formatMaintenanceReport({
-    summary: { resources: 5, errors: 0, warnings: 1, placeholders: 2, actionable_placeholders: 1, missing_descriptions: 0, trace_events: 9 },
-    recommendations: ["Relire les marqueurs ouverts."],
-    validation: { errors: [] },
-  });
-  assert.match(out, /^Entretien BASE/);
-  assert.match(out, /- Ressources: 5/);
-  assert.match(out, /- Fichiers avec marqueurs ouverts: 2/);
-  assert.match(out, /Recommandations:\n- Relire les marqueurs ouverts\./);
-});

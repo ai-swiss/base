@@ -1,8 +1,8 @@
-// Spec coverage: FR-PARSE-001 FR-PARSE-002 FR-PARSE-003 NFR-PARSE-001
+// Spec coverage: FR-PARSE-001 FR-PARSE-002 FR-PARSE-003 NFR-PARSE-001 NFR-CORE-004
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 import fc from "fast-check";
-import { parseFrontmatter, parseScalar } from "../tools/core/frontmatter.mjs";
+import { composeMarkdown, parseFrontmatter, parseScalar } from "../tools/core/frontmatter.mjs";
 
 const wrap = (body) => `---\n${body}\n---\nbody text\n`;
 const codesOf = (result) => result.errors.map((e) => e.code);
@@ -96,6 +96,27 @@ describe("frontmatter — CRLF tolerance (Windows checkouts, NFR-PARSE-001)", ()
   });
 });
 
+describe("frontmatter — template placeholders are text, not flow mappings", () => {
+  it("reads a placeholder as its own text, alone or in a flow array", () => {
+    const r = parseFrontmatter(wrap(['handle: {dataset-handle}', 'date: {YYYY-MM-DD}', 'who: {lab-manager | grants}', 'attendees: [{a}, {b}]'].join("\n")));
+    assert.deepEqual(r.errors, []);
+    assert.equal(r.data.handle, "{dataset-handle}");
+    assert.equal(r.data.date, "{YYYY-MM-DD}");
+    assert.equal(r.data.who, "{lab-manager | grants}");
+    assert.deepEqual(r.data.attendees, ["{a}", "{b}"]);
+  });
+
+  it("round-trips through the serializer, which quotes it", () => {
+    const md = composeMarkdown({ handle: "{dataset-handle}" }, "corps");
+    assert.match(md, /handle: "\{dataset-handle\}"/);
+    assert.equal(parseFrontmatter(md).data.handle, "{dataset-handle}");
+  });
+
+  it("still rejects a genuine flow mapping", () => {
+    assert.ok(codesOf(parseFrontmatter(wrap("meta: {a: b}"))).includes("base.yaml.flow_map_unsupported"));
+  });
+});
+
 describe("frontmatter — golden negative (one per error code)", () => {
   const cases = [
     ["tab_indent", "id: a\n\tkind: b", "base.yaml.tab_indent"],
@@ -126,6 +147,11 @@ describe("frontmatter — golden negative (one per error code)", () => {
   it("flags an unterminated frontmatter block", () => {
     const r = parseFrontmatter("---\nid: x\nstill inside\n");
     assert.ok(codesOf(r).includes("base.yaml.unterminated_frontmatter"));
+  });
+
+  it("names the fix when a value really is flow-map shaped", () => {
+    const r = parseFrontmatter(wrap("meta: {a: b}"));
+    assert.match(r.errors[0].message, /entre guillemets/);
   });
 
   it("never inserts a guessed value for a rejected token", () => {

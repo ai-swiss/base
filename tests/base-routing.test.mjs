@@ -50,8 +50,7 @@ describe("routeText / deriveRoutingSignals", () => {
     const signal = routeText(res({
       metadata: { use_when: "Préparer une offre.", routing: { examples: ["Devis pour Dupont SA"] } },
     }));
-    assert.ok(signal.text.includes("Préparer une offre."));
-    assert.ok(signal.text.includes("Devis pour Dupont SA"));
+    assert.equal(signal.text, "Préparer une offre. Devis pour Dupont SA");
     assert.equal(signal.has_examples, true);
   });
 
@@ -65,6 +64,19 @@ describe("routeText / deriveRoutingSignals", () => {
     }));
     assert.equal(signal.source, "section");
     assert.match(signal.text, /Relancer un client/);
+  });
+
+  it("finds the same section under an English, German or Italian heading", () => {
+    const bare = { description: "", title: "", keywords: [], path: ".ai/agents/sales/skills/processes/relance/SKILL.md" };
+    for (const [heading, line] of [
+      ["When to use", "Follow up on an offer that went unanswered."],
+      ["Wann verwenden", "Ein Angebot ohne Antwort nachfassen."],
+      ["Quando usare", "Sollecitare un'offerta rimasta senza risposta."],
+    ]) {
+      const signal = routeText(res({ ...bare, body: `# Relance\n\n## ${heading}\n\n${line}\n\n## Steps\n\nDo it.` }));
+      assert.equal(signal.source, "section", heading);
+      assert.ok(signal.text.startsWith(line.slice(0, 12)), heading);
+    }
   });
 
   it("derives a complete routing signal with scope, agent_path and reasons", () => {
@@ -224,6 +236,7 @@ describe("buildRoutingRegistry — deterministic projection", () => {
       assert.ok(paths.includes(".ai/agents/sales/index.md"), "per-agent index");
       assert.ok(index.every((a) => a.target === "routing-index"));
       assert.match(index.find((a) => a.path === ".ai/agents/sales/index.md").content, /nouveau-devis/);
+      assert.ok(index.every((a) => !a.content.includes("—")), "French generated indexes use simple punctuation");
     } finally {
       await fs.rm(tmpDir, { recursive: true, force: true });
     }

@@ -24,7 +24,7 @@ allowed-tools: Read
 
 # Accueil BASE
 
-Le point d'entrée amical de BASE. Ce process est surtout chargé en **repli**: quand le routeur s'abstient honnêtement, faute de workflow métier, l'assistant ouvre cet accueil plutôt que de laisser l'utilisateur sans réponse.
+Le point d'entrée amical de BASE. Ce process est surtout chargé en **repli**: quand le routeur s'abstient honnêtement, faute de procédure métier, l'assistant ouvre cet accueil plutôt que de laisser l'utilisateur sans réponse.
 
 Il sert aussi quand quelqu'un demande directement «par où je commence?» ou «quelles sont mes options?».
 
@@ -42,15 +42,18 @@ Une phrase chaleureuse, sans jargon.
 
 ### 2. Proposer un petit menu
 
-Des options courtes:
+Le menu se lit, il ne se récite pas. Ouvre [`index.md`](../../../index.md), la carte de mes process:
+chacun y porte son «Quand l'utiliser» et son «Éviter si». Une liste écrite ici vieillirait à chaque
+process ajouté, et la personne s'entendrait proposer un menu qui ne couvre plus ce que je sais faire.
 
-- **Commencer selon mon profil**: particulier, PME, développeur, secteur public, curieux.
-- **Essayer un exemple**: voir un assistant déjà prêt.
-- **Créer mon assistant**: partir de mon métier.
-- **Trouver quoi automatiser**: si je ne sais pas par où prendre mon activité.
-- **Comprendre BASE**: comment ça marche.
-- **Réparer / configurer**: si quelque chose ne marche pas.
-- **Auditer un BASE existant**: vérifier, nettoyer, préparer à partager.
+Tires-en quatre à six options, dans les mots de la personne et jamais les identifiants: «comprendre
+comment ça marche», «créer mon assistant», «améliorer ce qui tourne déjà», «réparer quelque chose qui
+ne marche pas». Ajoute deux entrées qui ne sont pas des process: **commencer selon mon profil**
+(particulier, PME, développeur, secteur public, curieux) et **essayer un exemple** (un dossier de
+`exemples/`).
+
+Si la personne a déjà dit quelque chose de son besoin, mets en tête les deux options dont le «Quand
+l'utiliser» s'en approche, au lieu de dérouler la liste entière.
 
 ### 3. Poser une seule question
 
@@ -58,15 +61,16 @@ Des options courtes:
 
 ### 4. Passer la main
 
-Selon la réponse:
+Ouvre le process dont le «Quand l'utiliser» couvre sa réponse, en respectant son «Éviter si», et
+suis-le. La carte fait foi, pas ma mémoire.
 
-- commencer selon mon profil → `par-ou-commencer`;
-- essayer un exemple → indiquer un dossier dans `exemples/`;
-- créer → `createur-agent` / `creer-agent`;
-- trouver quoi automatiser → `createur-agent` / `diagnostic`;
-- comprendre → `comprendre-base` ou `faq-base`;
-- réparer / configurer → `depannage-base`, puis `activer-routage` si c'est une installation;
-- auditer → `createur-agent` / `entretien-base`.
+Pour ne pas confondre l'amélioration guidée avec un audit de maintenance:
+
+- **faire le point sur les process, le routage ou les frictions d'un BASE en service** → `ameliorer-mes-process`, dans ma carte, et non l'audit de maintenance;
+- **créer un assistant, trouver quoi automatiser, auditer avant de partager** → l'agent
+  [`createur-agent`](../../../../createur-agent/index.md), puis le process de sa carte;
+- **essayer un exemple** → nommer un dossier de `exemples/`, sans rien installer;
+- **commencer selon mon profil** → `par-ou-commencer`, de ma carte.
 
 ## Si l'utilisateur était déjà sur une autre tâche
 
@@ -76,5 +80,5 @@ Réponds à l'orientation, puis propose: «Voulez-vous que je vous redirige, ou 
 
 - Lister des docs ou de la documentation brute.
 - Poser d'abord des questions techniques (YAML, MCP, schéma).
-- Rediriger vers un workflow métier au hasard.
+- Rediriger vers un process métier au hasard.
 - Faire le travail d'un spécialiste à sa place.

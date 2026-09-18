@@ -3,11 +3,11 @@ schema_version: base.resource.v1
 id: protection-des-donnees
 type: document
 title: Protection des données
-description: Quelles données BASE traite, ce qui sort de la machine et quand, ce que BASE ne fait pas, et ce qui reste de la responsabilité de l'organisation (nLPD, RGPD).
+description: Quelles informations peuvent quitter votre ordinateur avec BASE et un outil IA, quand elles partent vers un fournisseur, et quelles responsabilités restent à l'organisation.
 scope: public
 status: active
 sensitivity: public
-keywords: [protection, donnees, nlpd, rgpd, dpo, conformite, telemetrie, traces, opt-in, confidentialite]
+keywords: [protection, donnees, informations, ordinateur, machine, fournisseur IA, sortie, nlpd, rgpd, dpo, conformite, telemetrie, traces, opt-in, confidentialite]
 ---
 
 # Protection des données
@@ -16,20 +16,21 @@ Quand on utilise BASE, où vont les données? La réponse conditionne votre conf
 
 ## Quelles données BASE traite
 
-- **Vos fichiers locaux.** BASE structure des fichiers texte (Markdown, JSON) qui résident dans vos dossiers et vous appartiennent. Il les lit et les écrit sur place: les seules copies sont locales (un instantané du changement proposé dans `.ai/changes/`, et le journal local `.ai/trace/`, qui consigne des identifiants et des chemins, jamais le contenu). Rien n'est envoyé ailleurs sans une action de votre part.
-- **Des traces techniques minimales.** Les actions qui passent par BASE écrivent une ligne JSONL locale dans `.ai/trace/`: identifiants de ressources et chemins des opérations médiées (localement), décisions, durées, mais jamais le contenu des fichiers. Ces traces servent à l'entretien et à l'audit local, non à la surveillance, et se gèrent avec `base trace prune`.
+- **Vos fichiers locaux.** BASE structure des fichiers texte (Markdown, JSON) qui résident dans vos dossiers et vous appartiennent. Il les lit et les écrit sur place. Un changement proposé est conservé localement dans `.ai/changes/`. Un outil IA qui ouvre ces fichiers peut toutefois les transmettre selon sa propre configuration.
+- **Des traces techniques minimales.** Les points instrumentés tentent d'écrire une ligne JSONL locale dans `.ai/trace/`: identifiants de ressources, chemins, décisions et durées. Aucun contenu métier n'y figure par défaut. Cette trace est best-effort et non exhaustive: une action hors broker, un point non instrumenté ou un échec d'écriture peut ne laisser aucune ligne. Elle sert à l'entretien local, non à la surveillance ni à un audit complet. Vous décidez de sa rétention avec `base trace prune --keep-days <n>` et `base trace clear`.
 
-## Ce qui sort de votre machine, et quand
+## Ce qui peut quitter votre ordinateur, et quand {#ce-qui-sort-de-votre-machine-et-quand}
 
-Rien, par défaut. Le cœur de BASE ne fait aucun appel réseau: le routage par défaut est local et lexical. Toute sortie de données procède d'un choix explicite de votre part, jamais d'un réglage caché.
+Le cœur de BASE ne contacte aucun service distant par défaut. Dans un outil IA, le modèle route normalement en lisant la carte locale; le routeur lexical local fournit le plancher déterministe aux appels sans modèle et aux tests. L'outil IA conserve toutefois sa propre politique réseau.
 
 | Sortie possible | Quand | Qui décide | Où c'est documenté |
 | --------------- | ----- | ---------- | ------------------ |
 | L'outil IA que vous utilisez au-dessus de BASE | À chaque conversation où vous lui confiez du contenu | Vous, en choisissant l'outil et ce que vous lui montrez | [Sécurité et limites](securite-et-limites.md), section «Données et fournisseurs IA» |
-| Un provider d'embeddings | Seulement si vous activez le ranker sémantique optionnel | Vous, par configuration explicite; une option locale (Ollama) existe | [Sécurité et données du routage](securite-donnees-routage.md) |
-| Le serveur MCP | Seulement si vous l'exposez à une app de chat | Vous, par configuration explicite; lecture seule par défaut | [`mcp/README.md`](../../mcp/README.md) |
+| Les modèles de la Voie 2 livrée | Seulement si vous activez `routing.embedding_model` et `refiner_model`; la requête et les textes de routage nécessaires peuvent partir | Vous, par configuration explicite; une option locale (Ollama) existe | [Sécurité et données du routage](securite-donnees-routage.md) |
+| Une intégration directe du paquet sémantique | Si vous lui fournissez un embedder; son périmètre par défaut peut inclure le corps des ressources | L'intégrateur, qui choisit l'embedder et `textOf` | [Sécurité et données du routage](securite-donnees-routage.md) |
+| Le serveur MCP | Quand un client lui demande une ressource | Vous, en choisissant le client et le transport; HTTP est en lecture seule par défaut, tandis que `stdio` expose les écritures médiées sauf mode lecture seule | [`mcp/README.md`](../../mcp/README.md) |
 
-Pour chaque ligne, la règle est la même: la sortie est désactivée par défaut, activée par vous seul, et documentée à l'endroit indiqué.
+Ces chemins n'ont pas le même responsable. BASE configure sa Voie 2 et son serveur; l'outil IA et une intégration sur mesure gardent leurs propres autorités et réglages.
 
 ## Ce que BASE ne fait pas
 

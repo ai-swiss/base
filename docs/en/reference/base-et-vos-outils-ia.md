@@ -1,4 +1,4 @@
-<!-- fr-synced: 93b01cf2da91e690d39a35633e002fcf3d3760c6 -->
+<!-- fr-synced: 53db4a842fd8dc94cf36ccd274c370f0b04b5061 -->
 # Keep your AI tools, own the intelligence they run
 
 > This page is for anyone already using an AI tool (an assistant, a platform, a suite) and wondering where BASE fits. In a nutshell: you keep your tools for execution, and you own in BASE the intelligence they run.

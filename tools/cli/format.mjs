@@ -68,6 +68,15 @@ export function formatBuildPlan(artifacts) {
   ].join("\n");
 }
 
+// What `base build --write` did, and what it deliberately did not do. A hand-owned file (present,
+// no provenance banner) is kept, so the report names it and the gesture that gives it back.
+export function formatBuildWrite({ written, kept }) {
+  const writtenNote = written.length ? `Artefacts écrits:\n${written.map((p) => `- ${p}`).join("\n")}` : "Aucun artefact écrit.";
+  if (!kept.length) return writtenNote;
+  const keptList = kept.map((p) => `- ${p}`).join("\n");
+  return `${writtenNote}\n\nÉcrits à la main, donc laissés intacts:\n${keptList}\nCes fichiers ne portent pas la bannière de provenance: ils vous appartiennent. Pour que BASE les regénère, supprimez-les puis relancez.`;
+}
+
 export function formatPromoteResult(result) {
   return [
     `Promotion preparee: ${result.id} (${result.from} -> ${result.to})`,

@@ -1,6 +1,6 @@
 # Matrice des outils BASE
 
-<!-- Généré par `base build`. Déclaration honnête des garanties atteignables quand l'action passe vraiment par BASE. -->
+<!-- BASE:generated · Généré par `base build`. Déclaration honnête des garanties atteignables quand l'action passe vraiment par BASE. -->
 
 Niveaux: 0 non supporté · 1 advisory (guide/audit) · 2 médiation partielle · 3 strict (médié).
 
