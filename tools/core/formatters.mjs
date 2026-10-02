@@ -53,7 +53,7 @@ export function formatRouteResult(result) {
   // Honest abstention, friendly exit: the status above stays truthful, but a human reading this should
   // see an open door, not a rejection. The machine-readable pointer line is kept for tooling and tests.
   if (result.fallback) {
-    lines.push("Pas de route directe ; je vous oriente vers l'accueil de BASE.");
+    lines.push("Pas de route directe: je vous oriente vers l'accueil de BASE.");
     // The path matters when the target is not in this root: the harness reads this text, and a
     // framework process sits outside the working folder. Say where it is, once, in full.
     const from = result.fallback.source === "framework" ? " (cadre BASE)" : "";

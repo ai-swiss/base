@@ -7,14 +7,25 @@ scope: team
 status: active
 sensitivity: internal
 name: diagnostic
-description: "Identifier les tâches à fort potentiel IA et prioriser. Utiliser quand l'utilisateur ne sait pas par où commencer, veut un diagnostic, ou cherche quelle tâche automatiser."
-use_when: Quand l'utilisateur veut identifier les meilleures opportunités IA pour son métier, choisir par où commencer ou prioriser une première tâche à automatiser.
+description: "Faire parler une personne de son quotidien quand elle n'a rien à montrer (ni discussion, ni documents), relever ses tâches, puis passer la main à «Partir de ce que vous avez» qui rend la fiche de proposition. Utiliser quand l'utilisateur ne sait pas par où commencer et n'a aucun document."
+use_when: Quand l'utilisateur veut savoir par où commencer avec l'IA ou quelle tâche confier en premier, et n'a ni discussion, ni compte rendu, ni documents à montrer.
+keywords:
+  - commencer
+  - diagnostic
+  - automatiser
+  - tâches
+  - quotidien
+  - opportunités
+  - premier
 routing:
   examples:
     - Aide-moi à savoir par où commencer avec l'IA
     - Quelles tâches de mon métier valent la peine d'automatiser ?
     - Je ne sais pas quel assistant créer en premier
   avoid_when:
+    - Voici notre discussion sur nos besoins, voici le compte rendu de notre réunion.
+    - Voici nos procédures, voici mon dossier de documents, regarde ce que tu en ferais.
+    - On a déjà un CLAUDE.md et des règles écrites pour l'IA.
     - Verifie audit revue architecture securite publication readiness maintenance depot BASE en detail ligne par ligne.
 argument-hint: "[secteur d'activité ou description du métier]"
 user-invocable: true
@@ -23,7 +34,7 @@ allowed-tools: Read Write Glob
 
 # Diagnostic: par où commencer avec l'IA?
 
-Aider l'utilisateur à repérer les tâches où un assistant IA aurait le plus d'impact dans son quotidien. Ce process précède la création d'un agent: c'est l'étape préalable.
+Faire parler une personne de son quotidien quand elle n'a rien à montrer. La conversation remplace la discussion ou les documents que d'autres apportent; au bout, ses notes passent par la même porte, `adopter-ce-dossier`, qui juge chaque tâche et rend la même fiche de proposition. Ce process recueille et passe la main: il ne juge pas, ne classe pas et ne recommande rien. Si la personne a quelque chose à montrer, c'est la porte qui commence, pas ce process.
 
 ## Inputs
 
@@ -46,6 +57,7 @@ Puis creuse:
 - «Quels documents rédigez-vous le plus souvent?»
 - «Qu'est-ce qui vous frustre dans votre quotidien? Ce qui prend trop de temps, ce qui est rébarbatif?»
 - «Y a-t-il des tâches que vous repoussez parce qu'elles sont longues ou pénibles?»
+- «Qu'est-ce qui ne doit jamais sortir de vos mains, même si un assistant pouvait le faire?»
 
 Note chaque tâche mentionnée.
 
@@ -53,58 +65,17 @@ Note chaque tâche mentionnée.
 
 ← Reformulation
 
-### 2. Évaluer le potentiel
+### 2. Passer la main
 
-Pour chaque tâche identifiée, évalue silencieusement deux critères:
+Une fois le résumé validé, écris des notes d'entretien sous `.temp/{AAAA-MM-JJ}_{sujet}/notes-entretien.md`, avec les mots de la personne: les tâches relevées avec leur fréquence, ce qui prend de l'énergie, les règles dites à l'oral, les lignes rouges. Rien d'autre ne s'écrit, pas même le journal: la porte l'écrit après l'export.
 
-**Faisabilité IA** (la tâche est-elle structurable?):
-- Suit un processus que l'on peut décrire → haute
-- Aboutit à un document à la structure récurrente → haute
-- Exige un jugement humain de tous les instants → moyenne
-- Repose sur des données sensibles ou des interactions physiques → basse
+> «Je résume ce que vous m'avez dit dans une page, puis je vous prépare une fiche: ce qu'un assistant ferait pour vous, ce qu'il ne fera jamais, et par où commencer. Vous la lirez tranquillement, et rien ne se construit avant votre retour.»
 
-**Impact** (quel gain si un assistant la gère?):
-- Fréquente (quotidienne/hebdomadaire) → haut
-- Chronophage (>30 min par occurrence) → haut
-- Source de frustration ou d'erreurs → haut
-- Occasionnelle et rapide → bas
-
-Ne montre pas cette grille à l'utilisateur: elle te sert seulement à prioriser.
-
-### 3. Proposer les priorités
-
-Présente les 3 meilleures opportunités sous forme de tableau simple:
-
-> «D'après ce que vous m'avez décrit, voici les trois tâches où un assistant IA vous aiderait le plus:
->
-> | Priorité | Tâche | Pourquoi |
-> |----------|-------|----------|
-> | 1 | [tâche] | [fréquence + gain concret] |
-> | 2 | [tâche] | [fréquence + gain concret] |
-> | 3 | [tâche] | [fréquence + gain concret] |
->
-> Je vous conseille de commencer par la première: un assistant centré sur une seule tâche, que l'on pourra enrichir ensuite. Qu'en pensez-vous?»
-
-Si certaines tâches ne se prêtent pas bien à l'IA, dis-le honnêtement:
-> «Pour [tâche], l'IA serait moins utile, car [raison]. Mieux vaut concentrer l'effort là où le gain est concret.»
-
-← Reformulation (valider le choix de la priorité)
-
-### 4. Passer à l'action
-
-Une fois la priorité validée:
-
-> «Parfait! Créons votre assistant pour [tâche]. Je vais vous poser quelques questions pour bien comprendre votre façon de travailler aujourd'hui, et nous le construirons ensemble.»
-
-→ Enchaîne avec `/creer-agent`, en pré-remplissant l'étape 1 avec les informations déjà collectées.
-
-### 5. Journal
-
-Écris une entrée dans `.ai/journal/` selon la compétence `journal`.
+→ Enchaîne avec `adopter-ce-dossier` sur ces notes: la porte reconnaît des besoins décrits et rend la fiche de proposition. La construction vient après l'export, par `creer-agent`.
 
 ## Ce que tu ne fais jamais dans ce process
 
-- **Proposer des solutions avant d'avoir exploré.** L'étape 1 n'est pas là par hasard. Ne saute pas au diagnostic après une seule question.
-- **Promettre des résultats irréalistes.** L'IA aide, elle ne remplace pas le jugement humain. Reste honnête sur ce qui est faisable.
-- **Noyer l'utilisateur sous les possibilités.** Trois priorités au maximum: trop de choix paralyse.
-- **Employer du jargon.** Pas de «process», «skill», «agent». Parle de «tâche», «assistant», «processus».
+- **Passer la main après une seule question.** L'étape 1 n'est pas là par hasard.
+- **Juger, classer ou promettre dans la conversation.** Ce que l'IA peut faire, et ce qu'elle ne réglera pas, se dit dans la fiche.
+- **Employer du jargon.** Pas de «process», «skill», «agent». Parle de «tâche», «assistant», «façon de faire».
+- **Sauter à la construction.** La fiche de proposition vient d'abord, par la porte; `creer-agent` construit après l'export.

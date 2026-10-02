@@ -1,4 +1,4 @@
-<!-- fr-synced: 69c2ed4784050e174502b3be145f5c000c0e3d33 -->
+<!-- fr-synced: 402b21982258a39ebeed02acf59f10e9ae3a0cde -->
 # Generate and publish a documentation site from your canonical files
 
 Read or publish your BASE's documentation without ever copying it elsewhere: BASE builds a site, local or public, straight from the repository. The Markdown, JSON, and spec files remain the sources of truth, and the site is merely an interactive projection of them (navigation by section, learning paths, explorer, system map, routing lab, quality, and resource pages). It serves anyone who wants a navigable view of the corpus without maintaining a second set of documentation, one bound to drift from the first.
@@ -7,10 +7,10 @@ The site's interface is bilingual: French by default, with a toggle to English. 
 
 ## Install the site generator
 
-The site generator lives in a separate package, installed the day you want HTML:
+The site generator lives in a separate package, `@ai-swiss/base-docs-site`, not yet published on npm. In a clone of the repository, `npm install` at the root makes it available, the day you want HTML:
 
 ```bash
-npm install @ai-swiss/base-docs-site
+npm install   # at the root of the BASE clone
 ```
 
 It requires Node 22.12 or later, and it stays out of the way: BASE validates, routes and reads your files without it. As long as it is not installed, `base docs build` tells you what to install instead of attempting a build. From the BASE repository, it is already there.

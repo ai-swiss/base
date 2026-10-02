@@ -1,11 +1,11 @@
-<!-- fr-synced: f96aa910032d1a8c88a50669f2f0cd2ebba7c565 -->
+<!-- fr-synced: b95a7a247258ceee8f4c808a77526f134ec02f48 -->
 # Getting BASE: choosing your installation path
 
 How you get BASE decides what you can do with it next: just try out an assistant, start from your own data, or follow updates and contribute. The options below are **independent**, not steps to run in sequence: read them, then keep the one that matches your need. To try an assistant, the ZIP or a copied example is enough; the Git clone becomes useful the moment you want to follow updates or contribute.
 
 > **Fastest, and no terminal on your side:** let your AI tool do it. Paste a single block into an AI tool that can read your files and it installs BASE, creates your workspace, and tells you when it's ready. See [Have your AI install BASE](installer-par-votre-ia.md).
 
-> **Have you just pointed your AI tool at the repository?** Tell it "apply BASE to my folder." From your working folder, it first runs `node <BASE_DIR>/tools/base.mjs init` to preview the intended files without writing and collect your choices. After your approval, a second invocation with `--yes` initializes the folder using your answers; the initial preview is not guaranteed to remain identical. The folder launcher is then `node .ai/base.mjs`; neither path installs the short `base` command. The tool subsequently proposes each conversion as a diff and waits for your approval before applying it. The [AI-led installation guide](installer-par-votre-ia.md) gives the complete commands when the BASE folder and your working folder are separate.
+> **Have you just pointed your AI tool at the repository?** Tell it "apply BASE to my folder." It first gives you a proposition brief: what an assistant would do for you, writing nothing else. After your answers, from your working folder, it runs `node <BASE_DIR>/tools/base.mjs init` to preview the intended files without writing and collect your choices. After your approval, a second invocation with `--yes` initializes the folder using your answers; the initial preview is not guaranteed to remain identical. The folder launcher is then `node .ai/base.mjs`; neither path installs the short `base` command. The tool subsequently proposes each conversion as a diff and waits for your approval before applying it. The [AI-led installation guide](installer-par-votre-ia.md) gives the complete commands when the BASE folder and your working folder are separate.
 
 ## 1. Without installing anything (browser only)
 

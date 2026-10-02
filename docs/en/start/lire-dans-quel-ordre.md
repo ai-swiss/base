@@ -1,4 +1,4 @@
-<!-- fr-synced: f1a765e9290c89c3efbd0c32ddeaf486830c12ad -->
+<!-- fr-synced: f65d385556fee687ffcfead10e969e9d18adf352 -->
 # Where to start
 
 At first glance, the repository can look dense because it combines three things: an open framework with its proposed standard and reference implementation, domain examples, and a verifiable technical foundation. This page gives you the reading order for your situation, whether you are on your own, in an SMB, in a large enterprise, or in the public sector.
@@ -29,7 +29,7 @@ You can skip at first:
 
 At this level, BASE can stay very simple: one assistant, a few Markdown files, explicit human decisions.
 
-If you are lost, just say "Help" or "I'm lost". With routing enabled, the router selects the `concierge-base` welcome instead of leaving you with no answer; otherwise, load `.ai/agents/concierge-base/AGENT.md`.
+If you are lost, just say "Help" or "I'm lost". With routing enabled, the router directs you to the `concierge-base` concierge, or asks a question to narrow it down, instead of leaving you with no answer; otherwise, load `.ai/agents/concierge-base/AGENT.md`.
 
 ## If you are an SMB or a small team
 
@@ -58,7 +58,7 @@ At this level, the important files are:
 - `tools/` to validate, index, discover, and maintain;
 - `base.schema.json` to stabilize the shared metadata.
 
-If you manage **several BASE roots** (for example several clients), a `base.workspace.json` declares them: after initialization, `node .ai/base.mjs route --workspace <file>` lets the router search across them and `--root-id <id>` targets a specific root (every read and write that passes through this path stays confined to the chosen root). The launcher does not install the short `base` command. See [Routing, processes, and resources](../reference/routage-process-et-ressources.md) and `specs/current/10_core/cli.md`.
+If you manage **several BASE roots** (for example several clients), a `base.workspace.json` declares them: after initialization, `node .ai/base.mjs route "<request>" --workspace <file>` lets the router search across them and `--root-id <id>` targets a specific root (every read and write that passes through this path stays confined to the chosen root). The launcher does not install the short `base` command. See [Routing, processes, and resources](../reference/routage-process-et-ressources.md) and `specs/current/10_core/cli.md`.
 
 You do not need a heavy platform, but clear conventions, local validation, readable descriptions, and regular upkeep.
 

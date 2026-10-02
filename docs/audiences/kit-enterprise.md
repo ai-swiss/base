@@ -58,13 +58,13 @@ Le fallback ci-dessus cherche `concierge-base` dans la racine déployée, puis d
 installé. Si vous distribuez une copie autonome sans ce cadre, pointez-le vers un accueil local
 équivalent.
 
-Pour le MCP, ajoutez un descripteur `auth` (jeton porteur ou `AuthProvider` maison): le serveur MCP refuse de toute façon toute exposition non-loopback dépourvue d'authentification (voir [`mcp/`](../../mcp/)).
+Pour le MCP, ajoutez un descripteur `auth` (jeton porteur ou `AuthProvider` maison): le serveur MCP refuse toute exposition non-loopback dépourvue d'authentification, sauf dérogation explicite signalée comme dangereuse (voir [`mcp/`](../../mcp/)).
 
 ## Modes de déploiement
 
 | Mode | Médiation | Pour qui |
 | --- | --- | --- |
-| Local, navigateur seul | Aucune (consignes suivies par le modèle) | Découverte, sans installation |
+| Chat d'IA dans le navigateur | Aucune (consignes suivies par le modèle) | Découverte, sans installation |
 | Outil IA + dossier | Faible (l'outil suit le routage) | Individu, première mise en place |
 | CLI locale | Forte sur les actions médiées (propose/commit, dry-run) | Équipe, entretien d'un BASE |
 | MCP authentifié | Lecture seule par défaut, écritures explicites, auth requise hors loopback | Intégration multi-clients |

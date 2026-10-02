@@ -1,4 +1,4 @@
-<!-- fr-synced: fc20e21ba42927a27f806fd3ca86835aea3d2c30 -->
+<!-- fr-synced: 80c83686abf65993c658cec3096df202879ec716 -->
 # Working as a team on a BASE
 
 A folder opened by a single person tolerates implicit conventions: that person holds them all in mind. As soon as two people write into the same corpus, every implicit convention becomes a divergence that a diff eventually reveals. This page is for a team that shares a BASE. It names the mechanisms that already exist, and the decisions that remain to be made, with the cost of each branch.
@@ -12,7 +12,7 @@ The corpus becomes the shared reference. A process written by one person is foll
 
 The `scope` field of a resource declares its sharing perimeter: `personal`, `team`, `org`, `public`. The declaration has visible effects. `base doctor` asks for the attribution line in the `README.md` of a folder that carries at least one resource at `team`, `org` or `public`, and stays silent on a folder that is entirely personal. To move a resource from one perimeter to another, `base promote <ressource> --to <scope>` writes the change through the mediated path, with its diff.
 
-This mediated path is the third difference. A write is proposed (`base propose <cible> --from <fichier>`), then validated (`base commit <change-id>`); `base changes` lists what is waiting. Each proposal is recorded under `.ai/changes/` with the fingerprint of the starting state, and the commit rechecks it: a change prepared against an outdated version of the file does not silently overwrite it. Your hosting provider adds its own review (merge request, review, pipeline); the two controls stack.
+This mediated path is the third difference. A write is proposed (`base propose <cible> --from <fichier>`), then validated (`base commit <change-id> --confirmed`); `base changes` lists what is waiting. Each proposal is recorded under `.ai/changes/` with the fingerprint of the starting state, and the commit rechecks it: a change prepared against an outdated version of the file does not silently overwrite it. Your hosting provider adds its own review (merge request, review, pipeline); the two controls stack.
 
 ## Naming people
 

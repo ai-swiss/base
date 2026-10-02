@@ -76,9 +76,9 @@ La CLI fournit le routage déterministe aux scripts et intégrations sans modèl
 
 1. **Vérifier qu'elle répond**:
    ```bash
-   node tools/base.mjs route "une demande de test" --root .
+   node .ai/base.mjs route "une demande de test" --root .
    ```
-   (ou `base route "…" --root <dossier-base>` si le paquet est installé.)
+   (depuis le dépôt BASE lui-même: `node tools/base.mjs route "…" --root .`.)
 2. Dans un appel sans modèle, charger l'agent et le process retournés. Si un modèle est présent, utiliser ce résultat comme une indication à vérifier contre la carte générée.
 
 > «La CLI répond. Son résultat est déterministe; avec un assistant IA, je le vérifie contre la carte avant de choisir.»

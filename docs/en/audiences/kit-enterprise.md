@@ -1,4 +1,4 @@
-<!-- fr-synced: 03da0c11162c9411f78f2127dab51bbfc421616f -->
+<!-- fr-synced: 1a1472171889fa36f13b7e1e5c50f8cdd37718ad -->
 # Deploying BASE in an organization
 
 Deploying a BASE folder in an organization means deciding who can do what with your assistants and keeping control of sensitive actions without surrendering your know-how to a platform. For a team or an IT department, the stakes are these: understanding what each file, tool, and integration actually enforces, then choosing a deployment mode that matches your requirements. The files provide a language for expertise; the broker, BASE's mediation component, can mediate some sensitive actions. Neither replaces IAM, SSO, RBAC, DLP, SIEM, or regulatory retention (see [Security and limits](../trust/securite-et-limites.md)).
@@ -47,13 +47,13 @@ The fallback above looks for `concierge-base` in the deployed root, then in the 
 framework. If you distribute a standalone copy without that framework, point it at an equivalent
 local welcome.
 
-For the MCP, add an `auth` descriptor (bearer token or a homegrown `AuthProvider`): the MCP server refuses any non-loopback exposure that lacks authentication in any case (see [`mcp/`](../../../mcp/)).
+For the MCP, add an `auth` descriptor (bearer token or a homegrown `AuthProvider`): the MCP server refuses any non-loopback exposure that lacks authentication, unless an explicit override flagged as dangerous is set (see [`mcp/`](../../../mcp/)).
 
 ## Deployment modes
 
 | Mode | Mediation | For whom |
 | --- | --- | --- |
-| Local, browser only | None (*instructions* followed by the model) | Discovery, no installation |
+| AI chat in the browser | None (*instructions* followed by the model) | Discovery, no installation |
 | AI tool + folder | Weak (the tool follows the routing) | Individual, first setup |
 | Local CLI | Strong on mediated actions (propose/commit, dry-run) | Team, maintaining a BASE |
 | Authenticated MCP | Read-only by default, explicit writes, auth required off loopback | Multi-client integration |

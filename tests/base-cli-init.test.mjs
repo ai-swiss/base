@@ -39,13 +39,24 @@ describe("base init (CLI)", () => {
     await assert.rejects(() => fs.access(path.join(tmpDir, ".ai")));
   });
 
+  it("the apply hint replays every answer already given, so a copy-paste writes what the preview showed", async () => {
+    await fs.writeFile(path.join(tmpDir, "CLAUDE.md"), "# Nos règles\n");
+    const { stdout } = await run("init", "--tool", "claude-code", "--about", "Je prépare des devis", "--egress", "local-only");
+    const hint = stdout.split("\n").find((line) => line.startsWith("Pour appliquer:")) ?? "";
+    for (const part of ["init", "--tool claude-code", '--about "Je prépare des devis"', "--egress local-only", "--yes"]) {
+      assert.ok(hint.includes(part), `the hint carries ${part}: ${hint}`);
+    }
+    assert.match(hint, /^Pour appliquer: {2}node /, "the hint names the script that ran: `base` is on no one's PATH by default");
+    assert.match(stdout, /Déjà là, laissé tel quel: CLAUDE\.md/, "an entry point already in the folder is named, since the tool keeps reading it");
+  });
+
   it("--yes applies, then a re-run finds a complete BASE and changes nothing", async () => {
     await fs.writeFile(path.join(tmpDir, "notes.md"), "# Notes");
     const { stdout } = await run("init", "--tool", "claude-code", "--yes");
     assert.match(stdout, /fichiers créés/);
     assert.match(stdout, /artefacts d'outils/);
     // Every door of the epilogue is printed: the AI tool, the MCP guarantees, the workshop.
-    assert.match(stdout, /importer mes procédures existantes/);
+    assert.match(stdout, /Montre-moi ce qu'un assistant pourrait faire pour nous/, "the first thing to say leads to the door's proposition sheet");
     assert.match(stdout, /installer-mcp\.md/);
     assert.match(stdout, /studio --root/);
     const [agentDir] = await fs.readdir(path.join(tmpDir, ".ai", "agents"));
@@ -111,11 +122,11 @@ describe("base init (CLI)", () => {
     await fs.writeFile(path.join(tmpDir, "notes.md"), "# Notes");
 
     const unanswered = await run("init");
-    assert.match(unanswered.stdout, /Dans quelle langue écrire ce dossier \?/);
+    assert.match(unanswered.stdout, /Dans quelle langue écrire ce dossier\?/);
 
     // Answered, the question is gone and the answer is not asked for twice.
     const answered = await run("init", "--language", "rm", "--tool", "claude-code", "--about", "Nous réparons des vélos");
-    assert.doesNotMatch(answered.stdout, /Dans quelle langue écrire ce dossier \?/);
+    assert.doesNotMatch(answered.stdout, /Dans quelle langue écrire ce dossier\?/);
     // A language this build cannot write earns ONE line, not a refusal.
     assert.match(answered.stdout, /Langue «rm» inconnue de ce build/);
     assert.match(answered.stdout, /langues disponibles: fr, en, de, it/);

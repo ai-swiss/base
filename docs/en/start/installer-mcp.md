@@ -1,4 +1,4 @@
-<!-- fr-synced: 0021b6c0c370a6da597c8347a0b9471a1c940f36 -->
+<!-- fr-synced: 0f8ad17a2205fc516f68496d71ec715297822836 -->
 # Installing the BASE MCP server
 
 Use the MCP (Model Context Protocol) server when your AI tool cannot read your files directly or when you want to share an agent beyond your machine. It connects BASE agents to compatible platforms, including ChatGPT and Claude Desktop, without manual copying. In return, you expose a project folder to a third-party tool, so the safeguards below matter.
@@ -44,7 +44,7 @@ In `claude_desktop_config.json`:
 
 Other MCP-compatible AI tools use the same configuration: add this block to their MCP settings.
 
-Consumer MCP-compatible tools, such as ChatGPT (via its developer mode), can likewise connect to this local MCP server. Enabling it, along with whatever conditions apply at the time, is a matter for the tool and its official documentation: BASE neither makes it a guided journey nor depends on it.
+Consumer MCP-compatible tools, such as ChatGPT (via its developer mode), can likewise connect to this server, provided they reach it through a web address: ChatGPT does not start a local process, so it needs the HTTP transport behind a tunnel, with a token (see "Depuis ChatGPT, concrètement" in [`mcp/README.md`](../../../mcp/README.md)). Enabling it, along with whatever conditions apply at the time, is a matter for the tool and its official documentation: BASE neither makes it a guided journey nor depends on it.
 
 ### First request
 

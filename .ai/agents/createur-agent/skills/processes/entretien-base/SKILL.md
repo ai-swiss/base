@@ -15,7 +15,7 @@ routing:
     - Fais une revue architecture et sécurité
     - Vérifie tout en détail, ligne par ligne
     - Revue de code détaillée comme un architecte senior
-    - Prépare ce dossier pour une équipe
+    - Vérifie que ce BASE est prêt pour une équipe
     - Est-ce que ce BASE est propre et maintenable ?
     - Review and adapt every issue after implementation
     - Audit and harden this BASE before release
@@ -70,7 +70,7 @@ Si la CLI est disponible, s'appuyer sur les commandes suivantes (ajouter `--root
 ```bash
 base validate --root <dossier>
 base route-test --root <dossier>
-base entretien --root <dossier>
+base doctor --root <dossier>
 ```
 
 Selon le périmètre, vérifier aussi:
@@ -115,7 +115,7 @@ Ne proposer une promotion que si la ressource est claire, réutilisable et valid
 Si l'utilisateur demande un audit, une publication ou un partage d'équipe, en proposer une lecture par niveau:
 
 - **Usage local**: validation, procédures utilisables, données lisibles, marqueurs compréhensibles.
-- **Équipe / PME**: descriptions, route-tests, ressources promues, responsabilités humaines, données sensibles identifiées.
+- **Équipe / PME**: descriptions, route-tests, ressources promues, responsabilités humaines, données sensibles identifiées, lignes rouges critiques tenues par un verrou déjà vu refuser plutôt que par une phrase.
 - **MCP / intégration**: lecture seule ou écriture explicite, authentification, dry-run, dépendances, scripts disponibles.
 - **Publication**: README, exemples, licences, SECURITY, changelog, artefacts générés, absence de traces ou brouillons.
 - **Entreprise**: rappeler que BASE public ne remplace pas IAM, SSO, RBAC, DLP, SIEM, rétention ou conformité.

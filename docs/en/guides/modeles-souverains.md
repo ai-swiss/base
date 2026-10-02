@@ -1,4 +1,4 @@
-<!-- fr-synced: 6e652057c21ece3b8c6cd0a673fca71a8dcc80f8 -->
+<!-- fr-synced: b47e70c02237f0b7ccda7d3ec69720cc0ce33850 -->
 # Keeping your models sovereign, local or in Switzerland
 
 Using a model with BASE should not mean handing your data to a provider outside your control. If that is your requirement, two concrete paths keep you in charge, fully local or hosted in Switzerland, with a guide for choosing based on the sensitivity of what you handle.
@@ -29,7 +29,8 @@ const model = createOllamaModel({ model: "qwen3.5:9b-q4_K_M" });
 To run a fully local evaluation (the model must be available in Ollama beforehand):
 
 ```bash
-npm run eval -- --ollama --model qwen3.5:9b-q4_K_M
+npm run eval -- --root exemples/assistant-devis --agent assistant-devis --process nouveau-devis --scenarios exemples/assistant-devis/.ai/experiments/scenarios/devis.json \
+  --ollama --model qwen3.5:9b-q4_K_M
 ```
 
 ## Hosted in Switzerland: Infomaniak
@@ -54,7 +55,8 @@ For an evaluation through Infomaniak, supply the key via the environment and poi
 
 ```bash
 export OPENAI_API_KEY="$INFOMANIAK_TOKEN"
-npm run eval -- --base-url "https://api.infomaniak.com/1/ai/<PRODUCT_ID>/openai" --model "<modele>"
+npm run eval -- --root exemples/assistant-devis --agent assistant-devis --process nouveau-devis --scenarios exemples/assistant-devis/.ai/experiments/scenarios/devis.json \
+  --base-url "https://api.infomaniak.com/1/ai/<PRODUCT_ID>/openai" --model "<modele>"
 ```
 
 ## Choosing

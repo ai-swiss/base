@@ -54,17 +54,17 @@ function initEpilogue(rootDir, created, skipped) {
   const lines = [];
   if (files.length) lines.push(`✓ ${plural(files.length, "fichier")} créé${files.length > 1 ? "s" : ""}     ${files.join(" · ")}`);
   if (artifacts.length) lines.push(`✓ ${plural(artifacts.length, "artefact")} d'outils  ${artifacts.join(" · ")}`);
-  for (const s of skipped) lines.push(`  (ignoré: ${s.path} — ${s.reason})`);
+  for (const s of skipped) lines.push(`  (ignoré: ${s.path}, ${s.reason})`);
   lines.push(
     "",
     "L'expérience commence dans VOTRE outil:",
     `  ${openingLineFor(created, abs)}`,
-    "  puis dites: «importer mes procédures existantes»",
+    "  puis dites: «Voici ce que nous avons. Montre-moi ce qu'un assistant pourrait faire pour nous.»",
     "",
-    "Envie des garanties mécaniques (routage déterministe, écritures validées) ?",
+    "Envie des garanties mécaniques (routage déterministe, écritures validées)?",
     "  Le serveur MCP se branche en 3 lignes: docs/start/installer-mcp.md",
     "",
-    "La CLI, lançable d'ici sans rien installer sur le PATH (le lanceur trouve le moteur tout seul) :",
+    "La CLI, lançable d'ici sans rien installer sur le PATH (le lanceur trouve le moteur tout seul):",
     `  node "${launcher}" route "votre demande" --root "${abs}"   # routage déterministe`,
     `  node "${launcher}" studio --root "${abs}"                   # l'atelier graphique`,
   );
@@ -97,24 +97,52 @@ async function frameworkDirToRecord() {
  * reads the language the root already declares, so `--language` would change nothing there and
  * asking would promise something the command does not do.
  */
+/**
+ * The exact command that applies what was just previewed: the same entry script and every answer
+ * already given (--tool, --about, --language, --egress), so a copy-paste writes what was shown.
+ * `base` is not on anyone's PATH by default; the script that ran is.
+ */
+function applyCommand(args) {
+  const quote = (v) => (/[\s"'$`\\]/.test(String(v)) ? JSON.stringify(String(v)) : String(v));
+  const script = process.argv[1] ? path.relative(process.cwd(), process.argv[1]) : "";
+  const cli = script ? `node ${quote(script.startsWith("..") ? process.argv[1] : script)}` : "base";
+  return [
+    `${cli} init`,
+    args.root ? `--root ${quote(args.root)}` : "",
+    ...args.tools.map((tool) => `--tool ${quote(tool)}`),
+    args.about ? `--about ${quote(args.about)}` : "",
+    args.language ? `--language ${quote(args.language)}` : "",
+    args.egress ? `--egress ${quote(args.egress)}` : "",
+    "--yes",
+  ].filter(Boolean).join(" ");
+}
+
+/** Entry points already in the folder are left as they are: say so, since the tool keeps reading them. */
+function keptEntryPoints(detection) {
+  const kept = (detection.existingArtifacts ?? []).filter((p) => ENTRY_POINT_PATHS.has(p));
+  return kept.length
+    ? `Déjà là, laissé${kept.length > 1 ? "s" : ""} tel${kept.length > 1 ? "s" : ""} quel${kept.length > 1 ? "s" : ""}: ${kept.join(", ")}. Votre outil continuera de le${kept.length > 1 ? "s" : ""} lire: pour qu'il suive BASE, demandez-lui d'y reprendre le point d'entrée BASE.\n`
+    : "";
+}
+
 function initQuestions(args, plan, { fresh = true } = {}) {
   const asked = [];
   const writesAnAgent = plan.some((entry) => entry.path.endsWith("/AGENT.md"));
   const writesAnEntryPoint = plan.some((entry) => ENTRY_POINT_PATHS.has(entry.path));
   if (!args.tools.length && writesAnEntryPoint) {
-    asked.push("  Quel outil IA lira ce dossier ?  --tool claude-code | cursor | agents-md | autre");
+    asked.push("  Quel outil IA lira ce dossier?  --tool claude-code | cursor | agents-md | autre");
     asked.push("    (sans réponse: BASE_BOOTSTRAP.md, que tout outil lisant du Markdown comprend)");
   }
   if (!args.about && writesAnAgent) {
-    asked.push("  Que faites-vous, en une phrase ?  --about \"…\"");
+    asked.push("  Que faites-vous, en une phrase?  --about \"…\"");
     asked.push("    (cette phrase devient la description de votre premier agent, ce que lit le routage)");
   }
   if (fresh && !args.language && writesLanguageBearingFiles(plan)) {
-    asked.push(`  Dans quelle langue écrire ce dossier ?  --language ${AVAILABLE_LANGUAGES.join(" | ")}`);
+    asked.push(`  Dans quelle langue écrire ce dossier?  --language ${AVAILABLE_LANGUAGES.join(" | ")}`);
     asked.push("    (sans réponse: le français; une autre langue est notée et ses textes restent en français)");
   }
   if (fresh && !args.egress && plan.some((entry) => entry.path === "base.config.json")) {
-    asked.push("  Des données qui ne doivent jamais atteindre un modèle hébergé ?  --egress local-only");
+    asked.push("  Des données qui ne doivent jamais atteindre un modèle hébergé?  --egress local-only");
   }
   return asked.length ? `\nAvant d'écrire:\n${asked.join("\n")}\n\n` : "";
 }
@@ -175,7 +203,7 @@ export async function runInit(args, output) {
         content: artifact.content,
         reason: entryPaths.has(artifact.path)
           ? "Ce dossier n'a aucun point d'entrée: aucun outil IA ne le reconnaît en l'ouvrant."
-          : "Artefact d'outil manquant — sans lui, votre outil IA ne reconnaît pas ce BASE.",
+          : "Artefact d'outil manquant: sans lui, votre outil IA ne reconnaît pas ce BASE.",
       });
     }
     // The launcher is not a build artifact (it is root-independent); heal it here if absent so an
@@ -200,7 +228,7 @@ export async function runInit(args, output) {
     });
   }
   if (plan.length === 0) {
-    output(args.json ? { detection, plan, applied: false } : `Déjà un BASE (${detection.type}) : rien à initialiser.`, args.json);
+    output(args.json ? { detection, plan, applied: false } : `Déjà un BASE (${detection.type}): rien à initialiser.`, args.json);
     return;
   }
   if (!args.yes) {
@@ -211,11 +239,12 @@ export async function runInit(args, output) {
       args.json
         ? { detection, plan, applied: false }
         : `Détection: ${describeDetection(detection)}\n` +
-          `Fichiers à créer (rien n'est écrit sans --yes) :\n${preview}\n` +
+          `Fichiers à créer (rien n'est écrit sans --yes):\n${preview}\n` +
+          `${keptEntryPoints(detection)}` +
           `${fresh ? unknownLanguageNote(args.language) : ""}\n` +
           // The hint echoes the full command: launched with --root, a hint without it is a
           // non-sequitur when copy-pasted from another directory («Déjà un BASE: rien à initialiser»).
-          `${initQuestions(args, plan, { fresh })}Pour appliquer:  base init${args.root ? ` --root ${args.root}` : ""} --yes`,
+          `${initQuestions(args, plan, { fresh })}Pour appliquer:  ${applyCommand(args)}`,
       args.json,
     );
     return;

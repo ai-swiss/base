@@ -25,7 +25,7 @@ Tout outil IA a besoin de 5 choses pour faire vivre un agent BASE:
 2. **Skills découvrables**: l'outil trouve et invoque les SKILL.md
 3. **Règles par chemin**: garde-fous activés selon le fichier touché
 4. **Permissions**: contrôler ce que l'agent peut faire
-5. **Protection du cadre**: empêcher la modification de `.ai/`
+5. **Protection du cadre**: empêcher la modification directe des fichiers du cadre (`.ai/agents/`, `.ai/routing/`), le journal (`.ai/journal/`) restant libre
 
 ## Claude Code
 
@@ -35,7 +35,7 @@ Tout outil IA a besoin de 5 choses pour faire vivre un agent BASE:
 | Skills découvrables | Copier les skills dans `.claude/skills/` (auto-découverte, dossiers plats) |
 | Règles par chemin | `.claude/rules/*.md` avec frontmatter `paths: ["chemin/**"]` |
 | Permissions | `.claude/settings.json` avec `permissions.allow` et `permissions.deny` |
-| Protection du cadre | Hook PreToolUse ou permission deny sur `.ai/**` dans settings.json |
+| Protection du cadre | `permissions.deny` nomme les dossiers du cadre: `Edit(/.ai/agents/**)`, `Edit(/.ai/routing/**)` (le `/` initial ancre le chemin à la racine du projet). Un deny l'emporte sur toute autorisation: interdire `.ai/**` bloquerait aussi le journal. Les règles `Edit` couvrent les outils d'écriture de Claude Code, pas les commandes: avec le bac à sable activé (`sandbox.enabled`, et `sandbox.allowUnsandboxedCommands: false` pour qu'une commande refusée ne soit pas relancée hors de lui), les mêmes interdits s'appliquent aussi aux commandes. Un hook seulement si la règle demande de la logique |
 
 **Structure résultante:**
 ```
@@ -94,5 +94,5 @@ Si l'outil n'est pas listé ci-dessus:
 > 1. **Contexte permanent**: trouvez comment charger un fichier texte au démarrage, puis faites-le pointer vers `.ai/agents/[nom]/AGENT.md`
 > 2. **Skills**: si votre outil découvre nativement les fichiers SKILL.md, copiez les skills au bon endroit. Sinon, l'agent les chargera à la demande en les lisant.
 > 3. **Règles**: si votre outil gère des règles par chemin, posez des garde-fous sur les dossiers de données métier.
-> 4. **Permissions**: si votre outil le permet, interdisez la modification de `.ai/` et autorisez d'office la lecture des fichiers métier.
+> 4. **Permissions**: si votre outil le permet, interdisez la modification directe des fichiers du cadre (`.ai/agents/`, `.ai/routing/`), en laissant libre le journal (`.ai/journal/`), et autorisez d'office la lecture des fichiers métier.
 > 5. **Sans rien de tout cela**: dites simplement à votre outil "Lis .ai/agents/[nom]/AGENT.md et suis ses instructions". Tout fonctionnera, mais sans les garde-fous mécaniques.»

@@ -18,7 +18,7 @@ Dès qu'un routage s'appuie sur un fournisseur distant, du texte peut quitter vo
 
 La Voie 2 s'active avec `routing.embedding_model` et `refiner_model`.
 
-- Au pré-calcul, `base build routing-embeddings` envoie seulement le `route_text` au modèle d'embedding configuré. Une ressource `confidential` est omise.
+- Au pré-calcul, `base build routing-embeddings` envoie seulement le `route_text` au modèle d'embedding configuré. Une ressource `confidential` est omise. Pour une racine `local-only`, la commande refuse un modèle d'embedding distant et n'envoie rien.
 - À la requête, le modèle d'embedding reçoit la demande de l'utilisateur. Le raffineur reçoit cette demande et les `route_text` / `avoid_text` des candidats, jamais leur corps.
 - La barrière de stratégie s'applique quel que soit l'appelant, y compris depuis `base route`. Si les modèles configurés sont distants, un process `confidential` n'atteint pas le raffineur; pour une racine `local-only`, aucun de ces appels distants n'a lieu et le plancher déterministe répond.
 - Cette barrière propre à la Voie 2 ne couvre pas une lecture directe, `base open` sans contexte d'égress ni un copier-coller vers un outil IA.
@@ -49,7 +49,7 @@ Une fois un provider configuré, deux types de texte peuvent partir vers lui:
 
 - **Restez local** avec `createOllamaEmbedder()`: aucun texte n'est transmis à un fournisseur distant.
 - **Passez par une passerelle interne**: `createOpenAICompatibleEmbedder({ baseUrl })` pointé vers un reverse
-  proxy sous votre contrôle (auth, mTLS, DLP). Bien réglé, ce proxy maintient le texte métier hors de tout point d'accès public.
+  proxy sous votre contrôle (auth, mTLS, DLP). Ce proxy authentifie, journalise et peut filtrer les envois; le texte ne reste chez vous que s'il le dirige vers un modèle hébergé en interne.
 
 ### Secrets
 

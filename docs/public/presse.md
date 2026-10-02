@@ -48,7 +48,7 @@ BASE a été **créé par Charles-Edouard Bardyn** (Directeur Scientifique, VP e
 
 ## Citations
 
-Les citations attribuables ne sont pas publiées dans ce dépôt. Une citation datée ou une prise de parole doit être confirmée par AI Swiss.
+À part l'exergue du [Manifeste](../../MANIFESTO.md), les citations attribuables ne sont pas publiées dans ce dépôt. Une citation datée ou une prise de parole doit être confirmée par AI Swiss.
 
 ## Visuels et démo
 

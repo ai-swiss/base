@@ -14,7 +14,9 @@
 //
 // Confidential resources are NEVER embedded at build time: `base build routing-embeddings` may be
 // configured with a remote embedder, and the egress promise (a `confidential` resource does not reach
-// a remote model) holds on the build path exactly as it holds at query time.
+// a remote model) holds on the build path exactly as it holds at query time. The root policy holds
+// too: when the caller says the embedder is remote (or says nothing: unknown means remote) and the
+// root is `local-only`, nothing is embedded at all, as the query path falls back to lexical then.
 //
 // Pure over an INJECTED `embed` (a `(text) => Promise<number[]>`), so it is fully testable without a
 // model; the CLI wires a real embedder (Ollama / OpenAI-compatible) from the semantic package.
@@ -23,7 +25,7 @@ import { createHash } from "node:crypto";
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 import { deriveRoutingSignals, ROUTABLE_KINDS } from "./routing.mjs";
-import { isConfidential } from "./egress.mjs";
+import { checkEgress, isConfidential } from "./egress.mjs";
 
 export const ROUTING_VECTORS_FILE = ".ai/routing/embeddings.json";
 export const ROUTING_VECTORS_SCHEMA = "base.routing_vectors.v1";
@@ -44,14 +46,17 @@ export function hashRouteText(text) {
  * worst silent wait in the toolkit (30–120 s on a fresh model), so `base build` feeds it a stderr reporter.
  * @param {Array<{ type: string, path: string, status?: string, confidential?: boolean }>} resources
  * @param {(text: string) => Promise<number[]>} embed
- * @param {{ onProgress?: (done: number, total: number, label?: string) => void }} [opts]
- * @returns {Promise<{ vectors: Record<string, { h: string, v: number[] }>, skippedConfidential: number }>}
+ * @param {{ onProgress?: (done: number, total: number, label?: string) => void, modelLocality?: "local" | "remote", rootPolicy?: "local-only" | "any" }} [opts]
+ * @returns {Promise<{ vectors: Record<string, { h: string, v: number[] }>, skippedConfidential: number, skippedLocalOnly: number }>}
  */
-export async function precomputeRoutingVectors(resources, embed, { onProgress } = {}) {
+export async function precomputeRoutingVectors(resources, embed, { onProgress, modelLocality = "remote", rootPolicy = "any" } = {}) {
   const live = resources.filter((r) => ROUTABLE_KINDS.has(r.type) && r.status !== "deprecated" && r.status !== "archived");
   const skippedConfidential = live.filter(isConfidential).length;
-  const embeddable = live
-    .filter((r) => !isConfidential(r))
+  const candidates = live.filter((r) => !isConfidential(r));
+  // The same pure rule as every other surface: a local-only root sends nothing toward a remote model.
+  const { allowed } = checkEgress({ modelLocality, rootPolicy, resources: candidates });
+  const skippedLocalOnly = candidates.length - allowed.length;
+  const embeddable = allowed
     .map((r) => ({ path: r.path, route_text: deriveRoutingSignals(r).route_text }))
     .filter((r) => r.route_text);
   /** @type {Record<string, { h: string, v: number[] }>} */
@@ -61,7 +66,7 @@ export async function precomputeRoutingVectors(resources, embed, { onProgress } 
     vectors[path] = { h: hashRouteText(route_text), v: await embed(route_text) };
     onProgress?.(++done, embeddable.length, path);
   }
-  return { vectors, skippedConfidential };
+  return { vectors, skippedConfidential, skippedLocalOnly };
 }
 
 /**

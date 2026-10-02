@@ -5,6 +5,18 @@ Format follows the spirit of Keep a Changelog. Versions follow the documented co
 
 ## [Unreleased]
 
+## [1.5.1] - 2026-10-02
+
+### Changed
+- FR-INIT-002: every generated entry point sends a person who shows what they have and wants to see what an assistant would make of it to the framework's `adopter-ce-dossier` first, which writes only a proposition sheet under `.temp/`; `base init` and the import or creation follow its export, and a returned export resumes at its step 6. The scaffolded `.gitignore` ignores `.temp/`. The scaffolded `importer-l-existant` defers to that process in the same case, and sorts rules already written for AI (not copied when a model applies them on its own; a lock, tried once on something harmless through each path, when a single breach would cost dearly), in all four language tables.
+
+- Browser pack: `tools/browser-pack.mjs --process <id>` bundles one process with everything it declares in `requires`, followed transitively and in reading order, plus annexed files quoted verbatim, with relative links made absolute against the repository URL. The committed `PARTIR-DE-CE-QUE-VOUS-AVEZ.md` is built this way for web chats, and `tests/porte-pack.test.mjs` keeps it identical to its sources.
+
+The release also reworks the framework's own entry process (`adopter-ce-dossier`), adds the shared `faisabilite-ia` competence and the proposition sheet template, with their tests; see the root `CHANGELOG.md`.
+
+### Fixed
+- NFR-EGRESS-001 / routing: `base build routing-embeddings` applies the root policy. On a `local-only` root it refuses a remote or unknown embedder and embeds nothing; before, the precompute withheld only `confidential` resources.
+
 ## [1.5.0] - 2026-09-17
 
 ### Removed

@@ -42,7 +42,8 @@ const model = createOllamaModel({ model: "qwen3.5:9b-q4_K_M" });
 Pour lancer une évaluation entièrement locale (le modèle doit être disponible dans Ollama au préalable):
 
 ```bash
-npm run eval -- --ollama --model qwen3.5:9b-q4_K_M
+npm run eval -- --root exemples/assistant-devis --agent assistant-devis --process nouveau-devis --scenarios exemples/assistant-devis/.ai/experiments/scenarios/devis.json \
+  --ollama --model qwen3.5:9b-q4_K_M
 ```
 
 ## Hébergé en Suisse: Infomaniak
@@ -67,7 +68,8 @@ Pour une évaluation via Infomaniak, fournissez la clé par l'environnement et i
 
 ```bash
 export OPENAI_API_KEY="$INFOMANIAK_TOKEN"
-npm run eval -- --base-url "https://api.infomaniak.com/1/ai/<PRODUCT_ID>/openai" --model "<modele>"
+npm run eval -- --root exemples/assistant-devis --agent assistant-devis --process nouveau-devis --scenarios exemples/assistant-devis/.ai/experiments/scenarios/devis.json \
+  --base-url "https://api.infomaniak.com/1/ai/<PRODUCT_ID>/openai" --model "<modele>"
 ```
 
 ## Choisir

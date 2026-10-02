@@ -63,7 +63,7 @@ D'abord, demande-moi: «Où veux-tu installer l'implémentation de référence d
 4. Vérifie: `node .ai/base.mjs whereis` montre <BASE_DIR>,
    et le point d'entrée de mon outil existe maintenant dans mon dossier.
 5. Dis-moi la phrase exacte à t'écrire pour commencer
-   («importer mes procédures existantes» si j'ai déjà des documents à convertir).
+   («Voici ce que nous avons. Montre-moi ce qu'un assistant pourrait faire pour nous.» si j'ai déjà des documents).
 
 Garde-fous: n'écrase JAMAIS un fichier existant; n'installe rien d'autre sans me
 demander; si une étape échoue, montre-moi l'erreur exacte au lieu de bricoler.
@@ -79,8 +79,9 @@ que vous avez nommé. Il n'installe pas la commande courte `base` dans votre `PA
 normalement: il oriente chaque demande vers le bon process, puis votre outil suit ce process, sans que vous ayez à
 chercher lequel choisir.
 
-- **Convertir vos documents existants**: dites «importer mes procédures existantes». Chaque
-  conversion vous est soumise en diff; rien n'est écrit sans votre aval.
+- **Partir de vos documents existants**: dites «Voici ce que nous avons. Montre-moi ce qu'un
+  assistant pourrait faire pour nous.» Vous recevez d'abord une fiche de proposition; chaque
+  conversion vous est ensuite soumise en diff, et rien n'est écrit sans votre aval.
 - **L'atelier**: avant la première utilisation, lancez `npm ci` dans `<BASE_DIR>`, puis
   `cd mon-dossier && node .ai/base.mjs studio --root .` pour ouvrir BASE Studio.
 - **Garder l'implémentation de référence à jour**: `node .ai/base.mjs update`.

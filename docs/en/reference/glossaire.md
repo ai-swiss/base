@@ -1,4 +1,4 @@
-<!-- fr-synced: 4dd8d694f396fca6174fc1fe6ab54e0b35546a6e -->
+<!-- fr-synced: 600804d50226b9db057a9fb134f3b85e5a757a68 -->
 # BASE Glossary: the vocabulary at a glance
 
 You come across a BASE term and want its exact definition: this page gives it in one sentence, with a link to the document that develops it. It is the canonical source of the vocabulary; other pages point here rather than redefining the same terms. The order is alphabetical.
@@ -10,6 +10,8 @@ You come across a BASE term and want its exact definition: this page gives it in
 **Agent.** An `AGENT.md` entry point and its related skills: it describes a role and gives access to the corresponding ways of working, without being an execution unit. See [Understanding the approach](../learn/comprendre.md).
 
 **Assistant.** An agent animated by a model in a harness. See [Understanding the approach](../learn/comprendre.md).
+
+**`base` (command).** The short form of the commands quoted in this documentation: `node .ai/base.mjs` in an initialised folder, or `node <BASE folder>/tools/base.mjs`. No installation puts it on the PATH; a session alias creates it. See [step 0 of the tutorial](../tutoriel/harnais.md).
 
 **BASE structure.** The resources and relations that describe the method. See [The BASE standard](le-standard.md).
 

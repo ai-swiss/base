@@ -110,7 +110,7 @@ BASE_MCP_ALLOW_INSECURE_REMOTE=1 npm start -- --transport http --host 0.0.0.0 --
 
 ### Connecter le MCP, c'est choisir une surface d'action
 
-En `stdio`, le serveur expose la surface complète du broker par défaut: lecture, écriture médiée (`propose_change` / `commit_change` / `promote_resource`) et exécution d'outils (`invoke_tool`). Ce mode est local et destiné aux outils que vous lancez sur votre machine. Même en `stdio`, le confidentiel reste retenu par défaut (voir la puce «Confidentiel retenu par défaut» plus bas): le serveur ne présume pas que le client connecté est local.
+En `stdio`, le serveur expose la surface complète du broker par défaut: lecture, écriture médiée (`propose_change` / `commit_change` / `promote_resource`) et exécution d'outils (`invoke_tool`). Ce mode est local et destiné aux outils que vous lancez sur votre machine. Même en `stdio`, le confidentiel reste retenu par défaut (voir la puce «Confidentiel retenu par défaut» plus bas): le serveur ne présume pas que le modèle derrière le client tourne en local.
 
 En `http`, le serveur est **en lecture seule par défaut**. Les outils d'écriture et d'exécution ne sont alors **pas enregistrés**: la surface est prouvablement en lecture seule.
 
@@ -126,7 +126,7 @@ Pour autoriser explicitement l'écriture et l'exécution en HTTP, utilisez `--re
 BASE_MCP_BEARER_TOKEN=un-secret-long-et-aleatoire npm start -- --transport http --read-write --root /chemin/vers/votre/projet
 ```
 
-- **Confidentiel retenu par défaut**: le serveur ne peut pas vérifier si le client connecté est un modèle local ou distant, donc il applique l'egress comme pour un modèle distant: une ressource `confidential: true`, ou toute ressource d'un root `egress: local-only`, n'est ni lue (`open_resource`/`access_resource` renvoient un avis «retenu») ni même listée (`discover_resources`). Si vous savez que le client connecté est local et de confiance, autorisez-les avec `BASE_MCP_ALLOW_CONFIDENTIAL=1`.
+- **Confidentiel retenu par défaut**: le serveur ne peut pas vérifier si le modèle derrière le client tourne en local ou chez un fournisseur, donc il applique l'egress comme pour un modèle distant: une ressource `confidential: true`, ou toute ressource d'un root `egress: local-only`, n'est ni lue (`open_resource`/`access_resource` renvoient un avis «retenu») ni même listée (`discover_resources`). Si vous savez que ce modèle tourne sur une machine que vous contrôlez, autorisez-les avec `BASE_MCP_ALLOW_CONFIDENTIAL=1`. Un client local ne suffit pas: une application reliée en `stdio` peut transmettre chaque contenu ouvert à un modèle hébergé.
 - **Lecture seule explicite**: `--read-only` ou `BASE_MCP_READ_ONLY=1` forcent la surface lecture seule, y compris en `stdio`.
 - **Confirmation d'exécution forcée à distance**: en HTTP, une tool qui désactive sa propre confirmation (`requires_confirmation: false`) n'est **jamais** honorée. L'exécution non-dry-run exige toujours un `confirmed: true` explicite du client.
 - **Politique stricte recommandée en partage**: gardez la politique d'application en `strict` (via `base.config`) pour les déploiements partagés/distants, afin que les écritures sensibles exigent une confirmation côté serveur.

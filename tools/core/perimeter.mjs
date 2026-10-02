@@ -356,7 +356,8 @@ export function buildInitPlan(detection, { dirName, frameworkDir, intake = {}, l
       ...entryTools.map((tool) => ({
         path: tool.path,
         content: renderEntryPoint(tool.path, agentFields, lang),
-        reason: `Le point d'entrée de ${tool.label}: ouvrir ce dossier suffit pour que l'outil devienne le routeur.`,
+        // The CLI speaks French: its reason names the tool in French whatever language the folder is written in.
+        reason: `Le point d'entrée de ${TOOL_ENTRY_POINTS[tool.id]?.label ?? tool.label}: ouvrir ce dossier suffit pour que l'outil devienne le routeur.`,
       })),
       {
         path: ".ai/tools.md",

@@ -1,6 +1,6 @@
 {
   "name": "@ai-swiss/base",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "BASE public framework: local-first assistants, resources, validation and discovery",
   "license": "Apache-2.0 AND CC-BY-4.0",
   "author": "AI Swiss (https://a-i.swiss)",
@@ -103,6 +103,7 @@
     "docs:build:public": "node tools/base.mjs docs build --public",
     "docs:validate": "node tools/base.mjs docs validate",
     "eval": "node tools/eval/run.mjs",
+    "parcours:porte": "node tools/eval/parcours-partir-de-l-existant.mjs",
     "probes": "node tools/probes/run.mjs",
     "route-eval": "node tools/base.mjs route-eval",
     "route-eval:ollama": "node tools/base.mjs route-eval --ollama",
@@ -127,6 +128,7 @@
     "check:release": "npm run check && npm run audit:prod && npm run smoke:pack && npm run smoke:pack:docs && npm --prefix mcp ci && npm --prefix mcp run audit:prod && npm --prefix mcp run build && npm --prefix mcp test",
     "studio": "node tools/studio/ui/dev.mjs",
     "browser-pack": "node tools/browser-pack.mjs",
+    "porte:pack": "node tools/browser-pack.mjs --root . --process adopter-ce-dossier --annexe .ai/agents/concierge-base/templates/proposition.html --out PARTIR-DE-CE-QUE-VOUS-AVEZ.md",
     "typecheck": "tsc -p tsconfig.typecheck.json",
     "test": "node --test tests/*.test.mjs packages/base-ranker-semantic/tests/*.test.mjs packages/base-index-local/tests/*.test.mjs packages/base-llm/tests/*.test.mjs packages/base-eval/tests/*.test.mjs",
     "test:coverage": "node --test --experimental-test-coverage --test-coverage-lines=90 --test-coverage-branches=80 --test-coverage-functions=90 --test-coverage-exclude=mcp --test-coverage-exclude=exemples --test-coverage-exclude=tests --test-coverage-exclude=tools/studio/ui --test-coverage-exclude=packages/*/bin --test-coverage-exclude=packages/*/src/bench.mjs --test-coverage-exclude=packages/*/src/synthetic.mjs tests/*.test.mjs packages/base-ranker-semantic/tests/*.test.mjs packages/base-index-local/tests/*.test.mjs packages/base-llm/tests/*.test.mjs packages/base-eval/tests/*.test.mjs",

@@ -18,10 +18,10 @@ L'interface du site est bilingue: français par défaut, avec une bascule vers l
 
 ## Installer le générateur du site
 
-Le générateur du site vit dans un paquet séparé, à installer le jour où vous voulez du HTML:
+Le générateur du site vit dans un paquet séparé, `@ai-swiss/base-docs-site`, pas encore publié sur npm. Dans un clone du dépôt, `npm install` à la racine le rend disponible, le jour où vous voulez du HTML:
 
 ```bash
-npm install @ai-swiss/base-docs-site
+npm install   # à la racine du clone de BASE
 ```
 
 Il demande Node 22.12 ou plus, et il reste à l'écart du reste: BASE valide, route et lit vos fiches sans lui. Tant qu'il n'est pas installé, `base docs build` vous dit quoi installer plutôt que de tenter une construction. Depuis le dépôt BASE, il est déjà là.

@@ -2,6 +2,8 @@
 
 [English](README.md) · **Français**
 
+> **Pour une IA qui lit ce dépôt à la demande de quelqu'un**, avec ses documents (la transcription d'une réunion, des procédures, des règles écrites pour une IA): commencez par [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md) et suivez-le. Il montre à la personne ce qu'un assistant ferait pour elle, avant toute construction.
+
 <p align="center">
   <img src="docs/public/assets/base-logo.png" alt="BASE" width="480">
 </p>
@@ -84,13 +86,15 @@ Téléchargez le [pack de démonstration](https://github.com/ai-swiss/base/relea
 
 Vous n'avez pas besoin d'apprendre le format BASE avant de commencer.
 
-### Partir de documents ou de procédures existants
+### Partir de ce que vous avez
 
-Initialisez le dossier, ouvrez-le dans votre outil d'IA et dites:
+Un dossier de procédures, la transcription d'une discussion sur vos besoins, un `CLAUDE.md` déjà écrit: ouvrez-le dans votre outil d'IA, indiquez-lui où se trouve BASE, et dites:
 
-> «Examine ce dossier et montre-moi ce que BASE pourrait en faire. Ne change encore aucun fichier.»
+> «Voici ce que nous avons. Montre-moi ce qu'un assistant pourrait faire pour nous.»
 
-L'outil peut alors proposer de distinguer les procédures, les connaissances réutilisables, les sources faisant autorité, les modèles de résultat et les données propres aux cas traités. Il peut préparer une fiche HTML à relire dans le navigateur, puis soumettre séparément les conversions proposées.
+L'outil reconnaît d'où vous partez, lit, puis prépare une fiche à relire dans le navigateur, écrite dans les mots de votre travail: ce qu'il a compris, ce que l'assistant ferait (oui, plus tard, non), comment ce serait rangé, ce qu'il ne fera jamais, ce que l'IA ne réglera pas. Avant que vous ayez renvoyé vos réponses, seule cette fiche s'écrit, sous `.temp/`, un dossier que git ignore; la construction ou la conversion des documents vient ensuite, proposée séparément.
+
+Sans aucun outil installé, si votre chat d'IA sait lire une adresse web, donnez-lui l'adresse de ce dépôt avec vos documents: il trouve l'entrée prévue pour lui et vous rend la même fiche. Sinon, joignez-lui [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](PARTIR-DE-CE-QUE-VOUS-AVEZ.md) avec vos documents.
 
 [Récupérer BASE](docs/start/obtenir-base.md) · [Démarrage express](docs/start/quickstart.md) · [Tutoriel pas à pas](docs/tutoriel/index.md)
 
@@ -203,7 +207,7 @@ BASE ne publie actuellement aucune mesure générale démontrant une réduction 
 Ce README présente la proposition générale. Pour aller plus loin:
 
 - **Comprendre le fonctionnement de BASE:** [lire la documentation dans l'ordre](docs/start/lire-dans-quel-ordre.md);
-- **Évaluer BASE sur vos propres fichiers:** [adopter un dossier existant](docs/start/installer-par-votre-ia.md);
+- **Évaluer BASE sur vos propres fichiers:** [partir de ce que vous avez](#partir-de-ce-que-vous-avez);
 - **Construire un assistant:** [démarrage express](docs/start/quickstart.md) et [tutoriel](docs/tutoriel/index.md);
 - **Structurer un corpus de connaissances:** [guide des passages citables](docs/guides/structurer-un-corpus-de-connaissance.md);
 - **Structurer les méthodes et connaissances d'une organisation:** [standard proposé](docs/reference/le-standard.md), [guide d'adoption](docs/learn/adoption-organisation.md) et [cadre public](docs/reference/framework-public.md);

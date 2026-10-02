@@ -73,7 +73,7 @@ Ces principes complètent les cinq pratiques. Ils ne remplacent ni les obligatio
 
 ### Connaître les contraintes de fiabilité
 
-6. **Respectez la complexité intrinsèque de la tâche.** Parcourir beaucoup d'information, conserver des étapes intermédiaires ou appliquer un calcul exige les données, la mémoire de travail et les opérations correspondantes, quel que soit l'exécutant. Si vous auriez besoin de chercher, prendre des notes ou suivre une procédure, donnez aussi au dispositif les moyens de le faire. L'IA peut déplacer ou réduire cet effort, pas supprimer les dépendances du problème.
+6. **Respectez la complexité intrinsèque de la tâche.** Parcourir beaucoup d'information, conserver des étapes intermédiaires ou appliquer un calcul exige les données, la mémoire de travail et les opérations correspondantes, quel que soit l'exécutant. Si vous aviez besoin de chercher, prendre des notes ou suivre une procédure, donnez aussi au dispositif les moyens de le faire. L'IA peut déplacer ou réduire cet effort, pas supprimer les dépendances du problème.
 7. **Utilisez des algorithmes dédiés pour les garanties.** Confiez les calculs, schémas, tests et règles formalisables aux vérificateurs adaptés. Les contrôles externes n'existent que pour certaines tâches; concevez le reste autour d'une revue humaine proportionnée aux conséquences.
 
 ### Savoir interagir

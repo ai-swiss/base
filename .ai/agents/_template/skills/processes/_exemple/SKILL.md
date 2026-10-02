@@ -98,6 +98,8 @@ Si `.ai/journal/` contient des entrées récentes liées à ce process, lis-les 
 
 [Nommez une à trois preuves observables qui permettent de conclure: fichier produit, source citée, calcul vérifié, commande réussie ou décision humaine explicite.]
 
+[Si une erreur dans le résultat coûterait (une date, un montant, une citation): fais relire le résultat par une session qui ne l'a pas écrit (un sous-agent si l'outil le permet), avec la règle et une seule question de jugement, par exemple «le courrier promet-il un délai que la règle interdit?». Sans session séparée, donne cette question à la personne qui valide. Cette relecture ne remplace pas la décision humaine.]
+
 ### 5. Récapitulatif
 
 > «Voici ce que nous avons fait:
@@ -117,6 +119,7 @@ NOTES POUR L'AUTEUR DU PROCESS:
 - L'agent reformule souvent, mais ne pose un point de décision qu'avant d'écrire
 - Chaque process nomme une à trois preuves observables qui permettent de conclure
 - Chaque process se termine par une étape Journal
+- Un process de sept étapes ou plus, ou qui traite une liste d'éléments (des messages, des clients), pose cette liste au départ et la coche au fil (compétence journal, Progression)
 - Référencez les compétences et templates par leur chemin relatif
 - 3 à 7 étapes au maximum; au-delà, découpez en plusieurs processes
 -->

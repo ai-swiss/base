@@ -1,4 +1,4 @@
-<!-- fr-synced: a2f5cf807c78310c5c6924c83fc77f8b648591d3 -->
+<!-- fr-synced: f1566e8828070a90257e9d39598e2d1ca8601e22 -->
 # Your project, and its first process
 
 *⏱ ~20 min · module 2/9, Practitioner track*
@@ -22,7 +22,7 @@ Until now, you read Veytaux's tourist office only once it was complete. Now you 
    base init --root ~/mon-office-tourisme --yes
    ```
 
-   It creates an agent, `base.config.json` (with `framework_dir`: WHERE the engine lives), the launcher
+   It creates an agent, `base.config.json`, the launcher
    `.ai/base.mjs`, along with the files your AI tool reads when the folder opens.
 
 2. Enter your project. From now on, here, `base` = `node .ai/base.mjs`. Everything keeps working even
@@ -70,7 +70,7 @@ Rather than copy the finished corpus, you fill in a skeleton: the effort makes y
 
 ✅ **Check**: `base validate` says "BASE valide"; `base route` on your example sentence routes to `renseigner-un-visiteur`; and all of this from a folder OUTSIDE the repository, proof that your project stands on its own. Then compare with the finished version: `exemples/veytaux-tourisme/.ai/agents/office-tourisme/skills/processes/renseigner-un-visiteur/SKILL.md`.
 
-💡 **Why it worked**: beyond the files, `base init` records in `base.config.json` WHERE the engine lives, and drops a launcher `.ai/base.mjs` that finds it again. That is why `base …` works from your project, wherever it is, with nothing on the PATH. A process, in turn, remains structured data: a frontmatter the router reads (use_when, examples) and a body the model follows. By filling in the meaning-bearing gaps yourself instead of copying, you anchor the structure.
+💡 **Why it worked**: beyond the files, `base init` records WHERE the engine lives, in your user configuration (`~/.config/base/config.json`, or `framework_dir` in `base.config.json` if it cannot be written), and drops a launcher `.ai/base.mjs` that finds it again. That is why `base …` works from your project, wherever it is, with nothing on the PATH. A process, in turn, remains structured data: a frontmatter the router reads (use_when, examples) and a body the model follows. By filling in the meaning-bearing gaps yourself instead of copying, you anchor the structure.
 
 🔁 **At home**: which step of YOUR processes requires human validation before acting? Note it down: that will be your `[A VALIDER]`.
 

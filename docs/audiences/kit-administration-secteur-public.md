@@ -29,7 +29,7 @@ Le [diagnostic de la carte des publics](pour-qui.md) distingue la méthode, la s
 ## 2. Données citoyens et protection des données
 
 - Si des données personnelles sont en jeu, le palier navigateur seul ne suffit pas. La CLI ou le MCP ne médient et ne tracent que les actions qui passent par leurs commandes; les accès directs de l'outil aux fichiers restent hors de cette garantie.
-- Le routage par défaut **ne fait aucun appel réseau** (lexical, zéro donnée qui sort). Le routage sémantique avancé n'envoie de texte à un fournisseur d'embeddings que si vous l'activez explicitement, et une option locale existe (Ollama) (voir [Sécurité des données de routage](../trust/securite-donnees-routage.md)).
+- Le routeur de BASE (`base route`, `route_request` en MCP) **ne fait aucun appel réseau** par défaut (lexical, zéro donnée qui sort). Dans un outil d'IA, c'est le modèle qui lit la carte de routage: la demande part alors chez le fournisseur de ce modèle. Le routage sémantique avancé n'envoie de texte à un fournisseur d'embeddings que si vous l'activez explicitement, et une option locale existe (Ollama) (voir [Sécurité des données de routage](../trust/securite-donnees-routage.md)).
 - Les fichiers peuvent rester sur le poste alors qu'un outil projette des extraits vers un modèle distant. La politique d'égress est permissive par défaut (`any`) tant que vous ne configurez pas de retenue.
 
 > **Décision institutionnelle:** analyse d'impact (AIPD/DPIA) si nécessaire, et registre des traitements.

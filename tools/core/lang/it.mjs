@@ -22,7 +22,7 @@
 // The MCP_* constants in ../bootstrap.mjs stay where they are: they were already English, and they
 // are not per-language text.
 
-// fr-synced: 440b3065b0568a5f6d993e35781d0aca9fc2066e
+// fr-synced: e88ad73d330c7e07e608322834ed8b14c063072d
 
 export const IT = {
   // ── The canonical router body, shared by all four entry-point projections ──────────────────
@@ -42,7 +42,7 @@ export const IT = {
     "Usa una punteggiatura semplice e non usare mai lineette lunghe.",
     "",
     "## Applicare BASE a una cartella che non lo è ancora",
-    "Se l'utente vuole fare della PROPRIA cartella un BASE (ha del materiale, vuole strutturare il proprio sapere e il proprio saper fare con l'IA) e questa cartella non ha ancora né `base.config.json` né `.ai/agents/`: non creare ALCUN file a mano. Lancia prima `base init` (crea il lanciatore, la configurazione, il `CLAUDE.md` e un agente di partenza sotto `.ai/agents/<nome>/`). Poi instrada verso `importer-l-existant` (a partire da materiale esistente) o `creer-agent` (da zero), due processi del framework BASE e non della cartella dell'utente: il lanciatore li raggiunge tramite `framework_dir` in `base.config.json`. Ogni scrittura è proposta come diff, mai committata d'ufficio. Se ti trovi nel repository del framework BASE stesso, non scrivere nulla qui: inizializza piuttosto la cartella dell'utente.",
+    "Se l'utente mostra ciò che ha (una discussione sui propri bisogni, documenti di lavoro, regole già scritte per l'IA) e vuole vedere che cosa ne farebbe un assistente, comincia da `adopter-ce-dossier`, un processo del framework BASE: legge, scrive solo una scheda di proposta sotto `.temp/` e nient'altro finché la persona non l'ha rimandata. Quando la persona rimanda l'esportazione di quella scheda (`…_proposition-filled.md`), riprendi dal passo 6 di `adopter-ce-dossier`: è quel passo a leggerla e a passare la mano. Se l'utente vuole fare della PROPRIA cartella un BASE (ha del materiale, vuole strutturare il proprio sapere e il proprio saper fare con l'IA) e questa cartella non ha ancora né `base.config.json` né `.ai/agents/`: non creare ALCUN file a mano. Lancia prima `node <framework BASE>/tools/base.mjs init --root <cartella>`: senza `--yes` mostra ciò che creerebbe (il lanciatore, la configurazione, il punto d'ingresso dello strumento scelto, un agente di partenza sotto `.ai/agents/<nome>/`) e non scrive nulla; con `--yes` lo crea. Poi instrada verso `importer-l-existant` (a partire da materiale esistente) o `creer-agent` (da zero), due processi del framework BASE e non della cartella dell'utente: il lanciatore li raggiunge tramite la posizione del framework che `init` registra (nella configurazione utente, o `framework_dir` in `base.config.json`). Ogni scrittura è proposta come diff, mai committata d'ufficio. Se ti trovi nel repository del framework BASE stesso, non scrivere nulla qui: inizializza piuttosto la cartella dell'utente.",
     "",
     "## Come instradare",
     "La tua mappa è l'indice generato. Leggi `.ai/routing/index.md`: elenca gli agenti, e l'indice di ogni agente (`.ai/agents/<agent>/index.md`, collegato dalla radice) descrive i suoi processi con «Quando usare» e «Evitare se». Scendi dalla radice all'indice di agente e poi al processo, e tieni il processo il cui «Quando usare» copre la richiesta, rispettando «Evitare se». Instradi leggendo la mappa.",
@@ -144,6 +144,9 @@ export const IT = {
 # Prodotto di build: rigenerato da \`base index\`. Versionarlo farebbe divergere
 # ogni macchina su un file che nessuno legge a mano.
 base.manifest.json
+
+# Bozze di lavoro (schede di proposta, note di colloquio): riprendono fatti dai vostri documenti.
+.temp/
 `,
 
   // The CC BY credit LICENSING.md asks for. `upgrade` and `doctor` look for the a-i.swiss URL, not
@@ -218,6 +221,11 @@ base.manifest.json
     "ciò che indicate e PROPONE conversioni in risorse BASE; ogni scrittura passa dal gate",
     "(proporre poi convalidare), voi convalidate ogni diff.",
     "",
+    "Se la persona vuole prima vedere che cosa farebbe per lei un assistente, prima di ogni conversione",
+    "(«mostrami che cosa ne farebbe BASE», «non cambiare ancora nulla»), segui `adopter-ce-dossier`, un",
+    "processo del framework BASE raggiunto tramite `framework_dir`: restituisce una scheda di proposta da",
+    "rileggere nel browser, e l'importazione riprende qui, al passo 3, con la mappa tratta dal suo export.",
+    "",
     "Al primo scambio, non elencare i passaggi o le categorie qui sotto. In non più di tre frasi,",
     "di' che sei pronto, che nulla sarà scritto senza approvazione, poi chiedi dove sono i documenti.",
     "",
@@ -227,6 +235,10 @@ base.manifest.json
     "   (passi, checklist) diventa un `process`; ciò che *si impara* (regole, convenzioni) una",
     "   `competence` o un `document`; ciò che *si compila* (traccia, modello) un `template`; ciò che *si",
     "   consulta con una validità* (tariffario, listino) un `document` datato.",
+    "   Una regola già scritta per l'IA (un `CLAUDE.md`, regole di uno strumento) non si ricopia se un",
+    "   modello la applica da sé; una regola propria della casa si conserva; una regola la cui sola violazione costerebbe cara riceve un blocco",
+    "   (l'informazione resa irraggiungibile, o un permesso dello strumento con la sua sandbox), provato",
+    "   una volta su qualcosa di innocuo, per ogni via: lo strumento di scrittura, un comando, una copia.",
     "2. **Proporre la mappa di importazione.** Mostra la suddivisione dalla fonte alla risorsa di",
     "   destinazione (tipo, id, percorso) e falla convalidare PRIMA di ogni conversione. Resta flessibile:",
     "   guida una migrazione progressiva verso una struttura utilizzabile dall'IA, e proponi di aggiungere ciò che è utile.",

@@ -40,7 +40,7 @@ Vous pouvez ignorer au début:
 
 À ce niveau, BASE peut rester très simple: un assistant, quelques fichiers Markdown, des décisions humaines explicites.
 
-Si vous êtes perdu, dites simplement «Aide» ou «Je suis perdu». Avec le routage activé, le routeur choisit l'accueil `concierge-base` au lieu de vous laisser sans réponse; sinon, chargez `.ai/agents/concierge-base/AGENT.md`.
+Si vous êtes perdu, dites simplement «Aide» ou «Je suis perdu». Avec le routage activé, le routeur vous oriente vers le concierge `concierge-base`, ou vous pose une question pour préciser, au lieu de vous laisser sans réponse; sinon, chargez `.ai/agents/concierge-base/AGENT.md`.
 
 ## Si vous êtes une PME ou une petite équipe
 
@@ -69,7 +69,7 @@ Lisez dans cet ordre:
 - `tools/` pour valider, indexer, découvrir et entretenir;
 - `base.schema.json` pour stabiliser les métadonnées partagées.
 
-Si vous gérez **plusieurs racines BASE** (par exemple plusieurs clients), un `base.workspace.json` les déclare: après l'initialisation, `node .ai/base.mjs route --workspace <fichier>` permet au routeur de chercher parmi elles et `--root-id <id>` cible une racine précise (chaque lecture et chaque écriture qui passe par ce chemin reste confinée à la racine choisie). Le lanceur n'installe pas la commande courte `base`. Voir [Routage, process et ressources](../reference/routage-process-et-ressources.md) et `specs/current/10_core/cli.md`.
+Si vous gérez **plusieurs racines BASE** (par exemple plusieurs clients), un `base.workspace.json` les déclare: après l'initialisation, `node .ai/base.mjs route "<demande>" --workspace <fichier>` permet au routeur de chercher parmi elles et `--root-id <id>` cible une racine précise (chaque lecture et chaque écriture qui passe par ce chemin reste confinée à la racine choisie). Le lanceur n'installe pas la commande courte `base`. Voir [Routage, process et ressources](../reference/routage-process-et-ressources.md) et `specs/current/10_core/cli.md`.
 
 Vous n'avez pas besoin d'une plateforme lourde, mais de conventions claires, d'une validation locale, de descriptions lisibles et d'un entretien régulier.
 

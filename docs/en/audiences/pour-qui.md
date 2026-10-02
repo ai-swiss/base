@@ -1,4 +1,4 @@
-<!-- fr-synced: 1c52d20e0939e6668ccea1584262a32c175bfc70 -->
+<!-- fr-synced: 8e51e9744abb1dfb1b9788ce2eab401fa2bcd2f4 -->
 # Finding your way to use BASE
 
 Using AI without losing control of your context, your decisions, and your working memory: that is the challenge, whether you are a single person or an organization. This map also covers university and research teams, as well as AI engineers.

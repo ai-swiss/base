@@ -16,7 +16,7 @@ repository.
 ## Install and build
 
 ```bash
-npm install @ai-swiss/base-docs-site
+npm install @ai-swiss/base-docs-site     # until it is published on npm: `npm install` at the root of a BASE clone
 base docs build --root . --out public-site        # or: node .ai/base.mjs docs build --out public-site
 base docs build --public --root . --out public-site   # public-filtered target
 ```

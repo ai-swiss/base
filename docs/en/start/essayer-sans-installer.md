@@ -1,9 +1,19 @@
-<!-- fr-synced: 47c036535decbf6a0c6b78780cc52a1d2f4f9603 -->
+<!-- fr-synced: 0f333a7f922dddab6926dde048b2eaa13d5c0ddb -->
 # Try BASE without installing BASE
 
-Before handing a real folder to an AI, try BASE on an example whose answer you can check. This page offers two paths with nothing to install on the BASE side. A single AI tool is all you need: the one you already use.
+Before handing a real folder to an AI, try BASE on an example whose answer you can check. This page offers three paths with nothing to install on the BASE side: with your own documents, or on an example, in a chat or in a tool that opens the folder. A single AI tool is all you need: the one you already use.
 
-Both ways show the same example: the prefilled quote assistant, with a question that calls for checking rather than guessing.
+Both example trials show the same assistant: the prefilled quote assistant, with a question that calls for checking rather than guessing.
+
+## With your own documents: give the repository address
+
+To find out what an assistant would do for you, open your usual AI chat, attach your documents (a meeting transcript, procedures) and write: "Using BASE (https://github.com/ai-swiss/base), show us what an assistant could do for us."
+
+The chat reads the entry meant for it and returns a brief to open in your browser: what it understood, what the assistant would or would not do, what AI will not solve. Answer card by card, click "Send my answers", then attach the downloaded file to the same chat. Building the assistant then happens in a tool that opens a folder.
+
+If your chat cannot read a web address, open [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md), save it, and attach it to the conversation along with your documents, writing: "Here are our documents and the BASE file for chats. Show us what an assistant could do for us." That file holds everything the chat needs to read, the brief template included.
+
+Your documents go to the chat provider: choose the one your organisation has approved for this kind of data.
 
 ## The simplest way: an AI chat in the browser
 
@@ -37,4 +47,4 @@ To start from your data: copy `base/exemples/starter-perso` wherever you like (y
 
 In this trial, the model follows the instructions in `CLAUDE.md` or the editor's rules; it can be wrong. To use the reference implementation's mechanisms, such as model-free routing or mediated writes, go through [the letter to your AI](installer-par-votre-ia.md), then see [Security and limits](../trust/securite-et-limites.md). A guarantee holds only when the action passes through the component that enforces it.
 
-**Next action:** download the browser pack and ask it the question given in the first section.
+**Next action:** download the browser pack and ask it the question given under "The simplest way".

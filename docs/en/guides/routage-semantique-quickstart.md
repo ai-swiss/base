@@ -1,4 +1,4 @@
-<!-- fr-synced: 664e913cb17eb023cb42c7857fe18b6c8a203ad0 -->
+<!-- fr-synced: ebd3858e3914f46be31558a24b0d516de9da1499 -->
 # Setting up semantic routing, from zero config to real embeddings
 
 From the moment BASE is installed, requests should reach the right agent and the right process with no initial configuration, then grow in quality the day the need makes itself felt: that is what you set up here. BASE routes a request, or abstains honestly when nothing fits.
@@ -64,11 +64,12 @@ The rule is simple: reserve `base.config.json` for declarative options (`semanti
 
 Install `@ai-swiss/base-ranker-semantic`, choose a provider, add a ranker in `base.config.mjs` (executable config, because a ranker is code). The core itself gains no model or cloud dependency.
 
-```bash
-npm install @ai-swiss/base-ranker-semantic
-```
+The package is not yet published on npm. It lives in `packages/base-ranker-semantic/`, and
+`npm install` at the root of a BASE clone makes it available:
 
-In the BASE monorepo, to contribute locally, the package lives in `packages/base-ranker-semantic/`.
+```bash
+npm install   # at the root of the BASE clone
+```
 
 ```js
 // base.config.mjs: OpenAI-compatible endpoint (OpenAI, Azure-like, internal gateway)

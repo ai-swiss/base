@@ -15,6 +15,8 @@ routing:
     - Transformer ce document en process
     - J'ai déjà un wiki, comment le réutiliser ?
   avoid_when:
+    - Voici nos procédures, montre-moi ce que tu en ferais avant d'écrire quoi que ce soit.
+    - Regarde mon dossier et propose-moi ce qu'un assistant pourrait faire.
     - Question de définition d'un process.
     - Ajouter un workflow à un agent déjà en place.
     - Créer un agent de zéro sans matériau existant.
@@ -36,6 +38,12 @@ Demande à l'utilisateur:
 
 ## Étapes
 
+Si la personne veut d'abord voir ce qu'un assistant ferait pour elle, avant toute conversion, c'est
+`adopter-ce-dossier` qui commence: il rend une fiche de proposition, puis revient ici.
+Quand la personne a d'abord reçu une fiche de proposition par `adopter-ce-dossier` et l'a renvoyée,
+la porte a déjà exploré le matériau et écrit `import-carte.md` à partir de l'export: saute à
+l'étape 3 et convertis. Les étapes 1 et 2 servent quand l'import commence ici.
+
 ### 1. Explorer le matériau
 
 Commence par un survol de **métadonnées**, jamais une lecture intégrale de tout: la liste des fichiers
@@ -48,6 +56,11 @@ première proposition. Range chaque contenu:
 - **S'apprend** (règles, conventions, savoir) → future `competence` ou `document`
 - **Se remplit** (trame, modèle de courrier) → futur `template`
 - **Se consulte avec une validité** (barème, tarifs) → `document` avec `valid_from`/`valid_until`
+
+Une règle déjà écrite pour l'IA (`CLAUDE.md`, règles Cursor, prompts) se range dans l'un de trois
+bacs: ce qu'un modèle fait de lui-même ne se recopie pas (dis-le); ce qui est propre à la maison
+devient une compétence; ce dont un seul manquement coûterait cher (argent, donnée qui sort, engagement envers un tiers)
+reçoit un verrou (voir «Garde-fous» dans `architecture-agent`).
 
 ### 2. Proposer la carte d'import
 

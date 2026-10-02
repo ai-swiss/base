@@ -12,4 +12,4 @@ There is one source of truth, not two:
 
 Why this exists before we publish: a framework whose thesis is *human-verifiable, sovereign* work
 must ship an artifact you can verify at install time, so the path is auditable from day one (clean
-~520-file surface, Sigstore provenance, CycloneDX SBOM, `npm audit` gate, fail-closed `smoke:pack`).
+~740-file surface, Sigstore provenance, CycloneDX SBOM, `npm audit` gate, fail-closed `smoke:pack`).

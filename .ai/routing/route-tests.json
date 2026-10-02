@@ -360,5 +360,109 @@
       "agent": "concierge-base",
       "process": "ameliorer-mes-process"
     }
+  },
+  {
+    "request": "Voici le compte rendu de nos échanges sur nos besoins: besoins.md. Avec le cadre BASE, aide-moi à concevoir une structure de fichiers pour que l'IA y réponde. Présente-moi d'abord les usages que tu vois et la structure que tu proposes.",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "adopter-ce-dossier"
+    }
+  },
+  {
+    "request": "Voici le compte rendu de notre réunion d'équipe, dis-moi ce que l'IA pourrait faire pour nous",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "adopter-ce-dossier"
+    }
+  },
+  {
+    "request": "Voici nos procédures, regarde ce que tu en ferais avant d'écrire quoi que ce soit",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "adopter-ce-dossier"
+    }
+  },
+  {
+    "request": "On a déjà un CLAUDE.md et des règles Cursor, regarde ce qu'on peut en faire",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "adopter-ce-dossier"
+    }
+  },
+  {
+    "request": "Montre à notre équipe, qui ne connaît rien à l'IA, ce qu'un assistant pourrait faire ou non pour elle",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "adopter-ce-dossier"
+    }
+  },
+  {
+    "request": "Je ne sais pas par où commencer avec l'IA, je n'ai aucun document",
+    "expect": {
+      "status": "routed",
+      "agent": "createur-agent",
+      "process": "diagnostic"
+    }
+  },
+  {
+    "request": "Mon assistant tourne déjà, dis-moi ce qui pourrait aller mieux dans mes process",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "ameliorer-mes-process"
+    }
+  },
+  {
+    "request": "Avec BASE, écris un document qui reprend tout ce que tu comprends de nos besoins dans notes.md, avec toutes les possibilités et davantage, pour décider point par point.",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "adopter-ce-dossier"
+    }
+  },
+  {
+    "request": "Voici l'entretien avec notre équipe, dans ce dossier. Avec le cadre BASE, montre à cette équipe, qui ne connaît rien à l'IA, ce qu'un assistant pourra faire ou non pour elle: prépare la fiche de décision, et rien d'autre.",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "adopter-ce-dossier"
+    }
+  },
+  {
+    "request": "Examine ce dossier et montre-moi ce que BASE pourrait en faire. Ne change encore aucun fichier.",
+    "expect": {
+      "status": "routed",
+      "agent": "concierge-base",
+      "process": "adopter-ce-dossier"
+    }
+  },
+  {
+    "request": "J'ai rempli et exporté la fiche. Voici mes décisions: construis l'assistant.",
+    "expect": {
+      "status": "routed",
+      "agent": "createur-agent",
+      "process": "creer-agent"
+    }
+  },
+  {
+    "request": "Voilà mes décisions, construis maintenant l'assistant.",
+    "expect": {
+      "status": "routed",
+      "agent": "createur-agent",
+      "process": "creer-agent"
+    }
+  },
+  {
+    "request": "Ajoute un hook qui empêche mon assistant de modifier ses propres process",
+    "expect": {
+      "status": "routed",
+      "agent": "createur-agent",
+      "process": "ameliorer-agent"
+    }
   }
 ]

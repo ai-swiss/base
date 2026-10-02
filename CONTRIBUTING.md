@@ -23,7 +23,7 @@ git clone https://github.com/ai-swiss/base.git && cd base
 npm ci                   # installe la chaîne d'outils de contribution (le cœur, lui, n'a aucune dépendance d'exécution)
 npm run check            # la barrière locale principale (spec, types, validation, index, routes, docs, tests, doctor)
 npm run check:release    # Node >=18.14.1: check + audits, paquets installables et build/tests du MCP
-npm test                 # cœur + packages (~5 s) → tout vert
+npm test                 # cœur + packages (~20 s) → tout vert
 npm run test:coverage    # mêmes tests + seuils 90/80/90
 npm run typecheck        # tsc --checkJs sur tools/ et packages/ → 0 erreur
 node tools/base.mjs validate --root .   # «BASE valide.»

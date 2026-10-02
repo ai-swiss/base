@@ -97,12 +97,12 @@ Installez `@ai-swiss/base-ranker-semantic`, choisissez un fournisseur, ajoutez u
 `base.config.mjs` (config exécutable, car un ranker est du code). Le cœur, lui, ne gagne aucune
 dépendance modèle ou cloud.
 
-```bash
-npm install @ai-swiss/base-ranker-semantic
-```
+Le paquet n'est pas encore publié sur npm. Il vit dans `packages/base-ranker-semantic/`, et
+`npm install` à la racine d'un clone de BASE le rend disponible:
 
-Dans le monorepo BASE, pour contribuer en local, le package vit dans
-`packages/base-ranker-semantic/`.
+```bash
+npm install   # à la racine du clone de BASE
+```
 
 ```js
 // base.config.mjs : endpoint OpenAI-compatible (OpenAI, Azure-like, gateway interne)

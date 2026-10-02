@@ -63,7 +63,7 @@ export function egressNotice(withheld) {
   const parts = [];
   if (confidential) parts.push(`${confidential} document${confidential > 1 ? "s" : ""} confidentiel${confidential > 1 ? "s" : ""}`);
   if (localOnly) parts.push(`${localOnly} document${localOnly > 1 ? "s" : ""} d'un root local-only`);
-  return `${withheld.length} document${withheld.length > 1 ? "s" : ""} retenu${withheld.length > 1 ? "s" : ""} (${parts.join(", ")}) : le modèle choisi est distant. Choisissez un modèle local pour les inclure.`;
+  return `${withheld.length} document${withheld.length > 1 ? "s" : ""} retenu${withheld.length > 1 ? "s" : ""} (${parts.join(", ")}): le modèle choisi est distant. Choisissez un modèle local pour les inclure.`;
 }
 
 /**
