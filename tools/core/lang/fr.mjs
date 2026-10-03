@@ -31,7 +31,7 @@ export const FR = {
     "En français, n'utilise jamais de tiret cadratin ni d'espace insécable avant la ponctuation.",
     "",
     "## Appliquer BASE à un dossier qui n'en est pas encore un",
-    "Si l'utilisateur veut faire de SON dossier un BASE (il a du matériel, il veut structurer son savoir et son savoir-faire avec l'IA) et que ce dossier n'a encore ni `base.config.json` ni `.ai/agents/`: ne crée AUCUN fichier à la main. Lance d'abord `base init` (il crée le lanceur, la config, le `CLAUDE.md` et un agent de départ sous `.ai/agents/<nom>/`). Puis route vers `importer-l-existant` (à partir de matériel existant) ou `creer-agent` (de zéro), deux process du cadre BASE et non du dossier de l'utilisateur: le lanceur les atteint via `framework_dir` dans `base.config.json`. Chaque écriture est proposée en diff, jamais committée d'office. Si tu te trouves dans le dépôt du cadre BASE lui-même, n'écris rien ici: initialise plutôt le dossier de l'utilisateur.",
+    "Si l'utilisateur montre ce qu'il a (une discussion sur ses besoins, des documents de travail, des règles déjà écrites pour l'IA) et veut voir ce qu'un assistant en ferait, commence par `adopter-ce-dossier`, un process du cadre BASE: il lit, n'écrit qu'une fiche de proposition sous `.temp/`, et rien d'autre tant que la personne ne l'a pas renvoyée. Quand elle rend l'export de cette fiche (`…_proposition-filled.md`), reprends à l'étape 6 d'`adopter-ce-dossier`: c'est elle qui le lit et passe la main. Si l'utilisateur veut faire de SON dossier un BASE (il a du matériel, il veut structurer son savoir et son savoir-faire avec l'IA) et que ce dossier n'a encore ni `base.config.json` ni `.ai/agents/`: ne crée AUCUN fichier à la main. Lance d'abord `node <cadre BASE>/tools/base.mjs init --root <dossier>`: sans `--yes`, il montre ce qu'il créerait (le lanceur, la config, le point d'entrée de l'outil choisi, un agent de départ sous `.ai/agents/<nom>/`) et n'écrit rien; avec `--yes`, il le crée. Puis route vers `importer-l-existant` (à partir de matériel existant) ou `creer-agent` (de zéro), deux process du cadre BASE et non du dossier de l'utilisateur: le lanceur les atteint grâce à l'emplacement du cadre qu'`init` enregistre (dans la configuration utilisateur, ou `framework_dir` dans `base.config.json`). Chaque écriture est proposée en diff, jamais committée d'office. Si tu te trouves dans le dépôt du cadre BASE lui-même, n'écris rien ici: initialise plutôt le dossier de l'utilisateur.",
     "",
     "## Comment router",
     "Ta carte, c'est l'index généré. Lis `.ai/routing/index.md`: il liste les agents, et l'index de chaque agent (`.ai/agents/<agent>/index.md`, lié depuis la racine) détaille ses process avec «Quand l'utiliser» et «Éviter si». Descends racine → index d'agent → process, et retiens le process dont le «Quand l'utiliser» couvre la demande, en respectant «Éviter si». Tu routes en lisant la carte.",
@@ -130,6 +130,9 @@ export const FR = {
 # Produit de construction: régénéré par \`base index\`. Le suivre en version ferait diverger
 # chaque machine sur un fichier que personne ne lit à la main.
 base.manifest.json
+
+# Brouillons de travail (fiches de proposition, notes d'entretien): ils reprennent des faits de vos documents.
+.temp/
 `,
 
   // The CC BY credit LICENSING.md asks for; `doctor` names a README that lost it.
@@ -201,6 +204,11 @@ base.manifest.json
     "explore ce que vous pointez et PROPOSE des conversions en ressources BASE; chaque écriture passe",
     "par le gate (proposer puis valider), vous validez chaque diff.",
     "",
+    "Si la personne veut d'abord voir ce qu'un assistant ferait pour elle, avant toute conversion",
+    "(«montre-moi ce que BASE en ferait», «ne change encore rien»), suis `adopter-ce-dossier`, un process",
+    "du cadre BASE atteint via `framework_dir`: il rend une fiche de proposition à relire dans le",
+    "navigateur, et l'import reprend ici, à l'étape 3, avec la carte tirée de son export.",
+    "",
     "Au premier échange, ne récite ni les étapes ni les catégories ci-dessous. Dis en trois phrases",
     "au plus que tu es prêt, que rien ne sera écrit sans validation, puis demande où sont les documents.",
     "",
@@ -210,6 +218,10 @@ base.manifest.json
     "   (étapes, checklist) devient un `process`; ce qui *s'apprend* (règles, conventions) une",
     "   `competence` ou un `document`; ce qui *se remplit* (trame, modèle) un `template`; ce qui *se",
     "   consulte avec une validité* (barème, tarifs) un `document` daté.",
+    "   Une règle déjà écrite pour l'IA (un `CLAUDE.md`, des règles d'outil) ne se recopie pas si un",
+    "   modèle l'applique de lui-même; une règle propre à la maison se garde; une règle dont un seul manquement coûterait cher reçoit un verrou",
+    "   (l'information mise hors d'atteinte, ou une permission de l'outil avec son bac à sable), essayé une",
+    "   fois sans conséquence, par chaque chemin: l'outil d'écriture, une commande, une copie.",
     "2. **Proposer la carte d'import.** Présente la découpe source vers ressource cible (type, id,",
     "   chemin) et fais-la valider AVANT toute conversion. Reste flexible: guide une migration",
     "   progressive vers une structure exploitable par l'IA, et propose d'ajouter ce qui est utile.",

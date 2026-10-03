@@ -15,12 +15,20 @@ routing:
     - Construire un agent pour mon entreprise
     - J'aimerais un assistant IA pour mon activité
     - Le plan de création de notre nouvel assistant est approuvé, construis-le
+    - Voici mes réponses à la fiche de proposition, construis l'assistant
+    - J'ai rempli la fiche, tu peux construire maintenant
   avoid_when:
+    - Montre-moi d'abord ce que l'IA ferait pour nous avant d'écrire quoi que ce soit.
+    - Voici notre discussion sur nos besoins, voici nos documents, regarde ce que tu en ferais.
     - Je ne sais pas quel choix faire en premier.
     - Audit entretien vérification publication readiness d'un BASE existant.
     - Review audit harden an existing BASE after implementation.
 may_use:
   - deleguer-a-plusieurs-branches
+requires:
+  - ref: faisabilite-ia
+    access: read
+    purpose: juger chaque tâche retenue (maintenant, plus tard, jamais) et ce qui reste humain, quand le plan ne vient pas d'une fiche de proposition
 argument-hint: "[description du métier ou du besoin]"
 user-invocable: true
 allowed-tools: Read Write Edit Glob Grep Bash
@@ -32,9 +40,15 @@ Guider l'utilisateur de la description de son besoin jusqu'à un agent IA métie
 
 ## RÈGLE ABSOLUE
 
-**Ne crée AUCUN fichier avant l'étape 7.** Les étapes 1 à 6 forment une conversation de découverte et de conception. L'étape 6 s'achève sur un plan complet que l'utilisateur doit approuver explicitement. Si l'utilisateur dit «Crée un assistant pour X», réponds par une question, jamais par la création d'un fichier.
+**Ne crée AUCUN fichier avant l'étape 7, pas même le journal.** Les étapes 1 à 6 forment une conversation de découverte et de conception. L'étape 6 s'achève sur un plan complet que l'utilisateur doit approuver explicitement. Si l'utilisateur dit «Crée un assistant pour X», réponds par une question, jamais par la création d'un fichier.
 
-Un plan fourni par l'utilisateur qui se déclare explicitement approuvé et autorise la création vaut approbation de l'étape 6. Vérifie qu'il fixe au moins la mission, le premier travail, les connaissances à utiliser, le résultat attendu et les décisions humaines. S'il est complet, applique-le sans redemander le même accord; s'il manque un élément qui change la structure, pose une seule question ciblée.
+Un plan fourni par l'utilisateur qui se déclare explicitement approuvé et autorise la création vaut approbation de l'étape 6. C'est le cas du plan qu'`adopter-ce-dossier` tire de l'export d'une fiche de proposition remplie.
+Quand on te remet directement cet export (`…_proposition-filled.md`), suis d'abord l'étape 6
+d'`adopter-ce-dossier`: c'est elle qui lit l'export et en tire le plan. S'il manque au plan un
+élément qui change la structure, pose une seule question ciblée; sinon construis sans redemander le
+même accord. Quand un plan approuvé ou un export te fait commencer à l'étape 7, pose
+d'abord les étapes qui restent (7 à 12) comme au début: c'est sur ce chemin, le plus long en
+écritures, qu'une étape glisse le plus facilement.
 
 ## Inputs
 
@@ -52,6 +66,9 @@ Avant de parler de fichiers ou de métadonnées, clarifie le niveau de structure
 Si l'utilisateur ne sait pas par où commencer, charge `skills/competences/exemples-agents/SKILL.md` pour lui montrer des idées.
 
 ## Étapes
+
+Avant l'étape 1, pose les étapes dans la liste de tâches de l'outil; sans elle, annonce-les une fois,
+avec les mots de la personne, puis coche-les au fil (compétence `journal`, Progression).
 
 ### 1. Découvrir le besoin
 
@@ -100,8 +117,12 @@ Ne propose pas plus de 3 procédures pour commencer.
 Questions:
 - «Quels termes spécifiques utilise-t-on dans votre métier?»
 - «Y a-t-il des règles ou des normes à respecter?»
-- «Quelles sont les bonnes pratiques de votre domaine?»
-- «Quelles erreurs un débutant ferait-il?»
+- «Qu'est-ce qu'une personne compétente, mais nouvelle chez vous, ferait mal?»
+- «Quelles erreurs ont déjà été commises?»
+
+N'écris que ce que le modèle ne ferait pas de lui-même: les termes, les seuils et les règles de la
+maison, les erreurs déjà commises. «Être poli» ou «vérifier l'orthographe» ne s'écrivent pas: chaque
+ligne d'une fiche est relue à chaque usage.
 
 > «Voici les domaines de connaissance que je propose:
 > 1. **[Connaissance 1]**: [ce qu'elle contient]
@@ -136,6 +157,9 @@ Questions:
 ### 6. Proposer l'architecture complète
 
 Charge `skills/competences/architecture-agent/SKILL.md` pour suivre les patterns.
+Si le plan ne vient pas d'une fiche de proposition, déjà jugée, passe d'abord chaque tâche retenue
+par `faisabilite-ia`: une tâche «Non» ne se construit pas, une tâche «Plus tard» dit ce qui manque,
+et ce qui reste humain figure dans le plan.
 Si le travail se répartit entre plusieurs lectures ou plusieurs sous-tâches menées de front, charge d'abord `skills/competences/deleguer-a-plusieurs-branches/SKILL.md`: elle dit les cinq conditions à réunir, et quand rester ensemble.
 
 Présente un récapitulatif complet:
@@ -201,11 +225,16 @@ Selon la réponse:
 1. Cherche la documentation à jour de l'outil en ligne (si l'accès web est disponible)
 2. À défaut, réfère-toi à `skills/competences/outils-connus/SKILL.md`
 3. Génère les fichiers de configuration de l'outil en mettant en place les 5 primitives:
-   - **Contexte permanent**: fichier qui charge AGENT.md au démarrage (ex. CLAUDE.md avec `@import`)
+   - **Contexte permanent**: fichier qui charge AGENT.md au démarrage (ex. CLAUDE.md avec une ligne `@.ai/agents/[nom]/AGENT.md`)
    - **Skills découvrables**: copier/lier les skills au bon emplacement pour l'outil
    - **Règles par chemin**: garde-fous activés quand l'agent touche des fichiers métier
    - **Permissions**: contrôler ce que l'agent peut faire (si l'outil le supporte)
-   - **Protection du cadre**: empêcher la modification de `.ai/`
+   - **Protection du cadre**: empêcher la modification directe de `.ai/agents/` et `.ai/routing/`, nommés un par un, le journal (`.ai/journal/`) restant libre
+
+Avant de configurer, reprends les lignes rouges de l'AGENT.md avec la personne et demande, pour
+chacune, ce que coûte une seule erreur. Une ligne critique (argent, donnée qui sort, engagement
+envers un tiers) reçoit un verrou: voir «Garde-fous» dans `architecture-agent`. Les autres restent
+des phrases. Présente le tableau: ligne rouge, coût d'une erreur, verrou.
 
 **⚠ Point de décision, avant configuration:**
 > «Voici ce que je vais configurer pour [outil]: [description]. Confirmez-vous?»
@@ -222,6 +251,16 @@ Si un terminal est disponible, vérifie le travail avec les mécanismes de BASE 
 Sans terminal, dis-le simplement: «Pour que le routage voie ce nouveau process, il faudra régénérer l'index (`base build routing-index --write`) et rejouer `route-test` à la prochaine occasion.»
 
 ### 11. Tester et itérer
+
+Avant de rendre la main:
+
+1. **Essaie chaque verrou une fois**, sur une cible sans conséquence (un fichier d'essai, un compte
+   fictif), par chaque chemin qui mène à l'action (l'outil d'écriture, une commande, une copie de
+   fichier), et note au journal ce qui l'a refusée. Seul un refus de l'outil, ou une information
+   introuvable, compte. Si un chemin passe, dis que la ligne reste une consigne.
+2. **Fais rejouer deux ou trois vraies demandes par une session qui n'a pas construit l'assistant**
+   (un sous-agent si l'outil le permet, sinon une nouvelle conversation): elle dit quel process elle
+   charge et ce qu'elle produirait. Corrige ce qui dévie.
 
 Dans le récapitulatif, nomme les fichiers canoniques que l'équipe peut relire: identité de
 l'assistant, premier travail, fiches de connaissances et modèle de résultat. Distingue ce que les
@@ -246,4 +285,4 @@ contrôles ont vérifié de ce qui reste à compléter ou à décider par une pe
 - **Remplir des fichiers de données inventées.** Tout contenu vient de l'utilisateur. Si une information manque, pose un marqueur `[A COMPLETER: ...]`.
 - **Passer à la création sans le point de décision de l'étape 6.** C'est le plus critique de tous.
 - **Oublier les compétences standard.** Chaque agent reçoit marqueurs, journal et communication.
-- **Perdre le fil des longues conversations.** Ce process compte 11 étapes. Avant les étapes 6 et 7, récapitule ce qui a été décidé.
+- **Perdre le fil des longues conversations.** Ce process compte 12 étapes. Avant les étapes 6 et 7, récapitule ce qui a été décidé.

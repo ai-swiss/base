@@ -44,7 +44,7 @@ Vérifiez avec `claude --version`. Au premier lancement, `claude` vous invite à
 2. Ouvrez un terminal dans ce dossier
 3. Lancez `claude`
 
-Le fichier `CLAUDE.md` placé à la racine de l'exemple fournit à Claude Code son contexte de départ via `@import`: l'agent se charge sans autre configuration.
+Le fichier `CLAUDE.md` placé à la racine de l'exemple fournit à Claude Code son contexte de départ: une ligne `@.ai/agents/<nom>/AGENT.md` importe l'agent au lancement, sans autre configuration.
 
 Vous n'avez pas encore le dépôt? Voir [Obtenir BASE](obtenir-base.md).
 

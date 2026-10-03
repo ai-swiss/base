@@ -16,6 +16,9 @@ routing:
     - Rassemble mes choix et mes accords sur une liste de points ouverts
     - J'ai plusieurs choix ouverts, fais-moi une fiche interactive
   avoid_when:
+    - Ce qu'un assistant pourra faire ou non pour une équipe, d'après un entretien ou des documents.
+    - Réponses à une fiche de proposition, construis l'assistant.
+    - Fiche remplie et renvoyée, construire maintenant.
     - Une seule décision, déjà prise, à formaliser en note.
     - Un changement déjà décidé qu'il faut appliquer.
     - Enregistrer durablement une décision unique.
@@ -29,6 +32,10 @@ allowed-tools: Read, Write
 Quand plusieurs choix sont ouverts, une fiche vaut mieux qu'un fil de discussion: la personne y note
 chaque point, le commente, puis vous renvoie l'ensemble d'un coup. La personne décide; la fiche
 structure la décision.
+
+Cette fiche tranche des arbitrages. Montrer à une personne ce qu'un assistant fera ou non pour
+elle, à partir d'une discussion ou de ses documents, c'est la fiche de proposition
+d'`adopter-ce-dossier`, même quand la personne l'appelle «fiche de décision».
 
 ## Étapes
 
@@ -44,12 +51,14 @@ structure la décision.
    `{AAAA-MM-JJ}_{sujet}_decisions-filled.md` (l'export se range ainsi à côté de sa fiche vierge et
    reste lisible hors de son dossier).
 3. **Rester sobre.** Pas de référence à un cadre externe; le style est déjà dans le modèle.
-   `.temp/` est ignoré par git, la fiche reste un brouillon. Avant de la livrer, relisez le fichier
+   La fiche reste un brouillon sous `.temp/`; si le dossier est suivi par git et que `.temp/` n'y est
+   pas ignoré, dites-le. Avant de la livrer, relisez le fichier
    entier, commentaires HTML compris: en français, aucun tiret cadratin ni espace avant `:;!?`.
 4. **Ouvrir la fiche** pour la personne et attendre. La fiche s'enregistre dans le navigateur;
    l'export est un Markdown qu'elle vous rend.
-5. **Agir sur l'export.** Appliquez là où elle est d'accord, suivez ses commentaires là où elle
-   nuance, gardez votre recommandation là où elle n'a pas répondu (et dites-le). Si une décision
+5. **Agir sur l'export.** Un export `…_proposition-filled.md` vient de la fiche de proposition: c'est
+   l'étape 6 d'`adopter-ce-dossier` qui le lit. Sinon, appliquez là où elle est d'accord, suivez
+   ses commentaires là où elle nuance, gardez votre recommandation là où elle n'a pas répondu (et dites-le). Si une décision
    mérite d'être conservée, proposez d'en faire une courte note écrite.
 
 ## Ce que vous ne faites jamais

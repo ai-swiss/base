@@ -1,4 +1,4 @@
-<!-- fr-synced: 407776c357103f235e2fc97c0c2916ed7de1c47e -->
+<!-- fr-synced: 54c39dfeafcd8af88dbdefdf1f4d39b250d839e0 -->
 # Impact assessment template (DPIA)
 
 Before you put an assistant in your teams' hands, you need to be able to justify what each person, tool, and model does with the data. This skeleton separates technical controls from institutional responsibilities.
@@ -32,7 +32,7 @@ The folder contains what you put into it:
 - the **resource files** you deposit (the domain knowledge, in Markdown);
 - a **local trace log** (`.ai/trace`) that records mediated operations: operation, resource, status, duration, with no business content by default.
 
-Default routing **makes no network calls** (lexical). Advanced semantic routing sends text to an embeddings provider only if you explicitly enable it, and a local option exists (see [Routing data security](../trust/securite-donnees-routage.md)).
+The BASE router (`base route`, `route_request` over MCP) **makes no network calls** by default (lexical). In an AI tool, the model reads the routing map: the request then goes to that model's provider. Advanced semantic routing sends text to an embeddings provider only if you explicitly enable it, and a local option exists (see [Routing data security](../trust/securite-donnees-routage.md)).
 
 To fill in for your processing:
 

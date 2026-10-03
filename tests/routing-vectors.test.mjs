@@ -10,6 +10,8 @@ import * as fs from "node:fs/promises";
 import * as os from "node:os";
 import * as path from "node:path";
 import { describe, it } from "node:test";
+import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
 import {
   ROUTING_VECTORS_SCHEMA,
   applyRoutingVectors,
@@ -48,6 +50,15 @@ describe("precomputeRoutingVectors — the cross-invocation cache", () => {
     assert.equal(vectors[".ai/agents/sales/skills/processes/secret/SKILL.md"], undefined, "confidential never embedded");
     assert.equal(vectors[".ai/agents/sales/skills/processes/secret-reel/SKILL.md"], undefined, "confidential in the INVENTORY shape (metadata.confidential) never embedded either");
     assert.equal(skippedConfidential, 2, "and both skips are counted, so the CLI says it out loud");
+  });
+
+  it("honours a local-only root: nothing reaches a remote (or unknown) embedder, a local one embeds as usual", async () => {
+    const remote = await precomputeRoutingVectors(resources, mockEmbed, { rootPolicy: "local-only" });
+    assert.deepEqual(remote.vectors, {}, "unknown locality is remote: no route_text leaves a local-only root");
+    assert.ok(remote.skippedLocalOnly > 0, "the withheld resources are counted");
+    const local = await precomputeRoutingVectors(resources, mockEmbed, { rootPolicy: "local-only", modelLocality: "local" });
+    assert.ok(local.vectors[".ai/agents/sales/skills/processes/devis/SKILL.md"], "a local embedder still embeds");
+    assert.equal(local.vectors[".ai/agents/sales/skills/processes/secret/SKILL.md"], undefined, "confidential stays out, whatever the locality");
   });
 
   it("embeds the route_text (use_when) and stamps each entry with its hash", async () => {
@@ -131,6 +142,26 @@ describe("loadRoutingVectors — the I/O adapter (tolerant)", () => {
       await fs.mkdir(path.join(dir, ".ai/routing"), { recursive: true });
       await fs.writeFile(path.join(dir, ".ai/routing/embeddings.json"), JSON.stringify({ "p.md": [1, 2] }));
       assert.deepEqual(await loadRoutingVectors(dir), { "p.md": [1, 2] });
+    } finally {
+      await fs.rm(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("base build routing-embeddings — the root policy on the build path", () => {
+  it("refuses a remote embedder on a local-only root before loading any model, and says so", async () => {
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "base-vectors-local-only-"));
+    try {
+      await fs.mkdir(path.join(dir, ".ai"), { recursive: true });
+      await fs.writeFile(path.join(dir, "base.config.json"), JSON.stringify({ egress: "local-only" }));
+      await fs.writeFile(path.join(dir, ".ai", "studio.settings.json"), JSON.stringify({
+        providers: [{ id: "cloud", type: "openai", baseUrl: "https://api.example.org/v1" }],
+        routing: { embedding_model: "cloud/emb" },
+      }));
+      const cli = fileURLToPath(new URL("../tools/base.mjs", import.meta.url));
+      const run = spawnSync(process.execPath, [cli, "build", "routing-embeddings", "--root", dir], { encoding: "utf8" });
+      assert.notEqual(run.status, 0);
+      assert.match(run.stderr + run.stdout, /local-only et l'embedder cloud\/emb est distant/);
     } finally {
       await fs.rm(dir, { recursive: true, force: true });
     }

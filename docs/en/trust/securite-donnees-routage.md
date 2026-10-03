@@ -1,4 +1,4 @@
-<!-- fr-synced: 741fc2e17bcbd9835481b0a7151945e47adf5806 -->
+<!-- fr-synced: 6f1f63bcb2642e2bc2888eacc3a1fb5121246497 -->
 # Keeping your data under control when routing uses a provider
 
 When routing relies on a remote provider, text may leave your machine. Two scopes must be distinguished: the shipped BASE Way 2 and direct integration of the `@ai-swiss/base-ranker-semantic` package.
@@ -7,7 +7,7 @@ When routing relies on a remote provider, text may leave your machine. Two scope
 
 Way 2 is enabled with `routing.embedding_model` and `refiner_model`.
 
-- During precomputation, `base build routing-embeddings` sends only `route_text` to the configured embedding model. A `confidential` resource is skipped.
+- During precomputation, `base build routing-embeddings` sends only `route_text` to the configured embedding model. A `confidential` resource is skipped. For a `local-only` root, the command refuses a remote embedding model and sends nothing.
 - At query time, the embedding model receives the user's request. The refiner receives that request and the candidates' `route_text` / `avoid_text`, never their bodies.
 - The strategy gate applies regardless of caller, including from `base route`. If the configured models are remote, a `confidential` process never reaches the refiner; for a `local-only` root, none of these remote calls occurs and the deterministic floor answers.
 - This Way 2 strategy gate does not cover a direct read, `base open` without an egress context, or copy-paste into an AI tool.
@@ -38,7 +38,7 @@ Once a provider is configured, two kinds of text can go out to it:
 
 - **Stay local** with `createOllamaEmbedder()`: no text is transmitted to a remote provider.
 - **Go through an internal gateway**: `createOpenAICompatibleEmbedder({ baseUrl })` pointed at a reverse
-  proxy under your control (auth, mTLS, DLP). Tuned well, this proxy keeps domain text out of any public endpoint.
+  proxy under your control (auth, mTLS, DLP). The proxy authenticates, logs and can filter what is sent; the text stays on your side only if it routes it to an internally hosted model.
 
 ### Secrets
 

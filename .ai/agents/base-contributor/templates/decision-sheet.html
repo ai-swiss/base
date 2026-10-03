@@ -48,7 +48,7 @@ const SCALE = ["Non répondu","Non","Plutôt non","Partagé","Plutôt oui","Tout
 const STORAGE_KEY = "YYYY-MM-DD_slug_decisions";       // dated stem, unique per sheet
 const EXPORT_FILE = "YYYY-MM-DD_slug_decisions-filled.md"; // same stem + -filled, pairs with the blank
 const POINTS = [
-  // { id:"P1", title:"...", what:"...", reco:"...", recoSummary:"...", scaleLabel:"D'accord ?" },
+  // { id:"P1", title:"...", what:"...", reco:"...", recoSummary:"...", scaleLabel:"D'accord?" },
 ];
 let state={}; try{state=JSON.parse(localStorage.getItem(STORAGE_KEY)||"{}")}catch(e){}
 const get=id=>state[id]||{score:0,comment:""};
@@ -61,7 +61,7 @@ function render(){
     let h="<div><span class='id'>"+p.id+"</span><span class='ttl'>"+p.title+"</span></div>";
     h+="<div class='lbl'>Contexte</div><p>"+p.what+"</p>";
     h+="<div class='reco'><span class='tag'>Ma recommandation</span>"+p.reco+"</div>";
-    h+="<div class='lbl'>"+(p.scaleLabel||"D'accord ?")+"</div><div class='scale' data-id='"+p.id+"'>";
+    h+="<div class='lbl'>"+(p.scaleLabel||"D'accord?")+"</div><div class='scale' data-id='"+p.id+"'>";
     for(let i=1;i<=5;i++)h+="<button data-v='"+i+"' class='"+(c.score===i?"sel":"")+"'>"+i+" · "+SCALE[i]+"</button>";
     h+="</div><div class='lbl'>Commentaire</div><textarea data-id='"+p.id+"'>"+(c.comment||"")+"</textarea>";
     card.innerHTML=h;root.appendChild(card);}
@@ -73,7 +73,7 @@ function render(){
   prog();
 }
 function md(){
-  let m="# "+document.title+" : mes réponses\n\n> Pour Claude : mes choix et commentaires. Applique là où je suis d'accord, suis mes commentaires sinon, garde ta reco là où je n'ai pas répondu.\n\n";
+  let m="# "+document.title+": mes réponses\n\n> Pour l'assistant qui lira ce fichier: mes choix et commentaires. Applique là où je suis d'accord, suis mes commentaires sinon, garde ta reco là où je n'ai pas répondu.\n\n";
   for(const p of POINTS){const c=get(p.id);const l=c.score>0?c.score+"/5 ("+SCALE[c.score]+")":"non répondu";
     m+="### "+p.id+": "+p.title+"\n- Ma reco: "+p.recoSummary+"\n- Ton choix: "+l+"\n- Commentaire: "+((c.comment||"").trim()||"aucun")+"\n\n";}
   return m;

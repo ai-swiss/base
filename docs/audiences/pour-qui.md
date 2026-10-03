@@ -93,7 +93,7 @@ Ce que les fichiers, le routeur et la méthode apportent:
 - des processus partagés et vérifiables;
 - une validation locale avant partage;
 - un entretien régulier des liens, marqueurs, descriptions et ressources;
-- une progression naturelle du personnel vers l'équipe.
+- une progression naturelle de la personne seule vers l'équipe.
 
 Point d'attention:
 

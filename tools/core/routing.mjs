@@ -189,7 +189,7 @@ export function decideRoute(ranked, agentsByDir, options = {}) {
   if (agentChoice.kind === "none") {
     return outcome("out_of_scope", "below_floor", null, null, candidates,
       "Aucun agent ne couvre cette demande au-dessus du seuil.",
-      "Pouvez-vous reformuler, ou faut-il créer un agent pour ce besoin ?");
+      "Pouvez-vous reformuler, ou faut-il créer un agent pour ce besoin?");
   }
   if (agentChoice.kind === "close") {
     const a = agentLabel(agentsByDir, agentChoice.top.dir);
@@ -197,7 +197,7 @@ export function decideRoute(ranked, agentsByDir, options = {}) {
     return outcome("needs_clarification", "competing_intents",
       slimResource(agentsByDir.get(agentChoice.top.dir)), null, candidates,
       `Deux agents plausibles couvrent des intentions différentes: ${a} et ${b}.`,
-      `Votre demande concerne-t-elle ${a} ou ${b} ?`);
+      `Votre demande concerne-t-elle ${a} ou ${b}?`);
   }
 
   const bestDir = agentChoice.top.dir;
@@ -213,12 +213,12 @@ export function decideRoute(ranked, agentsByDir, options = {}) {
   if (processChoice.kind === "none") {
     return outcome("needs_clarification", "no_clear_process", slimResource(agent), null, candidates,
       `Agent clair (${agentName}) mais aucun process ne ressort.`,
-      `Que voulez-vous faire avec ${agentName} ?`);
+      `Que voulez-vous faire avec ${agentName}?`);
   }
   if (processChoice.kind === "close") {
     return outcome("ambiguous", "two_close_candidates", slimResource(agent), null, candidates,
       `Deux process proches dans ${agentName}.`,
-      `Souhaitez-vous «${candidateTitle(processChoice.top)}» ou «${candidateTitle(processChoice.runnerUp)}» ?`);
+      `Souhaitez-vous «${candidateTitle(processChoice.top)}» ou «${candidateTitle(processChoice.runnerUp)}»?`);
   }
 
   return outcome("routed", null, slimResource(agent), slimResource(processChoice.top.resource), candidates,

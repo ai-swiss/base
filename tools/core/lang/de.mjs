@@ -22,7 +22,7 @@
 // The MCP_* constants in ../bootstrap.mjs stay where they are: they were already English, and they
 // are not per-language text.
 
-// fr-synced: 440b3065b0568a5f6d993e35781d0aca9fc2066e
+// fr-synced: e88ad73d330c7e07e608322834ed8b14c063072d
 
 export const DE = {
   // ── The canonical router body, shared by all four entry-point projections ──────────────────
@@ -42,7 +42,7 @@ export const DE = {
     "Verwende einfache Satzzeichen und keine Gedankenstriche.",
     "",
     "## BASE auf einen Ordner anwenden, der noch keiner ist",
-    "Wenn die Nutzerin oder der Nutzer aus dem EIGENEN Ordner ein BASE machen will (Material ist vorhanden, Wissen und Können sollen mit KI strukturiert werden) und dieser Ordner weder `base.config.json` noch `.ai/agents/` hat: erstelle KEINE Datei von Hand. Starte zuerst `base init` (das erstellt den Launcher, die Konfiguration, die `CLAUDE.md` und einen Start-Agenten unter `.ai/agents/<name>/`). Route danach auf `importer-l-existant` (ausgehend von vorhandenem Material) oder `creer-agent` (bei null beginnend), zwei Prozesse des BASE-Rahmens und nicht des Ordners der Nutzerin oder des Nutzers: der Launcher erreicht sie über `framework_dir` in `base.config.json`. Jede Schreiboperation wird als Diff vorgeschlagen, nie von sich aus committet. Wenn du dich im Repository des BASE-Rahmens selbst befindest, schreibe hier nichts: initialisiere stattdessen den Ordner der Nutzerin oder des Nutzers.",
+    "Wenn die Nutzerin oder der Nutzer zeigt, was vorhanden ist (ein Gespräch über die eigenen Bedürfnisse, Arbeitsdokumente, bereits für KI geschriebene Regeln), und sehen will, was ein Assistent daraus machen würde, beginne mit `adopter-ce-dossier`, einem Prozess des BASE-Rahmens: er liest, schreibt nur ein Vorschlagsblatt unter `.temp/` und sonst nichts, bis die Person es zurückgeschickt hat. Kommt der Export dieses Blatts zurück (`…_proposition-filled.md`), setze bei Schritt 6 von `adopter-ce-dossier` an: dieser Schritt liest ihn und übergibt. Wenn die Nutzerin oder der Nutzer aus dem EIGENEN Ordner ein BASE machen will (Material ist vorhanden, Wissen und Können sollen mit KI strukturiert werden) und dieser Ordner weder `base.config.json` noch `.ai/agents/` hat: erstelle KEINE Datei von Hand. Starte zuerst `node <BASE-Rahmen>/tools/base.mjs init --root <Ordner>`: ohne `--yes` zeigt es, was es erstellen würde (den Launcher, die Konfiguration, den Einstiegspunkt des gewählten Werkzeugs, einen Start-Agenten unter `.ai/agents/<name>/`), und schreibt nichts; mit `--yes` erstellt es das. Route danach auf `importer-l-existant` (ausgehend von vorhandenem Material) oder `creer-agent` (bei null beginnend), zwei Prozesse des BASE-Rahmens und nicht des Ordners der Nutzerin oder des Nutzers: der Launcher erreicht sie über den Ort des Rahmens, den `init` festhält (in der Benutzerkonfiguration oder als `framework_dir` in `base.config.json`). Jede Schreiboperation wird als Diff vorgeschlagen, nie von sich aus committet. Wenn du dich im Repository des BASE-Rahmens selbst befindest, schreibe hier nichts: initialisiere stattdessen den Ordner der Nutzerin oder des Nutzers.",
     "",
     "## Wie routen",
     "Deine Karte ist der generierte Index. Lies `.ai/routing/index.md`: dort stehen die Agenten, und der Index jedes Agenten (`.ai/agents/<agent>/index.md`, von der Wurzel aus verlinkt) führt dessen Prozesse mit „Wann verwenden“ und „Vermeiden, wenn“ auf. Steige ab von der Wurzel über den Agenten-Index zum Prozess, und behalte den Prozess, dessen „Wann verwenden“ die Anfrage abdeckt, unter Beachtung von „Vermeiden, wenn“. Du routest, indem du die Karte liest.",
@@ -144,6 +144,9 @@ export const DE = {
 # Build-Produkt: wird von \`base index\` neu erzeugt. Es zu versionieren liesse jede Maschine
 # an einer Datei auseinanderlaufen, die niemand von Hand liest.
 base.manifest.json
+
+# Arbeitsentwürfe (Vorschlagsblätter, Gesprächsnotizen): sie enthalten Fakten aus Ihren Dokumenten.
+.temp/
 `,
 
   // The CC BY credit LICENSING.md asks for. `upgrade` and `doctor` look for the a-i.swiss URL, not
@@ -218,6 +221,11 @@ base.manifest.json
     "erkundet, worauf Sie zeigen, und SCHLÄGT Umwandlungen in BASE-Ressourcen VOR; jede Schreiboperation",
     "läuft über das Gate (vorschlagen, dann bestätigen), Sie bestätigen jedes Diff.",
     "",
+    "Will die Person vor jeder Umwandlung zuerst sehen, was ein Assistent für sie tun würde",
+    "(„zeig mir, was BASE daraus machen würde“, „ändere noch nichts“), folge `adopter-ce-dossier`, einem",
+    "Prozess des BASE-Rahmens, erreichbar über `framework_dir`: er liefert ein Vorschlagsblatt zum Lesen",
+    "im Browser, und der Import geht hier bei Schritt 3 weiter, mit der Karte aus seinem Export.",
+    "",
     "Zähle beim ersten Austausch weder die Schritte noch die Kategorien unten auf. Sage in höchstens",
     "drei Sätzen, dass du bereit bist und nichts ohne Bestätigung geschrieben wird, und frage dann, wo die Dokumente liegen.",
     "",
@@ -227,6 +235,10 @@ base.manifest.json
     "   (Schritte, Checkliste) wird zu einem `process`; was *gelernt wird* (Regeln, Konventionen) zu einer",
     "   `competence` oder einem `document`; was *ausgefüllt wird* (Raster, Vorlage) zu einem `template`; was",
     "   *mit einer Gültigkeit nachgeschlagen wird* (Tarif, Preisliste) zu einem datierten `document`.",
+    "   Eine bereits für KI geschriebene Regel (eine `CLAUDE.md`, Werkzeugregeln) wird nicht übernommen,",
+    "   wenn ein Modell sie von selbst befolgt; eine hauseigene Regel bleibt; eine Regel, deren einmalige Verletzung teuer wäre, erhält",
+    "   eine Sperre (die Information ausser Reichweite gebracht, oder eine Berechtigung des Werkzeugs mit seiner",
+    "   Sandbox), einmal an etwas Harmlosem ausprobiert, über jeden Weg: Schreibwerkzeug, Befehl, Kopie.",
     "2. **Die Importkarte vorschlagen.** Zeige die Aufteilung von der Quelle zur Zielressource (Typ, id,",
     "   Pfad) und lass sie bestätigen, BEVOR umgewandelt wird. Bleibe flexibel: begleite eine schrittweise",
     "   Migration zu einer für die KI nutzbaren Struktur, und schlage vor, was nützlich ist, zu ergänzen.",

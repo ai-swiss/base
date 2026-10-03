@@ -1,4 +1,4 @@
-<!-- fr-synced: a349e6da9f82f49ba70ff12af3c2fdfb46da4a0a -->
+<!-- fr-synced: f85fa23f74aadd140472f578588991890448f6c9 -->
 # Press Kit
 
 Producing text takes almost no effort anymore; staying in control of what you publish takes as much as ever. BASE is an open framework carrying a proposed standard for describing a method of working with AI, accompanied by an open-source, local-first reference implementation backed by AI Swiss. This kit gathers the stable public materials.
@@ -37,7 +37,7 @@ BASE was **created by Charles-Edouard Bardyn** (Chief Scientific Officer, VP, an
 
 ## Quotes
 
-Attributable quotes are not published in this repository. A dated quote or public statement must be confirmed by AI Swiss.
+Apart from the epigraph of the [Manifesto](../../../MANIFESTO.en.md), attributable quotes are not published in this repository. A dated quote or public statement must be confirmed by AI Swiss.
 
 ## Visuals and demo
 

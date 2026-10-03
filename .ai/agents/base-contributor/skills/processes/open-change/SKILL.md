@@ -35,8 +35,8 @@ why*, with the alternatives that lost. It is lighter than a formal ADR but durab
    or contract shape, a routing/write semantics change) earns one. A trivial change does not;
    reach for the lightest artifact that preserves the work (the ladder in
    `specs/current/00_overview/les-deux-plans.md`).
-2. **Copy the template.** From `decisions/_template.md` to `decisions/NNNN-slug.md` (next free
-   `NNNN`). Fill Status, Context, Decision (with the concrete mechanism), Consequences, and the
+2. **Copy the template.** From `decisions/_template.md` to `decisions/YYYY-MM-DD-slug.md` (today's
+   date and a short slug). Fill Status, Context, Decision (with the concrete mechanism), Consequences, and the
    Alternatives table. A decision without alternatives is unproven.
 3. **If it is an architecture decision**, allocate its `AD-*` id with `node tools/spec/new-id.mjs`,
    add the row to the `AD-*` table in `specs/current/10_core/requirements.md`, and link it to the

@@ -14,6 +14,8 @@ routing:
     - Je veux améliorer mon assistant
     - Ajouter un workflow à un agent existant
     - Corriger le comportement de mon agent
+    - Ajoute un hook Claude Code qui empêche mon assistant de modifier ses propres process
+    - Mon assistant ne doit jamais pouvoir lancer cette commande, pose un verrou
   avoid_when:
     - Créer un nouvel agent de zéro.
     - Auditer ou entretenir un BASE existant.
@@ -66,6 +68,14 @@ Selon ce que dit l'utilisateur:
 > «Qu'est-ce qu'il fait qui ne vous convient pas?»
 → Ajuster AGENT.md (routage, philosophie, garde-fous)
 
+**«Il ne doit jamais pouvoir faire X»**, ou la personne demande un hook, une permission:
+> «Que coûterait une seule fois où il le ferait?»
+→ Poser un verrou (voir «Garde-fous» dans `architecture-agent`): mettre l'information hors d'atteinte, ou
+proposer une permission avec le bac à sable de l'outil, ou un hook (pour Claude Code,
+`.claude/settings.json`; voir `outils-connus`). Un hook reste simple et rapide, sans appel de
+modèle. Au test, essaie l'action interdite une fois sur une cible sans conséquence, par chaque
+chemin (l'outil d'écriture, une commande, une copie de fichier): seul un refus de l'outil compte.
+
 **«Il lui manque des données»**:
 > «Quelles informations devrait-il connaître en permanence?»
 → Créer de nouveaux dossiers métier
@@ -97,7 +107,7 @@ Attendre la validation explicite.
 Pour chaque modification validée:
 - Prépare le nouveau contenu dans `.temp/`, puis passe par `base propose <cible> --from <brouillon>`
 - Montre le diff produit et attends une confirmation explicite sur ce changement précis
-- Après confirmation, applique-le avec `base commit <change-id>`; ne modifie jamais la cible directement
+- Après confirmation, applique-le avec `base commit <change-id> --confirmed`; ne modifie jamais la cible directement
 - Pour un nouveau process ou domaine de connaissance, la cible est son nouveau `SKILL.md`
 - Régénère l'index (`base build routing-index --write --root .`): le routage se lit dans les frontmatter des SKILL.md; AGENT.md n'a ni table de routage ni inventaire à aligner
 - Mets à jour la configuration outil au besoin (copie les nouveaux skills au bon endroit)

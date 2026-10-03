@@ -1,4 +1,4 @@
-<!-- fr-synced: 5ebdcdd0ecd7fea52d09c5d4aa30c601c3626849 -->
+<!-- fr-synced: 7cc711af5b947d1789f52e91651e068b3a9f7738 -->
 # Human-AI co-thinking in practice
 
 Producing with AI takes little effort. Defending the result can take much more. Co-thinking helps you retain control through a short loop: **FRAME → DELEGATE → EVALUATE → ADJUST**.

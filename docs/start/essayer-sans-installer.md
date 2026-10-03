@@ -16,9 +16,19 @@ learning_level: beginner
 
 # Essayer BASE sans installer BASE
 
-Avant de confier un vrai dossier à une IA, essayez BASE sur un exemple dont vous pouvez vérifier la réponse. Cette page propose deux chemins sans installation côté BASE. Un seul outil d'IA vous suffit, celui dont vous vous servez déjà.
+Avant de confier un vrai dossier à une IA, essayez BASE sur un exemple dont vous pouvez vérifier la réponse. Cette page propose trois chemins sans installation côté BASE: avec vos propres documents, ou sur un exemple, dans un chat ou dans un outil qui ouvre le dossier. Un seul outil d'IA vous suffit, celui dont vous vous servez déjà.
 
-Les deux façons montrent le même exemple: l'assistant devis pré-rempli, avec une question qui demande de vérifier plutôt que de deviner.
+Les deux essais sur exemple montrent le même assistant: l'assistant devis pré-rempli, avec une question qui demande de vérifier plutôt que de deviner.
+
+## Avec vos propres documents: donnez l'adresse du fichier d'entrée
+
+Pour savoir ce qu'un assistant ferait pour vous, ouvrez votre chat d'IA habituel, joignez vos documents (la transcription d'une réunion, des procédures) et écrivez: «Lis https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md et suis-le pour nous montrer ce qu'un assistant pourrait faire pour nous.» Donnez cette adresse-là: l'outil de lecture de certains chats résume la page d'accueil du dépôt et y perd l'indication qui mène à ce fichier.
+
+Le chat lit ce fichier et vous rend une fiche à ouvrir dans le navigateur: ce qu'il a compris, ce que l'assistant ferait ou non, ce que l'IA ne réglera pas. Répondez carte par carte, cliquez sur «Envoyer mes réponses», puis joignez au même chat le fichier téléchargé. La construction de l'assistant se fait ensuite dans un outil qui ouvre un dossier.
+
+Si votre chat ne sait pas lire une adresse web, ouvrez [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md), enregistrez-le, et joignez-le à la conversation avec vos documents, en écrivant: «Voici nos documents et le fichier de BASE pour les chats. Montre-nous ce qu'un assistant pourrait faire pour nous.» Ce fichier contient tout ce que le chat doit lire, modèle de la fiche compris.
+
+Vos documents partent chez le fournisseur du chat: choisissez celui que votre organisation a retenu pour ce type de données.
 
 ## Le plus simple: un chat d'IA dans le navigateur
 
@@ -52,4 +62,4 @@ Pour partir de vos données: copiez `base/exemples/starter-perso` où bon vous s
 
 Dans cet essai, le modèle suit les consignes de `CLAUDE.md` ou des règles de l'éditeur; il peut se tromper. Pour utiliser les mécanismes de l'implémentation de référence, comme le routage sans modèle ou les écritures médiées, passez par [la lettre à votre IA](installer-par-votre-ia.md), puis consultez [Sécurité et limites](../trust/securite-et-limites.md). Une garantie ne vaut que lorsque l'action passe par le composant qui l'applique.
 
-**Prochaine action:** téléchargez le pack navigateur et posez-lui la question indiquée dans la première section.
+**Prochaine action:** téléchargez le pack navigateur et posez-lui la question indiquée dans la section «Le plus simple».

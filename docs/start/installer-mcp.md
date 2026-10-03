@@ -55,7 +55,7 @@ Dans `claude_desktop_config.json`:
 
 La configuration est la même dans les autres outils IA capables de dialoguer en MCP: reportez le même bloc dans leurs paramètres MCP.
 
-Les outils grand public compatibles MCP, comme ChatGPT (via son mode développeur), peuvent eux aussi se brancher sur ce serveur MCP local. L'activation et ses conditions du moment relèvent de l'outil et de sa documentation officielle: BASE n'en fait pas un parcours guidé et n'en dépend pas.
+Les outils grand public compatibles MCP, comme ChatGPT (via son mode développeur), peuvent eux aussi se brancher sur ce serveur, à condition de l'atteindre par une adresse web: ChatGPT ne lance pas de processus local, il lui faut le transport HTTP derrière un tunnel, avec un jeton (voir «Depuis ChatGPT, concrètement» dans [`mcp/README.md`](../../mcp/README.md)). L'activation et ses conditions du moment relèvent de l'outil et de sa documentation officielle: BASE n'en fait pas un parcours guidé et n'en dépend pas.
 
 ### Première demande
 

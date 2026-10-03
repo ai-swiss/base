@@ -1067,7 +1067,7 @@ export async function main() {
 
   // Relaxing a confidentiality control must leave a trace, not just a silent behaviour change.
   if (process.env.BASE_MCP_ALLOW_CONFIDENTIAL === "1") {
-    log.warn("Egress control relaxed: BASE_MCP_ALLOW_CONFIDENTIAL=1 — confidential resources may be sent to the model (the client is assumed local).");
+    log.warn("Egress control relaxed: BASE_MCP_ALLOW_CONFIDENTIAL=1 — confidential resources may be sent to the model (the model behind the client is assumed to run on a machine you control; a local client alone does not ensure it).");
   }
 
   if (config.transport === "http") {

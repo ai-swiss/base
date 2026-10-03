@@ -407,7 +407,8 @@ describe("applyInitPlan — creation-only, end to end", () => {
     const plan = buildInitPlan({ type: "empty" }, { dirName: "atelier", now: NOW });
     const gitignore = plan.find((e) => e.path === ".gitignore");
     assert.ok(gitignore, "init proposes .gitignore");
-    for (const line of [".ai/trace/", ".ai/changes/", ".ai/feedback/", ".ai/studio.settings.json"]) {
+    // `.temp/` too: the door's proposition sheet and interview notes carry facts from the person's documents.
+    for (const line of [".ai/trace/", ".ai/changes/", ".ai/feedback/", ".ai/studio.settings.json", ".temp/"]) {
       assert.ok(gitignore.content.includes(line), `${line} is ignored`);
     }
 

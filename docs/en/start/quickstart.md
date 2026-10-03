@@ -1,4 +1,4 @@
-<!-- fr-synced: 402e827d48afe2ec283e8168f1402c6de51850c8 -->
+<!-- fr-synced: c5826ec1c9c16bc5c4c178520c028e72951eca4c -->
 # Shape your first assistant
 
 In a few minutes, you hand a recurring task to an assistant without writing code: it helps you make the method explicit, proposes the files, then waits for your approval. Concretely, you copy an example into an AI tool that can read your files and describe what you want to do.
@@ -68,11 +68,11 @@ The mediation component, called the broker, also applies a control before remote
 | Try meeting minutes | Copy `exemples/assistant-reunion/`: decisions, actions, follow-up |
 | Verify reproducible lexical routing | With Node 18 or later, from a terminal: `node <BASE_DIR>/tools/base.mjs route-test --strategy lexical --root <BASE_DIR>/exemples/routage-pme` |
 | Your own assistant | [Have your AI initialize your folder](installer-par-votre-ia.md), then say "Here is the work I want to structure with BASE. Help me define the method and wait for my approval before creating the files." |
-| Find where to start | Same thing, then say "Help me find where to start" |
-| **Lost, or a question about BASE?** | In the BASE repository or a project where the router is enabled, say "I am lost" or "Help": the router selects the welcome reference, then your tool presents its guidance. Every business example ships this fallback welcome. |
+| Find where to start | Same thing, then say "Help me find where to start with AI" |
+| **Lost, or a question about BASE?** | In the BASE repository or a project where the router is enabled, say "I am lost" or "Help": the router directs you, or asks a question to narrow it down; if it abstains, the welcome takes over. Every business example ships this fallback welcome. |
 | Get inspired | Browse the [idea gallery](../guides/idees-agents.md) |
 
-> **Two different entry points.** In a project with a router, "Help / I am lost" opens the **welcome** (concierge), which directs you and answers questions about BASE. "Help me find where to start" opens the assistant creator's **diagnosis**, which identifies the assistant to build for your work.
+> **Two different entry points.** In the BASE repository or a folder attached to it, "I am lost" leads to the **concierge**, which directs you and answers questions about BASE. "Help me find where to start with AI" opens the assistant creator's **diagnosis**, which gets you talking about your work before the proposition brief.
 
 > **Forcing a routing choice.** Say **"R"** (or "R your request") to require the assistant to use the routing map instead of answering from memory. With the default lexical strategy, `node .ai/base.mjs route "<your request>"` is deterministic for the same map. Semantic or model-based strategies do not carry that guarantee. The reproducible gate is `node .ai/base.mjs route-test --strategy lexical`.
 
@@ -93,7 +93,9 @@ You rarely start from a blank page. Two doors, same result:
 - **CLI**: with Node 18 or later in a terminal, `node <BASE_DIR>/tools/base.mjs init --root my-folder` shows the files the tool intends to create (a minimal agent, or a workspace file if the folder already contains several BASE roots). After your choices and approval, a second invocation with `--yes` initializes the folder without overwriting existing files; its result reflects the answers you provided.
 - **Studio**: run `npm ci` once in the BASE clone. After initialization, run `cd my-folder && node .ai/base.mjs studio --root .`. The Welcome screen presents the files and available actions. Your AI tool remains the day-to-day experience; Studio serves as the workshop.
 
-Then, to turn your documents into processes and competences, ask your assistant: "import my existing procedures." The router will send it to `importer-l-existant`, which proposes each conversion as a diff. The routing stays simple but effective, and extensible through adapters. It saves you from hunting for the right process yourself.
+If you would rather see first what an assistant would do for you, show what you have (a folder of procedures, the transcript of a discussion about your needs, a `CLAUDE.md`) and say: "Here is what we have. Show me what an assistant could do for us." The folder's entry point sends your tool to `adopter-ce-dossier`, which returns a proposition brief to review in your browser.
+
+After your answers, the door hands over: to `importer-l-existant` to turn your documents into processes and competences, each conversion proposed as a diff, or to `creer-agent` to build the assistant. You do not have to hunt for the right process yourself.
 
 ---
 

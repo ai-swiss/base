@@ -12,13 +12,13 @@ export function describeDetection(detection) {
       const n = detection.markdownCount;
       const files = `${n} fichier${n > 1 ? "s" : ""} Markdown`;
       return detection.hasSkillNames
-        ? `${files} — dont des SKILL.md: vous parlez déjà BASE.`
+        ? `${files}, dont des SKILL.md: vous parlez déjà BASE.`
         : `${files} sans structure BASE.`;
     }
     case "empty":
-      return "dossier vide — on part du point de départ minimal.";
+      return "dossier vide: on part du point de départ minimal.";
     case "root":
-      return "un BASE existant — seuls les artefacts d'outils manquants sont proposés.";
+      return "un BASE existant: seuls les artefacts d'outils manquants sont proposés.";
     default:
       return detection.type;
   }

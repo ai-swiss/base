@@ -32,7 +32,8 @@ export function missingCompanionError(specifier, feature) {
   return Object.assign(
     new Error(
       `${feature} demande le paquet optionnel ${specifier}, qui n'est pas installé.\n` +
-        `  Installez-le puis relancez: npm install ${specifier}`,
+        `  Installez-le puis relancez: npm install ${specifier}\n` +
+        `  Depuis un clone de BASE, \`npm install\` à sa racine le rend disponible.`,
     ),
     { code: "BASE_COMPANION_MISSING" },
   );

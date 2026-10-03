@@ -1,4 +1,4 @@
-<!-- fr-synced: c938d8a0ed32b3f45e1444d1508d9d4437a29023 -->
+<!-- fr-synced: e11727f2c04ba22c34ae679838fe067b15ae55b9 -->
 # Mechanisms vs consignes
 
 ## Why this distinction is at the heart of trustworthy AI governance
@@ -31,7 +31,7 @@ The same file thus links your expertise to the code. Metadata is not a mechanism
 
 ## Closing note
 
-Outside the broker's path, its controls fall back to the harness's native level. Metadata and consignes remain useful as guidance and signals for a cooperative model, but direct access to the shell, file system, or an external API escapes those controls. The full guarantee → function → test table is in [Verified mechanisms](mecanismes-verifies.md). Two measurement notes: the **session** journal (`.ai/journal/`, written by the agent at the end of a process) is an instruction, useful and fallible, distinct from the best-effort operational trace above; and tests freeze the **presence** of an instruction on projected surfaces, while the model's **obedience** remains a consigne followed with a margin of error and is measured today only for routing.
+Outside the broker's path, its controls fall back to the harness's native level. Metadata and consignes remain useful as guidance and signals for a cooperative model, but direct access to the shell, file system, or an external API escapes those controls. The full guarantee → function → test table is in [Verified mechanisms](mecanismes-verifies.md). What holds outside that path (information out of reach, the control in the external system, the operating system sandbox) is described in [Locks outside BASE](verrous-hors-de-base.md). Two measurement notes: the **session** journal (`.ai/journal/`, written by the agent at the end of a process) is an instruction, useful and fallible, distinct from the best-effort operational trace above; and tests freeze the **presence** of an instruction on projected surfaces, while the model's **obedience** remains a consigne followed with a margin of error and is measured today only for routing.
 
 A reminder on scope: BASE is not an agent runtime, an orchestration engine, a RAG setup, a platform, or an IAM, DLP, SIEM, or RBAC system, nor a mechanism for retention or legal archiving. Nor does it guarantee the accuracy of a model's outputs. The choice of the model itself remains external to BASE.
 

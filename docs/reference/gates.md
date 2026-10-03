@@ -19,7 +19,7 @@ contributeur sache, devant un échec, ce que le gate vérifie et comment le corr
 Il existe trois niveaux: le **hook** de commit (facultatif, `git config core.hooksPath .githooks`), la
 commande locale **`npm run check`** (le cœur des gates, à passer avant de pousser) et la **CI** (qui en
 lance davantage). «Vert en local» ne signifie donc pas «vert partout»: la CI y ajoute la couverture,
-les artefacts régénérés, le doctor, le smoke pack ainsi que les suites MCP et Studio.
+le smoke pack ainsi que les suites MCP et Studio; `npm run check` passe déjà la fraîcheur du manifeste et le doctor.
 
 ## `npm run check` (le cœur, en local)
 

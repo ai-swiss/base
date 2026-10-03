@@ -70,19 +70,17 @@ Quand l'utilisateur revient après une interruption («on en était où?», «bo
 
 Cette reprise vaut aussi **en cours de session**: si tu ne peux plus citer le chemin du process actif (après un résumé, ou loin dans une longue conversation), rouvre l'`AGENT.md` et le `SKILL.md` actifs plutôt que de te fier au contexte courant.
 
-## Progression (pour les processes interrompus)
+## Progression
 
-Si un process est interrompu en cours de route, l'entrée de journal comporte une section Progression:
+Un process de sept étapes ou plus, ou qui traite une liste d'éléments (des messages, des clients), pose sa liste au départ: dans la liste de tâches de l'outil quand il en a une, sinon annoncée une fois dans la conversation, avec les mots de la personne. Il coche au fil. Une liste posée d'avance empêche qu'une étape ou un élément glisse hors de l'attention au cours d'une longue tâche. Par exemple:
 
 ```markdown
 ## Progression
-- [x] Étape 1 : Découverte du besoin
+- [x] Étape 1: Découverte du besoin
 - [x] Étape 2: Identification des procédures
-- [ ] Étape 3 : Connaissances métier
-- [ ] Étape 4 : Documents types
-- [ ] Étape 5 : Architecture complète
+- [ ] Étape 3: Connaissances métier
+- [ ] Étape 4: Documents types
+- [ ] Étape 5: Architecture complète
 ```
 
-Lors de la reprise, l'agent lit cette progression et reprend à la première étape non cochée.
-
-Un process long (7 étapes ou plus) interrompu avant sa dernière étape écrit **immédiatement** cette entrée réduite: la Progression cochée et les `[A VALIDER]` en cours, rien d'autre. C'est l'unique cas où le journal s'écrit hors de la dernière étape: sans lui, l'ancre de reprise n'existerait jamais au moment d'une interruption.
+Un process long interrompu avant sa dernière étape écrit **immédiatement** une entrée réduite: la Progression cochée et les `[A VALIDER]` en cours, rien d'autre, dès lors que le process a le droit d'écrire. C'est l'unique cas où le journal s'écrit hors de la dernière étape. Lors de la reprise, l'agent lit cette progression et reprend à la première étape non cochée.

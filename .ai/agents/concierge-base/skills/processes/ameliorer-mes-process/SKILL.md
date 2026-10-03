@@ -75,6 +75,9 @@ coûte.
 - **Une friction est un coût payé à chaque demande.** Le déplacer une fois dans la structure le
   supprime partout: une ligne dans une fiche, une colonne tenue à l'écriture, un lien depuis le
   process, une compétence qui nomme le modèle à utiliser.
+- **Une erreur qui revient est un piège de la maison qui manque.** Le plus petit changement: une
+  ligne dans la rubrique «Pièges de la maison» de la fiche concernée. Si un seul manquement coûte
+  cher, c'est un verrou qu'il faut, posé par «Améliorer un agent».
 - **Un `weak_routing` ou une fiche qui s'exclut elle-même laisse la route dériver.** Le plus petit
   changement: réécrire le «éviter si» avec les mots du cas à exclure, jamais avec ceux du process.
 - **Un `orphan` ou un `unresolved_declaration` signale une déclaration manquante.** Déclare la

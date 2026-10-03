@@ -56,6 +56,10 @@ Deux exemples:
   courrier. Il devrait vivre dans un lien depuis le process, ou dans une compétence qui nomme le
   modèle à utiliser.
 
+Une erreur que l'assistant refait parce que personne ne la lui a dite devrait vivre dans les
+«pièges de la maison» de la fiche concernée. Un incident qui a coûté cher (argent, donnée sortie,
+engagement pris) devrait recevoir un verrou: note-le, «Améliorer un agent» le pose.
+
 La réponse peut rester vide: la friction est consignée quand même.
 
 ### 4. Consigner
@@ -75,7 +79,8 @@ en passant par le gate propose → commit.
 
 Indique à l'utilisateur où vit la friction (`.ai/feedback/`) et ce qu'elle déclenche: elle figure
 dans la pile Terrain de Studio et chez `base doctor` tant qu'un humain n'a pas amendé le process et
-ne l'a pas marquée résolue.
+ne l'a pas marquée résolue. Si la personne demande la correction maintenant («corrige-le»), propose
+de passer à «Améliorer un agent», avec ce cas comme cas témoin.
 
 ## Ce que tu ne fais jamais dans ce process
 

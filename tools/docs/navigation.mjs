@@ -94,6 +94,7 @@ const CONFIANCE_PIN = [
   "docs/trust/evidence.md",
   "docs/trust/mecanismes-verifies.md",
   "docs/trust/mecanismes-vs-consignes.md",
+  "docs/trust/verrous-hors-de-base.md",
   "docs/trust/frontiere-local-vs-sortant.md",
   "docs/trust/protection-des-donnees.md",
   "docs/trust/securite-et-limites.md",

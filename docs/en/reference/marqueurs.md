@@ -1,4 +1,4 @@
-<!-- fr-synced: 5c74b07cda3b6658f584c6a1ce2b8036b4df9cd1 -->
+<!-- fr-synced: 7936626421dc15f40861d71a87f49070dc10cf2f -->
 # BASE markers and when to place them
 
 A marker placed badly, or understood differently by the human, the agent, and the tooling, loses track of the real state of the work. To prevent that, the vocabulary is defined once, here: which markers exist, what each one means, and when to place it. A marker is a searchable text cue, written in brackets inside a document, that makes that state visible without leaving the file. It serves as a shared reference for anyone writing or reviewing in BASE, as well as for the agent assisting them.
@@ -81,7 +81,7 @@ The hard rules for an agent working **inside** BASE (the framework repository), 
 - **Never hand-edit a generated artifact.** Any file whose header says it is generated (`AGENTS.md`, `CLAUDE.md`, `BASE_BOOTSTRAP.md`, `.cursor/rules/assistant.mdc`, `base.manifest.json`, the `requirements-matrix.md` matrix) is a projection: modify the canonical source (for example `tools/core/bootstrap.mjs` for the four entry points), then regenerate. The freshness gate (`build --write` then `git diff --exit-code`) refuses any drift.
 - **Never invent missing data.** A missing piece of information is noted `[A COMPLETER: champ]` in a domain document, and an unknown in a spec is flagged inline with `[NEEDS CLARIFICATION: raison]`. Do not guess, do not fabricate a value, no simulated confidence.
 - **Never write directly to a protected target.** Every write goes through the mediated propose-then-commit flow; proposing prepares a diff and writes nothing, committing rechecks the decision and the `base_hash` before writing and verifying. A proposal never self-exempts.
-- **Never renumber, reuse, or delete a stable identifier** (`UR`/`NFR`/`FR`/`RC`/`AD`). A merged ID is immutable; a requirement removed from scope keeps its ID and carries `[DE-SCOPED: raison]`. New IDs are allocated by the tooling (`base spec new <PREFIX> <DOMAIN>`), never by hand.
+- **Never renumber, reuse, or delete a stable identifier** (`UR`/`NFR`/`FR`/`RC`/`AD`). A merged ID is immutable; a requirement removed from scope keeps its ID and carries `[DE-SCOPED: raison]`. New IDs are allocated by the tooling (`npm run spec:new -- <PREFIX> <DOMAIN>`), never by hand.
 
 ## A closed set, changed only by decision
 

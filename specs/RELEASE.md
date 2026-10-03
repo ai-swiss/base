@@ -14,7 +14,7 @@ git switch main && git pull
 If `tools/studio/ui/e2e/.run` or `coverage/` exist from a prior run, they are ignored and the scanner
 skips them, but a truly clean tree is the baseline.
 
-## 2. Core + packages (~5s)
+## 2. Core + packages (~20s)
 
 ```bash
 npm test                  # node:test suite (core, CLI, packages, studio) → all green
@@ -30,7 +30,7 @@ npm audit --omit=dev --audit-level=high
 ```bash
 node tools/base.mjs validate --root .                 # → "BASE valide."
 node tools/base.mjs route-test --root .               # → routes stable
-node tools/base.mjs entretien --root .                # → no open markers, no missing descriptions
+node tools/base.mjs doctor --root .                   # → no dead links, orphans or overdue reviews
 node tools/base.mjs markers --root .                  # → "Aucun marqueur ouvert."
 npm run spec:check                                    # → spec discipline: matrix, IDs, leaf, markers, statusless, em-dash
 node tools/spec/check-ids.mjs --base origin/main      # → IDs immutable vs the base branch
@@ -94,7 +94,7 @@ source on GitHub and is not offered on npm.
   gates above, emits a CycloneDX SBOM artifact (`sbom.cdx.json`), and publishes with
   `npm publish --provenance` (a Sigstore attestation linking the tarball to this repo, commit and
   workflow). `prepublishOnly` runs `smoke:pack` as a final fail-closed check.
-- Surface sanity before tagging: `npm pack --dry-run` is ~520 files / < 1 MB, with no
+- Surface sanity before tagging: `npm pack --dry-run` is ~740 files / ~13 MB (9 MB of it the launch deck in `docs/public/`), with no
   `node_modules`, e2e `.run*`, or test files (enforced by `tests/smoke-pack.mjs`).
 - Hardening items still open before a public 1.0 (pinning GitHub Actions to commit SHAs, a second
   named release owner) are tracked in the CHANGELOG's "Orientations" section, not inlined here: this

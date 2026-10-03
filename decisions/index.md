@@ -21,5 +21,6 @@ The ADR convention and its template are in place; records are added under `decis
 
 ## Records
 
+- [2026-10-01 · Une seule porte d'entrée regarde, juge et propose avant toute écriture](2026-10-01-partir-de-ce-que-vous-avez.md)
 - [2026-09-18 — Unify documentation identity, sections and navigation](2026-09-18-unifier-identite-et-navigation-documentaires.md)
 - [2026-07-02 — Studio defence-in-depth is layered, and two layers are deliberately deferred](2026-07-02-studio-defense-en-profondeur-differee.md)

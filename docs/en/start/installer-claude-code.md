@@ -1,4 +1,4 @@
-<!-- fr-synced: 54edf86f8eeecabdb778bbbc3e3021634f9a4493 -->
+<!-- fr-synced: df180397c5da1a7db6ab0a4b93b25ab3db99c9ea -->
 # Install Claude Code
 
 By the end of this page, you will have an assistant that reads and edits your files under your control, ready to work on your real documents: Claude Code then executes the work using a structure that follows the BASE convention. This assumes you are comfortable in a terminal and have an Anthropic account. In a few minutes, you install Claude Code, launch it in a BASE example, and make a first request; you will also know what to do if you get stuck.
@@ -31,7 +31,7 @@ Check with `claude --version`. On first launch, `claude` asks you to sign in to 
 2. Open a terminal in that folder
 3. Run `claude`
 
-The `CLAUDE.md` file at the root of the example gives Claude Code its starting context via `@import`: the agent loads with no further configuration.
+The `CLAUDE.md` file at the root of the example gives Claude Code its starting context: an `@.ai/agents/<name>/AGENT.md` line imports the agent at launch, with no further configuration.
 
 Don't have the repo yet? See [Get BASE](obtenir-base.md).
 

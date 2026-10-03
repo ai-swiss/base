@@ -1,4 +1,4 @@
-<!-- fr-synced: 1a1989e576976a4c4197bd1bb12011164a1af1f9 -->
+<!-- fr-synced: a2e3c5de74bfe4946a380bc7d587668dfc2a9448 -->
 # BASE's gates
 
 BASE's discipline rests on controls, not on trust. This page catalogs them so that, when something
@@ -7,7 +7,7 @@ fails, a contributor knows what the gate checks and how to fix it.
 There are three levels: the commit **hook** (optional, `git config core.hooksPath .githooks`), the
 local **`npm run check`** command (the heart of the gates, to be run before you push), and **CI**
 (which runs more of them). "Green locally," then, does not mean "green everywhere": CI adds coverage,
-the regenerated artifacts, the doctor, the smoke pack, and the MCP and Studio suites.
+the smoke pack, and the MCP and Studio suites; `npm run check` already covers manifest freshness and the doctor.
 
 ## `npm run check` (the heart, locally)
 

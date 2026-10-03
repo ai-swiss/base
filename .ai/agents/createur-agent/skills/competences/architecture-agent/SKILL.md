@@ -200,6 +200,7 @@ Précède une création/modification de fichier, un engagement, une action diffi
 - Spécifier où écrire (chemin du fichier)
 - Vérifier les prérequis avant de demander des infos déjà disponibles
 - Nommer une à trois preuves observables qui permettent de conclure: fichier produit, source citée, calcul vérifié, commande réussie ou décision humaine explicite
+- Sept étapes ou plus, ou une liste d'éléments à traiter (des messages, des clients): poser la liste au départ et la cocher au fil (compétence journal, Progression)
 - Terminer par une étape Journal
 
 ## Comment écrire une bonne compétence
@@ -207,8 +208,9 @@ Précède une création/modification de fichier, un engagement, une action diffi
 Une compétence fournit du contexte, pas des instructions: c'est une fiche de connaissances.
 
 - Factuel et concis
+- N'écrire que ce qu'un modèle ne ferait pas de lui-même: les termes, les seuils et les règles de la maison, les erreurs déjà commises. Chaque ligne est relue à chaque usage, et une évidence («être poli», «vérifier l'orthographe») noie ce qui compte
 - Tableaux pour la terminologie
-- Séparer règles (obligatoires) et bonnes pratiques (recommandées)
+- Séparer les règles (obligatoires) des pièges de la maison (ce qu'on se trompe à faire ici)
 - Chiffres précis (taux, formats, seuils)
 - Un skill dit "le taux de TVA est de 8.1%", pas "utilise le taux de 8.1%"
 
@@ -230,7 +232,19 @@ Une entrée s'écrit à la fin de chaque process dans `.ai/journal/`. C'est la m
 
 **Niveau 1 (textuel)**: la rubrique «Ce que tu ne fais jamais» de l'AGENT.md. Elle suffit pour les conversations courtes.
 
-**Niveau 2 (mécanique)**: permissions, hooks, règles par chemin dans la configuration de l'outil. Les consignes dérivent, les mécanismes tiennent. Quand un garde-fou est critique, préférez le mécanisme à la consigne.
+**Niveau 2 (mécanique)**: permissions, hooks, règles par chemin dans la configuration de l'outil. Les consignes dérivent, les mécanismes tiennent.
+
+Une ligne rouge est **critique** quand une seule erreur coûte de l'argent, fait sortir une donnée ou engage quelqu'un envers un tiers. Une ligne critique reçoit un verrou, pas seulement une phrase:
+
+| Verrou, du plus solide au plus fragile | Exemple |
+|---|---|
+| L'information est hors d'atteinte | Aucun numéro de compte ni code d'accès que l'assistant puisse lire, dans le dossier ou ailleurs: rien à divulguer ni à changer par lui |
+| Le contrôle du système externe | La banque impose la double signature, la messagerie n'autorise que des brouillons: à nommer. Il tient si l'accès confié à l'assistant est lui-même limité |
+| Le bac à sable de l'outil, avec ses permissions | L'outil refuse l'écriture ou la connexion visée, que la tente son outil d'écriture ou une commande. Une permission sans bac à sable, ou un hook, se contourne par un petit script |
+
+`confidential: true` n'est pas un verrou contre l'outil: il retient le contenu sur les seuls appels qui passent par BASE (MCP, chat, évaluation), et un outil qui lit le fichier directement n'est pas arrêté.
+
+On essaie chaque verrou une fois, sur une cible sans conséquence (un fichier d'essai, un compte fictif), par chaque chemin qui mène à l'action: l'outil d'écriture, une commande, une copie de fichier, une requête réseau. Seul compte un refus de l'outil, ou une information introuvable: un assistant qui décline par consigne ne prouve rien, et un verrou jamais vu refuser compte comme une consigne. Une date ou un montant qui doit être juste ne se teste pas par un refus: il sort d'un petit outil qui calcule toujours pareil (voir Tools). Un hook reste simple et rapide (il vérifie un chemin, un motif, un code de sortie, sans appeler de modèle) et se pose pour une ligne critique ou après un incident réel, pas par avance. Ce qu'il faut régler dans l'outil, et ce qu'un bac à sable ne couvre pas, est dans `docs/trust/verrous-hors-de-base.md`.
 
 ## Configuration outil: les 5 primitives
 
@@ -242,7 +256,7 @@ Tout outil IA a besoin de cinq choses pour faire tourner un agent. Le créateur-
 | **Skills découvrables** | L'outil trouve et invoque les SKILL.md |
 | **Règles par chemin** | Garde-fous activés selon le fichier touché |
 | **Permissions** | Contrôler ce que l'agent peut faire |
-| **Protection du cadre** | Empêcher la modification de `.ai/` |
+| **Protection du cadre** | Empêcher la modification directe de `.ai/agents/` et `.ai/routing/`, nommés un par un, le journal (`.ai/journal/`) restant libre |
 
 Pour mettre en place ces primitives, le créateur consulte en ligne la documentation à jour de l'outil. Voir `competences/outils-connus/SKILL.md` comme référence de base.
 

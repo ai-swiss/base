@@ -32,7 +32,7 @@ muet sur un dossier entièrement personnel. Pour faire passer une ressource d'un
 `base promote <ressource> --to <scope>` écrit le changement par le chemin médié, avec son diff.
 
 Ce chemin médié est la troisième différence. Une écriture se propose (`base propose <cible> --from
-<fichier>`), puis se valide (`base commit <change-id>`); `base changes` liste ce qui attend. Chaque
+<fichier>`), puis se valide (`base commit <change-id> --confirmed`); `base changes` liste ce qui attend. Chaque
 proposition est enregistrée sous `.ai/changes/` avec l'empreinte de l'état de départ, et le commit
 la revérifie: un changement préparé sur une version dépassée du fichier ne l'écrase pas en silence.
 Votre hébergeur ajoute sa propre relecture (demande de fusion, revue, pipeline); les deux contrôles

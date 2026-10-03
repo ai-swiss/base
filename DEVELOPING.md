@@ -58,7 +58,8 @@ the docs model, and the tests. The optional `commit-msg` hook runs the drift gat
 commit: `git config core.hooksPath .githooks`.
 
 CI runs **more**, so green here is not green everywhere: coverage thresholds, the regenerated-artifact
-diffs (`base index` / `base build`), `doctor`, the pack smoke test, and the MCP and Studio suites.
+diff for `base build`, the pack smoke test, and the MCP and Studio suites (`npm run check` already
+checks the manifest with `base index --check` and runs `doctor`).
 Run those when you touch those areas. Every gate (what it checks, where it runs, how to fix it) is
 catalogued in [`docs/reference/gates.md`](docs/reference/gates.md); the commands are in
 [`CONTRIBUTING.md`](CONTRIBUTING.md) and [`specs/README.md`](specs/README.md).

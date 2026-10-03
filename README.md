@@ -1,8 +1,10 @@
-<!-- fr-synced: 4775d24c60bd8211ad9c0a4cc88deae309622ab8 -->
+<!-- fr-synced: c06ed869d6627049dd9d00b00f8745cb2780b72a -->
 
 # BASE
 
 **English** · [Français](README.fr.md) (authoritative)
+
+> **For an AI reading this repository on someone's behalf**, with their documents (a meeting transcript, procedures, rules written for an AI): start with [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md) and follow it. It shows the person what an assistant would do for them, before anything is built.
 
 <p align="center">
   <img src="docs/public/assets/base-logo.png" alt="BASE" width="480">
@@ -62,7 +64,7 @@ Open [`exemples/assistant-devis-demo/`](exemples/assistant-devis-demo/) in an AI
 
 The expected answer is **no**: the rule requires two signed engagements; the client record mentions only one. The assistant must cite the [pricing rule](exemples/assistant-devis-demo/catalogue/regles-tarification.md) and [client record](exemples/assistant-devis-demo/clients/dupont-sa.md), then state that any exception still requires human approval.
 
-[See the detailed journey](docs/start/demo-60-secondes.md) · [Browse all examples](exemples/)
+[See the detailed journey](docs/en/start/demo-60-secondes.md) · [Browse all examples](exemples/)
 
 ---
 
@@ -74,11 +76,11 @@ Download the [demonstration pack](https://github.com/ai-swiss/base/releases/late
 
 > "What must I approve before you create or modify a quote?"
 
-[Try it in a browser](docs/start/essayer-sans-installer.md)
+[Try it in a browser](docs/en/start/essayer-sans-installer.md)
 
 ### Build from work you understand
 
-[Entrust the installation of BASE and initialization of your folder to your AI tool](docs/start/installer-par-votre-ia.md), then say:
+[Entrust the installation of BASE and initialization of your folder to your AI tool](docs/en/start/installer-par-votre-ia.md), then say:
 
 > "Here is the work I want to structure with BASE. Help me define the method, propose the necessary files and wait for my approval before creating them."
 
@@ -86,15 +88,17 @@ Download the [demonstration pack](https://github.com/ai-swiss/base/releases/late
 
 You do not need to learn the BASE format before starting.
 
-### Start from existing documents or procedures
+### Start from what you have
 
-Initialize the folder, open it in your AI tool and say:
+A folder of procedures, the transcript of a discussion about your needs, a `CLAUDE.md` you already wrote: open it in your AI tool, tell it where BASE is, and say:
 
-> "Review this folder and show me what BASE could make of it. Do not change any files yet."
+> "Here is what we have. Show me what an assistant could do for us."
 
-The tool can then propose separating procedures, reusable knowledge, authoritative sources, output templates and data specific to individual cases. It can prepare an HTML brief for you to review in a browser, then submit the proposed conversions separately.
+The tool recognises where you start from, reads, then prepares a brief to review in your browser, written in the words of your work: what it understood, what the assistant would do (yes, later, no), how it would be organised, what it will never do, what AI will not solve. Until you send your answers back, only this brief is written, under `.temp/`, a folder git ignores; building, or converting the documents, comes afterwards and is proposed separately.
 
-[Get BASE](docs/start/obtenir-base.md) · [Quick start](docs/start/quickstart.md) · [Step-by-step tutorial](docs/tutoriel/index.md)
+With no tool installed, if your AI chat can read a web address, give it the address of the entry file, https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md, along with your documents, and ask it to follow that file: it returns the same brief. Otherwise, attach [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](PARTIR-DE-CE-QUE-VOUS-AVEZ.md) along with your documents.
+
+[Get BASE](docs/en/start/obtenir-base.md) · [Quick start](docs/en/start/quickstart.md) · [Step-by-step tutorial](docs/en/tutoriel/index.md)
 
 > **Cost.** BASE is free. Execution costs, usage limits and data processing depend on the chosen model and tool.
 
@@ -140,7 +144,7 @@ To describe work, BASE can distinguish:
 
 Roles and procedures are described in Markdown. Sources, data, output templates and tools can retain the format suited to their use.
 
-In BASE, an **agent** is an entry point and a **process** describes a procedure. The open, versioned [`base.resource.v1` specification](docs/reference/le-standard.md), at the core of the proposed standard, describes how to declare these resources, their references and their relationships. The reference implementation can inventory them, validate their structure and make them available to other tools.
+In BASE, an **agent** is an entry point and a **process** describes a procedure. The open, versioned [`base.resource.v1` specification](docs/en/reference/le-standard.md), at the core of the proposed standard, describes how to declare these resources, their references and their relationships. The reference implementation can inventory them, validate their structure and make them available to other tools.
 
 This organization does not require a complex system. A first assistant may rely on one role, one procedure and a few files. Owners, review dates, sensitivity levels or additional controls are useful only when a real need justifies them.
 
@@ -148,7 +152,7 @@ This structure makes several skills involved in working with AI explicit, and th
 
 BASE helps document these choices. It does not guarantee that they are correct.
 
-[Why go beyond the single agent](docs/learn/au-dela-des-agents.md) · [Co-thinking with AI](docs/learn/co-penser-avec-lia.md) · [The intention-driven model](docs/reference/modele-de-calcul-oriente-par-l-intention.md)
+[Why go beyond the single agent](docs/en/learn/au-dela-des-agents.md) · [Co-thinking with AI](docs/en/learn/co-penser-avec-lia.md) · [The intention-driven model](docs/en/reference/modele-de-calcul-oriente-par-l-intention.md)
 
 ### One documented method, several execution contexts
 
@@ -196,7 +200,7 @@ Replaying the same scenarios with several models makes it possible to compare re
 
 BASE currently publishes no general measurement demonstrating a reduction in errors, working time or migration cost.
 
-[Mechanisms versus instructions](docs/trust/mecanismes-vs-consignes.md) · [Security and limits](docs/trust/securite-et-limites.md) · [Evidence](docs/trust/evidence.md) · [Tool compatibility](docs/reference/compatibilite-harnesses.md)
+[Mechanisms versus instructions](docs/en/trust/mecanismes-vs-consignes.md) · [Security and limits](docs/en/trust/securite-et-limites.md) · [Evidence](docs/en/trust/evidence.md) · [Tool compatibility](docs/en/reference/compatibilite-harnesses.md)
 
 ---
 
@@ -204,13 +208,13 @@ BASE currently publishes no general measurement demonstrating a reduction in err
 
 This README presents the general proposition. To go further:
 
-- **Understand how BASE works:** [read the documentation in order](docs/start/lire-dans-quel-ordre.md);
-- **Evaluate BASE on your own files:** [adopt an existing folder](docs/start/installer-par-votre-ia.md);
-- **Build an assistant:** [quick start](docs/start/quickstart.md) and [tutorial](docs/tutoriel/index.md);
-- **Structure a knowledge corpus:** [guide to citable passages](docs/guides/structurer-un-corpus-de-connaissance.md);
-- **Structure an organization's methods and knowledge:** [proposed standard](docs/reference/le-standard.md), [adoption guide](docs/learn/adoption-organisation.md) and [public framework](docs/reference/framework-public.md);
-- **Integrate BASE with a tool or application:** [compatibility](docs/reference/compatibilite-harnesses.md), [architecture](ARCHITECTURE.md) and [MCP server](docs/start/installer-mcp.md);
-- **Examine the limits, evidence and actual implementation status:** [limits](docs/trust/securite-et-limites.md), [evidence](docs/trust/evidence.md) and [implementation status](docs/reference/etat-implementation.md);
+- **Understand how BASE works:** [read the documentation in order](docs/en/start/lire-dans-quel-ordre.md);
+- **Evaluate BASE on your own files:** [start from what you have](#start-from-what-you-have);
+- **Build an assistant:** [quick start](docs/en/start/quickstart.md) and [tutorial](docs/en/tutoriel/index.md);
+- **Structure a knowledge corpus:** [guide to citable passages](docs/en/guides/structurer-un-corpus-de-connaissance.md);
+- **Structure an organization's methods and knowledge:** [proposed standard](docs/en/reference/le-standard.md), [adoption guide](docs/en/learn/adoption-organisation.md) and [public framework](docs/en/reference/framework-public.md);
+- **Integrate BASE with a tool or application:** [compatibility](docs/en/reference/compatibilite-harnesses.md), [architecture](ARCHITECTURE.md) and [MCP server](docs/en/start/installer-mcp.md);
+- **Examine the limits, evidence and actual implementation status:** [limits](docs/en/trust/securite-et-limites.md), [evidence](docs/en/trust/evidence.md) and [implementation status](docs/en/reference/etat-implementation.md);
 - **Contribute:** [contribution guide](CONTRIBUTING.md), [development](DEVELOPING.md), [specifications](specs/README.md) and [governance](GOVERNANCE.md).
 
 An AI tool able to read this page and follow its links can likewise reach the documents relevant to a given question.

@@ -51,7 +51,7 @@ Le routage se déclare dans le frontmatter de chaque `SKILL.md` (`use_when`, `ro
 
 ## Reprise de session
 
-Si `.ai/journal/` contient des entrées récentes, lis-les au démarrage pour retrouver le contexte. Si l'utilisateur revient après une interruption, résume l'état actuel et propose la suite.
+Si `.ai/journal/` contient des entrées récentes, lis-les au démarrage pour retrouver le contexte. Si l'utilisateur revient après une interruption, résume l'état actuel et propose la suite. Chaque entrée suit `skills/competences/journal/SKILL.md`. Pour un autre client ou un autre dossier sans rapport, propose une nouvelle conversation: le journal fait le lien, et les éléments d'un dossier ne passent pas dans un autre.
 
 ## Marqueurs
 

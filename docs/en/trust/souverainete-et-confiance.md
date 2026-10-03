@@ -1,4 +1,4 @@
-<!-- fr-synced: 84393f6933bb09d5b2b36696869249a14b1d23ca -->
+<!-- fr-synced: b7e3ba23a659d90ea2b0547ffa1086dc32d3a661 -->
 # Making the case for BASE: sovereignty, trust, compliance
 
 Adopting BASE often means winning someone over first: a client worried about their data, an IT department, a compliance officer. Here, in one place, is what you need to defend that choice without dodging the hard questions: data sovereignty, data protection, security, license, and governance. Written for any organization evaluating BASE, from the freelancer to the institution, this page points to the reference documents rather than replacing them.
@@ -35,7 +35,7 @@ You do not have to settle these questions alone: they are well-charted topics, a
 ## Security
 
 - An **honest** stance: the [glossary](../reference/glossaire.md) defines the distinction between *consigne* and **mechanism**; [Mechanisms vs consignes](mecanismes-vs-consignes.md) shows how it applies to BASE's guardrails.
-- The integration server (MCP) is **read-only by default on the network** (HTTP transport), and any non-local exposure is refused without authentication. In **local** access (stdio, from a tool on your machine), writing is exposed by default, to be restricted as needed via `BASE_MCP_READ_ONLY=1`; every write goes through the mediated propose-then-commit flow anyway, never in a single move.
+- The integration server (MCP) is **read-only by default on the network** (HTTP transport), and any non-local exposure is refused without authentication, unless an explicit override flagged as dangerous is set. In **local** access (stdio, from a tool on your machine), writing is exposed by default, to be restricted as needed via `BASE_MCP_READ_ONLY=1`; through this server, every write goes through the mediated propose-then-commit flow, and the confirmation is set by the client. A write made directly by the AI tool does not go through it.
 - Threat model and limits: [Security and limits](securite-et-limites.md). Vulnerability reporting: [`SECURITY.md`](../../../SECURITY.md).
 
 ## License and reuse

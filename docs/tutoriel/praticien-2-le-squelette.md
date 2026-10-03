@@ -36,7 +36,7 @@ Jusqu'ici, vous lisiez l'office du tourisme de Veytaux une fois achevé. Vous cr
    base init --root ~/mon-office-tourisme --yes
    ```
 
-   Il crée un agent, `base.config.json` (avec `framework_dir`: OÙ vit le moteur), le lanceur
+   Il crée un agent, `base.config.json`, le lanceur
    `.ai/base.mjs`, ainsi que les fichiers que votre outil IA lit à l'ouverture du dossier.
 
 2. Entrez dans votre projet. Désormais, ici, `base` = `node .ai/base.mjs`. Tout fonctionne même une fois
@@ -84,7 +84,7 @@ Plutôt que de recopier le corpus achevé, vous remplissez un squelette: l'effor
 
 ✅ **Vérifiez**: `base validate` dit «BASE valide»; `base route` sur votre phrase d'exemple route vers `renseigner-un-visiteur`; et tout cela depuis un dossier HORS du dépôt, preuve que votre projet est autoporté. Comparez ensuite avec la version achevée: `exemples/veytaux-tourisme/.ai/agents/office-tourisme/skills/processes/renseigner-un-visiteur/SKILL.md`.
 
-💡 **Pourquoi ça a marché**: au-delà des fichiers, `base init` inscrit dans `base.config.json` OÙ vit le moteur, et dépose un lanceur `.ai/base.mjs` qui le retrouve. Voilà pourquoi `base …` fonctionne depuis votre projet, où qu'il soit, sans rien sur le PATH. Un process, lui, demeure une donnée structurée: un frontmatter que le routeur lit (use_when, examples) et un corps que le modèle suit. En comblant vous-même les trous porteurs de sens au lieu de recopier, vous ancrez la structure.
+💡 **Pourquoi ça a marché**: au-delà des fichiers, `base init` note OÙ vit le moteur, dans votre configuration utilisateur (`~/.config/base/config.json`, ou `framework_dir` dans `base.config.json` si elle ne peut pas être écrite), et dépose un lanceur `.ai/base.mjs` qui le retrouve. Voilà pourquoi `base …` fonctionne depuis votre projet, où qu'il soit, sans rien sur le PATH. Un process, lui, demeure une donnée structurée: un frontmatter que le routeur lit (use_when, examples) et un corps que le modèle suit. En comblant vous-même les trous porteurs de sens au lieu de recopier, vous ancrez la structure.
 
 🔁 **Chez vous**: quelle étape de VOS process exige une validation humaine avant d'agir? Notez-la: ce sera votre `[A VALIDER]`.
 

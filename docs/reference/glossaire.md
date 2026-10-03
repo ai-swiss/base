@@ -22,6 +22,8 @@ Vous croisez un terme BASE et vous en cherchez la définition exacte: cette page
 
 **Assistant.** Un agent animé par un modèle dans un harness. Voir [Comprendre l'approche](../learn/comprendre.md).
 
+**`base` (commande).** La forme courte des commandes citées dans cette documentation: `node .ai/base.mjs` dans un dossier initialisé, ou `node <dossier BASE>/tools/base.mjs`. Aucune installation ne la met sur le PATH; un alias de session la crée. Voir [l'étape 0 du tutoriel](../tutoriel/harnais.md).
+
 **Broker.** Le cœur local qui médie les opérations qui passent par lui et y applique ses contrôles, notamment le confinement, les policies et le dry-run. Voir [Sécurité et limites](../trust/securite-et-limites.md).
 
 **Co-pensée.** Un cadre pratique pour l'interaction entre l'humain et l'IA: comment penser, travailler et décider avec une entité dont les représentations internes du monde sont assez proches des nôtres pour communiquer en langage naturel, sans pour autant partager notre contexte, notre mémoire ni nos garanties. Il s'inspire de travaux de recherche et part de ce qu'il faut expliciter, structurer et vérifier pour rendre cette collaboration plus fiable; il s'adapte ensuite au domaine, au métier et à la personne. Voir [Pourquoi BASE: co-penser avec l'IA](../learn/co-penser-avec-lia.md).

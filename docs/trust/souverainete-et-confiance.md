@@ -47,7 +47,7 @@ Vous n'avez pas à trancher seul ces questions: ce sont des sujets balisés, et 
 ## Sécurité
 
 - Posture **honnête**: le [glossaire](../reference/glossaire.md) fixe la distinction entre **consigne** et **mécanisme**; [Mécanismes vs consignes](mecanismes-vs-consignes.md) montre comment elle s'applique aux garde-fous de BASE.
-- Le serveur d'intégration (MCP) est en **lecture seule par défaut sur le réseau** (transport HTTP), et son exposition hors du poste est refusée sans authentification. En accès **local** (stdio, depuis un outil installé sur votre machine), l'écriture est ouverte par défaut, à restreindre au besoin par `BASE_MCP_READ_ONLY=1`; en tout état de cause, toute écriture emprunte le flux médié propose→commit, jamais d'un seul geste.
+- Le serveur d'intégration (MCP) est en **lecture seule par défaut sur le réseau** (transport HTTP), et son exposition hors du poste est refusée sans authentification, sauf dérogation explicite signalée comme dangereuse. En accès **local** (stdio, depuis un outil installé sur votre machine), l'écriture est ouverte par défaut, à restreindre au besoin par `BASE_MCP_READ_ONLY=1`; par ce serveur, toute écriture emprunte le flux médié propose→commit, et la confirmation est posée par le client. Une écriture faite directement par l'outil IA n'y passe pas.
 - Modèle de menace et limites: [Sécurité et limites](securite-et-limites.md). Signalement de vulnérabilité: [`SECURITY.md`](../../SECURITY.md).
 
 ## Licence et réutilisation

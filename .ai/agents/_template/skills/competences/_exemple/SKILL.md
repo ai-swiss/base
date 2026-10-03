@@ -30,10 +30,10 @@ allowed-tools: Read
 - [Règle 2]
 - [Règle 3]
 
-## Bonnes pratiques
+## Pièges de la maison
 
-- [Pratique 1: ce qu'il faut faire et pourquoi]
-- [Pratique 2]
+- [Ce qu'un modèle ferait mal ici sans qu'on le lui dise: une exception, un seuil propre à votre organisation, une erreur déjà commise, et pourquoi]
+- [Piège 2]
 
 ## Références
 
@@ -45,6 +45,7 @@ NOTES POUR L'AUTEUR DE LA COMPÉTENCE:
 - Elle est chargée à la demande quand la conversation en a besoin
 - Gardez-la factuelle et concise
 - Utilisez des tableaux pour la terminologie
-- Séparez les règles (obligatoires) des bonnes pratiques (recommandées)
+- Séparez les règles (obligatoires) des pièges de la maison
+- N'écrivez que ce qu'un modèle ne ferait pas de lui-même: chaque ligne est relue à chaque usage, et une évidence («être poli») noie ce qui compte
 - Un skill dit "le taux de TVA est de 8.1%", pas "utilise le taux de TVA de 8.1%"
 -->

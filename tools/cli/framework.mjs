@@ -58,7 +58,7 @@ export async function whereis(asJson) {
     console.log(JSON.stringify({ frameworkDir: dir, configPath, version, registered: Boolean(config) }, null, 2));
     return;
   }
-  const note = config ? "" : "  (non enregistré — lancez «base init» une fois)";
+  const note = config ? "" : "  (non enregistré: lancez «base init» une fois)";
   console.log(`BASE ${version}\n  framework: ${dir}${note}\n  config: ${configPath}`);
 }
 
@@ -111,7 +111,7 @@ export async function update({ channel = "stable" } = {}) {
     if (code !== 0) { process.exit(code ?? 1); }
   }
 
-  console.log(`\nBASE ${await readFrameworkVersion()} — ${dir}`);
+  console.log(`\nBASE ${await readFrameworkVersion()}: ${dir}`);
   const changes = await changelogHead(dir);
   if (changes) console.log(`\nCe qui a changé (Unreleased):\n${changes}`);
 

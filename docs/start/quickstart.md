@@ -79,11 +79,11 @@ Le composant de médiation, appelé broker, applique aussi un contrôle avant le
 | Essayer les comptes-rendus de réunion | Copiez `exemples/assistant-reunion/`: décisions, actions, suivi |
 | Vérifier le routage lexical reproductible | Avec Node 18 ou plus, depuis un terminal: `node <BASE_DIR>/tools/base.mjs route-test --strategy lexical --root <BASE_DIR>/exemples/routage-pme` |
 | Votre propre assistant | [Faites initialiser votre dossier par votre IA](installer-par-votre-ia.md), puis dites «Voici le travail que je veux structurer avec BASE. Aide-moi à préciser la méthode et attends mon accord avant de créer les fichiers.» |
-| Trouver par où commencer | Même chose, puis dites «Aide-moi à trouver par où commencer» |
-| **Perdu, ou une question sur BASE?** | Dans le dépôt BASE ou un projet où le routeur est activé, dites «Je suis perdu» ou «Aide»: le routeur sélectionne la référence d'accueil, puis votre outil vous présente ses indications. Chaque exemple métier embarque cet accueil de repli. |
+| Trouver par où commencer | Même chose, puis dites «Aide-moi à savoir par où commencer avec l'IA» |
+| **Perdu, ou une question sur BASE?** | Dans le dépôt BASE ou un projet où le routeur est activé, dites «Je suis perdu» ou «Aide»: le routeur vous oriente, ou vous pose une question pour préciser; s'il s'abstient, l'accueil prend le relais. Chaque exemple métier embarque cet accueil de repli. |
 | S'inspirer | Consultez la [galerie d'idées](../guides/idees-agents.md) |
 
-> **Deux portes différentes.** Dans un projet doté d'un routeur, «Aide / Je suis perdu» ouvre l'**accueil** (concierge): il oriente et répond aux questions sur BASE. «Aide-moi à trouver par où commencer» ouvre le **diagnostic** du créateur d'assistant: il détermine *quel assistant construire* pour votre métier.
+> **Deux portes différentes.** Dans le dépôt BASE ou un dossier qui s'y rattache, «Je suis perdu» mène au **concierge**: il oriente et répond aux questions sur BASE. «Aide-moi à savoir par où commencer avec l'IA» ouvre le **diagnostic** du créateur d'assistant: il fait parler de votre travail avant la fiche de proposition.
 
 > **Forcer un choix de route.** Dites **«R»** (ou «R votre demande») pour obliger l'assistant à passer par la carte de routage plutôt qu'à répondre de mémoire. Avec la stratégie lexicale par défaut, `node .ai/base.mjs route "<votre demande>"` est déterministe pour une même carte. Une stratégie sémantique ou fondée sur un modèle ne porte pas cette garantie. Le contrôle reproductible est `node .ai/base.mjs route-test --strategy lexical`.
 
@@ -110,10 +110,15 @@ On part rarement d'une page blanche. Deux portes, un même résultat:
   les fichiers et les actions disponibles. Votre outil IA demeure l'expérience du quotidien;
   Studio fait office d'atelier.
 
-Ensuite, pour convertir vos documents en process et en compétences, demandez à votre assistant:
-«importer mes procédures existantes». Le routeur l'enverra sur `importer-l-existant`, qui
-propose chaque conversion sous forme de diff. Ce routage reste simple mais efficace, et extensible par
-adaptateurs. Il vous épargne la recherche du bon process.
+Si vous préférez voir d'abord ce qu'un assistant ferait pour vous, montrez ce que vous avez
+(un dossier de procédures, la transcription d'une discussion sur vos besoins, un `CLAUDE.md`) et
+dites: «Voici ce que nous avons. Montre-moi ce qu'un assistant pourrait faire pour nous.» Le point
+d'entrée du dossier envoie votre outil sur `adopter-ce-dossier`, qui rend une fiche de proposition à
+relire dans le navigateur.
+
+Après vos réponses, la porte passe la main: à `importer-l-existant` pour convertir vos documents en
+process et en compétences, chaque conversion proposée sous forme de diff, ou à `creer-agent` pour
+construire l'assistant. Vous n'avez pas à chercher vous-même le bon process.
 
 ---
 

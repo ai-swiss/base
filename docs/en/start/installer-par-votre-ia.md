@@ -1,4 +1,4 @@
-<!-- fr-synced: 37d3b14e5ebd6066e32a06f79029efb653f5a00e -->
+<!-- fr-synced: 517240372c432ea45216fe498bae8731364f5dbd -->
 # Have your AI install BASE
 
 Installing BASE can fall to your AI rather than to you: you walk away with a ready-to-use
@@ -49,7 +49,7 @@ Steps; check each output before continuing:
 4. Verify: `node .ai/base.mjs whereis` shows <BASE_DIR>,
    and my tool's entry point now exists in my folder.
 5. Tell me the exact phrase to send you to begin
-   ("import my existing procedures" if I already have documents to convert).
+   ("Here is what we have. Show me what an assistant could do for us." if I already have documents).
 
 Guardrails: NEVER overwrite an existing file; do not install anything else without
 asking me; if a step fails, show me the exact error instead of improvising.
@@ -65,8 +65,9 @@ you named. It does not install the short `base` command in your `PATH`. Talk to 
 normally: it directs each request to the right process, then your tool follows that process, without you having to
 work out which one to pick.
 
-- **Convert your existing documents**: say "importer mes procédures existantes". Each
-  conversion is submitted to you as a diff; nothing is written without your approval.
+- **Start from your existing documents**: say "Here is what we have. Show me what an assistant
+  could do for us." You first receive a proposition brief; each conversion is then submitted to
+  you as a diff, and nothing is written without your approval.
 - **The Studio**: before the first use, run `npm ci` in `<BASE_DIR>`, then
   `cd my-folder && node .ai/base.mjs studio --root .` to open BASE Studio.
 - **Keep the reference implementation up to date**: `node .ai/base.mjs update`.

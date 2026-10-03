@@ -44,7 +44,7 @@ Le dossier contient ce que vous y déposez:
 - les **fichiers de ressources** que vous déposez (le savoir métier, en Markdown);
 - un **journal de trace local** (`.ai/trace`) qui enregistre les opérations médiées: opération, ressource, statut, durée, sans contenu métier par défaut.
 
-Le routage par défaut **ne fait aucun appel réseau** (lexical). Le routage sémantique avancé n'envoie de texte à un fournisseur d'embeddings que si vous l'activez explicitement, et une option locale existe (voir [Sécurité des données de routage](../trust/securite-donnees-routage.md)).
+Le routeur de BASE (`base route`, `route_request` en MCP) **ne fait aucun appel réseau** par défaut (lexical). Dans un outil d'IA, c'est le modèle qui lit la carte de routage: la demande part alors chez le fournisseur de ce modèle. Le routage sémantique avancé n'envoie de texte à un fournisseur d'embeddings que si vous l'activez explicitement, et une option locale existe (voir [Sécurité des données de routage](../trust/securite-donnees-routage.md)).
 
 À compléter pour votre traitement:
 

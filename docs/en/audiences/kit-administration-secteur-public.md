@@ -1,4 +1,4 @@
-<!-- fr-synced: a28d963f9e35b10a65fe398e4bb3f622845a4d63 -->
+<!-- fr-synced: a6a473c535d814dc55bca2d2d62f1989ad943f87 -->
 # Evaluating and using BASE responsibly in the public sector
 
 Deploying BASE in a public institution puts citizen data, a legal basis, and public procurement on the line: deciding whether and how to do it without taking on needless risk calls for clear bearings. This checklist provides those concrete bearings and flags the decisions that remain yours (legal counsel, data protection officer, archives, procurement); it is not a substitute for legal advice.
@@ -18,7 +18,7 @@ The [audience map diagnosis](pour-qui.md) distinguishes method, structure, appro
 ## 2. Citizen data and data protection
 
 - If personal data is involved, the browser tier alone is not enough. The CLI or MCP mediate and trace only actions that pass through their commands; direct tool access to files remains outside that guarantee.
-- Default routing **makes no network calls** (lexical, no data leaves). Advanced semantic routing sends text to an embeddings provider only if you explicitly enable it, and a local option (Ollama) exists (see [Security of routing data](../trust/securite-donnees-routage.md)).
+- The BASE router (`base route`, `route_request` over MCP) **makes no network calls** by default (lexical, no data leaves). In an AI tool, the model reads the routing map: the request then goes to that model's provider. Advanced semantic routing sends text to an embeddings provider only if you explicitly enable it, and a local option (Ollama) exists (see [Security of routing data](../trust/securite-donnees-routage.md)).
 - Files may remain on the workstation while a tool projects excerpts to a remote model. The egress policy is permissive by default (`any`) until you configure withholding.
 
 > **Institutional decision:** an impact assessment (AIPD/DPIA) where required, and the record of processing activities.

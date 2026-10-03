@@ -266,12 +266,17 @@ const COMMANDS = {
       // Precompute the routing vectors — opt-in, model-backed — with the SAME model reference the
       // query path reads (`routing.embedding_model`, panneau Routage du Studio): one vocabulary,
       // one place, one shared provider registry (`resolveEmbedder`, exactly as at route time).
-      const { readSettings, resolveEmbedder } = await import("./core/model-settings.mjs");
+      const { readSettings, resolveEmbedder, routingLocality } = await import("./core/model-settings.mjs");
       const embedderRef = (await readSettings(rootDir)).routing?.embedding_model;
       if (!embedderRef) throw new Error("routing-embeddings: configurez routing.embedding_model dans .ai/studio.settings.json (panneau Routage du Studio): la même référence <provider>/<modèle> que la requête utilise.");
+      // Egress before any model is loaded: a local-only root sends no routing text to a remote embedder.
+      const modelLocality = await routingLocality(rootDir, { embedding_model: embedderRef, refiner_model: embedderRef });
+      const { rootEgressPolicy } = await import("./core/egress.mjs");
+      const rootPolicy = await rootEgressPolicy(rootDir);
+      if (modelLocality === "remote" && rootPolicy === "local-only") throw new Error(`routing-embeddings: ce root est local-only et l'embedder ${embedderRef} est distant; aucun texte de routage ne part vers lui. Choisissez un embedder local, ou gardez le routage lexical.`);
       await loadCompanion("@ai-swiss/base-ranker-semantic", "Le précalcul des vecteurs de routage (build routing-embeddings)");
       const embed = await resolveEmbedder(rootDir, embedderRef);
-      const { vectors, skippedConfidential } = await precomputeRoutingVectors(await inventoryResources(rootDir), embed, { onProgress: reportProgress("embedding") });
+      const { vectors, skippedConfidential } = await precomputeRoutingVectors(await inventoryResources(rootDir), embed, { onProgress: reportProgress("embedding"), modelLocality, rootPolicy });
       const count = Object.keys(vectors).length;
       const confidentialNote = skippedConfidential ? ` ${skippedConfidential} ressource(s) confidentielle(s) non embarquée(s): leur texte de routage ne part jamais vers un embedder.` : "";
       if (args.write) output(args.json ? { written: await writeRoutingVectors(rootDir, vectors, { embedder: embedderRef }), count, skippedConfidential } : `Vecteurs de routage écrits (${count} ressources, embedder ${embedderRef}).${confidentialNote}`, args.json, context);
@@ -434,12 +439,12 @@ const COMMANDS = {
 
 async function main(argv = process.argv.slice(2)) {
   const [command, ...rest] = argv;
-  const args = parseArgs(rest);
-
-  if (["help", "--help", "-h", undefined].includes(command)) {
+  // `base route --help` asks for the usage, like `base --help`: answer it rather than reject the flag.
+  if (["help", "--help", "-h", undefined].includes(command) || rest.includes("--help") || rest.includes("-h")) {
     console.log(help());
     return;
   }
+  const args = parseArgs(rest);
 
   // Global commands: they answer questions ABOUT the framework itself, so they run from anywhere
   // and never require a BASE root in the working directory.
@@ -551,7 +556,7 @@ function help() {
     " base route-eval [--ollama] [--golden path] [--json]",
     " base inventory [--root path] [--json]",
     " base open <id-or-path> [--projection metadata|instructions|full] [--purpose reason] [--confirmed] [--grant-token token] [--root path] [--json]",
-    " base context <process-id-or-path> [--root path] [--json] (quoi precharger pour ce process: chemins et notes, jamais les corps)",
+    " base context <process-id-or-path> [--root path] [--json] (quoi précharger pour ce process: chemins et notes, jamais les corps)",
     " base access <id-or-path> [--projection metadata|instructions|full] [--purpose reason] [--confirmed] [--grant-token token] [--root path] [--json]",
     " base invoke <tool-id> [args...] [--execute --confirmed] [--grant-token token] [--root path] [--json]",
     " base propose <target> [--from file] [--purpose reason] [--confirmed] [--grant-token token] [--root path] [--json]",
@@ -565,7 +570,8 @@ function help() {
     " base doctor [--root path] [--json] (santé du corpus: liens morts, orphelines, évals périmées, relectures échues, frictions ouvertes)",
     " base init [--root path] [--tool claude-code|cursor|agents-md|autre] [--about \"…\"] [--language code] [--egress local-only|any] [--yes] [--json] (d'un dossier nu à un BASE: détecte, montre les fichiers à créer, n'écrit qu'avec --yes)",
     " base upgrade [--root path] [--write] [--json] (aligne un dossier créé par une version antérieure)",
-    " base studio [--root path] (l'atelier graphique: parcourir, éditer, évaluer — installe ses dépendances au premier lancement)",
+    " base view <nom> [--write] [--shell] [--root path] [--json] (une porte sur une partie du dossier, déclarée dans base.config.json: aperçu, puis --write)",
+    " base studio [--root path] (l'atelier graphique: parcourir, éditer, évaluer; installe ses dépendances au premier lancement)",
     " base whereis [--json] (où vit le framework BASE, le fichier de config utilisateur, la version)",
     " base update [--channel stable|main] (met à jour le framework: canal stable = dernier tag de version; main = tête de branche)",
     " base trace [prune [--keep-days N] | clear] [--root path] [--json]",

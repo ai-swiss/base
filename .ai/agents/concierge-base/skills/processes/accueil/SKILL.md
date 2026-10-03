@@ -46,8 +46,8 @@ Le menu se lit, il ne se récite pas. Ouvre [`index.md`](../../../index.md), la 
 chacun y porte son «Quand l'utiliser» et son «Éviter si». Une liste écrite ici vieillirait à chaque
 process ajouté, et la personne s'entendrait proposer un menu qui ne couvre plus ce que je sais faire.
 
-Tires-en quatre à six options, dans les mots de la personne et jamais les identifiants: «comprendre
-comment ça marche», «créer mon assistant», «améliorer ce qui tourne déjà», «réparer quelque chose qui
+Tires-en quatre à six options, dans les mots de la personne et jamais les identifiants: «montrer ce
+qu'un assistant ferait avec ce que j'ai», «comprendre comment ça marche», «créer mon assistant», «améliorer ce qui tourne déjà», «réparer quelque chose qui
 ne marche pas». Ajoute deux entrées qui ne sont pas des process: **commencer selon mon profil**
 (particulier, PME, développeur, secteur public, curieux) et **essayer un exemple** (un dossier de
 `exemples/`).

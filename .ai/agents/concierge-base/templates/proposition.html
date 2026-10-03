@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<!--
+  Proposition sheet template: "what AI can do for you", for the `adopter-ce-dossier` process.
+  It is NOT the decision sheet (`decision-sheet.html`, which settles open arbitrations on a 1-to-5
+  scale). This one tells a team, which may know nothing about AI, what an assistant would take on,
+  what it would never do, what AI will not solve, and asks Oui / Plus tard / Non per task.
+
+  Everything to fill lives in the constants at the top of the script (title, eyebrow, intro,
+  storage key, export file name, then the content arrays); nothing else in the page is edited.
+  Save the copy under .temp/YYYY-MM-DD_subject/.
+
+  WRITE FOR THE PERSON WHOSE WORK IT IS, who may know nothing about AI:
+    - Plain words only. Never the framework words the `faisabilite-ia` competence lists: process,
+      compétence, skill, agent, prompt, routage, frontmatter, file names, code. The method is
+      applied, not named.
+    - One idea per card. A title says what the assistant does, as a verb: "Préparer les rappels".
+    - `what`: one or two sentences, in the person's own terms (who is helped, what changes).
+    - `reco`: one or two sentences. Say what stays human ("l'accueil relit", "la direction signe").
+      A "Plus tard" says what is missing and what changes once it is there.
+    - At most 12 cards in all, the two starting choices included. Fewer is better. Settled points go in NEVER or SUMMARY.
+      What you merge or set aside to stay within 12 goes in MORE_IDEAS, one line each: nothing
+      you saw disappears, and only the 12 cards ask for a decision.
+    - Every LIMITS line cites a fact from the person's own material.
+  Constants:
+    - LANG: the person's language, "fr", "en", "de" or "it". Every fixed label of the page (headings,
+      buttons, Oui / Plus tard / Non, the export) follows it; write all the content in that language too.
+    - SHEET_TITLE: the page title, in the person's words. SHEET_INTRO: one or two plain sentences.
+    - SHEET_EYEBROW: one short line above the title (source, date). Optional.
+    - STARTING_POINT: where the person starts from, in their language ("des besoins décrits",
+      "des documents de travail"). Not shown on the page; the export opens with it.
+    - SUMMARY: [{ titre, items: [..] }], at most 4 blocks of 3 short lines: "Ce que j'ai compris".
+    - GROUPS: { "Heading": "one sentence" }; a card's `group` places it under that heading.
+    - POINTS: [{ id, title, what, reco, recoSummary, verdict, scaleLabel, group?, beyond?,
+                 options?: [{ v: "A", titre, sous, puces: [..] }], recoChoice? }].
+      `verdict` ("oui", "plus-tard" or "non") is the recommended answer of a Oui / Plus tard / Non
+      card, the one "Tout accepter" applies; `recoChoice` plays that part for a card with options.
+      `options` turns the card into a choice between options (how to organise, where to start).
+      `beyond: true` marks a card that goes beyond what the person asked for.
+    - MORE_IDEAS: ["..."]: "D'autres idées", one line per idea merged or set aside, no buttons.
+    - STRUCTURE: ["..."]: "Comment ce sera rangé", the proposed structure in everyday words.
+    - NEVER: ["..."]: what the assistant will never do. LIMITS: ["..."]: what AI will not solve.
+  The reader answers, may add a nuance, then exports a Markdown file to hand back.
+  Opens offline: no web fonts, no external resources. Follows the system light or dark mode.
+-->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proposition</title>
+<style>
+  :root {
+    --fond: #ffffff; --fond-2: #f5f5f7; --carte: #ffffff;
+    --texte: #1d1d1f; --doux: #6e6e73; --pale: #a1a1a6; --trait: #e5e5ea;
+    --bleu: #0071e3; --bleu-fond: rgba(0,113,227,.08);
+    --vert: #248a3d; --orange: #c93400; --gris-fond: #f2f2f4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fond: #000000; --fond-2: #111113; --carte: #1c1c1e;
+      --texte: #f5f5f7; --doux: #a1a1a6; --pale: #6e6e73; --trait: #2c2c2e;
+      --bleu: #2997ff; --bleu-fond: rgba(41,151,255,.12);
+      --vert: #30d158; --orange: #ff9f0a; --gris-fond: #2c2c2e;
+    }
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--fond); color: var(--texte); line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", Roboto, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased; letter-spacing: -0.01em;
+  }
+  .page { max-width: 860px; margin: 0 auto; padding: 0 24px 120px; }
+
+  .barre { position: sticky; top: 0; z-index: 5; background: color-mix(in srgb, var(--fond) 85%, transparent);
+    backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid var(--trait); }
+  .barre .in { max-width: 860px; margin: 0 auto; padding: 12px 24px; display: flex; align-items: center; gap: 14px; white-space: nowrap; position: relative; }
+  .avancement { font-size: 14px; color: var(--doux); font-variant-numeric: tabular-nums; }
+  .barre .esp { flex: 1; }
+  .ligne-av { position: absolute; left: 0; bottom: -1px; height: 2px; background: var(--vert); width: 0; transition: width .4s cubic-bezier(.2,.8,.2,1); }
+  .bouton { border: 0; font: inherit; font-size: 14px; font-weight: 500; border-radius: 980px; padding: 8px 16px; cursor: pointer; }
+  .bouton.plein { background: var(--bleu); color: #fff; }
+  .bouton.leger { background: transparent; color: var(--bleu); }
+
+  .ouverture { padding: 80px 0 24px; }
+  .surtitre { font-size: 15px; font-weight: 600; color: var(--bleu); }
+  .ouverture h1 { font-size: clamp(36px, 6vw, 60px); line-height: 1.05; letter-spacing: -0.045em; margin: 10px 0 18px; font-weight: 700; }
+  .intro { font-size: 21px; color: var(--doux); line-height: 1.45; letter-spacing: -0.02em; }
+
+  section { padding-top: 64px; }
+  section h2 { font-size: clamp(28px, 4vw, 38px); letter-spacing: -0.035em; line-height: 1.1; margin: 0 0 8px; }
+  .chapeau { color: var(--doux); font-size: 18px; margin: 0 0 24px; letter-spacing: -0.015em; }
+
+  .compris { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .bloc { background: var(--fond-2); border-radius: 20px; padding: 22px 24px; }
+  .bloc h3 { font-size: 17px; margin: 0 0 8px; letter-spacing: -0.02em; }
+  .bloc ul { margin: 0; padding-left: 18px; font-size: 15.5px; } .bloc li { margin: 4px 0; } .bloc li::marker { color: var(--pale); }
+
+  .carte { background: var(--carte); border: 1px solid var(--trait); border-radius: 22px; padding: 26px 28px; margin-bottom: 14px; transition: border-color .3s; }
+  .carte.faite { border-color: color-mix(in srgb, var(--vert) 45%, var(--trait)); }
+  .carte h3 { font-size: 23px; letter-spacing: -0.03em; margin: 0 0 8px; line-height: 1.2; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 600; color: var(--orange); border: 1px solid currentColor; border-radius: 980px; padding: 1px 9px; margin-left: 8px; vertical-align: 4px; letter-spacing: 0; }
+  .ctx { font-size: 17px; margin: 0 0 12px; }
+  .reco { font-size: 15.5px; color: var(--doux); margin: 0 0 20px; }
+  .reco b { color: var(--texte); font-weight: 600; }
+  .question { font-size: 14px; font-weight: 600; color: var(--doux); margin: 0 0 10px; }
+  .reponses { display: flex; gap: 10px; flex-wrap: wrap; }
+  .reponses button { border: 1px solid var(--trait); background: var(--carte); color: var(--texte); font: inherit; font-size: 16px; font-weight: 500;
+    border-radius: 980px; padding: 10px 22px; cursor: pointer; transition: all .2s; }
+  .reponses button:hover { border-color: var(--pale); }
+  .reponses button.sel[data-v="oui"] { background: var(--vert); border-color: var(--vert); color: #fff; }
+  .reponses button.sel[data-v="plus-tard"] { background: var(--texte); border-color: var(--texte); color: var(--fond); }
+  .reponses button.sel[data-v="non"] { background: var(--orange); border-color: var(--orange); color: #fff; }
+  .reponses button.conseil:not(.sel) { border-color: var(--bleu); color: var(--bleu); }
+  .options { display: grid; grid-template-columns: repeat(var(--n, 3), minmax(0, 1fr)); gap: 12px; }
+  .option { background: var(--fond-2); border: 2px solid transparent; border-radius: 18px; padding: 20px 20px 44px; cursor: pointer; text-align: left;
+    font: inherit; color: inherit; position: relative; display: flex; flex-direction: column; transition: border-color .2s, background .2s; }
+  .option.sel { border-color: var(--bleu); background: var(--carte); }
+  .option h4 { font-size: 19px; margin: 0 0 4px; letter-spacing: -0.025em; line-height: 1.2; padding-right: 30px; }
+  .option .sous { font-size: 15px; color: var(--doux); margin-bottom: 10px; }
+  .puces { display: flex; flex-wrap: wrap; gap: 6px; }
+  .puce { background: var(--carte); border-radius: 8px; padding: 4px 9px; font-size: 13px; font-weight: 500; }
+  .option.sel .puce { background: var(--fond-2); }
+  .reco-badge { position: absolute; bottom: 14px; left: 20px; font-size: 12px; font-weight: 600; color: var(--bleu); }
+  .coche { position: absolute; top: 16px; right: 16px; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--pale); display: flex; align-items: center; justify-content: center; font-size: 13px; color: #fff; }
+  .option.sel .coche { background: var(--bleu); border-color: var(--bleu); }
+  .nuance { border: 0; background: none; color: var(--bleu); font: inherit; font-size: 14px; cursor: pointer; padding: 0; margin-top: 16px; display: block; }
+  textarea { width: 100%; margin-top: 16px; border: 1px solid var(--trait); background: var(--carte); color: var(--texte); border-radius: 14px;
+    padding: 12px 14px; font: inherit; font-size: 15px; min-height: 70px; resize: vertical; display: block; }
+  textarea:focus { outline: none; border-color: var(--bleu); box-shadow: 0 0 0 3px var(--bleu-fond); }
+
+  .liste { background: var(--fond-2); border-radius: 22px; padding: 8px 28px; }
+  .liste div { padding: 14px 0 14px 34px; border-bottom: 1px solid var(--trait); font-size: 17px; position: relative; }
+  .liste div:last-child { border-bottom: 0; }
+  .liste div::before { position: absolute; left: 0; top: 13px; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+  .liste.rangement div::before { content: "·"; background: var(--gris-fond); color: var(--texte); font-size: 20px; }
+  .liste.idees div::before { content: "+"; background: var(--gris-fond); color: var(--bleu); font-size: 14px; }
+  .liste.jamais div::before { content: "✕"; background: var(--gris-fond); color: var(--doux); }
+  .liste.limites div::before { content: "!"; background: var(--gris-fond); color: var(--orange); }
+
+  .fin { text-align: center; padding: 80px 0 0; }
+  .fin h2 { margin-bottom: 10px; }
+  .fin .bouton { font-size: 17px; padding: 14px 28px; margin-top: 12px; }
+  @media (max-width: 760px) {
+    .compris, .options { grid-template-columns: minmax(0, 1fr); }
+    .carte { padding: 22px 20px; }
+    .barre .leger { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="barre"><div class="in">
+  <span class="avancement" id="avancement"></span>
+  <div class="esp"></div>
+  <button class="bouton leger" id="tout-reco"></button>
+  <button class="bouton plein" id="exporter"></button>
+  <div class="ligne-av" id="ligne-av"></div>
+</div></div>
+<div class="page">
+  <div class="ouverture">
+    <div class="surtitre" id="surtitre"></div>
+    <h1 id="titre"></h1>
+    <div class="intro" id="intro"></div>
+  </div>
+  <div id="content"></div>
+  <div class="fin">
+    <h2 id="fin-titre"></h2>
+    <p class="chapeau" id="fin-chapeau"></p>
+    <button class="bouton plein" id="exporter-2"></button>
+  </div>
+</div>
+<script>
+const LANG = "fr";                                            // the person's language: "fr", "en", "de" or "it"
+const SHEET_TITLE = "";                                       // the page title, in the person's words
+const SHEET_EYEBROW = "";                                     // optional: one short line above the title
+const SHEET_INTRO = "";                                       // one or two plain sentences under the title
+const STARTING_POINT = "";                                    // where the person starts from; the export opens with it
+const STORAGE_KEY = "YYYY-MM-DD_slug_proposition";           // dated stem, unique per sheet
+const EXPORT_FILE = "YYYY-MM-DD_slug_proposition-filled.md"; // same stem + -filled, pairs with the blank
+const SUMMARY = [
+  // { titre: "...", items: ["...", "..."] },
+];
+const GROUPS = {
+  // "Heading": "One sentence under the heading.",
+};
+const POINTS = [
+  // { id:"P1", title:"...", what:"...", reco:"Oui. ...", recoSummary:"...", verdict:"oui", scaleLabel:"On le fait?" },
+];
+const MORE_IDEAS = [
+  // "Le rapport du mois: regroupé avec le point de la semaine.",
+];
+const STRUCTURE = [
+  // "Trois modes d'emploi: les rappels, les commandes, le point de la semaine.",
+];
+const NEVER = [
+  // "Commander un travail ou envoyer un message à votre place.",
+];
+const LIMITS = [
+  // "...",
+];
+
+// Fixed labels, one table per language; nothing here is edited per sheet.
+const LIBELLES = {
+  fr: { compris: "Ce que j'ai compris", comprisChapeau: "Dites-moi si je me trompe, avec «Ajouter une nuance» sur n'importe quelle carte.",
+    idees: "D'autres idées", ideesChapeau: "Regroupées ou mises de côté pour garder cette fiche courte. Si l'une compte pour vous, dites-le dans une nuance.",
+    range: "Comment ce sera rangé", rangeChapeau: "Ce que l'assistant aura sous la main, en mots de tous les jours.",
+    jamais: "Ce que l'assistant ne fera jamais", jamaisChapeau: "Les points qui coûteraient cher reçoivent un réglage ou un accès retiré, essayé avant de commencer.",
+    limites: "Ce que l'IA ne réglera pas", limitesChapeau: "Autant le savoir avant de commencer.",
+    reco: "Ma recommandation", question: "On le fait?", tag: "Une idée de plus", nuance: "Ajouter une nuance", nuanceVide: "Votre nuance, en quelques mots",
+    toutAccepter: "Tout accepter", envoyer: "Envoyer mes réponses", fin: "C'est tout.", finChapeau: "Vos réponses restent sur cet ordinateur. Un point sans réponse garde ma recommandation.",
+    sur: "sur", reponses: { oui: "Oui", "plus-tard": "Plus tard", non: "Non" },
+    export: { titre: "mes réponses", depart: "Point de départ", reco: "Recommandation", choix: "Réponse", nuance: "Nuance", aucune: "aucune", sans: "non répondu", applique: "la recommandation s'applique",
+      note: "Pour l'assistant qui lira ce fichier: voici mes réponses. Construis là où je dis Oui, garde pour plus tard ce que je reporte, laisse de côté ce que je refuse, et suis mes nuances. Là où je n'ai pas répondu, ta recommandation s'applique: dis-le. Ces réponses valent accord pour construire; ne fais aucun commit git à ma place. Avec le cadre BASE, reprends à l'étape 6 de `adopter-ce-dossier`: il tire de ces réponses le plan ou la carte d'import, puis passe la main." } },
+  en: { compris: "What I understood", comprisChapeau: "Tell me if I got something wrong, with «Add a note» on any card.",
+    idees: "Other ideas", ideesChapeau: "Grouped or set aside to keep this sheet short. If one matters to you, say so in a note.",
+    range: "How it will be organised", rangeChapeau: "What the assistant will have at hand, in everyday words.",
+    jamais: "What the assistant will never do", jamaisChapeau: "The points that would be costly get a setting or a withheld access, tried before starting.",
+    limites: "What AI will not solve", limitesChapeau: "Better to know before starting.",
+    reco: "My recommendation", question: "Shall we do it?", tag: "One more idea", nuance: "Add a note", nuanceVide: "Your note, in a few words",
+    toutAccepter: "Accept all", envoyer: "Send my answers", fin: "That's all.", finChapeau: "Your answers stay on this computer. A point without an answer keeps my recommendation.",
+    sur: "of", reponses: { oui: "Yes", "plus-tard": "Later", non: "No" },
+    export: { titre: "my answers", depart: "Starting point", reco: "Recommendation", choix: "Answer", nuance: "Note", aucune: "none", sans: "no answer", applique: "the recommendation applies",
+      note: "For the assistant reading this file: here are my answers. Build where I say Yes, keep for later what I postpone, leave aside what I refuse, and follow my notes. Where I did not answer, your recommendation applies: say so. These answers are my approval to build; make no git commit on my behalf. With the BASE framework, resume at step 6 of `adopter-ce-dossier`: it draws the plan or the import map from these answers, then hands over." } },
+  de: { compris: "Was ich verstanden habe", comprisChapeau: "Sagen Sie mir, wenn ich mich irre, mit „Anmerkung hinzufügen“ auf einer beliebigen Karte.",
+    idees: "Weitere Ideen", ideesChapeau: "Zusammengefasst oder zurückgestellt, damit dieses Blatt kurz bleibt. Wenn Ihnen eine wichtig ist, sagen Sie es in einer Anmerkung.",
+    range: "Wie es geordnet wird", rangeChapeau: "Was der Assistent zur Hand haben wird, in Alltagsworten.",
+    jamais: "Was der Assistent nie tun wird", jamaisChapeau: "Die Punkte, die teuer würden, erhalten eine Einstellung oder einen entzogenen Zugang, vor dem Start ausprobiert.",
+    limites: "Was die KI nicht lösen wird", limitesChapeau: "Besser, man weiss es vor dem Start.",
+    reco: "Meine Empfehlung", question: "Machen wir das?", tag: "Eine Idee mehr", nuance: "Anmerkung hinzufügen", nuanceVide: "Ihre Anmerkung, in wenigen Worten",
+    toutAccepter: "Alle annehmen", envoyer: "Meine Antworten senden", fin: "Das ist alles.", finChapeau: "Ihre Antworten bleiben auf diesem Computer. Ein Punkt ohne Antwort behält meine Empfehlung.",
+    sur: "von", reponses: { oui: "Ja", "plus-tard": "Später", non: "Nein" },
+    export: { titre: "meine Antworten", depart: "Ausgangspunkt", reco: "Empfehlung", choix: "Antwort", nuance: "Anmerkung", aucune: "keine", sans: "nicht beantwortet", applique: "die Empfehlung gilt",
+      note: "Für den Assistenten, der diese Datei liest: hier sind meine Antworten. Baue, wo ich Ja sage, stelle zurück, was ich verschiebe, lass weg, was ich ablehne, und folge meinen Anmerkungen. Wo ich nicht geantwortet habe, gilt deine Empfehlung: sag es. Diese Antworten sind meine Zustimmung zum Bauen; mache keinen Git-Commit an meiner Stelle. Mit dem BASE-Rahmen: setze bei Schritt 6 von `adopter-ce-dossier` an; er leitet aus diesen Antworten den Plan oder die Importkarte ab und übergibt dann." } },
+  it: { compris: "Quello che ho capito", comprisChapeau: "Ditemi se sbaglio, con «Aggiungi una precisazione» su qualsiasi scheda.",
+    idees: "Altre idee", ideesChapeau: "Raggruppate o messe da parte per tenere breve questa scheda. Se una vi sta a cuore, ditelo in una precisazione.",
+    range: "Come sarà organizzato", rangeChapeau: "Ciò che l'assistente avrà a portata di mano, in parole di tutti i giorni.",
+    jamais: "Ciò che l'assistente non farà mai", jamaisChapeau: "I punti che costerebbero cari ricevono un'impostazione o un accesso tolto, provati prima di iniziare.",
+    limites: "Ciò che l'IA non risolverà", limitesChapeau: "Meglio saperlo prima di cominciare.",
+    reco: "La mia raccomandazione", question: "Lo facciamo?", tag: "Un'idea in più", nuance: "Aggiungi una precisazione", nuanceVide: "La vostra precisazione, in poche parole",
+    toutAccepter: "Accetta tutto", envoyer: "Invia le mie risposte", fin: "È tutto.", finChapeau: "Le vostre risposte restano su questo computer. Un punto senza risposta mantiene la mia raccomandazione.",
+    sur: "su", reponses: { oui: "Sì", "plus-tard": "Più tardi", non: "No" },
+    export: { titre: "le mie risposte", depart: "Punto di partenza", reco: "Raccomandazione", choix: "Risposta", nuance: "Precisazione", aucune: "nessuna", sans: "senza risposta", applique: "vale la raccomandazione",
+      note: "Per l'assistente che leggerà questo file: ecco le mie risposte. Costruisci dove dico Sì, tieni per dopo ciò che rimando, lascia da parte ciò che rifiuto e segui le mie precisazioni. Dove non ho risposto, vale la tua raccomandazione: dillo. Queste risposte sono il mio accordo per costruire; non fare alcun commit git al mio posto. Con il framework BASE, riprendi dal passo 6 di `adopter-ce-dossier`: ne ricava il piano o la mappa di importazione, poi passa la mano." } },
+};
+const L = LIBELLES[LANG] || LIBELLES.fr;
+const REPONSES = L.reponses;
+// The recommended answer: the card's `verdict`, or else the verdict its recommendation opens with.
+const conseil = (p) => {
+  if (p.options) return p.recoChoice || null;
+  if (REPONSES[p.verdict]) return p.verdict;
+  const debut = String(p.reco || "").replace(/<[^>]+>/g, "").trim().toLowerCase();
+  const mot = (liste) => new RegExp(`^(${liste})(?=[\\s.,:;!]|$)`).test(debut);
+  return mot("plus tard|later|später|più tardi") ? "plus-tard" : mot("non|no|nein") ? "non" : mot("oui|yes|ja|sì") ? "oui" : null;
+};
+let state = {}; try { state = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch (e) {}
+const get = (id) => state[id] || { choix: null, comment: "" };
+function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {} prog(); }
+function prog() {
+  const n = POINTS.filter((p) => get(p.id).choix).length;
+  document.getElementById("avancement").textContent = POINTS.length ? `${n} ${L.sur} ${POINTS.length}` : "";
+  document.getElementById("ligne-av").style.width = POINTS.length ? `${(100 * n) / POINTS.length}%` : "0";
+}
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+function champ(id, c, ouvert) {
+  return ouvert || (c.comment || "").trim()
+    ? `<textarea data-id="${id}" placeholder="${L.nuanceVide}">${esc(c.comment)}</textarea>`
+    : `<button class="nuance" data-id="${id}">${L.nuance}</button>`;
+}
+function carte(p) {
+  const c = get(p.id);
+  let h = `<div class="carte ${c.choix ? "faite" : ""}" id="c-${p.id}">`;
+  h += `<h3>${p.title}${p.beyond ? `<span class="tag">${L.tag}</span>` : ""}</h3>`;
+  if (p.what) h += `<div class="ctx">${p.what}</div>`;
+  if (p.reco) h += `<div class="reco"><b>${L.reco}:</b> ${p.reco}</div>`;
+  if (p.options) {
+    h += `<div class="options" style="--n:${Math.min(p.options.length, 3)}">` + p.options.map((o) => `
+      <button class="option ${c.choix === o.v ? "sel" : ""}" data-id="${p.id}" data-v="${esc(o.v)}">
+        <span class="coche">✓</span><h4>${o.titre}</h4>${o.sous ? `<div class="sous">${o.sous}</div>` : ""}
+        <div class="puces">${(o.puces || []).map((x) => `<span class="puce">${x}</span>`).join("")}</div>
+        ${o.v === p.recoChoice ? `<span class="reco-badge">${L.reco}</span>` : ""}</button>`).join("") + `</div>`;
+  } else {
+    h += `<div class="question">${p.scaleLabel || L.question}</div><div class="reponses" data-id="${p.id}">` +
+      Object.entries(REPONSES).map(([v, l]) => `<button data-v="${v}" class="${c.choix === v ? "sel" : ""}${conseil(p) === v ? " conseil" : ""}"${conseil(p) === v ? ` title="${L.reco}"` : ""}>${l}</button>`).join("") + `</div>`;
+  }
+  return h + champ(p.id, c) + `</div>`;
+}
+const liste = (cls, items) => `<div class="liste ${cls}">${items.map((x) => `<div>${x}</div>`).join("")}</div>`;
+function render() {
+  if (document.documentElement) document.documentElement.lang = LIBELLES[LANG] ? LANG : "fr";
+  document.getElementById("tout-reco").textContent = L.toutAccepter;
+  document.getElementById("exporter").textContent = L.envoyer;
+  document.getElementById("exporter-2").textContent = L.envoyer;
+  document.getElementById("fin-titre").textContent = L.fin;
+  document.getElementById("fin-chapeau").textContent = L.finChapeau;
+  if (SHEET_TITLE) document.title = SHEET_TITLE;
+  document.getElementById("titre").textContent = SHEET_TITLE || document.title;
+  document.getElementById("intro").innerHTML = SHEET_INTRO;
+  const s = document.getElementById("surtitre"); s.textContent = SHEET_EYEBROW; s.hidden = !SHEET_EYEBROW;
+  let h = "";
+  if (SUMMARY.length) h += `<section><h2>${L.compris}</h2><p class="chapeau">${L.comprisChapeau}</p>
+    <div class="compris">${SUMMARY.map((b) => `<div class="bloc"><h3>${b.titre}</h3><ul>${b.items.map((i) => `<li>${i}</li>`).join("")}</ul></div>`).join("")}</div></section>`;
+  let groupe, ouvert = false;
+  for (const p of POINTS) {
+    if (!ouvert || (p.group || "") !== groupe) {
+      if (ouvert) h += `</section>`;
+      groupe = p.group || ""; ouvert = true;
+      h += `<section>${groupe ? `<h2>${groupe}</h2>${GROUPS[groupe] ? `<p class="chapeau">${GROUPS[groupe]}</p>` : ""}` : ""}`;
+    }
+    h += carte(p);
+  }
+  if (ouvert) h += `</section>`;
+  if (MORE_IDEAS.length) h += `<section><h2>${L.idees}</h2><p class="chapeau">${L.ideesChapeau}</p>${liste("idees", MORE_IDEAS)}</section>`;
+  if (STRUCTURE.length) h += `<section><h2>${L.range}</h2><p class="chapeau">${L.rangeChapeau}</p>${liste("rangement", STRUCTURE)}</section>`;
+  if (NEVER.length) h += `<section><h2>${L.jamais}</h2><p class="chapeau">${L.jamaisChapeau}</p>${liste("jamais", NEVER)}</section>`;
+  if (LIMITS.length) h += `<section><h2>${L.limites}</h2><p class="chapeau">${L.limitesChapeau}</p>${liste("limites", LIMITS)}</section>`;
+  document.getElementById("content").innerHTML = h;
+  prog();
+}
+document.addEventListener("click", (e) => {
+  const o = e.target.closest(".option");
+  if (o) { const st = get(o.dataset.id); st.choix = o.dataset.v; state[o.dataset.id] = st; save();
+    o.parentElement.querySelectorAll(".option").forEach((x) => x.classList.toggle("sel", x === o));
+    document.getElementById("c-" + o.dataset.id).classList.add("faite"); return; }
+  const b = e.target.closest(".reponses button");
+  if (b) { const id = b.parentElement.dataset.id, st = get(id); st.choix = st.choix === b.dataset.v ? null : b.dataset.v; state[id] = st; save();
+    b.parentElement.querySelectorAll("button").forEach((x) => x.classList.toggle("sel", x.dataset.v === st.choix));
+    document.getElementById("c-" + id).classList.toggle("faite", !!st.choix); return; }
+  const n = e.target.closest(".nuance");
+  if (n) { const d = document.createElement("div"); d.innerHTML = champ(n.dataset.id, get(n.dataset.id), true); const t = d.firstChild; n.replaceWith(t); t.focus(); }
+});
+document.addEventListener("input", (e) => {
+  const t = e.target.closest("textarea[data-id]");
+  if (t) { const st = get(t.dataset.id); st.comment = t.value; state[t.dataset.id] = st; save(); }
+});
+document.getElementById("tout-reco").onclick = () => {
+  for (const p of POINTS) { const st = get(p.id); if (!st.choix) st.choix = conseil(p); state[p.id] = st; }
+  save(); render();
+};
+const texte = (html) => { const d = document.createElement("div"); d.innerHTML = html || ""; return d.textContent.trim(); };
+function md() {
+  let m = `# ${document.title}: ${L.export.titre}\n\n> ${L.export.note}\n\n`;
+  if (STARTING_POINT) m += `${L.export.depart}: ${STARTING_POINT}\n\n`;
+  let groupe = null;
+  for (const p of POINTS) {
+    if (p.group && p.group !== groupe) { groupe = p.group; m += `## ${texte(groupe)}\n\n`; }
+    const c = get(p.id);
+    // An unanswered card says which recommendation applies, so the reader never has to guess it.
+    const libelle = (v) => p.options ? (() => { const o = p.options.find((x) => x.v === v); return o ? `${o.v} · ${texte(o.titre)}` : null; })() : (REPONSES[v] || null);
+    const conseille = libelle(conseil(p));
+    const choix = libelle(c.choix) || (conseille ? `${L.export.sans} (${L.export.applique}: ${conseille})` : L.export.sans);
+    m += `### ${p.id} · ${texte(p.title)}\n- ${L.export.reco}: ${texte(p.recoSummary || p.reco)}\n- ${L.export.choix}: ${choix}\n- ${L.export.nuance}: ${(c.comment || "").trim() || L.export.aucune}\n\n`;
+  }
+  if (NEVER.length) m += `## ${L.jamais}\n\n${NEVER.map((n) => `- ${texte(n)}`).join("\n")}\n`;
+  return m;
+}
+function exporter() {
+  const b = new Blob([md()], { type: "text/markdown" });
+  const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = EXPORT_FILE; a.click();
+}
+document.getElementById("exporter").onclick = exporter;
+document.getElementById("exporter-2").onclick = exporter;
+render();
+</script>
+</body>
+</html>
