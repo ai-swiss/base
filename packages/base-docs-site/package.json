@@ -24,9 +24,9 @@
     "preview": "node scripts/base-docs-site.mjs preview"
   },
   "dependencies": {
-    "@astrojs/starlight": "~0.42.1",
-    "astro": "~7.3.3",
-    "marked": "~18.0.13"
+    "@astrojs/starlight": "~0.42.5",
+    "astro": "~7.3.5",
+    "marked": "~18.1.0"
   },
   "peerDependencies": {
     "@ai-swiss/base": "1.x"
