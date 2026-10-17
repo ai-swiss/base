@@ -28,7 +28,7 @@ const PLACEHOLDER = /YYYY|NNN|\[|\]|<|>/;
  * then relative to the source file's directory and each of its ancestors (a process may reference
  * `skills/competences/…` relative to its agent's directory).
  */
-function refResolves(ref, fromPath, paths) {
+function refResolves(ref, fromPath, paths, directoryTargets) {
   const clean = ref.replace(/^\.\//, "").replace(/\/$/, "");
   if (PLACEHOLDER.test(clean)) return clean; // a template placeholder is not a link
   for (const dir of RUNTIME_DIRS) {
@@ -48,9 +48,7 @@ function refResolves(ref, fromPath, paths) {
     }
     const candidate = stack.join("/");
     if (paths.has(candidate)) return candidate;
-    for (const p of paths) {
-      if (p.startsWith(`${candidate}/`)) return p; // a directory with content resolves
-    }
+    if (directoryTargets.has(candidate)) return directoryTargets.get(candidate);
   }
   return null;
 }
@@ -104,6 +102,17 @@ export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], fe
   const findings = [];
   const today = now.slice(0, 10);
   const paths = new Set([...inventory.map((r) => r.path), ...files]);
+  // Preserve the first descendant used to resolve a directory reference, without scanning
+  // the entire disk file set for every missing candidate in every reference.
+  const directoryTargets = new Map();
+  for (const file of paths) {
+    let slash = file.lastIndexOf("/");
+    while (slash >= 0) {
+      const directory = file.slice(0, slash);
+      if (!directoryTargets.has(directory)) directoryTargets.set(directory, file);
+      slash = file.lastIndexOf("/", slash - 1);
+    }
+  }
 
   // One pass builds the reference graph and flags dead links. The OUT edges are broad (Markdown
   // links + inline `code` paths): a BASE agent names a skill it uses as an inline path, so that
@@ -134,11 +143,11 @@ export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], fe
   for (const resource of inventory) {
     const out = new Set();
     for (const ref of extractReferences(resource.body ?? "")) {
-      const resolved = refResolves(ref, resource.path, paths);
+      const resolved = refResolves(ref, resource.path, paths, directoryTargets);
       if (resolved) out.add(resolved);
     }
     for (const ref of declaredRefs(resource)) {
-      const resolved = pathById.get(ref) ?? refResolves(ref, resource.path, paths);
+      const resolved = pathById.get(ref) ?? refResolves(ref, resource.path, paths, directoryTargets);
       if (resolved) out.add(resolved);
       else {
         findings.push({
@@ -152,7 +161,7 @@ export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], fe
     }
     outRefs.set(resource.path, out);
     for (const ref of extractLinks(resource.body ?? "")) {
-      if (!refResolves(ref, resource.path, paths)) {
+      if (!refResolves(ref, resource.path, paths, directoryTargets)) {
         findings.push({
           severity: "error",
           type: "dead_link",
@@ -397,7 +406,7 @@ export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], fe
     const derivedAt = mtimes[resource.path];
     if (!derivedAt) continue;
     for (const ref of sources) {
-      const sourcePath = pathById.get(ref) ?? refResolves(ref, resource.path, paths);
+      const sourcePath = pathById.get(ref) ?? refResolves(ref, resource.path, paths, directoryTargets);
       const sourceAt = sourcePath ? mtimes[sourcePath] : null;
       if (!sourceAt || sourceAt <= derivedAt) continue;
       findings.push({

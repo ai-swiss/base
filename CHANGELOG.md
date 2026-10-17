@@ -6,6 +6,9 @@ Tous les changements notables de BASE sont documentés ici. Le format suit l'esp
 
 ## [Unreleased]
 
+### Corrigé
+- `base doctor` termine sur une grande arborescence: l'aplatissement du parcours du disque n'étale plus un sous-dossier en arguments d'appel (dépassement de pile dès 200 000 fichiers), et une référence vers un dossier se résout par une carte précalculée au lieu de reparcourir tous les chemins à chaque lien (3 min 30 → 7 s sur une racine de 560 000 fichiers, mêmes signaux).
+
 ## [1.5.1] - 2026-10-02
 
 ### Ajouté
