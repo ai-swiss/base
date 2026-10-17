@@ -41,6 +41,8 @@ async function walk(abs, rel, name) {
 /** Flatten a walked tree into the list of file paths (the doctor's link-graph input). */
 export function listFiles(tree) {
   const out = [...tree.files.map((f) => f.path)];
-  for (const dir of tree.dirs) out.push(...listFiles(dir));
+  for (const dir of tree.dirs) {
+    for (const file of listFiles(dir)) out.push(file);
+  }
   return out;
 }
