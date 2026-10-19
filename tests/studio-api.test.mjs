@@ -57,6 +57,29 @@ describe("studio api — display hygiene and hidden discipline planes", () => {
       await rm(root, { recursive: true, force: true });
     }
   });
+
+  it("honours the root's inventory.exclude (dirs and files), like the inventory scan", async () => {
+    const root = await mkdtemp(path.join(tmpdir(), "studio-exclude-"));
+    try {
+      await mkdir(path.join(root, ".ai", "agents", "x"), { recursive: true });
+      await writeFile(path.join(root, ".ai", "agents", "x", "AGENT.md"), "# X\n\nUn agent.");
+      await mkdir(path.join(root, "tmp", "deep"), { recursive: true });
+      await writeFile(path.join(root, "tmp", "deep", "scratch.md"), "# scratch\n");
+      await mkdir(path.join(root, "docs"), { recursive: true });
+      await writeFile(path.join(root, "docs", "guide.md"), "# guide\n");
+      await writeFile(path.join(root, "notes.bak"), "old\n");
+      await writeFile(path.join(root, "base.config.json"), JSON.stringify({ inventory: { exclude: ["tmp", "notes.bak"] } }));
+
+      const t = await tree(root);
+      const topDirs = t.dirs.map((d) => d.path);
+      assert.ok(!topDirs.includes("tmp"), "an excluded directory is absent from the explorer");
+      assert.ok(topDirs.includes("docs"), "a non-excluded directory stays visible");
+      assert.ok(topDirs.includes(".ai"), ".ai stays visible");
+      assert.ok(!t.files.some((f) => f.path === "notes.bak"), "an excluded file is absent from the explorer");
+    } finally {
+      await rm(root, { recursive: true, force: true });
+    }
+  });
 });
 
 describe("studio api — read (real example, no mutation)", () => {
