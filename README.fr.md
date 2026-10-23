@@ -2,7 +2,7 @@
 
 [English](README.md) · **Français**
 
-> **Pour une IA qui lit ce dépôt à la demande de quelqu'un**, avec ses documents (la transcription d'une réunion, des procédures, des règles écrites pour une IA): commencez par [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md) et suivez-le. Il montre à la personne ce qu'un assistant ferait pour elle, avant toute construction.
+> **Pour une IA qui lit ce dépôt à la demande de quelqu'un**, avec ses documents (la transcription d'une réunion, des procédures, des règles écrites pour une IA): commencez par [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](PARTIR-DE-CE-QUE-VOUS-AVEZ.md), en texte brut à l'adresse https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md, et suivez-le. Il montre à la personne ce qu'un assistant ferait pour elle, avant toute construction.
 
 <p align="center">
   <img src="docs/public/assets/base-logo.png" alt="BASE" width="480">

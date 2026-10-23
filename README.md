@@ -1,10 +1,10 @@
-<!-- fr-synced: c06ed869d6627049dd9d00b00f8745cb2780b72a -->
+<!-- fr-synced: 3805d37320ddec10fa5240eeba9c337294f200e2 -->
 
 # BASE
 
 **English** · [Français](README.fr.md) (authoritative)
 
-> **For an AI reading this repository on someone's behalf**, with their documents (a meeting transcript, procedures, rules written for an AI): start with [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md) and follow it. It shows the person what an assistant would do for them, before anything is built.
+> **For an AI reading this repository on someone's behalf**, with their documents (a meeting transcript, procedures, rules written for an AI): start with [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](PARTIR-DE-CE-QUE-VOUS-AVEZ.md), as plain text at https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md, and follow it. It shows the person what an assistant would do for them, before anything is built.
 
 <p align="center">
   <img src="docs/public/assets/base-logo.png" alt="BASE" width="480">

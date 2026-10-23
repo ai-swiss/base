@@ -26,7 +26,7 @@ Pour savoir ce qu'un assistant ferait pour vous, ouvrez votre chat d'IA habituel
 
 Le chat lit ce fichier et vous rend une fiche à ouvrir dans le navigateur: ce qu'il a compris, ce que l'assistant ferait ou non, ce que l'IA ne réglera pas. Répondez carte par carte, cliquez sur «Envoyer mes réponses», puis joignez au même chat le fichier téléchargé. La construction de l'assistant se fait ensuite dans un outil qui ouvre un dossier.
 
-Si votre chat ne sait pas lire une adresse web, ouvrez [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md), enregistrez-le, et joignez-le à la conversation avec vos documents, en écrivant: «Voici nos documents et le fichier de BASE pour les chats. Montre-nous ce qu'un assistant pourrait faire pour nous.» Ce fichier contient tout ce que le chat doit lire, modèle de la fiche compris.
+Si votre chat ne sait pas lire une adresse web, ouvrez [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](https://github.com/ai-swiss/base/blob/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md), téléchargez-le (bouton «Download raw file», en haut à droite du fichier), et joignez-le à la conversation avec vos documents, en écrivant: «Voici nos documents et le fichier de BASE pour les chats. Montre-nous ce qu'un assistant pourrait faire pour nous.» Ce fichier contient tout ce que le chat doit lire, modèle de la fiche compris.
 
 Vos documents partent chez le fournisseur du chat: choisissez celui que votre organisation a retenu pour ce type de données.
 

@@ -5,6 +5,10 @@ Format follows the spirit of Keep a Changelog. Versions follow the documented co
 
 ## [Unreleased]
 
+## [1.5.3] - 2026-10-23
+
+No specification change: the release corrects an error message, two documentation links and dependency versions.
+
 ## [1.5.2] - 2026-10-22
 
 ### Fixed
