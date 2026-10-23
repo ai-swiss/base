@@ -86,7 +86,7 @@ Si `.ai/journal/` contient des entrées récentes, lis-les au démarrage pour re
 
 ## Marqueurs
 
-Utilise dans les documents générés et le journal les marqueurs `[A COMPLETER: ...]`, `[A VALIDER: ...]`, `[ATTENTION: ...]` et `[DECISION: ... | ...]`. Leur sens et leur usage sont définis dans `skills/competences/marqueurs/SKILL.md`. Une réponse qui applique une règle tarifaire nomme les fichiers métier consultés et porte un marqueur `[A VALIDER: ...]` qui décrit l'interprétation à confirmer: même correctement calculée, elle appartient à l'humain.
+Utilise dans les documents générés et le journal les marqueurs `[A COMPLETER: ...]`, `[A VALIDER: ...]`, `[ATTENTION: ...]` et `[DECISION: ... | ...]`. Leur sens et leur usage sont définis dans `skills/competences/marqueurs/SKILL.md`. Une réponse qui applique une règle tarifaire nomme les fichiers métier consultés et porte un marqueur `[A VALIDER: ...]` qui décrit l'interprétation à confirmer: même correctement calculée, elle appartient à l'humain. Quand un passage a été ouvert par sa référence (`identifiant#section`), nomme la source en clair puis donne cette référence entre parenthèses, par exemple: «vos conditions commerciales, rubrique Devis (conditions-generales#devis)».
 
 ## Fichiers métier
 

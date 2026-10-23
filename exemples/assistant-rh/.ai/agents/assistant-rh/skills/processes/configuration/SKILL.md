@@ -37,11 +37,11 @@ Si `.ai/journal/` contient des entrées récentes, lis-les pour reprendre le fil
 Pose les questions une par une. Ne passe à la suivante qu'une fois la réponse claire.
 
 Questions:
+- Activité principale (en une phrase)
 - Nom de l'entreprise
 - Adresse complète
 - Numéro IDE (si applicable)
 - Forme juridique (SA, Sàrl, raison individuelle, etc.)
-- Activité principale (en une phrase)
 - Secteur d'activité (industrie, services, tech, santé, etc.)
 - Nombre de personnes dans l'équipe
 - Email de contact RH

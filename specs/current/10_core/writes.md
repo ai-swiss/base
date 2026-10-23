@@ -16,7 +16,7 @@ commit  ─▶ re-check decision + base_hash ─▶ write target ─▶ verify �
 ### `proposeChange(root, target, content, {purpose})` — FR-CHANGE-001
 1. `confineToRoot(root, target)`: refuse paths escaping the root.
 2. Read current target content (empty if new); `resolveWriteContext` parses **the existing target's** frontmatter for `sensitivity` and top-level `requires_confirmation`, *never* the proposed `content`'s own frontmatter (see "A proposal cannot grant its own exemption" below).
-3. Compute the **write decision** via `canAccessResource(writeContext, "write", {confirmed:false})`.
+3. Compute the **write decision** via `canAccessResource(writeContext, "write", {confirmed:false})`. `writeContext` = `{ path, exists, sensitivity, requires_confirmation }`, `path` being the root-relative POSIX target, as a read's resource carries it, so a policy adapter can decide by path.
 4. Write a **change record** `.ai/changes/<change_id>.json` (shape below). **The target is not modified.**
 5. Trace `op:"propose", action:"write"`.
 6. Return `{ change_id, target, exists, decision, diff }` where `diff` is a human-readable `renderDiff(current, content)`.
@@ -26,7 +26,7 @@ commit  ─▶ re-check decision + base_hash ─▶ write target ─▶ verify �
 ### `commitChange(root, change_id, {confirmed})` — FR-CHANGE-002
 1. Validate `change_id` (`^chg_[a-z0-9]+$`); load the record (error if missing).
 2. `confineToRoot(root, record.target)` again.
-3. Recompute the decision via `canAccessResource({sensitivity, requires_confirmation}, "write", {confirmed})`:
+3. Recompute the decision via `canAccessResource({path: record.target, exists, sensitivity, requires_confirmation}, "write", {confirmed})`:
    - `deny` → fail.
    - `needs_approval` && `!confirmed` → fail (`"requires explicit confirmation (--confirmed)"`).
 4. **TOCTOU guard:** hash the target *now*; if it `!== record.base_hash`, fail (`"Target changed since the change was proposed; re-propose…"`).

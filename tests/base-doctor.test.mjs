@@ -425,6 +425,11 @@ describe("doctor — attribution and entry points", () => {
     const finding = withNone.find((f) => f.type === "missing_tool_artifacts");
     assert.ok(finding);
     assert.match(finding.fix_hint, /--tool/);
+
+    // A workspace folder is not initialised itself (`init` answers «rien à initialiser»): the hint
+    // sends the person to the roots it lists, where `init --tool` does propose the entry point.
+    const workspace = diagnoseData({ inventory: [card()], files: ["base.workspace.json", ".ai/base.mjs"] });
+    assert.match(workspace.find((f) => f.type === "missing_tool_artifacts").fix_hint, /--root <racine>.*base\.workspace\.json/);
   });
 });
 

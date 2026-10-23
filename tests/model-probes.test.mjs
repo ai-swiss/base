@@ -18,6 +18,7 @@ import {
 import {
   buildHarnessInvocation,
   buildJudgeInvocation,
+  claudeMdImports,
   judgePrompt,
   judgeSchema,
   normalizeHarnessTranscript,
@@ -26,6 +27,7 @@ import {
 import { isAllowedBaseCommand } from "../tools/probes/claude-bash-policy.mjs";
 import {
   appendWorkspaceEvents,
+  claudeContextReads,
   createIsolatedAttemptDirectory,
   loadSelection,
   reserveRunDirectory,
@@ -457,6 +459,12 @@ describe("model probes — harness-neutral trace evidence", () => {
       { required: [{ type: "final_answer", question_marks: 1 }] },
     );
     assert.equal(verdict.passed, true);
+    // A marker is a note for the file: its question mark is not a second question to the person.
+    const marked = evaluateScenario(
+      [{ type: "final_answer", text: "[A VALIDER: nouveau mandat?]\n\nEst-ce une nouvelle demande?", index: 0 }],
+      { required: [{ type: "final_answer", question_marks: 1 }] },
+    );
+    assert.equal(marked.passed, true);
   });
 
   it("caps a final answer when proportionate depth is part of the contract", () => {
@@ -523,6 +531,33 @@ describe("model probes — harness-neutral trace evidence", () => {
     const webRead = buildHarnessInvocation({ ...common, mcpConfig: null, access: "web-read" }).args.join(" ");
     assert.match(webRead, /--tools WebFetch/);
     assert.match(webRead, /--disallowedTools Bash,Edit,Write,Read/);
+  });
+
+  it("gives Claude Code the root's CLAUDE.md, which --restricted no longer loads since 2.1.308", () => {
+    const invocation = buildHarnessInvocation({
+      harness: "claude-code", model: "opus", effort: "medium", maxBudgetUsd: 1, prompt: "test",
+      mcpConfig: null, root: "/tmp/probe-root", additionalDirectories: ["/tmp/installed-base"],
+    });
+    const args = invocation.args.join(" ");
+    assert.match(args, /--restricted/);
+    assert.match(args, /--add-dir \/tmp\/probe-root --add-dir \/tmp\/installed-base/, "the root is named first");
+    assert.equal(invocation.env.CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD, "1");
+    assert.doesNotMatch(buildHarnessInvocation({ harness: "claude-code", model: "opus", effort: "medium", maxBudgetUsd: 1, prompt: "t", mcpConfig: null }).args.join(" "), /--add-dir undefined/);
+  });
+
+  it("counts what CLAUDE.md imports as read before the first turn, nested, once each", async () => {
+    assert.deepEqual(claudeMdImports("# Racine\n\n@.ai/routing/index.md\nTexte @pas-un-import\n@AGENT.md\n"), [".ai/routing/index.md", "AGENT.md"]);
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "probe-imports-"));
+    try {
+      await fs.mkdir(path.join(root, ".ai", "routing"), { recursive: true });
+      await fs.writeFile(path.join(root, "CLAUDE.md"), "# Racine\n\n@.ai/routing/index.md\n@absent.md\n");
+      await fs.writeFile(path.join(root, ".ai", "routing", "index.md"), "# Carte\n\n@../../CLAUDE.md\n");
+      const reads = await claudeContextReads(root);
+      assert.deepEqual(reads.map((event) => [event.type, event.path.endsWith(".ai/routing/index.md"), event.source]), [["file_read", true, "claude_md_import"]], "a missing import and a cycle add nothing");
+      assert.deepEqual(await claudeContextReads(path.join(root, ".ai")), [], "no CLAUDE.md, nothing in context");
+    } finally {
+      await fs.rm(root, { recursive: true, force: true });
+    }
   });
 
   it("runs Codex read-only without user configuration and normalizes its JSONL events", () => {

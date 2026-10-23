@@ -62,14 +62,14 @@ Lis la demande client et reformule-la en termes clairs:
 
 > «Si je comprends bien, votre client souhaite:
 > - [point 1]
-> - [point 2]
->
-> Est-ce correct, ou y a-t-il des précisions à ajouter?»
+> - [point 2]»
 
 ← Reformulation
 
-Arrête-toi là et attends la réponse avant l'étape 2. Clarifie ensuite, une question à la fois, ce
-qui manque réellement: date de livraison, contraintes, nouveau ou ancien client.
+Puis pose une seule question: celle dont la réponse manque pour chiffrer (date de livraison,
+contraintes, lien avec un devis déjà envoyé au même client). Ne redemande pas ce que la demande
+dit déjà: client, prestation, quantité. Si rien ne manque, demande seulement si tu peux préparer la
+proposition. Arrête-toi là et attends la réponse avant l'étape 2.
 
 ### 2. Identifier le client
 

@@ -58,7 +58,7 @@ node .ai/base.mjs route "préparer un devis" --workspace base.workspace.json --r
 - **Confinement par racine.** Le routeur restreint la sélection de ressources à la racine choisie: l'assistant de Dupont travaille avec les fichiers de Dupont, pas ceux de Martin. Avec le broker (serveur MCP), ce confinement est un mécanisme vérifié; dans un éditeur en accès direct, c'est une consigne que l'outil doit suivre.
 - **Défaut prévisible.** Sans `--root-id`, la racine choisie est celle marquée `default: true`, sinon la première déclarée.
 
-Détail: [`docs/reference/routage-process-et-ressources.md`](../../docs/reference/routage-process-et-ressources.md) (section «Racine et workspace») et `specs/current/10_core/cli.md`.
+Détail: [`docs/reference/routage-process-et-ressources.md`](https://github.com/ai-swiss/base/blob/main/docs/reference/routage-process-et-ressources.md) (section «Racine et workspace») et `specs/current/10_core/cli.md`.
 
 ---
 

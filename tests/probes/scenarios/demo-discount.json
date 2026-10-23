@@ -28,7 +28,7 @@
       },
       {
         "type": "final_answer",
-        "matches": "fiche client dupont sa|dupont-sa"
+        "matches": "fiche client (?:de )?dupont sa|dupont-sa"
       },
       {
         "type": "final_answer",

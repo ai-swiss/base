@@ -74,8 +74,14 @@ describe("routing.fallback — honest abstention with a help target", () => {
 // root, so nothing can fall behind; the router reads the framework this root belongs to.
 describe("routing.fallback — a help target the root does not own", () => {
   let frameworkDir;
+  let configHome;
+  let savedConfigHome;
   beforeEach(async () => {
     frameworkDir = await fs.mkdtemp(path.join(os.tmpdir(), "base-framework-test-"));
+    // An empty user config, so the developer's own ~/.config/base never decides a result here.
+    configHome = await fs.mkdtemp(path.join(os.tmpdir(), "base-config-home-"));
+    savedConfigHome = process.env.BASE_CONFIG_HOME;
+    process.env.BASE_CONFIG_HOME = configHome;
     const agent = path.join(frameworkDir, ".ai/agents/concierge-base");
     await fs.mkdir(path.join(agent, "skills/processes/accueil"), { recursive: true });
     await fs.writeFile(path.join(agent, "AGENT.md"), "---\nschema_version: base.resource.v1\nid: concierge-base\ntype: agent\ndescription: Accueil du cadre.\n---\n# Concierge\n", "utf8");
@@ -86,7 +92,21 @@ describe("routing.fallback — a help target the root does not own", () => {
     );
   });
   afterEach(async () => {
+    if (savedConfigHome === undefined) delete process.env.BASE_CONFIG_HOME;
+    else process.env.BASE_CONFIG_HOME = savedConfigHome;
     await fs.rm(frameworkDir, { recursive: true, force: true });
+    await fs.rm(configHome, { recursive: true, force: true });
+  });
+
+  it("resolves it in the framework the user config registers, when the root names none", async () => {
+    // What `base init` leaves behind: the framework in the user config, nothing in the root's. The
+    // MCP server's bundle does not run from the framework, so only this tells it where help lives.
+    await fs.mkdir(path.join(configHome, ".config", "base"), { recursive: true });
+    await fs.writeFile(path.join(configHome, ".config", "base", "config.json"), JSON.stringify({ schema_version: "base.user-config.v1", framework_dir: frameworkDir }));
+    await write("base.config.json", JSON.stringify({ routing: { fallback: { agent: "concierge-base", process: "accueil-cadre" } } }));
+    const out = await routeRequest(tmpDir, "qwerty zzz gibberish nonsense");
+    assert.equal(out.fallback.source, "framework");
+    assert.equal(out.fallback.process.id, "accueil-cadre");
   });
 
   it("resolves it in the framework named by framework_dir, with an absolute path", async () => {

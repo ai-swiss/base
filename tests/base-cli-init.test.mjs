@@ -189,6 +189,26 @@ describe("base init (CLI)", () => {
     assert.doesNotMatch(stdout, /Dans quelle langue/);
   });
 
+  it("an existing root with no entry point gets the one --tool names, or the one its config records", async () => {
+    await fs.mkdir(path.join(tmpDir, ".ai", "agents", "demo"), { recursive: true });
+    await fs.writeFile(
+      path.join(tmpDir, ".ai", "agents", "demo", "AGENT.md"),
+      "---\nschema_version: base.resource.v1\nid: demo\ntype: agent\ntitle: Demo\ndescription: D.\n---\n# Demo\n",
+    );
+    const plan = async (...extra) => {
+      const { stdout } = await run("init", "--json", ...extra);
+      return JSON.parse(stdout.slice(stdout.indexOf("{"))).plan.map((e) => e.path);
+    };
+    // 1.5.0 rendered only the config's tools or the default, then dropped the default as unchosen:
+    // `--tool claude-code` planned no CLAUDE.md, the very file the tool reads.
+    const claude = await plan("--tool", "claude-code");
+    assert.ok(claude.includes("CLAUDE.md"), "the tool named with --tool gets its entry point");
+    assert.ok(!claude.includes("BASE_BOOTSTRAP.md"), "and only that one");
+    assert.ok((await plan()).includes("BASE_BOOTSTRAP.md"), "without --tool, the tool-agnostic default");
+    await fs.writeFile(path.join(tmpDir, "base.config.json"), JSON.stringify({ schema_version: "base.config.v1", tools: ["cursor"] }));
+    assert.ok((await plan()).includes(".cursor/rules/assistant.mdc"), "a tool recorded in the config is honoured");
+  });
+
   it("an existing root missing its artifacts gets exactly the missing ones, nothing touched", async () => {
     await fs.mkdir(path.join(tmpDir, ".ai", "agents", "demo"), { recursive: true });
     await fs.writeFile(
@@ -243,7 +263,10 @@ describe("base init (CLI)", () => {
     // The user-global config now points at this framework — modifiable by hand.
     const cfg = JSON.parse(await fs.readFile(path.join(tmpDir, ".config", "base", "config.json"), "utf8"));
     assert.equal(cfg.schema_version, "base.user-config.v1");
-    assert.ok(cfg.framework_dir.endsWith("/base") || cfg.framework_dir.includes("Repositories"));
+    // framework_dir is the framework root this CLI belongs to, resolved from the CLI's own
+    // location, recorded with POSIX separators on every OS. Assert that invariant, not the
+    // name of the folder someone cloned into.
+    assert.equal(cfg.framework_dir, path.dirname(path.dirname(cliPath)).split(path.sep).join("/"));
 
     // whereis (a global command, runs from anywhere) reads it back.
     const { stdout: w } = await execFileAsync("node", [cliPath, "whereis", "--json"], {

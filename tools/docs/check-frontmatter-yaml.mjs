@@ -13,6 +13,10 @@
 // whitespace (or a trailing colon). Fix = wrap the value in double quotes. BASE's parser strips the
 // quotes on read (slice 1,-1), so quoting round-trips losslessly.
 //
+// The same construct in `.github/ISSUE_TEMPLATE/*.yml` makes GitHub drop the whole file (contact links,
+// the private vulnerability link, `blank_issues_enabled`), so those files are scanned too, nested keys
+// and list items included, block scalar bodies (`key: |`) skipped.
+//
 //   node tools/docs/check-frontmatter-yaml.mjs        # exit 1 on any offending value
 import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
@@ -35,14 +39,21 @@ export function frontmatterLines(text) {
  * (colon + whitespace) or ends with a colon — the exact shape strict YAML rejects. Returns
  * [{ key, value, fmLine }] with fmLine 1-based within the frontmatter block.
  */
-export function offendingScalars(fmLines) {
+export function offendingScalars(fmLines, { nested = false } = {}) {
   const hits = [];
+  let block = -1; // indent of a `key: |` or `key: >` whose body lines are free text
   fmLines.forEach((line, i) => {
-    const m = /^([A-Za-z0-9_-]+):(\s+)(\S.*?)\s*$/.exec(line); // top-level `key: value` only (no indent)
+    const indent = line.length - line.trimStart().length;
+    if (block >= 0 && (!line.trim() || indent > block)) return;
+    block = -1;
+    const m = nested
+      ? /^(\s*(?:-\s+)?)([A-Za-z0-9_-]+):(\s+)(\S.*?)\s*$/.exec(line)
+      : /^()([A-Za-z0-9_-]+):(\s+)(\S.*?)\s*$/.exec(line); // top-level `key: value` only (no indent)
     if (!m) return;
-    const value = m[3];
+    const value = m[4];
+    if (/^[|>][-+]?$/.test(value)) { block = indent; return; }
     if (/^["'[{]/.test(value)) return;      // already quoted, or a flow array/map
-    if (/:(\s|$)/.test(value)) hits.push({ key: m[1], value, fmLine: i + 1 });
+    if (/:(\s|$)/.test(value)) hits.push({ key: m[2], value, fmLine: i + 1 });
   });
   return hits;
 }
@@ -62,13 +73,19 @@ function main() {
       failures.push(`${rel}:${hit.fmLine + 1} <${hit.key}>: unquoted value contains ": " — strict YAML (GitHub) rejects it. Wrap the value in double quotes.`);
     }
   }
+  for (const rel of execFileSync("git", ["ls-files", ".github/ISSUE_TEMPLATE/*.yml"], { cwd: ROOT, encoding: "utf8" }).split("\n").filter(Boolean)) {
+    scanned++;
+    for (const hit of offendingScalars(readFileSync(path.join(ROOT, rel), "utf8").split("\n"), { nested: true })) {
+      failures.push(`${rel}:${hit.fmLine} <${hit.key}>: unquoted value contains ": " — strict YAML (GitHub) rejects it. Wrap the value in double quotes.`);
+    }
+  }
   if (failures.length) {
     console.error("check-frontmatter-yaml: FAIL —");
     for (const f of failures) console.error(`  ${f}`);
     console.error(`\n  ${failures.length} value(s) break strict YAML. Quote each value, e.g.  description: "text with a : colon".`);
     process.exit(1);
   }
-  console.log(`check-frontmatter-yaml: pass — ${scanned} frontmatter block(s) valid for a strict YAML reader.`);
+  console.log(`check-frontmatter-yaml: pass — ${scanned} frontmatter block(s) and issue template(s) valid for a strict YAML reader.`);
 }
 
 if (process.argv[1] && process.argv[1].endsWith("check-frontmatter-yaml.mjs")) {

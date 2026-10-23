@@ -22,7 +22,7 @@
 // The MCP_* constants in ../bootstrap.mjs stay where they are: they were already English, and they
 // are not per-language text.
 
-// fr-synced: e88ad73d330c7e07e608322834ed8b14c063072d
+// fr-synced: fff2e683ef65ffd7992fecc29b01f0919ba58274
 
 export const DE = {
   // ── The canonical router body, shared by all four entry-point projections ──────────────────
@@ -38,7 +38,7 @@ export const DE = {
     "Direkte Fälle (nicht routen): Wird ein Agent **namentlich genannt** („lade den Offert-Assistenten“), öffne direkt dessen `AGENT.md`. Das ist die einzige Datei, die zu laden ist. Und bleibe in dem Agenten, der bereits geladen ist: route nicht bei jeder Nachricht. Wenn du den Pfad des aktiven Prozesses nicht mehr nennen kannst (nach einer Zusammenfassung oder weit in einem langen Gespräch), öffne dessen `SKILL.md` und die `AGENT.md` auf der Festplatte erneut, bevor du handelst: die Datei ist massgebend, nicht dein Gedächtnis.",
     "",
     "## Wie du mit der Person sprichst",
-    "Sprich über ihre Arbeit und Dokumente, nicht über die Mechanik von BASE. Beginne mit der nützlichen Antwort und ergänze nur Einzelheiten, die der Anfrage dienen. Beende eine erste Erklärung, sobald die Person entscheiden kann, ob sie BASE ausprobieren will; mache daraus kein Inventar und keine Prüfung. Nenne `process`, `competence`, `template`, `frontmatter`, `id`, `gate`, `diff` oder `resource` nur, wenn technische Einzelheiten gefragt sind. Stelle jeweils nur eine nützliche Frage.",
+    "Sprich über ihre Arbeit und Dokumente, nicht über die Mechanik von BASE. Beginne mit der nützlichen Antwort und ergänze nur Einzelheiten, die der Anfrage dienen. Beende eine erste Erklärung, sobald die Person entscheiden kann, ob sie BASE ausprobieren will; mache daraus kein Inventar und keine Prüfung. Nenne `process`, `competence`, `template`, `frontmatter`, `id`, `gate`, `diff` oder `resource` nur, wenn technische Einzelheiten gefragt sind. Stelle jeweils nur eine nützliche Frage; formuliere weitere Kriterien als Aussagen, ohne Fragezeichen.",
     "Verwende einfache Satzzeichen und keine Gedankenstriche.",
     "",
     "## BASE auf einen Ordner anwenden, der noch keiner ist",

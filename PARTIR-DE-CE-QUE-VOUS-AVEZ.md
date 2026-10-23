@@ -118,8 +118,8 @@ puis le contenu. Les sections, dans cet ordre:
    manque. Une idée que personne n'a demandée porte `beyond: true`.
 3. **Deux choix pour démarrer** (cartes à `options`, sous leur propre titre de groupe): comment organiser l'assistant (par moment de
    travail, par personne, par service) et par où commencer. Une option recommandée par carte.
-4. **D'autres idées** (`MORE_IDEAS`): une ligne par idée regroupée ou écartée, sans bouton.
-   Rien si tout tient dans les cartes.
+4. **D'autres idées** (`MORE_IDEAS`): une ligne par idée regroupée ou écartée, sans bouton, et
+   une seule nuance sous la liste. Rien si tout tient dans les cartes.
 5. **Comment ce sera rangé** (`STRUCTURE`): la structure proposée en mots de tous les jours: tant de
    modes d'emploi, tant de règles écrites une fois, les listes telles qu'elles sortent du logiciel,
    des modèles, des petits outils qui calculent toujours pareil.
@@ -145,7 +145,8 @@ reste intact jusque-là.
 
 Lis l'export: il reprend le point de départ et les réponses. Si la personne répond dans la
 conversation plutôt que par l'export, ses réponses valent l'export. Applique là où elle dit Oui,
-note ce qu'elle reporte à plus tard avec sa nuance, retire ce qu'elle refuse. Là où elle n'a pas
+note ce qu'elle reporte à plus tard avec sa nuance, retire ce qu'elle refuse. Une idée que sa nuance sous «D'autres idées» reprend
+entre dans le plan avec ce qu'elle en dit. Là où elle n'a pas
 répondu, la recommandation que l'export rappelle s'applique, comme la fiche le lui annonce: dis-le
 carte par carte dans le plan, avant de construire. Les lignes rouges que l'export reprend entrent
 telles quelles dans l'assistant. Ses réponses valent accord
@@ -211,6 +212,12 @@ Point de départ: des besoins décrits
 - Recommandation: la recommandation, en une phrase
 - Réponse: Oui | Plus tard | Non | non répondu (la recommandation s'applique: Oui)
 - Nuance: la nuance de la personne | aucune
+
+## D'autres idées
+
+- une idée regroupée ou écartée par ligne
+
+Nuance: la nuance de la personne | aucune
 
 ## Ce que l'assistant ne fera jamais
 
@@ -558,7 +565,8 @@ Choisissez une tâche récurrente et écrivez, sur une page, son but, la source 
       card, the one "Tout accepter" applies; `recoChoice` plays that part for a card with options.
       `options` turns the card into a choice between options (how to organise, where to start).
       `beyond: true` marks a card that goes beyond what the person asked for.
-    - MORE_IDEAS: ["..."]: "D'autres idées", one line per idea merged or set aside, no buttons.
+    - MORE_IDEAS: ["..."]: "D'autres idées", one line per idea merged or set aside, no buttons;
+      one nuance field under the list lets the person say which idea matters to them.
     - STRUCTURE: ["..."]: "Comment ce sera rangé", the proposed structure in everyday words.
     - NEVER: ["..."]: what the assistant will never do. LIMITS: ["..."]: what AI will not solve.
   The reader answers, may add a nuance, then exports a Markdown file to hand back.
@@ -775,6 +783,7 @@ const conseil = (p) => {
 };
 let state = {}; try { state = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch (e) {}
 const get = (id) => state[id] || { choix: null, comment: "" };
+const IDEES_ID = "_idees";                                   // the nuance under "D'autres idées", outside POINTS
 function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {} prog(); }
 function prog() {
   const n = POINTS.filter((p) => get(p.id).choix).length;
@@ -830,7 +839,7 @@ function render() {
     h += carte(p);
   }
   if (ouvert) h += `</section>`;
-  if (MORE_IDEAS.length) h += `<section><h2>${L.idees}</h2><p class="chapeau">${L.ideesChapeau}</p>${liste("idees", MORE_IDEAS)}</section>`;
+  if (MORE_IDEAS.length) h += `<section><h2>${L.idees}</h2><p class="chapeau">${L.ideesChapeau}</p>${liste("idees", MORE_IDEAS)}${champ(IDEES_ID, get(IDEES_ID))}</section>`;
   if (STRUCTURE.length) h += `<section><h2>${L.range}</h2><p class="chapeau">${L.rangeChapeau}</p>${liste("rangement", STRUCTURE)}</section>`;
   if (NEVER.length) h += `<section><h2>${L.jamais}</h2><p class="chapeau">${L.jamaisChapeau}</p>${liste("jamais", NEVER)}</section>`;
   if (LIMITS.length) h += `<section><h2>${L.limites}</h2><p class="chapeau">${L.limitesChapeau}</p>${liste("limites", LIMITS)}</section>`;
@@ -871,6 +880,7 @@ function md() {
     const choix = libelle(c.choix) || (conseille ? `${L.export.sans} (${L.export.applique}: ${conseille})` : L.export.sans);
     m += `### ${p.id} · ${texte(p.title)}\n- ${L.export.reco}: ${texte(p.recoSummary || p.reco)}\n- ${L.export.choix}: ${choix}\n- ${L.export.nuance}: ${(c.comment || "").trim() || L.export.aucune}\n\n`;
   }
+  if (MORE_IDEAS.length) m += `## ${L.idees}\n\n${MORE_IDEAS.map((x) => `- ${texte(x)}`).join("\n")}\n\n${L.export.nuance}: ${(get(IDEES_ID).comment || "").trim() || L.export.aucune}\n\n`;
   if (NEVER.length) m += `## ${L.jamais}\n\n${NEVER.map((n) => `- ${texte(n)}`).join("\n")}\n`;
   return m;
 }

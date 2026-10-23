@@ -89,4 +89,21 @@ describe("broker honours config.policy (swap without forking)", () => {
     );
     await assert.rejects(() => fs.access(path.join(tmpDir, ".ai", "changes")));
   });
+
+  // Issue #28: a write policy received no path, so an allow-list denied every write and a
+  // deny-list let every write by. Propose and commit both carry the root-relative target.
+  it("a path-based policy sees the target path at propose and at commit", async () => {
+    await fs.writeFile(
+      path.join(tmpDir, "base.config.mjs"),
+      "export default { policy: (resource, action) => action !== 'write' ? { decision: 'allow', reason: 'ok' }"
+        + " : resource.path === 'clients/acme/notes.md' && resource.exists === false ? { decision: 'allow', reason: 'clients' }"
+        + " : { decision: 'deny', reason: `path ${resource.path}` } };",
+      "utf8",
+    );
+    const { change_id } = await proposeChange(tmpDir, "clients/acme/notes.md", "# Notes\n");
+    const result = await commitChange(tmpDir, change_id, { confirmed: true });
+    assert.equal(result.written, true);
+    assert.equal(await fs.readFile(path.join(tmpDir, "clients", "acme", "notes.md"), "utf8"), "# Notes\n");
+    await assert.rejects(() => proposeChange(tmpDir, "secret/plan.md", "x\n"), /Write denied: path secret\/plan\.md/);
+  });
 });

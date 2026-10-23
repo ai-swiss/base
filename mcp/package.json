@@ -1,6 +1,6 @@
 {
   "name": "@ai-swiss/base-mcp",
-  "version": "1.5.0",
+  "version": "1.5.2",
   "description": "MCP server for BASE structured knowledge, routing, and mediated actions",
   "license": "Apache-2.0",
   "author": "AI Swiss (https://a-i.swiss)",
@@ -39,7 +39,7 @@
     "audit:prod": "npm audit --omit=dev --audit-level=low"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.27.0",
+    "@modelcontextprotocol/sdk": "^1.32.1",
     "express": "^5.1.0",
     "zod": "^3.25.0"
   },
@@ -52,6 +52,6 @@
     "vitest": "^3.0.0"
   },
   "overrides": {
-    "hono": "^4.12.25"
+    "hono": "^4.13.11"
   }
 }

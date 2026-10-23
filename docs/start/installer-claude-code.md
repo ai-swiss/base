@@ -63,6 +63,7 @@ L'assistant vous guide, propose des fichiers et attend votre validation pour les
 | `claude: command not found` | Fermer puis rouvrir le terminal; sinon, ajouter à votre PATH le chemin indiqué par l'installateur |
 | Problème de connexion au compte | Lancer `claude`, puis taper `/login` |
 | L'agent ne se charge pas | Vérifier que `claude` tourne bien dans le dossier de l'exemple, celui qui contient `CLAUDE.md` (`pwd` pour s'en assurer) |
+| Un dossier qui regroupe plusieurs clients (workspace) | Lancer `claude` dans le dossier d'un client, celui qui contient son `CLAUDE.md`. S'il n'en a pas: `base init --root <dossier du client> --tool claude-code` le propose |
 | Besoin d'aide dans la session | Taper `/help` |
 | Blocage sur une étape technique | Interroger Claude Code lui-même: «J'ai cette erreur: [coller l'erreur]. Que se passe-t-il?» Précisez votre niveau au besoin. |
 

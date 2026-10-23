@@ -20,7 +20,8 @@ export const UNIVERSAL_SKIP_DIRS = new Set([
 
 // Runtime and derived areas under `.ai/` — written by BASE at run time (trace, changes, eval data)
 // or generated projections (routing) and scaffolding (the agent template): never source resources.
-// Matched as ROOT-RELATIVE path prefixes.
+// Matched as root-relative prefixes, and as the same areas of any BASE root nested below (a
+// workspace walks its client roots, whose `.ai/changes/*.json` are no more resources than its own).
 export const RUNTIME_PREFIXES = [
   ".ai/trace",
   ".ai/changes",
@@ -47,7 +48,8 @@ export function skipsDirName(name) {
  * @param {string} relPath @param {string[]} [exclude]
  */
 export function skipsPath(relPath, exclude = []) {
-  return RUNTIME_PREFIXES.some((p) => isUnder(relPath, p)) || exclude.some((p) => isUnder(relPath, p));
+  return RUNTIME_PREFIXES.some((p) => isUnder(relPath, p) || relPath.includes(`/${p}/`) || relPath.endsWith(`/${p}`))
+    || exclude.some((p) => isUnder(relPath, p));
 }
 
 /**

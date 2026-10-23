@@ -165,8 +165,8 @@ puis le contenu. Les sections, dans cet ordre:
    manque. Une idée que personne n'a demandée porte `beyond: true`.
 3. **Deux choix pour démarrer** (cartes à `options`, sous leur propre titre de groupe): comment organiser l'assistant (par moment de
    travail, par personne, par service) et par où commencer. Une option recommandée par carte.
-4. **D'autres idées** (`MORE_IDEAS`): une ligne par idée regroupée ou écartée, sans bouton.
-   Rien si tout tient dans les cartes.
+4. **D'autres idées** (`MORE_IDEAS`): une ligne par idée regroupée ou écartée, sans bouton, et
+   une seule nuance sous la liste. Rien si tout tient dans les cartes.
 5. **Comment ce sera rangé** (`STRUCTURE`): la structure proposée en mots de tous les jours: tant de
    modes d'emploi, tant de règles écrites une fois, les listes telles qu'elles sortent du logiciel,
    des modèles, des petits outils qui calculent toujours pareil.
@@ -192,7 +192,8 @@ reste intact jusque-là.
 
 Lis l'export: il reprend le point de départ et les réponses. Si la personne répond dans la
 conversation plutôt que par l'export, ses réponses valent l'export. Applique là où elle dit Oui,
-note ce qu'elle reporte à plus tard avec sa nuance, retire ce qu'elle refuse. Là où elle n'a pas
+note ce qu'elle reporte à plus tard avec sa nuance, retire ce qu'elle refuse. Une idée que sa nuance sous «D'autres idées» reprend
+entre dans le plan avec ce qu'elle en dit. Là où elle n'a pas
 répondu, la recommandation que l'export rappelle s'applique, comme la fiche le lui annonce: dis-le
 carte par carte dans le plan, avant de construire. Les lignes rouges que l'export reprend entrent
 telles quelles dans l'assistant. Ses réponses valent accord
@@ -258,6 +259,12 @@ Point de départ: des besoins décrits
 - Recommandation: la recommandation, en une phrase
 - Réponse: Oui | Plus tard | Non | non répondu (la recommandation s'applique: Oui)
 - Nuance: la nuance de la personne | aucune
+
+## D'autres idées
+
+- une idée regroupée ou écartée par ligne
+
+Nuance: la nuance de la personne | aucune
 
 ## Ce que l'assistant ne fera jamais
 

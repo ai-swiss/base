@@ -17,7 +17,8 @@
 //   - the visible text of the sheet carries none of the framework words `faisabilite-ia` lists
 //     (process, compétence, skill, agent, prompt, routage, frontmatter, file names), no em dash, and no space before a colon in export labels;
 //   - the four fixed sections render, every card sits under a group heading, two choice cards, at most 12 cards, at least one
-//     «ne réglera pas» line, every «Plus tard» names a condition, the export opens with the starting point;
+//     «ne réglera pas» line, every «Plus tard» names a condition, the export opens with the starting point, and «D'autres
+//     idées», when present, offers its nuance field and travels in the export;
 //   - duration, cost and turns are recorded.
 
 import { spawnSync } from "node:child_process";
@@ -94,7 +95,7 @@ function inspectSheet(html) {
   const document = fakeDocument((body.match(/<title>([\s\S]*?)<\/title>/) || ["", ""])[1].trim());
   const context = { document, localStorage: { getItem: () => null, setItem: () => {} }, Blob: class {}, URL: { createObjectURL: () => "" } };
   vm.createContext(context);
-  vm.runInContext(script + "\nglobalThis.__out = { md: md(), POINTS, LIMITS, NEVER, STRUCTURE, SUMMARY, L: typeof L !== \"undefined\" ? L : null };", context);
+  vm.runInContext(script + "\nglobalThis.__out = { md: md(), POINTS, LIMITS, NEVER, STRUCTURE, SUMMARY, MORE_IDEAS, L: typeof L !== \"undefined\" ? L : null };", context);
   const rendered = document.getElementById("content").innerHTML;
   const title = document.title;
   const intro = document.getElementById("intro").textContent;
@@ -155,6 +156,11 @@ function runCorpus(corpus, outDir) {
         check("Chaque carte porte son verdict («Tout accepter» l'applique)", sansVerdict.length === 0, sansVerdict.map((/** @type {any} */ p) => p.id).join(", "));
         check("Chaque «Plus tard» dit ce qui manque", plusTard.every((/** @type {any} */ p) => CONDITION.test(stripTags(String(p.reco)))), `${plusTard.length} carte(s) «Plus tard»`);
         check("Export sans espace avant les deux-points", !/(Recommandation|Réponse|Nuance) :/.test(sheet.md), "");
+        if (sheet.MORE_IDEAS.length) {
+          // «D'autres idées» invites a nuance: the field must be there, and the export must carry it.
+          const idees = sheet.L ? sheet.L.idees : "D'autres idées";
+          check("«D'autres idées» offre sa nuance, et l'export la reprend", sheet.rendered.includes('data-id="_idees"') && sheet.md.includes(`## ${idees}`), `${sheet.MORE_IDEAS.length} idée(s)`);
+        }
         const depart = sheet.L ? sheet.L.export.depart : "Point de départ";
         check("L'export reprend le point de départ", new RegExp(`^${depart}: \\S`, "m").test(sheet.md), (sheet.md.match(new RegExp(`^${depart}: .*$`, "m")) || ["absent"])[0]);
         if (corpus === "structure-ia") {
