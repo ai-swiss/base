@@ -1,4 +1,4 @@
-<!-- fr-synced: 4e6d4919c3cb39f9f48d6cd014bf852e76eb6d37 -->
+<!-- fr-synced: 29f12e5d2c3643b6bf3473a18ff78bbb66cf463c -->
 # Try BASE without installing BASE
 
 Before handing a real folder to an AI, try BASE on an example whose answer you can check. This page offers three paths with nothing to install on the BASE side: with your own documents, or on an example, in a chat or in a tool that opens the folder. A single AI tool is all you need: the one you already use.
@@ -11,7 +11,7 @@ To find out what an assistant would do for you, open your usual AI chat, attach 
 
 The chat reads that file and returns a brief to open in your browser: what it understood, what the assistant would or would not do, what AI will not solve. Answer card by card, click "Send my answers", then attach the downloaded file to the same chat. Building the assistant then happens in a tool that opens a folder.
 
-If your chat cannot read a web address, open [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md), save it, and attach it to the conversation along with your documents, writing: "Here are our documents and the BASE file for chats. Show us what an assistant could do for us." That file holds everything the chat needs to read, the brief template included.
+If your chat cannot read a web address, open [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](https://github.com/ai-swiss/base/blob/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md), download it (the "Download raw file" button, top right of the file), and attach it to the conversation along with your documents, writing: "Here are our documents and the BASE file for chats. Show us what an assistant could do for us." That file holds everything the chat needs to read, the brief template included.
 
 Your documents go to the chat provider: choose the one your organisation has approved for this kind of data.
 

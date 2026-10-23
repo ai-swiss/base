@@ -816,6 +816,20 @@ describe("proposeChange and commitChange", () => {
       /No pending change[\s\S]*propose_change first/,
     );
   });
+
+  it("a second commit of an applied change says it may already be applied, before suggesting a new proposal", async () => {
+    const proposed = await proposeChange(tmpDir, "notes3.md", "bonjour\n");
+    await commitChange(tmpDir, proposed.change_id, { confirmed: true });
+    await assert.rejects(
+      () => commitChange(tmpDir, proposed.change_id, { confirmed: true }),
+      (error) => {
+        const message = String(/** @type {Error} */ (error).message);
+        assert.match(message, /already succeeded[\s\S]*do not propose it again/);
+        assert.ok(message.indexOf("do not propose it again") < message.indexOf("propose_change first"), "the applied case is named first");
+        return true;
+      },
+    );
+  });
 });
 
 describe("promoteResource", () => {

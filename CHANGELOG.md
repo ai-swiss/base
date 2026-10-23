@@ -6,6 +6,17 @@ Tous les changements notables de BASE sont documentés ici. Le format suit l'esp
 
 ## [Unreleased]
 
+## [1.5.3] - 2026-10-23
+
+### Corrigé
+- Un second `commit_change` sur un changement déjà appliqué répondait de proposer d'abord le changement, ce qui poussait le modèle à le reproposer. Le message dit maintenant que le changement a peut-être déjà été appliqué, et qu'il faut lire la cible avant de proposer de nouveau.
+
+### Documentation
+- Le lien vers `PARTIR-DE-CE-QUE-VOUS-AVEZ.md` en tête du README et dans «Essayer BASE sans installer BASE» ouvrait le texte brut du fichier. Il ouvre désormais sa page sur GitHub; l'adresse du texte brut, celle à donner à un chat, reste écrite à côté.
+
+### Modifié
+- Dépendances mises à jour sans changement de version majeure: `express` 5.3 pour le serveur MCP, Astro 7.4 et Starlight 0.42.6 pour le site de documentation, React 19.3 et Playwright 1.64 pour le Studio.
+
 ## [1.5.2] - 2026-10-22
 
 ### Sécurité

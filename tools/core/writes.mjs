@@ -143,7 +143,9 @@ export function createBrokerWrites({ decide, recordEvent, inventoryResources, ch
     }
     const recordPath = path.join(root, changesDir, `${changeId}.json`);
     if (!(await pathExists(recordPath))) {
-      throw new Error(`No pending change ${changeId}: nothing to commit. A change_id exists only after propose_change stages it; call propose_change first, then commit_change with the id it returns.`);
+      // The record is consumed on commit, so a second commit of an applied change lands here too: say so
+      // before pointing at propose_change, or the model proposes again what is already written.
+      throw new Error(`No pending change ${changeId}: nothing to commit. If commit_change already succeeded for this id, the change is applied and its record consumed: do not propose it again; read the target to confirm. Otherwise the id was never staged: call propose_change first, then commit_change with the id it returns.`);
     }
     const record = JSON.parse(await fs.readFile(recordPath, "utf8"));
 
