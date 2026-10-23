@@ -22,7 +22,7 @@ Les deux essais sur exemple montrent le même assistant: l'assistant devis pré-
 
 ## Avec vos propres documents: donnez l'adresse du fichier d'entrée
 
-Pour savoir ce qu'un assistant ferait pour vous, ouvrez votre chat d'IA habituel, joignez vos documents (la transcription d'une réunion, des procédures) et écrivez: «Lis https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md et suis-le pour nous montrer ce qu'un assistant pourrait faire pour nous.» Donnez cette adresse-là: l'outil de lecture de certains chats résume la page d'accueil du dépôt et y perd l'indication qui mène à ce fichier.
+Pour savoir ce qu'un assistant ferait pour vous, ouvrez votre chat d'IA habituel, joignez vos documents (la transcription d'une réunion, des procédures) et écrivez: «Lis `https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md` et suis-le pour nous montrer ce qu'un assistant pourrait faire pour nous.» Donnez cette adresse-là: l'outil de lecture de certains chats résume la page d'accueil du dépôt et y perd l'indication qui mène à ce fichier.
 
 Le chat lit ce fichier et vous rend une fiche à ouvrir dans le navigateur: ce qu'il a compris, ce que l'assistant ferait ou non, ce que l'IA ne réglera pas. Répondez carte par carte, cliquez sur «Envoyer mes réponses», puis joignez au même chat le fichier téléchargé. La construction de l'assistant se fait ensuite dans un outil qui ouvre un dossier.
 

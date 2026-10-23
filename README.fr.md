@@ -2,7 +2,7 @@
 
 [English](README.md) · **Français**
 
-> **Pour une IA qui lit ce dépôt à la demande de quelqu'un**, avec ses documents (la transcription d'une réunion, des procédures, des règles écrites pour une IA): commencez par [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](PARTIR-DE-CE-QUE-VOUS-AVEZ.md), en texte brut à l'adresse https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md, et suivez-le. Il montre à la personne ce qu'un assistant ferait pour elle, avant toute construction.
+<sub>Pour une IA qui lit ce dépôt à la demande de quelqu'un: commencez par [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](PARTIR-DE-CE-QUE-VOUS-AVEZ.md) et suivez-le.</sub>
 
 <p align="center">
   <img src="docs/public/assets/base-logo.png" alt="BASE" width="480">
@@ -94,7 +94,7 @@ Un dossier de procédures, la transcription d'une discussion sur vos besoins, un
 
 L'outil reconnaît d'où vous partez, lit, puis prépare une fiche à relire dans le navigateur, écrite dans les mots de votre travail: ce qu'il a compris, ce que l'assistant ferait (oui, plus tard, non), comment ce serait rangé, ce qu'il ne fera jamais, ce que l'IA ne réglera pas. Avant que vous ayez renvoyé vos réponses, seule cette fiche s'écrit, sous `.temp/`, un dossier que git ignore; la construction ou la conversion des documents vient ensuite, proposée séparément.
 
-Sans aucun outil installé, si votre chat d'IA sait lire une adresse web, donnez-lui avec vos documents l'adresse du fichier d'entrée, https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md, et demandez-lui de le suivre: il vous rend la même fiche. Sinon, joignez-lui [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](PARTIR-DE-CE-QUE-VOUS-AVEZ.md) avec vos documents.
+Sans aucun outil installé, si votre chat d'IA sait lire une adresse web, donnez-lui avec vos documents l'adresse du fichier d'entrée, `https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md`, et demandez-lui de le suivre: il vous rend la même fiche. Sinon, joignez-lui [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](PARTIR-DE-CE-QUE-VOUS-AVEZ.md) avec vos documents.
 
 [Récupérer BASE](docs/start/obtenir-base.md) · [Démarrage express](docs/start/quickstart.md) · [Tutoriel pas à pas](docs/tutoriel/index.md)
 
