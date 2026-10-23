@@ -6,6 +6,9 @@ Tous les changements notables de BASE sont documentés ici. Le format suit l'esp
 
 ## [Unreleased]
 
+### Documentation
+- La note pour les IA en tête du README tient sur une ligne en petits caractères, sans l'adresse du texte brut. Les adresses à copier dans un chat (README, «Essayer BASE sans installer BASE») s'affichent comme du code: elles se copient sans ouvrir de texte brut au clic.
+
 ## [1.5.3] - 2026-10-23
 
 ### Corrigé

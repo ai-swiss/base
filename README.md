@@ -1,10 +1,10 @@
-<!-- fr-synced: 3805d37320ddec10fa5240eeba9c337294f200e2 -->
+<!-- fr-synced: 08614f919433ab18d4c70812a08dbef7632bebc4 -->
 
 # BASE
 
 **English** · [Français](README.fr.md) (authoritative)
 
-> **For an AI reading this repository on someone's behalf**, with their documents (a meeting transcript, procedures, rules written for an AI): start with [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](PARTIR-DE-CE-QUE-VOUS-AVEZ.md), as plain text at https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md, and follow it. It shows the person what an assistant would do for them, before anything is built.
+<sub>For an AI reading this repository on someone's behalf: start with [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](PARTIR-DE-CE-QUE-VOUS-AVEZ.md) and follow it.</sub>
 
 <p align="center">
   <img src="docs/public/assets/base-logo.png" alt="BASE" width="480">
@@ -96,7 +96,7 @@ A folder of procedures, the transcript of a discussion about your needs, a `CLAU
 
 The tool recognises where you start from, reads, then prepares a brief to review in your browser, written in the words of your work: what it understood, what the assistant would do (yes, later, no), how it would be organised, what it will never do, what AI will not solve. Until you send your answers back, only this brief is written, under `.temp/`, a folder git ignores; building, or converting the documents, comes afterwards and is proposed separately.
 
-With no tool installed, if your AI chat can read a web address, give it the address of the entry file, https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md, along with your documents, and ask it to follow that file: it returns the same brief. Otherwise, attach [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](PARTIR-DE-CE-QUE-VOUS-AVEZ.md) along with your documents.
+With no tool installed, if your AI chat can read a web address, give it the address of the entry file, `https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md`, along with your documents, and ask it to follow that file: it returns the same brief. Otherwise, attach [PARTIR-DE-CE-QUE-VOUS-AVEZ.md](PARTIR-DE-CE-QUE-VOUS-AVEZ.md) along with your documents.
 
 [Get BASE](docs/en/start/obtenir-base.md) · [Quick start](docs/en/start/quickstart.md) · [Step-by-step tutorial](docs/en/tutoriel/index.md)
 

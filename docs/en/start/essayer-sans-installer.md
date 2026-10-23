@@ -1,4 +1,4 @@
-<!-- fr-synced: 29f12e5d2c3643b6bf3473a18ff78bbb66cf463c -->
+<!-- fr-synced: 19f997308f469de01dcf1f74652321fa50e66504 -->
 # Try BASE without installing BASE
 
 Before handing a real folder to an AI, try BASE on an example whose answer you can check. This page offers three paths with nothing to install on the BASE side: with your own documents, or on an example, in a chat or in a tool that opens the folder. A single AI tool is all you need: the one you already use.
@@ -7,7 +7,7 @@ Both example trials show the same assistant: the prefilled quote assistant, with
 
 ## With your own documents: give the address of the entry file
 
-To find out what an assistant would do for you, open your usual AI chat, attach your documents (a meeting transcript, procedures) and write: "Read https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md and follow it to show us what an assistant could do for us." Give that address: the reading tool of some chats summarises the repository home page and loses the pointer to this file.
+To find out what an assistant would do for you, open your usual AI chat, attach your documents (a meeting transcript, procedures) and write: "Read `https://raw.githubusercontent.com/ai-swiss/base/main/PARTIR-DE-CE-QUE-VOUS-AVEZ.md` and follow it to show us what an assistant could do for us." Give that address: the reading tool of some chats summarises the repository home page and loses the pointer to this file.
 
 The chat reads that file and returns a brief to open in your browser: what it understood, what the assistant would or would not do, what AI will not solve. Answer card by card, click "Send my answers", then attach the downloaded file to the same chat. Building the assistant then happens in a tool that opens a folder.
 
