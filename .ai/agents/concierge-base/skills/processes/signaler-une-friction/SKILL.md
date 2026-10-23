@@ -32,6 +32,10 @@ on ne modifie jamais. C'est le détecteur de lacunes le moins coûteux qui soit.
 
 ### 1. Identifier le process concerné
 
+Accueille le signalement simplement: «Je note ce qui s'est passé.» Ne promets pas de correction
+(pas de «pour que ce soit corrigé») et ne nomme pas de cause avant d'avoir les faits: la suite
+dépend de ce que la personne décidera.
+
 Demande (ou déduis de la conversation):
 - **Quel process** était en cours (chemin ou id; `discover_resources` si le MCP est disponible, sinon `node .ai/base.mjs discover "<nom ou besoin>" --root .`).
 - **À quelle étape** le problème est apparu.

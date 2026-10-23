@@ -16,6 +16,7 @@ import {
 import {
   buildHarnessInvocation,
   buildJudgeInvocation,
+  claudeMdImports,
   harnessResultMetadata,
   harnessVersionCommand,
   judgePrompt,
@@ -201,10 +202,12 @@ async function executeIsolatedAttempt({ attempt, attemptDir, configHome, options
       ? [runtime.app]
       : [],
   });
+  const contextReads = options.harness === "claude-code" ? await claudeContextReads(root) : [];
   const processResult = await runCaptured(invocation.command, invocation.args, {
     cwd: root,
     env: {
       ...process.env,
+      ...invocation.env,
       BASE_CONFIG_HOME: configHome,
       PATH: runtime.baseBin
         ? `${path.dirname(runtime.baseBin)}${path.delimiter}${process.env.PATH ?? ""}`
@@ -219,6 +222,7 @@ async function executeIsolatedAttempt({ attempt, attemptDir, configHome, options
   let evaluation = /** @type {any} */ ({ passed: false, checks: [], error: null });
   try {
     transcript = normalizeHarnessTranscript(options.harness, processResult.stdout);
+    transcript.events = [...contextReads, ...transcript.events].map((event, index) => ({ ...event, index }));
   } catch (error) {
     evaluation.error = error.message;
   }
@@ -439,6 +443,28 @@ function confinedDefinition(folder, name) {
     throw new Error(`Nom de définition invalide: ${name}.`);
   }
   return path.join(definitionsRoot, folder, name);
+}
+
+/**
+ * What Claude Code loads with the root's CLAUDE.md before the first turn: its `@` imports, nested up
+ * to five levels. The model has them in context, so they count as read, ahead of every tool call
+ * (Codex has no imports: its AGENTS.md sends the model to read the map with a tool).
+ * @param {string} root
+ */
+export async function claudeContextReads(root) {
+  const seen = new Set();
+  /** @type {{ type: string, path: string, source: string }[]} */
+  const reads = [];
+  const visit = async (/** @type {string} */ file, /** @type {number} */ depth) => {
+    if (depth > 5 || seen.has(file)) return;
+    seen.add(file);
+    let text;
+    try { text = await fs.readFile(file, "utf8"); } catch { return; }
+    if (depth > 0) reads.push({ type: "file_read", path: file.split(path.sep).join("/"), source: "claude_md_import" });
+    for (const relative of claudeMdImports(text)) await visit(path.resolve(path.dirname(file), relative), depth + 1);
+  };
+  await visit(path.join(root, "CLAUDE.md"), 0);
+  return reads;
 }
 
 export async function appendWorkspaceEvents(events, changes, root) {

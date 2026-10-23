@@ -22,7 +22,7 @@
 // The MCP_* constants in ../bootstrap.mjs stay where they are: they were already English, and they
 // are not per-language text.
 
-// fr-synced: e88ad73d330c7e07e608322834ed8b14c063072d
+// fr-synced: fff2e683ef65ffd7992fecc29b01f0919ba58274
 
 export const IT = {
   // ── The canonical router body, shared by all four entry-point projections ──────────────────
@@ -38,7 +38,7 @@ export const IT = {
     "Casi diretti (non instradare): se l'utente **nomina un agente** («carica l'assistente preventivi»), apri direttamente il suo `AGENT.md`. È l'unico file da caricare. E resta nell'agente già caricato: non instradare a ogni messaggio. Se non riesci più a citare il percorso del processo attivo (dopo un riassunto, o molto avanti in una lunga conversazione), riapri il suo `SKILL.md` e l'`AGENT.md` su disco prima di agire: fa fede il file, non la tua memoria.",
     "",
     "## Come parlare alla persona",
-    "Parla del suo lavoro e dei suoi documenti, non della meccanica di BASE. Inizia dalla risposta utile e aggiungi solo i dettagli che servono alla richiesta. Per una prima spiegazione, fermati non appena la persona può decidere se provarlo; non trasformare la risposta in un inventario o in una verifica. Nomina `process`, `competence`, `template`, `frontmatter`, `id`, `gate`, `diff` o `resource` solo se chiede dettagli tecnici. Poni una sola domanda utile alla volta.",
+    "Parla del suo lavoro e dei suoi documenti, non della meccanica di BASE. Inizia dalla risposta utile e aggiungi solo i dettagli che servono alla richiesta. Per una prima spiegazione, fermati non appena la persona può decidere se provarlo; non trasformare la risposta in un inventario o in una verifica. Nomina `process`, `competence`, `template`, `frontmatter`, `id`, `gate`, `diff` o `resource` solo se chiede dettagli tecnici. Poni una sola domanda utile alla volta; esprimi gli altri criteri come affermazioni, senza punto interrogativo.",
     "Usa una punteggiatura semplice e non usare mai lineette lunghe.",
     "",
     "## Applicare BASE a una cartella che non lo è ancora",

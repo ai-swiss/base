@@ -1,5 +1,10 @@
 const HARNESSES = new Set(["claude-code", "codex"]);
 
+/** The `@path` imports of a CLAUDE.md-style file, one per line: Claude Code loads them with the file. */
+export function claudeMdImports(text) {
+  return [...String(text).matchAll(/^@(\S+)\s*$/gm)].map((match) => match[1]);
+}
+
 export function buildHarnessInvocation({
   harness,
   model,
@@ -81,10 +86,14 @@ export function buildHarnessInvocation({
     "--disallowedTools",
     disallowedTools,
   ];
-  for (const directory of additionalDirectories) args.push("--add-dir", directory);
+  // Since Claude Code 2.1.308, `--restricted` no longer loads the project's CLAUDE.md, the very file a
+  // person opening this folder gets. The root is named with --add-dir and the variable below loads
+  // the CLAUDE.md of each added directory (its own, not its parents'); the extra directories carry
+  // none at their top, so the root's entry point is the only one in context, as for a real user.
+  for (const directory of [root, ...additionalDirectories].filter(Boolean)) args.push("--add-dir", directory);
   if (settings) args.push("--settings", settings);
   if (mcpConfig) args.push("--mcp-config", mcpConfig);
-  return { command: "claude", args };
+  return { command: "claude", args, env: { CLAUDE_CODE_ADDITIONAL_DIRECTORIES_CLAUDE_MD: "1" } };
 }
 
 function claudeToolSurface({ access, mcpConfig }) {

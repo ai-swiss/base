@@ -6,6 +6,27 @@ Tous les changements notables de BASE sont documentés ici. Le format suit l'esp
 
 ## [Unreleased]
 
+## [1.5.2] - 2026-10-22
+
+### Sécurité
+- Le serveur MCP passe à `@modelcontextprotocol/sdk` 1.32 et à `proxy-addr` 2.0.8, qui corrigent des avis de sécurité publiés depuis la 1.5.1, dont une requête HTTP capable d'épuiser la mémoire du serveur en mode HTTP. Le mode stdio n'utilise pas ces chemins. `npm audit --omit=dev` ne signale plus rien.
+- Les dépendances de production du site de documentation (`devalue`, `sharp`, `smol-toml`, `http-cache-semantics`, `postcss-selector-parser`) et `ip-address` côté serveur MCP passent aux versions corrigées, sans changement de version majeure.
+- Une politique d'écriture branchée par `base.config.mjs` reçoit désormais le chemin de la cible (`path`, relatif à la racine) et `exists`, à la proposition comme à la validation, comme une lecture reçoit sa ressource. Sans ce chemin, une politique qui autorisait par dossier refusait toute écriture, et une politique qui interdisait une liste de dossiers les laissait toutes passer. Les politiques fournies (`advisoryPolicy`, `strictPolicy`) n'étaient pas touchées. Signalé par @SmilosNIJ (#28).
+
+### Corrigé
+- Dans la fiche de proposition, «D'autres idées» invitait à le dire «dans une nuance» sans offrir de champ. La section a maintenant sa nuance, sous la liste, et l'export reprend les idées et cette nuance.
+- Le choix du type de signalement sur GitHub (`.github/ISSUE_TEMPLATE/config.yml`) n'était pas du YAML valide: GitHub l'ignorait, avec ses liens d'aide et le lien de signalement privé d'une vulnérabilité. Le contrôle du YAML strict lit désormais aussi ces modèles.
+- Les tests de `base init` passent dans un clone placé dans n'importe quel dossier: ils vérifiaient le nom du dossier du mainteneur au lieu de l'emplacement réel du cadre. Correctif proposé par @cluster2600 (#20).
+- `base init --tool claude-code` (ou `cursor`, `agents-md`) sur un BASE existant sans point d'entrée propose de nouveau le fichier de cet outil: depuis la 1.5.0, il ne proposait que `.ai/tools.md` et le lanceur. Un outil déclaré dans `tools` de `base.config.json` est lui aussi respecté. Sur un dossier de workspace, `base doctor` indique désormais d'initialiser chaque racine listée, là où `base init` répondait «rien à initialiser». Signalé par @SmilosNIJ (#12, #14).
+- Le serveur MCP joint de nouveau l'accueil du cadre à une demande que rien ne couvre, sur une racine créée par `base init`. Il cherchait le cadre dans la configuration de la racine puis à côté de son propre code, jamais dans la configuration utilisateur où `init` l'enregistre: l'abstention arrivait sans repli. La CLI n'était pas touchée.
+- L'assistant pose une seule question à la fois: les autres critères d'un choix sont énoncés en affirmations, sans point d'interrogation (point d'entrée de chaque outil, quatre langues).
+- Dans les exemples, la configuration demande d'abord l'activité de l'entreprise, puis son nom. Un nouveau devis ne redemande plus ce que la demande dit déjà (client, prestation, quantité): l'assistant pose la seule question qui manque pour chiffrer. Un signalement d'erreur est noté sans promettre de correction avant les faits. L'assistant devis cite un passage par sa référence entre parenthèses, après le nom de la source en clair.
+- `base doctor` lancé sur un workspace ne prend plus pour des ressources les changements en attente et les tests de routage de ses racines (`clients/*/.ai/changes/`, `.ai/routing/`), et l'exemple `agence-multi-clients` ne porte plus de lien qui casse une fois le dossier copié ailleurs.
+
+### Documentation
+- Un enregistrement de décision dit pourquoi `base init` soigne chaque racine d'un workspace et jamais le dossier du workspace lui-même (`decisions/2026-10-22-init-soigne-chaque-racine-pas-le-workspace.md`). «Connecter votre outil IA» et «Installer Claude Code» disent quel dossier ouvrir dans un workspace.
+- La tolérance des fins de ligne CRLF dans le site de documentation, livrée en 1.5.0, avait été proposée par @SmilosNIJ dans #13.
+
 ## [1.5.1] - 2026-10-02
 
 ### Ajouté

@@ -36,7 +36,8 @@
       card, the one "Tout accepter" applies; `recoChoice` plays that part for a card with options.
       `options` turns the card into a choice between options (how to organise, where to start).
       `beyond: true` marks a card that goes beyond what the person asked for.
-    - MORE_IDEAS: ["..."]: "D'autres idées", one line per idea merged or set aside, no buttons.
+    - MORE_IDEAS: ["..."]: "D'autres idées", one line per idea merged or set aside, no buttons;
+      one nuance field under the list lets the person say which idea matters to them.
     - STRUCTURE: ["..."]: "Comment ce sera rangé", the proposed structure in everyday words.
     - NEVER: ["..."]: what the assistant will never do. LIMITS: ["..."]: what AI will not solve.
   The reader answers, may add a nuance, then exports a Markdown file to hand back.
@@ -253,6 +254,7 @@ const conseil = (p) => {
 };
 let state = {}; try { state = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch (e) {}
 const get = (id) => state[id] || { choix: null, comment: "" };
+const IDEES_ID = "_idees";                                   // the nuance under "D'autres idées", outside POINTS
 function save() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {} prog(); }
 function prog() {
   const n = POINTS.filter((p) => get(p.id).choix).length;
@@ -308,7 +310,7 @@ function render() {
     h += carte(p);
   }
   if (ouvert) h += `</section>`;
-  if (MORE_IDEAS.length) h += `<section><h2>${L.idees}</h2><p class="chapeau">${L.ideesChapeau}</p>${liste("idees", MORE_IDEAS)}</section>`;
+  if (MORE_IDEAS.length) h += `<section><h2>${L.idees}</h2><p class="chapeau">${L.ideesChapeau}</p>${liste("idees", MORE_IDEAS)}${champ(IDEES_ID, get(IDEES_ID))}</section>`;
   if (STRUCTURE.length) h += `<section><h2>${L.range}</h2><p class="chapeau">${L.rangeChapeau}</p>${liste("rangement", STRUCTURE)}</section>`;
   if (NEVER.length) h += `<section><h2>${L.jamais}</h2><p class="chapeau">${L.jamaisChapeau}</p>${liste("jamais", NEVER)}</section>`;
   if (LIMITS.length) h += `<section><h2>${L.limites}</h2><p class="chapeau">${L.limitesChapeau}</p>${liste("limites", LIMITS)}</section>`;
@@ -349,6 +351,7 @@ function md() {
     const choix = libelle(c.choix) || (conseille ? `${L.export.sans} (${L.export.applique}: ${conseille})` : L.export.sans);
     m += `### ${p.id} · ${texte(p.title)}\n- ${L.export.reco}: ${texte(p.recoSummary || p.reco)}\n- ${L.export.choix}: ${choix}\n- ${L.export.nuance}: ${(c.comment || "").trim() || L.export.aucune}\n\n`;
   }
+  if (MORE_IDEAS.length) m += `## ${L.idees}\n\n${MORE_IDEAS.map((x) => `- ${texte(x)}`).join("\n")}\n\n${L.export.nuance}: ${(get(IDEES_ID).comment || "").trim() || L.export.aucune}\n\n`;
   if (NEVER.length) m += `## ${L.jamais}\n\n${NEVER.map((n) => `- ${texte(n)}`).join("\n")}\n`;
   return m;
 }

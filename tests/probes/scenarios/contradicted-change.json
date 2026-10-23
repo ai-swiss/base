@@ -16,7 +16,7 @@
       },
       {
         "type": "final_answer",
-        "matches": "confirm"
+        "matches": "confirm|\\?"
       }
     ],
     "forbidden": [

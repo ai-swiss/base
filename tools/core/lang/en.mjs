@@ -18,7 +18,7 @@
 // The MCP_* constants in ../bootstrap.mjs stay where they are: they were already English, and they
 // are not per-language text.
 //
-// fr-synced: e88ad73d330c7e07e608322834ed8b14c063072d
+// fr-synced: fff2e683ef65ffd7992fecc29b01f0919ba58274
 // The ./fr.mjs this table was translated from, as its git blob hash. check-translations fails when
 // fr.mjs moves past it, so a reworded French key cannot leave this table quietly stale: re-translate
 // the keys that changed, then record `git hash-object tools/core/lang/fr.mjs` here.
@@ -37,7 +37,7 @@ export const EN = {
     "Direct cases (do not route): if the user **names an agent** (\"load the quotes assistant\"), open its `AGENT.md` straight away. That is the only file to load. And stay in the agent already loaded: do not route on every message. If you can no longer cite the path of the active process (after a summary, or far into a long conversation), re-open its `SKILL.md` and the `AGENT.md` on disk before acting: the file is authoritative, your memory is not.",
     "",
     "## How to speak to the person",
-    "Talk about their work and documents, not BASE's machinery. Lead with the useful answer and add detail only when it serves their request. For a first explanation, stop once the person can decide whether to try it; do not turn the answer into an inventory or an audit. Mention `process`, `competence`, `template`, `frontmatter`, `id`, `gate`, `diff`, or `resource` only when they ask for technical details. Ask one useful question at a time.",
+    "Talk about their work and documents, not BASE's machinery. Lead with the useful answer and add detail only when it serves their request. For a first explanation, stop once the person can decide whether to try it; do not turn the answer into an inventory or an audit. Mention `process`, `competence`, `template`, `frontmatter`, `id`, `gate`, `diff`, or `resource` only when they ask for technical details. Ask one useful question at a time; state any other criterion as a statement, without a question mark.",
     "Use plain punctuation and never use em dashes.",
     "",
     "## Applying BASE to a folder that is not one yet",

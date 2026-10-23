@@ -15,6 +15,7 @@ import { describe, it } from "node:test";
 import {
   docsSiteCandidates,
   engineFloorError,
+  needsStaging,
   resolveDocsSite,
   resolveDocsSiteOutput,
 } from "../tools/docs/site.mjs";
@@ -52,6 +53,15 @@ describe("docs site adapter — where it is looked for", () => {
       path.join(path.parse(REPO).root, "srv", "base-docs"),
       "an absolute destination remains the caller's explicit choice",
     );
+  });
+
+  it("stages a build whose destination lies outside the adapter, where Astro would rename across disks", () => {
+    const outside = path.join(path.parse(REPO).root, "srv", "base-docs");
+
+    assert.equal(needsStaging(SITE_DIR, outside), true, "an absolute destination elsewhere is staged");
+    assert.equal(needsStaging(SITE_DIR, path.join(REPO, ".base-docs", "private", "site")), true, "the root's default is outside the adapter too");
+    assert.equal(needsStaging(SITE_DIR, path.join(SITE_DIR, "dist")), false, "inside the adapter, Astro builds in place");
+    assert.equal(needsStaging(SITE_DIR, SITE_DIR + "-copy"), true, "a sibling sharing the name prefix is outside");
   });
 
   it(

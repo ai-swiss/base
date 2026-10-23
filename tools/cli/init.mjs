@@ -209,14 +209,23 @@ export async function runInit(args, output) {
     // first version of this command handed every root all four.
     const chosen = new Set();
     for (const rel of entryPaths) if (await onDisk(rel)) chosen.add(rel);
+    // With nothing on disk, `--tool` names the entry point and is passed to the build, which would
+    // otherwise render only the config's `tools` or the tool-agnostic default; without `--tool`,
+    // the build's own choice stands.
+    const named = new Set();
     if (chosen.size === 0) {
-      for (const id of args.tools.length ? args.tools : [DEFAULT_TOOL]) {
+      for (const id of args.tools) {
         const tool = TOOL_ENTRY_POINTS[String(id).trim().toLowerCase()];
-        if (tool) chosen.add(tool.path);
+        if (tool) named.add(tool.path);
       }
     }
+    const artifacts = await buildArtifacts(rootDir, named.size ? { entryPoints: named } : {});
+    if (chosen.size === 0) {
+      for (const rel of named.size ? named : artifacts.map((a) => a.path).filter((p) => entryPaths.has(p))) chosen.add(rel);
+      if (chosen.size === 0) chosen.add(TOOL_ENTRY_POINTS[DEFAULT_TOOL].path);
+    }
     const missing = [];
-    for (const artifact of await buildArtifacts(rootDir)) {
+    for (const artifact of artifacts) {
       if (entryPaths.has(artifact.path) && !chosen.has(artifact.path)) continue;
       if (await onDisk(artifact.path)) continue;
       missing.push({

@@ -26,9 +26,14 @@ import { checkEgress, egressNotice } from "./egress.mjs";
  * @property {string} changesDir
  */
 
-function resolveWriteContext(targetContent, exists) {
+// What a write policy decides on: the target's root-relative POSIX path (as reads carry it), whether
+// it exists yet, and the target's own sensitivity flags. Without `path`, a path-based adapter cannot
+// tell `clients/a/` from `secret/`, and an adapter that blocks a list of folders lets every write by.
+function resolveWriteContext(targetContent, exists, relativeTarget) {
   const meta = exists ? parseFrontmatter(targetContent).data : {};
   return {
+    path: relativeTarget,
+    exists,
     sensitivity: meta.sensitivity ?? "internal",
     requires_confirmation: meta.requires_confirmation,
   };
@@ -53,7 +58,7 @@ export function createBrokerWrites({ decide, recordEvent, inventoryResources, ch
     const relativeTarget = path.relative(root, fullPath).split(path.sep).join("/");
     const exists = await pathExists(fullPath);
     const current = exists ? await fs.readFile(fullPath, "utf8") : "";
-    const writeContext = resolveWriteContext(current, exists);
+    const writeContext = resolveWriteContext(current, exists, relativeTarget);
     // Thread a pre-resolved config when callers have one (CLI/MCP resolve once per op);
     // otherwise decide() resolves it from root. Additive, NFR-CORE-002 safe.
     const decision = await decide(rootDir, writeContext, "write", { confirmed, grantToken }, config);
@@ -146,7 +151,7 @@ export function createBrokerWrites({ decide, recordEvent, inventoryResources, ch
     const fullPath = path.resolve(root, record.target);
     const decision = await decide(
       rootDir,
-      { sensitivity: record.sensitivity, requires_confirmation: record.requires_confirmation ?? undefined },
+      { path: record.target, exists: record.exists, sensitivity: record.sensitivity, requires_confirmation: record.requires_confirmation ?? undefined },
       "write",
       { confirmed, grantToken },
       config,

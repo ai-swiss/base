@@ -1,4 +1,4 @@
-<!-- fr-synced: df180397c5da1a7db6ab0a4b93b25ab3db99c9ea -->
+<!-- fr-synced: 25f6fbfd06e55ec43bf60aad99e8d8a21e53cf05 -->
 # Install Claude Code
 
 By the end of this page, you will have an assistant that reads and edits your files under your control, ready to work on your real documents: Claude Code then executes the work using a structure that follows the BASE convention. This assumes you are comfortable in a terminal and have an Anthropic account. In a few minutes, you install Claude Code, launch it in a BASE example, and make a first request; you will also know what to do if you get stuck.
@@ -50,6 +50,7 @@ The assistant guides you, proposes files, and waits for your approval on the imp
 | `claude: command not found` | Close and reopen the terminal; otherwise add the path shown by the installer to your PATH |
 | Trouble connecting to your account | Run `claude`, then type `/login` |
 | The agent doesn't load | Check that `claude` is running in the example folder, the one that contains `CLAUDE.md` (use `pwd` to verify) |
+| A folder grouping several clients (workspace) | Run `claude` in a client's folder, the one that contains its `CLAUDE.md`. If it has none: `base init --root <client folder> --tool claude-code` proposes it |
 | Need help during the session | Type `/help` |
 | Stuck on a technical step | Ask Claude Code itself: "I'm getting this error: [paste the error]. What's going on?" State your level if needed. |
 

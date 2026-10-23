@@ -1,4 +1,4 @@
-<!-- fr-synced: f36992497208c1e7e8391e25754323403491ca6e -->
+<!-- fr-synced: 4ab015e056e8338b3cf4819bdea800f41154e696 -->
 # Connect your AI tool
 
 Plugging BASE into the AI tool you already use means keeping the method legible and **validating at the right moment** instead of delegating without watching: you remain the person who decides, the tool executes before your eyes. It does take an AI tool that can read your files (GitHub Copilot, Antigravity, Claude Code or Cowork, OpenCode, Kilo Code, to name a few); BASE grafts onto it.
@@ -17,6 +17,8 @@ No installation. You open an example folder (or your own BASE) in a tool that re
 | **Other editor that reads `AGENTS.md`** | Open the folder; the projected `AGENTS.md` describes the agent. |
 
 This is the tier of the browser and the file: the model follows the method, and you keep your hand on the wheel to review it.
+
+In a workspace (one folder per client, for example), open a client's folder: that is the one carrying the entry point. If it has none, `base init --root <client folder> --tool <your tool>` proposes it.
 
 ## For a team: BASE's MCP server
 

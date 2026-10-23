@@ -31,6 +31,8 @@ Aucune installation. Vous ouvrez un dossier d'exemple (ou votre propre BASE) dan
 
 C'est le palier du navigateur et du fichier: le modèle suit la méthode, et vous gardez la main pour la relire.
 
+Dans un workspace (un dossier par client, par exemple), ouvrez le dossier d'un client: c'est lui qui porte le point d'entrée. S'il n'en a pas, `base init --root <dossier du client> --tool <votre outil>` le propose.
+
 ## Pour une équipe: le serveur MCP de BASE
 
 Lorsque vous tenez aux **garanties mécaniques** (routage déterministe par défaut, écriture médiée qui propose puis commit, exécution gardée), branchez le serveur MCP de BASE. C'est le même broker qu'en CLI, exposé cette fois à votre outil.

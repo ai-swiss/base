@@ -96,7 +96,7 @@ describe("proposition sheet", () => {
       assert.match(content, new RegExp(`<h2>${heading}</h2>`), `section "${heading}" is rendered`);
     }
     assert.match(content, /Une idée de plus/, "a card beyond the request carries its tag");
-    assert.match(content, /<h2>D'autres idées<\/h2>[\s\S]*Le rapport du mois/, "ideas merged or set aside stay visible, without buttons");
+    assert.match(content, /<h2>D'autres idées<\/h2>[\s\S]*Le rapport du mois[\s\S]*<button class="nuance" data-id="_idees">Ajouter une nuance<\/button><\/section>/, "ideas merged or set aside stay visible, with one nuance field and no answer buttons");
     assert.match(content, /class="reco-badge"/, "the recommended option is marked");
     assert.equal((content.match(/class="reponses"/g) || []).length, 4, "four cards ask Oui / Plus tard / Non, the extra ideas none");
     assert.equal(document.getElementById("avancement").textContent, "0 sur 5");
@@ -112,6 +112,7 @@ describe("proposition sheet", () => {
     assert.match(out, /^### 1 · Préparer les rappels de rendez-vous\n- Recommandation: Oui\. L'accueil relit\.\n- Réponse: non répondu \(la recommandation s'applique: Oui\)\n- Nuance: aucune$/m, "an unanswered card names the recommendation that applies");
     assert.match(out, /^### 4 · Passer les commandes de matériel\n- Recommandation: [^\n]*\n- Réponse: non répondu \(la recommandation s'applique: Plus tard\)$/m);
     assert.match(out, /^### 2 · Comment organiser l'assistant \?\n- Recommandation: A\n- Réponse: non répondu \(la recommandation s'applique: A · Par moment\)/m);
+    assert.match(out, /^## D'autres idées\n\n- Le rapport du mois: regroupé avec le point de la semaine\.\n\nNuance: aucune$/m, "the extra ideas travel with the export");
     assert.match(out, /^## Ce que l'assistant ne fera jamais\n\n- Envoyer un message à votre place\.$/m, "the red lines travel with the answers, for a session that never saw the sheet");
     assert.equal(out.includes("—"), false);
 

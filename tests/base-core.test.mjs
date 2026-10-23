@@ -93,6 +93,17 @@ describe("inventoryResources", () => {
     assert.equal(process.type, "process");
   });
 
+  it("skips the runtime areas of a BASE root nested below, as it skips its own", async () => {
+    // A workspace walks its client roots: their staged changes and route tests are not resources.
+    await write("AGENT.md", "# Agence\n\nWorkspace.");
+    await write("clients/a/.ai/changes/chg_1.json", "{}\n");
+    await write("clients/a/.ai/routing/route-tests.json", "[]\n");
+    await write("clients/a/.ai/agents/a/AGENT.md", "# Client A\n\nAgent.");
+    const paths = (await inventoryResources(tmpDir)).map((resource) => resource.path);
+    assert.ok(paths.includes("clients/a/.ai/agents/a/AGENT.md"), "the nested root's own resources stay");
+    assert.ok(!paths.some((p) => p.includes("/.ai/changes/") || p.includes("/.ai/routing/")), paths.join(", "));
+  });
+
   it("surfaces optional license and compatibility metadata, with safe defaults", async () => {
     await write(
       "doc-public.md",

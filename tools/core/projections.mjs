@@ -21,6 +21,8 @@ import { renderRoutingIndex } from "./index-md.mjs";
 import { buildRoutingRegistry } from "./routing.mjs";
 import { resolveFrameworkRoot } from "./framework-root.mjs";
 
+/** @typedef {{ entryPoints?: Set<string> }} ProjectionOptions  entry point paths to render instead of the root's own */
+
 /**
  * @param {{
  *   inventoryResources: (root: string, opts?: any) => Promise<any[]>,
@@ -38,12 +40,12 @@ export function createProjections({ inventoryResources, resolveConfig, recordEve
   // Router derives candidates in memory for small projects; the on-disk face is a scale optimisation
   // behind the same model, not a file every project carries.
   const PROJECTIONS = {
-    "agents-md": async (resources, root) => ((await entryPointsOf(root)).has("AGENTS.md") ? [{ path: "AGENTS.md", content: renderAgentsMd(resources, await languageOf(root)) }] : []),
+    "agents-md": async (resources, root, /** @type {ProjectionOptions} */ opts = {}) => ((opts.entryPoints ?? await entryPointsOf(root)).has("AGENTS.md") ? [{ path: "AGENTS.md", content: renderAgentsMd(resources, await languageOf(root)) }] : []),
     tools: async (_resources, root) => [{ path: ".ai/tools.md", content: renderToolMatrix(await languageOf(root)) }],
     // One canonical router body (core/bootstrap.mjs) projected into the entry point(s) THIS root uses,
     // so they cannot drift — and so a build never puts back the file of a tool nobody chose.
-    bootstrap: async (_resources, root) => {
-      const wanted = await entryPointsOf(root);
+    bootstrap: async (_resources, root, /** @type {ProjectionOptions} */ opts = {}) => {
+      const wanted = opts.entryPoints ?? await entryPointsOf(root);
       const lang = await languageOf(root);
       return [
         { path: "CLAUDE.md", content: renderClaudeMd(lang) },
@@ -106,11 +108,14 @@ export function createProjections({ inventoryResources, resolveConfig, recordEve
     return present.size ? present : new Set([TOOL_ENTRY_POINTS[DEFAULT_TOOL].path]);
   }
 
-  async function buildArtifacts(rootDir, { targets = ["all"] } = {}) {
+  // `entryPoints` (a Set of entry point paths) overrides `entryPointsOf`: `base init --tool` on an
+  // existing root names a tool the config has not recorded yet, and its file must still be rendered.
+  /** @param {string} rootDir @param {{ targets?: string[] } & ProjectionOptions} [options] */
+  async function buildArtifacts(rootDir, { targets = ["all"], entryPoints } = {}) {
     const root = path.resolve(rootDir);
     const resources = await inventoryResources(root);
     const want = targets.includes("all") ? DEFAULT_BUILD : targets;
-    return (await Promise.all(want.map(async (t) => ((await PROJECTIONS[t]?.(resources, root)) ?? []).map((a) => ({ target: t, ...a }))))).flat();
+    return (await Promise.all(want.map(async (t) => ((await PROJECTIONS[t]?.(resources, root, { entryPoints })) ?? []).map((a) => ({ target: t, ...a }))))).flat();
   }
 
   /**

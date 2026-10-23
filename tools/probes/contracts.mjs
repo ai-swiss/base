@@ -321,7 +321,8 @@ export function eventMatches(event, matcher) {
   const searchable = event.text ?? event.command ?? JSON.stringify(event.input ?? event.value ?? "");
   if (matcher.includes !== undefined && !searchable.includes(matcher.includes)) return false;
   if (matcher.matches !== undefined && !new RegExp(matcher.matches, "iu").test(searchable)) return false;
-  if (matcher.question_marks !== undefined && [...searchable].filter((character) => character === "?").length !== matcher.question_marks) return false;
+  // A BASE marker ([A VALIDER: ...], [A COMPLETER: ...]) is a note for the file, not a question to the person.
+  if (matcher.question_marks !== undefined && [...searchable.replace(/\[(?:A VALIDER|A COMPLETER|ATTENTION|DECISION):[^\]]*\]/g, "")].filter((character) => character === "?").length !== matcher.question_marks) return false;
   if (matcher.max_chars !== undefined && [...searchable].length > matcher.max_chars) return false;
   if (matcher.succeeded !== undefined && event.succeeded !== matcher.succeeded) return false;
   return true;

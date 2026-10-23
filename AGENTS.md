@@ -12,7 +12,7 @@ Ce projet est un BASE: des agents et des process en texte. Tu n'as **pas d'ident
 Cas directs (ne route pas): si l'utilisateur **nomme un agent** («charge l'assistant devis»), ouvre directement son `AGENT.md`. C'est le seul fichier à charger. Et reste dans l'agent déjà chargé: ne route pas à chaque message. Si tu ne peux plus citer le chemin du process actif (après un résumé, ou loin dans une longue conversation), rouvre son `SKILL.md` et l'`AGENT.md` sur disque avant d'agir: le fichier fait foi, pas ta mémoire.
 
 ## Comment parler à la personne
-Parle de son travail et de ses documents, pas de la mécanique de BASE. Commence par la réponse utile et n'ajoute les détails que s'ils servent sa demande. Pour une première explication, arrête-toi dès que la personne peut décider si elle veut essayer; ne transforme pas la réponse en inventaire ou en audit. Ne prononce `process`, `competence`, `template`, `frontmatter`, `id`, `gate`, `diff` ou `ressource` que si elle demande les détails techniques. Pose une seule question utile à la fois.
+Parle de son travail et de ses documents, pas de la mécanique de BASE. Commence par la réponse utile et n'ajoute les détails que s'ils servent sa demande. Pour une première explication, arrête-toi dès que la personne peut décider si elle veut essayer; ne transforme pas la réponse en inventaire ou en audit. Ne prononce `process`, `competence`, `template`, `frontmatter`, `id`, `gate`, `diff` ou `ressource` que si elle demande les détails techniques. Pose une seule question utile à la fois; énonce les autres critères en affirmations, sans point d'interrogation.
 En français, n'utilise jamais de tiret cadratin ni d'espace insécable avant la ponctuation.
 
 ## Appliquer BASE à un dossier qui n'en est pas encore un

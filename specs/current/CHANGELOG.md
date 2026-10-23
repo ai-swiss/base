@@ -5,6 +5,16 @@ Format follows the spirit of Keep a Changelog. Versions follow the documented co
 
 ## [Unreleased]
 
+## [1.5.2] - 2026-10-22
+
+### Fixed
+- FR-CHANGE-001 / `writes.md`: the write decision receives `{ path, exists, sensitivity, requires_confirmation }` at propose and at commit, `path` being the root-relative POSIX target. A policy adapter that decides by path received no path: an allow-list denied every write, a deny-list allowed every write (#28).
+- FR-INIT-004: on an existing root with no entry point, `base init --tool <id>` offers that tool's entry point again (1.5.0 rendered only the config's `tools` or the tool-agnostic default, then dropped it as unchosen); a tool recorded in the config's `tools` is honoured when `--tool` is absent.
+- FR-DOCTOR-001: on a folder holding `base.workspace.json`, the `missing_tool_artifacts` hint names the listed roots, since `init` sets up each root and not the workspace folder.
+- FR-ROUTE-009 / `routing.md`: the framework holding a help target is looked up in the root's `framework_dir`, then in the user config where `base init` registers it, then beside the running engine. The MCP bundle, which does not run from the framework, found none on a fresh root.
+- FR-INIT-002: every entry point asks one useful question at a time and states any other criterion as a statement, without a question mark (four language tables).
+- FR-CORE-001: the `.ai/` runtime prefixes are skipped under any BASE root nested below the walked one, so a workspace no longer inventories its roots' staged changes and route tests.
+
 ## [1.5.1] - 2026-10-02
 
 ### Changed

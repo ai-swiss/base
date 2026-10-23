@@ -17,7 +17,7 @@
 // declares no `exports` map; should it ever declare one, it must export `./package.json`.
 //
 // The adapter knows no path of its own: root, model and destination arrive as environment, so it
-// renders a corpus that lives anywhere and writes only where the caller decided.
+// renders a corpus that lives anywhere and delivers only where the caller decided.
 
 import { spawn } from "node:child_process";
 import * as fs from "node:fs/promises";
@@ -100,13 +100,51 @@ export async function resolveDocsSite(rootDir) {
 }
 
 /**
+ * Whether a build into `siteOut` must go through a staging folder. Astro renders part of a site under
+ * its working directory (the adapter's) when the destination lies outside it, then RENAMES those
+ * files into place: across two disks (a CI runner's /tmp, a corpus on another volume than the
+ * engine) the rename fails with EXDEV. A destination inside the adapter is built directly.
+ * @param {string} siteDir @param {string} siteOut @returns {boolean}
+ */
+export function needsStaging(siteDir, siteOut) {
+  const relative = path.relative(path.resolve(siteDir), path.resolve(siteOut));
+  return relative === "" ? false : relative.startsWith("..") || path.isAbsolute(relative);
+}
+
+/**
  * Run one adapter command against a written model. `cwd` is the adapter's own directory (that is
  * where its Astro configuration lives); everything about the corpus and the destination travels in
- * the environment, so nothing is ever written inside the installed package.
+ * the environment. Inside the installed package, only Astro's own scratch folder `.astro/` is
+ * written: a build for a destination outside the package is staged there, then copied, and the
+ * destination is emptied first as Astro empties its own (a `.git` inside survives).
  * @param {DocsSite} site
  * @param {{ command: "build" | "dev" | "preview", root: string, modelDir: string, siteOut?: string }} options
  */
 export async function runDocsSite(site, { command, root, modelDir, siteOut = "" }) {
+  if (command !== "build" || !siteOut || !needsStaging(site.dir, siteOut)) {
+    await spawnDocsSite(site, { command, root, modelDir, siteOut });
+    return;
+  }
+  const scratch = path.join(site.dir, ".astro");
+  await fs.mkdir(scratch, { recursive: true });
+  const staging = await fs.mkdtemp(path.join(scratch, "base-build-"));
+  try {
+    await spawnDocsSite(site, { command, root, modelDir, siteOut: staging });
+    await fs.mkdir(siteOut, { recursive: true });
+    for (const entry of await fs.readdir(siteOut)) {
+      if (entry !== ".git") await fs.rm(path.join(siteOut, entry), { recursive: true, force: true });
+    }
+    await fs.cp(staging, siteOut, { recursive: true });
+  } finally {
+    await fs.rm(staging, { recursive: true, force: true });
+  }
+}
+
+/**
+ * @param {DocsSite} site
+ * @param {{ command: "build" | "dev" | "preview", root: string, modelDir: string, siteOut?: string }} options
+ */
+async function spawnDocsSite(site, { command, root, modelDir, siteOut = "" }) {
   await new Promise((resolve, reject) => {
     const child = spawn(process.execPath, [site.bin, command], {
       cwd: site.dir,

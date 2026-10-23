@@ -313,7 +313,11 @@ export function diagnoseData({ inventory, files = [], mtimes = {}, runs = [], fe
       type: "missing_tool_artifacts",
       path: ENTRY_POINTS[0],
       message: "aucun point d'entrée pour les outils IA (ni CLAUDE.md, ni AGENTS.md, ni règle Cursor, ni BASE_BOOTSTRAP.md)",
-      fix_hint: "Lancez `base init --tool <votre outil>` dans ce dossier: il propose le point d'entrée manquant, sans rien écraser.",
+      // A workspace folder is not set up itself: `init` answers «rien à initialiser» there, and each
+      // root it lists carries its own entry point (#12/#14). Send the person to those roots.
+      fix_hint: paths.has("base.workspace.json")
+        ? "Ce dossier est un workspace: lancez `base init --root <racine> --tool <votre outil>` sur chaque racine listée dans base.workspace.json. Chacune reçoit son point d'entrée, sans rien écraser."
+        : "Lancez `base init --tool <votre outil>` dans ce dossier: il propose le point d'entrée manquant, sans rien écraser.",
     });
   }
 

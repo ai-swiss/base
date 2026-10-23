@@ -360,6 +360,14 @@ describe("French house-style and authority gates", () => {
     const url = frontmatterLines("---\nhomepage: https://example.com/x\n---\nbody\n");
     assert.deepEqual(offendingScalars(url), [], "a scheme colon with no following space is not a mapping");
   });
+  it("frontmatter-yaml gate reads issue templates: nested keys and list items, block scalar bodies skipped", () => {
+    const config = ["contact_links:", "  - name: Obtenir BASE", "    url: https://example.com/x", "    about: Récupérer BASE : ZIP ou clone."];
+    assert.deepEqual(offendingScalars(config, { nested: true }).map((h) => [h.key, h.fmLine]), [["about", 4]]);
+    assert.deepEqual(offendingScalars(config), [], "frontmatter mode keeps to top-level keys");
+    const form = ["body:", "  - type: textarea", "    attributes:", "      value: |", "        Étapes: une par ligne", "", "        Attendu: ceci", "      label: Étapes"];
+    assert.deepEqual(offendingScalars(form, { nested: true }), [], "colons inside a block scalar are text");
+    assert.deepEqual(offendingScalars(['  - about: "Récupérer BASE: ZIP."'], { nested: true }), [], "a quoted value is valid");
+  });
   it("translations gate: a translation head must link its French source; opt-in sync hash is read", () => {
     assert.equal(linksToSource("> This is a translation. The [French version](README.md) is authoritative.", "README.md"), true);
     assert.equal(linksToSource("> A translation with no backlink.", "README.md"), false);

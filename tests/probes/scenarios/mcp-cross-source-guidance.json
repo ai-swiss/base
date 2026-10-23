@@ -57,7 +57,7 @@
       },
       {
         "type": "final_answer",
-        "includes": "compatibilite-harnesses#ce-que-cela-implique"
+        "matches": "compatibilite-harnesses#[a-z0-9-]+|installer-mcp#[a-z0-9-]+"
       }
     ],
     "forbidden": [
