@@ -140,7 +140,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.19.20",
-    "fast-check": "^4.8.0",
+    "fast-check": "^4.10.2",
     "typescript": "^5.7.2"
   },
   "peerDependencies": {
