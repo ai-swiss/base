@@ -39,7 +39,7 @@
     "audit:prod": "npm audit --omit=dev --audit-level=low"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.32.1",
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "express": "^5.3.0",
     "zod": "^3.25.0"
   },
