@@ -141,7 +141,7 @@
   "devDependencies": {
     "@types/node": "^22.19.20",
     "fast-check": "^4.10.2",
-    "typescript": "^5.7.2"
+    "typescript": "^7.0.2"
   },
   "peerDependencies": {
     "@ai-swiss/base-ranker-semantic": "1.x",
