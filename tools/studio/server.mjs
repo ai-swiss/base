@@ -23,6 +23,7 @@ import {
   resolveStudioContext,
   rootPathFor,
   initPerimeter,
+  inventoryExcludeFor,
   search,
   searchAllRoots,
   tree,
@@ -99,17 +100,18 @@ export function createStudioServer(rootOrContext, { watch = true } = {}) {
 
   const sseClients = new Set();
   let watchers = [];
-  const armWatchers = () => {
+  const armWatchers = async () => {
     for (const w of watchers) w.close?.();
     const rootPaths =
       context.mode === "workspace" ? context.roots.map((r) => r.path)
       : context.mode === "root" ? [context.rootPath]
       : []; // welcome: nothing to watch yet
     watchers = watch
-      ? rootPaths.map((p) => createResourceWatcher(p, () => broadcast(sseClients, { type: "resources-changed" })))
+      ? await Promise.all(rootPaths.map(async (p) =>
+          createResourceWatcher(p, () => broadcast(sseClients, { type: "resources-changed" }), { exclude: await inventoryExcludeFor(p) })))
       : [];
   };
-  armWatchers();
+  armWatchers().catch(() => {}); // best-effort, like the watcher itself
 
   const server = http.createServer(async (req, res) => {
     try {
@@ -128,7 +130,7 @@ export function createStudioServer(rootOrContext, { watch = true } = {}) {
         const { created } = await initPerimeter(context);
         // The directory just became a BASE: re-resolve and serve it — no restart.
         context = await resolveStudioContext(context.dirPath);
-        armWatchers();
+        await armWatchers();
         return json(res, 200, { created, context: contextPayload(context) });
       }
       if (req.method === "GET" && p === "/api/context") {
@@ -159,7 +161,7 @@ export function createStudioServer(rootOrContext, { watch = true } = {}) {
         await writeWorkspace(wsPath, { id: context.workspace.id, label: body.label ?? context.workspace.label, roots });
         // Re-resolve and serve the edited workspace, no restart (same transition as /api/init).
         context = await resolveStudioContext(baseDir);
-        armWatchers();
+        await armWatchers();
         return json(res, 200, contextPayload(context));
       }
       if (req.method === "GET" && p === "/api/tree") {

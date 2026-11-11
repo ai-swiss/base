@@ -61,6 +61,21 @@ describe("studio watch — createResourceWatcher", () => {
     w.close();
   });
 
+  it("ignores events under the root's inventory.exclude prefixes, still fires elsewhere", async () => {
+    let calls = 0;
+    const fw = fakeWatch();
+    const w = createResourceWatcher("/root", () => calls++, { debounceMs: DEBOUNCE, watch: fw.factory, exclude: ["tmp", "runtime/logs"] });
+
+    fw.emit("tmp/deep/scratch.md");
+    fw.emit("runtime/logs/today.json");
+    await idle(DEBOUNCE * 3);
+    assert.equal(calls, 0, "excluded prefixes never trigger a refresh");
+
+    fw.emit("runtime/ack.json"); // sibling of an excluded prefix, not under it
+    assert.ok(await waitFor(() => calls === 1), "a path outside the excluded prefixes still fires");
+    w.close();
+  });
+
   it("fires for a path under /.ai/ and for a .json, and when filename is missing (be-safe)", async () => {
     let calls = 0;
     const fw = fakeWatch();
