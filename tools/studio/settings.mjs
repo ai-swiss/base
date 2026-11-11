@@ -224,9 +224,34 @@ export function resetOllamaProbeCache() {
   ollamaProbeCache = null;
 }
 
+// Raised when a provider lists models but none can hold a conversation (e.g. only embedding models).
+// Carries its own code so the UI shows an explicit message instead of "unexpected response".
+class NoChatModelError extends Error {
+  constructor(message) {
+    super(message);
+    this.code = "llm.no_chat_model";
+  }
+}
+
+/**
+ * Pick the model the connection test should talk to, from `[{ name, capabilities, remote }]` (Ollama).
+ * A model qualifies when it DECLARES the "completion" capability; embedding-only models never do.
+ * A model whose capabilities are not declared at all (`null`: older Ollama) is kept as a fallback,
+ * since nothing says it cannot chat. A `remote` (":cloud") model is never picked: a connection test
+ * must not silently send a prompt to a hosted service. Returns the model name, or null.
+ */
+export function pickChatModel(details) {
+  const local = details.filter((m) => !m.remote);
+  const declared = local.find((m) => m.capabilities?.includes("completion"));
+  if (declared) return declared.name;
+  return local.find((m) => m.capabilities === null)?.name ?? null;
+}
+
 /**
  * Connection test for one provider: discovery then a trivial completion. Returns
  * `{ ok, latencyMs, models }`, or `{ ok: false, error }` with the exact provider error.
+ * The completion goes to the first discovered model, except for providers that declare capabilities
+ * (Ollama): there it goes to a local model that can chat, or fails with `llm.no_chat_model`.
  */
 export async function testProvider(contextDir, providerId, { env = process.env, fetch } = /** @type {{ env?: NodeJS.ProcessEnv, fetch?: typeof globalThis.fetch }} */ ({})) {
   const settings = await readSettings(contextDir, { env });
@@ -236,10 +261,22 @@ export async function testProvider(contextDir, providerId, { env = process.env, 
   const started = Date.now();
   try {
     const probe = await buildProviderModel(provider, "probe", { env, fetch, timeoutMs: DISCOVERY_TIMEOUT_MS });
-    const models = (await probe.listModels?.()) ?? [];
-    const first = models[0];
-    if (first) {
-      const model = await buildProviderModel(provider, first, { env, fetch });
+    let models;
+    let target;
+    if (typeof probe.listModelDetails === "function") {
+      const details = await probe.listModelDetails();
+      models = details.map((m) => m.name);
+      target = pickChatModel(details);
+      if (models.length > 0 && !target) {
+        const seen = details.map((m) => `${m.name} [${[...(m.capabilities ?? ["?"]), ...(m.remote ? ["cloud"] : [])].join(", ")}]`).join("; ");
+        throw new NoChatModelError(`${provider.type} lists no local model that can chat (needs the "completion" capability; embedding-only and cloud models are skipped). Found: ${seen}. Install a chat model, for example with "ollama pull <model>".`);
+      }
+    } else {
+      models = (await probe.listModels?.()) ?? [];
+      target = models[0];
+    }
+    if (target) {
+      const model = await buildProviderModel(provider, target, { env, fetch });
       await model.complete({ messages: [{ role: "user", content: "ping" }], maxTokens: 1 });
     }
     return { ok: true, latencyMs: Date.now() - started, models, url };

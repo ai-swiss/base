@@ -129,16 +129,35 @@ export function createOllamaModel(options = {}) {
   const opts = /** @type {{ fetch?: typeof globalThis.fetch, timeoutMs?: number }} */ (rest);
   const tagsUrl = `${baseUrl.replace(/\/$/, "").replace(/\/v1$/, "")}/api/tags`;
 
-  async function listModels(ctx = {}) {
-    const json = await getJson(tagsUrl, {
+  const getTags = (ctx = {}) =>
+    getJson(tagsUrl, {
       fetchImpl: opts.fetch ?? globalThis.fetch,
       timeoutMs: opts.timeoutMs ?? DEFAULT_TIMEOUT_MS,
       signal: ctx.signal,
     });
+
+  async function listModels(ctx = {}) {
+    const json = await getTags(ctx);
     return (json?.models ?? []).map((m) => String(m.name)).filter(Boolean);
   }
 
-  return { ...inner, id: `ollama:${model}`, listModels };
+  // Optional extension: the same discovery, with the `capabilities` Ollama declares per model
+  // ("completion", "embedding", "vision", "tools", ...). `capabilities` is null when this Ollama
+  // version does not declare them (older releases): "unknown", which is not the same as "none".
+  // `remote` is true for a model Ollama relays to a hosted endpoint (`remote_host` / `remote_model`,
+  // the ":cloud" models): it does not run on the machine.
+  async function listModelDetails(ctx = {}) {
+    const json = await getTags(ctx);
+    return (json?.models ?? [])
+      .filter((m) => m?.name)
+      .map((m) => ({
+        name: String(m.name),
+        capabilities: Array.isArray(m.capabilities) ? m.capabilities.map(String) : null,
+        remote: Boolean(m.remote_host || m.remote_model),
+      }));
+  }
+
+  return { ...inner, id: `ollama:${model}`, listModels, listModelDetails };
 }
 
 // --- mapping: normalized → wire -------------------------------------------

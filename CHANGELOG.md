@@ -6,6 +6,9 @@ Tous les changements notables de BASE sont documentés ici. Le format suit l'esp
 
 ## [Unreleased]
 
+### Corrigé
+- Dans BASE Studio, le bouton «Tester la connexion» d'un fournisseur Ollama n'envoie plus sa requête au premier modèle de la liste: il choisit un modèle local qui déclare savoir converser (`completion`) et ignore les modèles d'embeddings et les modèles `:cloud`. Quand le premier modèle de la liste était un modèle d'embeddings, le test affichait à tort «réponse inattendue du fournisseur». Sans modèle de conversation local, il affiche maintenant un message explicite. Les autres fournisseurs gardent leur comportement.
+
 ### Documentation
 - La note pour les IA en tête du README tient sur une ligne en petits caractères, sans l'adresse du texte brut. Les adresses à copier dans un chat (README, «Essayer BASE sans installer BASE») s'affichent comme du code: elles se copient sans ouvrir de texte brut au clic.
 
