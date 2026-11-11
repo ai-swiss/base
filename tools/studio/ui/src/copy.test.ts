@@ -26,7 +26,7 @@ describe("copy catalog — the formatters with real logic", () => {
   });
 
   it("maps every base-llm failure code Studio can surface", () => {
-    for (const code of ["llm.config", "llm.auth", "llm.rate_limit", "llm.network", "llm.timeout", "llm.response"]) {
+    for (const code of ["llm.config", "llm.auth", "llm.rate_limit", "llm.network", "llm.timeout", "llm.response", "llm.no_chat_model"]) {
       expect(typeof PROVIDER_ERRORS[code]).toBe("function");
       expect(PROVIDER_ERRORS[code]("X")).toBeTruthy();
     }

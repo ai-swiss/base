@@ -20,6 +20,9 @@
 // Optional port extension: `listModels(ctx?) => Promise<string[]>` — model discovery for catalogs
 // (openai-compatible: GET /v1/models; ollama: GET /api/tags; anthropic: GET /v1/models; google:
 // GET /v1beta/models; faux: a scripted list). Callers must feature-test (`model.listModels?.()`).
+// Ollama also exposes `listModelDetails(ctx?) => Promise<{ name, capabilities: string[] | null, remote: boolean }[]>`:
+// the same list with the capabilities it declares (`null` = not declared by this Ollama version) and
+// whether the model is relayed to a hosted endpoint (`remote`, the ":cloud" models).
 //
 // JSON Schema (NOT typebox) is used for tool `parameters`: the BASE core already speaks JSON Schema,
 // so the port adds no new schema dependency.

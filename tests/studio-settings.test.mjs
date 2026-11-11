@@ -10,6 +10,7 @@ import { after, afterEach, before, describe, it } from "node:test";
 import {
   clearCatalogCache,
   listCatalog,
+  pickChatModel,
   probeOllama,
   providerLocality,
   readSettings,
@@ -342,5 +343,88 @@ describe("studio settings — resolveModel + catalog", () => {
     assert.equal(r.ok, false);
     assert.equal(r.code, "llm.config");
     assert.equal(r.env, "ANTHROPIC_API_KEY");
+  });
+
+  // --- the connection test picks a model that can chat, never "the first one" ---------------------
+
+  const reply = (body) => ({ ok: true, status: 200, json: async () => body, text: async () => "", headers: { get: () => null } });
+  const COMPLETION = { choices: [{ message: { content: "pong" }, finish_reason: "stop" }], usage: {} };
+  // A fake Ollama: serves /api/tags from `tags` and records the model each chat request targets.
+  function fakeOllama(tags) {
+    const chatModels = [];
+    const fetch = async (url, init) => {
+      if (String(url).includes("/api/tags")) return reply({ models: tags });
+      chatModels.push(JSON.parse(init.body).model);
+      return reply(COMPLETION);
+    };
+    return { fetch, chatModels };
+  }
+
+  it("testProvider (ollama) skips an embedding-only model listed first and chats with a model that can", async () => {
+    const { fetch, chatModels } = fakeOllama([
+      { name: "embeddinggemma:latest", capabilities: ["embedding"] },
+      { name: "qwen3.5:9b", capabilities: ["completion", "vision", "tools", "thinking"] },
+    ]);
+    const r = await testProvider(dir, "local", { env: {}, fetch });
+    assert.equal(r.ok, true);
+    assert.deepEqual(r.models, ["embeddinggemma:latest", "qwen3.5:9b"]);
+    assert.deepEqual(chatModels, ["qwen3.5:9b"]); // exactly one chat request, on the chat-capable model
+  });
+
+  it("testProvider (ollama) fails with an explicit code and never calls chat when no model can chat", async () => {
+    const { fetch, chatModels } = fakeOllama([{ name: "embeddinggemma:latest", capabilities: ["embedding"] }]);
+    const r = await testProvider(dir, "local", { env: {}, fetch });
+    assert.equal(r.ok, false);
+    assert.equal(r.code, "llm.no_chat_model");
+    assert.match(r.error, /embeddinggemma:latest \[embedding\]/);
+    assert.deepEqual(chatModels, []);
+  });
+
+  it("testProvider (ollama) never sends the test to a cloud model, even when it is the only chat-capable one", async () => {
+    const cloud = { name: "deepseek-v4-flash:cloud", capabilities: ["completion", "tools"], remote_model: "deepseek-v4-flash", remote_host: "https://ollama.com:443" };
+    const withLocal = fakeOllama([cloud, { name: "qwen3.5:9b", capabilities: ["completion"] }]);
+    assert.equal((await testProvider(dir, "local", { env: {}, fetch: withLocal.fetch })).ok, true);
+    assert.deepEqual(withLocal.chatModels, ["qwen3.5:9b"]);
+
+    const onlyCloud = fakeOllama([cloud, { name: "embeddinggemma:latest", capabilities: ["embedding"] }]);
+    const r = await testProvider(dir, "local", { env: {}, fetch: onlyCloud.fetch });
+    assert.equal(r.ok, false);
+    assert.equal(r.code, "llm.no_chat_model");
+    assert.match(r.error, /deepseek-v4-flash:cloud \[completion, tools, cloud\]/);
+    assert.deepEqual(onlyCloud.chatModels, []);
+  });
+
+  it("testProvider (ollama) keeps the first model when this Ollama declares no capabilities, and tolerates an empty list", async () => {
+    const older = fakeOllama([{ name: "llama3.1" }, { name: "mistral" }]);
+    assert.equal((await testProvider(dir, "local", { env: {}, fetch: older.fetch })).ok, true);
+    assert.deepEqual(older.chatModels, ["llama3.1"]);
+
+    const empty = fakeOllama([]);
+    const r = await testProvider(dir, "local", { env: {}, fetch: empty.fetch });
+    assert.equal(r.ok, true);
+    assert.deepEqual(r.models, []);
+    assert.deepEqual(empty.chatModels, []);
+  });
+
+  it("testProvider leaves the other providers on their first discovered model", async () => {
+    const chatModels = [];
+    const fetch = async (url, init) => {
+      if (String(url).endsWith("/models")) return reply({ data: [{ id: "gpt-4o-mini" }, { id: "text-embedding-3-small" }] });
+      chatModels.push(JSON.parse(init.body).model);
+      return reply(COMPLETION);
+    };
+    const r = await testProvider(dir, "openai", { env: { OPENAI_API_KEY: "sk-test" }, fetch });
+    assert.equal(r.ok, true);
+    assert.deepEqual(chatModels, ["gpt-4o-mini"]);
+  });
+
+  it("pickChatModel prefers a declared completion model, then an undeclared one, never an embedding-only one", () => {
+    assert.equal(pickChatModel([{ name: "e", capabilities: ["embedding"] }, { name: "c", capabilities: ["completion"] }]), "c");
+    assert.equal(pickChatModel([{ name: "e", capabilities: ["embedding"] }, { name: "old", capabilities: null }]), "old");
+    assert.equal(pickChatModel([{ name: "old", capabilities: null }, { name: "c", capabilities: ["completion"] }]), "c");
+    assert.equal(pickChatModel([{ name: "e", capabilities: ["embedding"] }, { name: "v", capabilities: ["vision"] }]), null);
+    assert.equal(pickChatModel([{ name: "x:cloud", capabilities: ["completion"], remote: true }, { name: "c", capabilities: ["completion"], remote: false }]), "c");
+    assert.equal(pickChatModel([{ name: "x:cloud", capabilities: ["completion"], remote: true }]), null);
+    assert.equal(pickChatModel([]), null);
   });
 });

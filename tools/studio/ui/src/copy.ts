@@ -32,6 +32,7 @@ export const PROVIDER_ERRORS: Record<string, (env?: string) => string> = {
   "llm.network": () => "serveur injoignable: vérifiez l'URL et que le service tourne",
   "llm.timeout": () => "délai dépassé: le serveur a mis trop de temps à répondre",
   "llm.response": () => "réponse inattendue du fournisseur",
+  "llm.no_chat_model": () => "aucun modèle de conversation local trouvé: ce test ignore les modèles d'embeddings et les modèles cloud, installez un modèle de chat (ollama pull)",
 };
 
 const PROVIDER_ERRORS_EN: Record<string, (env?: string) => string> = {
@@ -41,6 +42,7 @@ const PROVIDER_ERRORS_EN: Record<string, (env?: string) => string> = {
   "llm.network": () => "server unreachable: check the URL and that the service is running",
   "llm.timeout": () => "timed out: the server took too long to respond",
   "llm.response": () => "unexpected response from the provider",
+  "llm.no_chat_model": () => "no local chat model found: this test skips embedding and cloud models, install a chat model (ollama pull)",
 };
 
 // Map a coded provider failure to its actionable text in the given language, falling back to the raw

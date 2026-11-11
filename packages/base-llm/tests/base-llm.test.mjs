@@ -243,4 +243,29 @@ describe("base-llm — Ollama is a provider over the OpenAI-compatible wire API"
     assert.equal(url, "http://localhost:11434/v1/chat/completions");
     assert.equal(auth, undefined);
   });
+
+  it("listModelDetails exposes the declared capabilities (null when undeclared) and flags cloud models", async () => {
+    const tags = {
+      models: [
+        { name: "embeddinggemma:latest", capabilities: ["embedding"] },
+        { name: "qwen3.5:9b", capabilities: ["completion", "tools"] },
+        { name: "legacy" },
+        { name: "deepseek-v4-flash:cloud", capabilities: ["completion"], remote_model: "deepseek-v4-flash", remote_host: "https://ollama.com:443" },
+      ],
+    };
+    let url;
+    const fetchImpl = async (u) => {
+      url = u;
+      return { ok: true, status: 200, json: async () => tags, text: async () => "", headers: { get: () => null } };
+    };
+    const model = createOllamaModel({ model: "qwen3.5:9b", fetch: fetchImpl });
+    assert.deepEqual(await model.listModelDetails(), [
+      { name: "embeddinggemma:latest", capabilities: ["embedding"], remote: false },
+      { name: "qwen3.5:9b", capabilities: ["completion", "tools"], remote: false },
+      { name: "legacy", capabilities: null, remote: false },
+      { name: "deepseek-v4-flash:cloud", capabilities: ["completion"], remote: true },
+    ]);
+    assert.equal(url, "http://localhost:11434/api/tags");
+    assert.deepEqual(await model.listModels(), ["embeddinggemma:latest", "qwen3.5:9b", "legacy", "deepseek-v4-flash:cloud"]); // unchanged
+  });
 });
